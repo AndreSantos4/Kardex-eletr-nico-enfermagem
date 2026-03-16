@@ -5,10 +5,10 @@
 Projeto realizado por:
 
  - André Miguel Fonseca Santos Nº 20240622<br/>
- - Nuno Luís Marques Cunha Nº 20241256<br/>
+ - Daniel Rian Nogueira Padre Nº 20240640<br/>
  - David Miguel Coutinho Castel-Branco Power nº 20240614<br>
-- Luís Jóse Bernardo Martins Nº 20240616<br/>
-- Daniel Rian Nogueira Padre Nº 20240640<br/>
+ - Nuno Luís Marques Cunha Nº 20241256<br/>
+ - Luís Jóse Bernardo Martins Nº 20240616<br/>
 
 Orientador:<br/>
 
@@ -20,17 +20,17 @@ Orientador:<br/>
   - Scrum Master: André Santos
   - Dev's: Daniel, David, Luís, Nuno
 - Sprint 2 :
-  - Scrum Master:
-  - Dev's:
+  - Scrum Master: Nuno Cunha
+  - Dev's: André, Daniel, David, Luís
 - Sprint 3 :
-  - Scrum Master:
-  - Dev's:
+  - Scrum Master: David Power
+  - Dev's: André, Daniel, Luís, Nuno
 - Sprint 4 :
-  - Scrum Master:
-  - Dev's:
+  - Scrum Master: Luís Martins
+  - Dev's: André, Daniel, David, Nuno
 - Sprint 5 :
-  - Scrum Master:
-  - Dev's:
+  - Scrum Master: Daniel Padre
+  - Dev's: André, David, Luís, Nuno
 
 ### Descrição do projeto
 
