@@ -5,6 +5,7 @@
 Projeto realizado por:
 
 - André Miguel Fonseca Santos Nº 20240622<br/>
+- Luís Jóse Bernardo Martins Nº 20240616<br/>
 
 Orientador:<br/>
 
