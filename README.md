@@ -1,27 +1,33 @@
 # 10 - Kardex eletrónico enfermagem
+
 ## Projeto no âmbito da cadeira de Engenharia de Sofrware
+
 Projeto realizado por:
- - André Miguel Fonseca Santos Nº 20240622<br/>
+
+- André Miguel Fonseca Santos Nº 20240622<br/>
 
 Orientador:<br/>
- - Nuno Pinho
+
+- Nuno Pinho
+- Daniel Padre
 
 ### Distribuição de responsabilidades por sprint
- - Sprint 1 : 
-    - Scrum Master: André Santos
-    - Dev's: Daniel, David, Luís, Nuno
- - Sprint 2 : 
-    - Scrum Master: 
-    - Dev's: 
- - Sprint 3 : 
-    - Scrum Master:
-    - Dev's:
- - Sprint 4 : 
-    - Scrum Master:
-    - Dev's:
- - Sprint 5 : 
-    - Scrum Master:
-    - Dev's:
+
+- Sprint 1 :
+  - Scrum Master: André Santos
+  - Dev's: Daniel, David, Luís, Nuno
+- Sprint 2 :
+  - Scrum Master:
+  - Dev's:
+- Sprint 3 :
+  - Scrum Master:
+  - Dev's:
+- Sprint 4 :
+  - Scrum Master:
+  - Dev's:
+- Sprint 5 :
+  - Scrum Master:
+  - Dev's:
 
 ### Descrição do projeto
 
