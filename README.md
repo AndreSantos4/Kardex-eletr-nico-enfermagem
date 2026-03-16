@@ -6,8 +6,6 @@ Projeto realizado por:
 
  - André Miguel Fonseca Santos Nº 20240622<br/>
  - David Miguel Coutinho Castel-Branco Power nº 20240614<br>
-
-- André Miguel Fonseca Santos Nº 20240622<br/>
 - Luís Jóse Bernardo Martins Nº 20240616<br/>
 - Daniel Rian Nogueira Padre Nº 20240640<br/>
 
