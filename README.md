@@ -2,6 +2,7 @@
 ## Projeto no âmbito da cadeira de Engenharia de Sofrware
 Projeto realizado por:
  - André Miguel Fonseca Santos Nº 20240622<br/>
+ - Nuno Luís Marques Cunha Nº 20241256<br/>
 
 Orientador:<br/>
  - Nuno Pinho
