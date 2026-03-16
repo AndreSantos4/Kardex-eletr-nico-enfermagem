@@ -10,7 +10,6 @@ Projeto realizado por:
 Orientador:<br/>
 
 - Nuno Pinho
-- Daniel Padre
 
 ### Distribuição de responsabilidades por sprint
 
