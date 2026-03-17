@@ -17,7 +17,7 @@ public class Sessao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
     
-    @JoinColumn(name = "utilizador", nullable = false)
+    @JoinColumn(name = "id_utilizador", nullable = false)
     @OneToOne(targetEntity = Utilizador.class)
     public Utilizador utilizador;
     
