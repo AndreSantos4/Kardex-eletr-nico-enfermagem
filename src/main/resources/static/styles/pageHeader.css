@@ -1,0 +1,18 @@
+/* Page header*/
+.page-header {
+	background: var(--panel);
+	border-radius: 4px;
+	padding: 14px 20px;
+	margin-top: 14px;
+}
+.page-header h1 {
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+.page-header p {
+	font-size: 12px;
+	color: var(--muted);
+	margin-top: 2px;
+	font-family: var(--mono);
+}
