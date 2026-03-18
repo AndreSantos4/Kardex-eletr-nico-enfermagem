@@ -16,20 +16,20 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class Utilizador {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    public long id;
+    public Long id;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     public Role role;
     
     @Column(name = "numero_mecanografico", nullable = false, unique = true)
-    public long numeroMecanografico;
+    public Long numeroMecanografico;
     
     @Column(name = "nome", nullable = false)
     public String nome;
     
     @Column(name = "sexo", nullable = false)
-    public char sexo;
+    public Character sexo;
     
     @Column(name = "email", nullable = false, unique = true)
     public String email;
@@ -47,5 +47,5 @@ public class Utilizador {
     
     public LocalDateTime dataUltimaAtividade;
     
-    public boolean ativo = false;
+    public Boolean ativo = false;
 }

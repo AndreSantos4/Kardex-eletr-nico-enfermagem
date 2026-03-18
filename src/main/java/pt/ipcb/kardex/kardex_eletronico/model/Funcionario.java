@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -17,12 +18,13 @@ import java.util.Set;
 public class Funcionario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    public Long id;
     
-    @JoinColumn(name = "id_utilizador", nullable = false)
+    @JoinColumn(name = "id_funcionario", nullable = false)
     @OneToOne(targetEntity = Utilizador.class)
     public Utilizador utilizador;
     
-    @ManyToMany(targetEntity = Turno.class)
-    public Set<Turno> turnos;
+    @JoinColumn(name = "id_funcionario", nullable = false)
+    @ManyToMany(fetch = FetchType.LAZY)
+    public Set<Turno> turnos = new HashSet<>();
 }

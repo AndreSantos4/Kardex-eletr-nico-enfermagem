@@ -17,8 +17,8 @@ public class Sessao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
     
-    @JoinColumn(name = "id_utilizador", nullable = false)
-    @OneToOne(targetEntity = Utilizador.class)
+    @JoinColumn(name = "id_sessao", nullable = false)
+    @OneToOne(fetch = FetchType.EAGER)
     public Utilizador utilizador;
     
     @Column(name = "endereco_ip", nullable = false)

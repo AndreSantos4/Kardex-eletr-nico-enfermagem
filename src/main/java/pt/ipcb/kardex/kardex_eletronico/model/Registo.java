@@ -15,10 +15,10 @@ import lombok.Setter;
 public class Registo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    public Long id;
     
     @JoinColumn(name = "id_utilizador", nullable = false)
-    @ManyToOne(targetEntity = Utilizador.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     public Utilizador utilizador;
     
     @Column(name = "nivel_registo", nullable = false)
@@ -29,9 +29,12 @@ public class Registo {
     @Enumerated(EnumType.STRING)
     public TipoRegisto tipoRegisto;
     
+    @Column(name = "tabela_origem")
     public String tabelaOrigem;
     
+    @Column(name = "mensageem", nullable = false)
     public String mensagem;
     
+    @Column(name = "detalhes")
     public String detalhes;
 }

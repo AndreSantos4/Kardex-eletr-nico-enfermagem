@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -26,6 +27,6 @@ public class Turno {
     @Column(name = "fim", nullable = false)
     public LocalDateTime fim;
     
-    @ManyToMany(targetEntity = Funcionario.class)
-    public Set<Funcionario> funcionariosAlocados; 
+    @ManyToMany(mappedBy = "turno", fetch = FetchType.LAZY)
+    public Set<Funcionario> funcionariosAlocados = new HashSet<>();
 }
