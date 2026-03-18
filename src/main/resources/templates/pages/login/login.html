@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Login</title>
+    <link href="login.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="ecra-login">
+
+      <div class="login-caixa">
+        <div class="login-cabecalho">
+          <div class="login-titulo">Clínica Psiquiátrica de S. Mateus</div>
+        </div>
+
+        <div class="login-corpo">
+          <form action="">
+            <div class="login-campo">
+              <label>Nº Mecanográfico</label>
+              <input type="text" id="numero_mecanografico" required>
+            </div>
+
+            <div class="login-campo">
+              <label>Password</label>
+              <input type="password" id="password" required>
+            </div>
+
+            <input type="submit" value="ENTRAR" class="login-botao">
+          </form>
+
+          <form action="">
+            <div class="login-campo" id="login-campo-authn">
+              <label>Código de Autencação</label>
+              <div class="login-authn">
+                <input type="text" id="code-authn" placeholder="6 dígitos">
+                <input type="submit" value="Enviar código" class="login-authn-btn">
+              </div>
+              <div class="login-nota-authn">Enviado SMS para o telemóvel. Válido 2 minutos.</div>
+            </div>
+          </form>
+
+          <div class="login-aviso-legal">
+            Acesso restrito a profissionais autorizados.<br>
+            Todos os acessos são registados
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
