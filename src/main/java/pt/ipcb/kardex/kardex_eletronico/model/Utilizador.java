@@ -1,9 +1,16 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -13,7 +20,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Setter
 @Entity
 @Table(name = "utilizador")
-public class Utilizador {
+public class Utilizador implements UserDetails{
     @Id
     @GeneratedValue(strategy = IDENTITY)
     public Long id;
@@ -51,4 +58,33 @@ public class Utilizador {
     
     @Column(name = "esta_ativo")
     public Boolean ativo = false;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority("ROLE_USER")
+        );
+
+        if(role == Role.ENFERMEIRO_CHEFE){
+            authorities.add(
+                new SimpleGrantedAuthority("ROLE_ENFERMEIRO")
+            );
+        }
+
+        authorities.add(
+            new SimpleGrantedAuthority("ROLE_" + role.getRole())
+        );
+
+        return authorities;
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 }
