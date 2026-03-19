@@ -58,4 +58,10 @@ public class ProcessoClinico {
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
     public List<Contencao> contencoes = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
+    public List<NotaEvolucaoClinica> notasEvolucaoClinica = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
+    public List<Cateter> cateteres = new ArrayList<>();
 }
