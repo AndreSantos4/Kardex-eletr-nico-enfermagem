@@ -1,0 +1,33 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--bg: #ffffff;
+	--surface: #2a6f97;
+	--surface2: #2a6f97;
+	--panel: #2a6f97;
+	--card: #2a6f97;
+	--text: #e8f4f8;
+	--muted: #a8d4e6;
+	--accent: #ffffff;
+	--sidebar-bg: #2a6f97;
+	--sidebar-hover: #ffffff;
+	--border: rgba(255, 255, 255, 0.12);
+	--mono: "IBM Plex Mono", monospace;
+	--sans: "IBM Plex Sans", sans-serif;
+}
+
+body {
+	font-family: var(--sans);
+	background: var(--bg);
+	color: var(--text);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+}
