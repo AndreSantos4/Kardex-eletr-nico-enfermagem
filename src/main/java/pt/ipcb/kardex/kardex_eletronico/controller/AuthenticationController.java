@@ -25,9 +25,7 @@ public class AuthenticationController {
     public ResponseEntity postMethodName(@RequestBody @Validated AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.numeroMecanografico(), data.password());
         var auth = authenticationManager.authenticate(usernamePassword);
-        
+
         return ResponseEntity.ok().build();
     }
-    
-
 }
