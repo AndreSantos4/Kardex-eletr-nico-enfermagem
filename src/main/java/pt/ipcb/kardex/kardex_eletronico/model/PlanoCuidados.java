@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,5 +34,8 @@ public class PlanoCuidados {
     
     @Column(name = "esta_ativo", nullable = false)
     public Boolean ativo;
+    
+    @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
+    public List<Atividade> atividades;
 }
 
