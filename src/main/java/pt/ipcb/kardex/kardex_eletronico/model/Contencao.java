@@ -15,6 +15,10 @@ public class Contencao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;        
+
+    @JoinColumn(name = "id_processo_clinico")
+    @ManyToOne(fetch = FetchType.LAZY)
+    public ProcessoClinico processoClinico;
     
     @JoinColumn(name = "id_medico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
