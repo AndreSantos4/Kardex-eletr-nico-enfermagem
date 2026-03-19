@@ -1,14 +1,18 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model;
 
 public enum Role {
-    ADMIN("Administrador"),
-    MEDICO("Médico"),
-    ENFERMEIRO_CHEFE("Enfermeiro Chefe"),
-    ENFERMEIRO("Enfermeiro");
+    ADMIN("ADMIN"),
+    MEDICO("MEDICO"),
+    ENFERMEIRO_CHEFE("ENFERMEIRO_CHEFE"),
+    ENFERMEIRO("ENFERMEIRO");
     
-    private final String nome;
+    private final String role;
     
-    Role(String nome) {
-        this.nome = nome;
+    Role(String role) {
+        this.role = role;
+    }
+
+    public String getRole(){
+        return role;
     }
 }
