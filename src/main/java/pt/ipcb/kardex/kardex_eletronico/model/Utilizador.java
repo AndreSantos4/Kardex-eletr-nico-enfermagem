@@ -43,9 +43,12 @@ public class Utilizador {
     @Column(name = "contacto_emergencia", nullable = false)
     public int contactoEmergencia;
     
+    @Column(name = "data_criacao", nullable = false)
     public LocalDateTime dataCriacao;
     
+    @Column(name = "data_ultima_atividade")
     public LocalDateTime dataUltimaAtividade;
     
+    @Column(name = "esta_ativo")
     public Boolean ativo = false;
 }
