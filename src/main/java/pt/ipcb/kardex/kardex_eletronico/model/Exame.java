@@ -19,6 +19,7 @@ public class Exame {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
+    @JoinColumn(name = "id_medico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario medico;
     

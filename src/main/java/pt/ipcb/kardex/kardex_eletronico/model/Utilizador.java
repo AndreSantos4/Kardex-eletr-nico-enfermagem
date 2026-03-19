@@ -38,10 +38,10 @@ public class Utilizador {
     public String passwordHash;
     
     @Column(name = "contacto", nullable = false)
-    public int contacto;
+    public Integer contacto;
     
     @Column(name = "contacto_emergencia", nullable = false)
-    public int contactoEmergencia;
+    public Integer contactoEmergencia;
     
     @Column(name = "data_criacao", nullable = false)
     public LocalDateTime dataCriacao;

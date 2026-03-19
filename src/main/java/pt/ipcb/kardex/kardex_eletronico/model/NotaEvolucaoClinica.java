@@ -19,9 +19,11 @@ public class NotaEvolucaoClinica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
+    @JoinColumn(name = "id_processo_clinico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public ProcessoClinico processoClinico;
     
+    @JoinColumn(name = "id_medico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario medico;
     

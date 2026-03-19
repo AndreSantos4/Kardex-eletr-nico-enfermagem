@@ -19,9 +19,11 @@ public class Cateter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
+    @JoinColumn(name = "id_cateter", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public ProcessoClinico processoClinico;
     
+    @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
     

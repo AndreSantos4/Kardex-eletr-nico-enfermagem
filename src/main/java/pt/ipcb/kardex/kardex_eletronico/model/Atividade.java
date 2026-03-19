@@ -14,15 +14,17 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "cama")
+@Table(name = "atividade")
 public class Atividade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
+    @JoinColumn(name = "id_plano_cuidados", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public PlanoCuidados planoCuidados;
     
+    @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
     

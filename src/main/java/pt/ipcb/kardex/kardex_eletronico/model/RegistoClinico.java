@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,9 +22,11 @@ public class RegistoClinico {
     @Column(name = "timestamp", nullable = false)
     public Timestamp timestamp;
     
+    @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne(targetEntity = Funcionario.class)
     public Funcionario funcionario;
     
+    @JoinColumn(name = "id_utente", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Utente utente;
 }

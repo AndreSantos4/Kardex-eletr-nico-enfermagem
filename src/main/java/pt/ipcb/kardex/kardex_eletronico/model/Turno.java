@@ -19,7 +19,7 @@ import java.util.Set;
 public class Turno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    public Long id;
     
     @Column(name = "inicio", nullable = false)
     public LocalDateTime inicio;
@@ -27,6 +27,6 @@ public class Turno {
     @Column(name = "fim", nullable = false)
     public LocalDateTime fim;
     
-    @ManyToMany(mappedBy = "turno", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "turnos")
     public Set<Funcionario> funcionariosAlocados = new HashSet<>();
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,10 +33,10 @@ public class SinalVital {
     public Integer frequenciaCardiaca;
     
     @Column(name = "temperatura", nullable = false)
-    public int temperatura;
+    public Integer temperatura;
     
     @Column(name = "spo2", nullable = false)
-    public int spo2;
+    public Integer spo2;
     
     @Column(name = "dor")
     public Short dor;
@@ -46,5 +47,6 @@ public class SinalVital {
     @Column(name = "observacoes")
     public String observacoes;
     
-    public Timestamp data;
+    @Column(name = "data", nullable = false)
+    public LocalDateTime data;
 }

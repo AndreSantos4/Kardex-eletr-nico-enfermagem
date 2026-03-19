@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -25,7 +26,11 @@ public class Servico {
     @Column(name = "descricao")
     public String descricao;
     
-    @JoinColumn(name = "id_servico", nullable = false)
+    @JoinTable(
+            name = "servico_medicamento",
+            joinColumns = @JoinColumn(name = "id_servico"),
+            inverseJoinColumns = @JoinColumn(name = "id_medicamento")
+    )
     @ManyToMany(fetch = FetchType.LAZY)
-    public Set<Medicamento> medicamentos;
+    public Set<Medicamento> medicamentos = new HashSet<>();
 }

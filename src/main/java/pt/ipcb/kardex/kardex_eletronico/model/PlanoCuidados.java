@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class PlanoCuidados {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
+    @JoinColumn(name = "id_processo_clinico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public ProcessoClinico processoClinico;
     
@@ -29,6 +31,7 @@ public class PlanoCuidados {
     @Column(name = "data_criacao", nullable = false)
     public LocalDate dataCriacao;
     
+    @JoinColumn(name = "id_autor", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario autor;
     
@@ -36,6 +39,6 @@ public class PlanoCuidados {
     public Boolean ativo;
     
     @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
-    public List<Atividade> atividades;
+    public List<Atividade> atividades = new ArrayList<>();
 }
 

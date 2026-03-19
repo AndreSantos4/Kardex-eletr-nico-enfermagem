@@ -16,9 +16,11 @@ public class Contencao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;        
     
+    @JoinColumn(name = "id_medico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario medico;
     
+    @JoinColumn(name = "id_medicamento", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Medicamento medicamento;
     
@@ -29,7 +31,7 @@ public class Contencao {
     public Long dose;
     
     @Column(name = "duracao", nullable = false)
-    public int duracao;
+    public Integer duracao;
     
     @Column(name = "data", nullable = false)
     public LocalDate data;

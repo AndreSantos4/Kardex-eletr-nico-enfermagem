@@ -20,11 +20,15 @@ public class Funcionario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
-    @JoinColumn(name = "id_funcionario", nullable = false)
-    @OneToOne(targetEntity = Utilizador.class)
+    @JoinColumn(name = "id_utilizador", nullable = false)
+    @OneToOne(fetch = FetchType.EAGER)
     public Utilizador utilizador;
     
-    @JoinColumn(name = "id_funcionario", nullable = false)
+    @JoinTable(
+            name = "funcionario_turno",
+            joinColumns = @JoinColumn(name = "id_funcionario"),
+            inverseJoinColumns = @JoinColumn(name = "id_turno")
+    )
     @ManyToMany(fetch = FetchType.LAZY)
     public Set<Turno> turnos = new HashSet<>();
 }

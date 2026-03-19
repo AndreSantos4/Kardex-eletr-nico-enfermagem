@@ -19,9 +19,11 @@ public class AdministracaoMedicacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     public Long id;
     
+    @JoinColumn(name = "id_prescricao", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Prescricao prescricao;
     
+    @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
     

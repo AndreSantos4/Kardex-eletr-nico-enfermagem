@@ -15,9 +15,9 @@ import lombok.Setter;
 public class Sessao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    public Long id;
     
-    @JoinColumn(name = "id_sessao", nullable = false)
+    @JoinColumn(name = "id_utilizador", nullable = false)
     @OneToOne(fetch = FetchType.EAGER)
     public Utilizador utilizador;
     

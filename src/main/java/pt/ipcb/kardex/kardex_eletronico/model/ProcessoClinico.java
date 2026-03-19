@@ -21,14 +21,16 @@ import java.util.Set;
 public class ProcessoClinico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+    public Long id;
     
+    @JoinColumn(name = "id_utente", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Utente utente;
     
     @Column(name = "diagnostico_principal", nullable = false)
     public String diagnosticoPrincipal;
     
+    @JoinColumn(name = "id_cama", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Cama cama;
     
@@ -41,6 +43,11 @@ public class ProcessoClinico {
     @Column(name = "alta")
     public Boolean alta;
     
+    @JoinTable(
+            name = "processo_clinico_prescricao",
+            joinColumns = @JoinColumn(name = "id_processo_clinico"),
+            inverseJoinColumns = @JoinColumn(name = "id_prescricao")
+    )
     @ManyToMany(fetch = FetchType.LAZY)
     public Set<Prescricao> prescricoes = new HashSet<>();
     
@@ -50,6 +57,7 @@ public class ProcessoClinico {
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
     public List<Exame> exames = new ArrayList<>();
     
+    @JoinColumn(name = "id_servico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Servico servico;
     

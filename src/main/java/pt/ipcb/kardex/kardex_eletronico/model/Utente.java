@@ -50,12 +50,20 @@ public class Utente {
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     public List<ProcessoClinico> processosClinicos = new ArrayList<>();
     
-    @JoinColumn(name = "id_utente", nullable = false)
-    @ManyToMany(mappedBy = "utentes", fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "utente_alergia",
+            joinColumns = @JoinColumn(name = "id_utente"),
+            inverseJoinColumns = @JoinColumn(name = "id_alergia")
+    )
+    @ManyToMany
     public Set<Alergia> alergias = new HashSet<>();
-    
-    @JoinColumn(name = "id_utente", nullable = false)
-    @ManyToMany(mappedBy = "utentes", fetch = FetchType.LAZY)
+
+    @JoinTable(
+            name = "utente_flag",
+            joinColumns = @JoinColumn(name = "id_utente"),
+            inverseJoinColumns = @JoinColumn(name = "id_flag")
+    )
+    @ManyToMany
     public Set<FlagRisco> flagRiscos = new HashSet<>();
     
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)

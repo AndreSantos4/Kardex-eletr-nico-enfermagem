@@ -21,6 +21,7 @@ public class Prescricao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
+    @JoinColumn(name = "id_medicamento", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Medicamento medicamento;
     

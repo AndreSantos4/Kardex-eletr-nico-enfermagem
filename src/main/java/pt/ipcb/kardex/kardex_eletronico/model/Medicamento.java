@@ -40,15 +40,27 @@ public class Medicamento {
     @Column(name = "data_validade", nullable = false)
     public LocalDate dataValidade;
     
-    @JoinColumn(name = "id_medicamento", nullable = false)
+    @JoinTable(
+            name = "medicamento_via_administracao",
+            joinColumns = @JoinColumn(name = "id_medicamento"),
+            inverseJoinColumns = @JoinColumn(name = "id_via_administracao")
+    )
     @ManyToMany(fetch = FetchType.EAGER)
     public Set<ViaAdministracao> viasAdministracao = new HashSet<>();
-    
-    @JoinColumn(name = "id_medicamento", nullable = false)
+
+    @JoinTable(
+            name = "medicamento_alerta",
+            joinColumns = @JoinColumn(name = "id_medicamento"),
+            inverseJoinColumns = @JoinColumn(name = "id_alerta")
+    )
     @ManyToMany(fetch = FetchType.EAGER)
     public Set<Alerta> alertas = new HashSet<>();
-    
-    @JoinColumn(name = "id_medicamento", nullable = false)
+
+    @JoinTable(
+            name = "medicamento_alergia",
+            joinColumns = @JoinColumn(name = "id_medicamento"),
+            inverseJoinColumns = @JoinColumn(name = "id_alergia")
+    )
     @ManyToMany(fetch = FetchType.EAGER)
     public Set<Alergia> alergiasIncompativeis = new HashSet<>();
 }
