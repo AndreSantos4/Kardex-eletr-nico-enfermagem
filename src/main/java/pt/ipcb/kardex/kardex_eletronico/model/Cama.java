@@ -1,4 +1,4 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,6 @@ import lombok.Setter;
 @Table(name = "cama")
 public class Cama {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public String id;
     
     @Column(name = "ocupada", nullable = false)
