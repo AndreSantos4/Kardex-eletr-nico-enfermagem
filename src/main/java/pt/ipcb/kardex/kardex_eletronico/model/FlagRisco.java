@@ -1,4 +1,4 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.Setter;
 public class FlagRisco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public String id;
+    public Long id;
 
     @Column(name = "nome", nullable = false)
     public String nome;
