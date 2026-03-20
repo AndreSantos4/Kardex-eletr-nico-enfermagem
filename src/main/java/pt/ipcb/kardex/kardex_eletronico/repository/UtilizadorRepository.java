@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
-import pt.ipcb.kardex.kardex_eletronico.model.Utilizador;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 
 @Repository
 public interface UtilizadorRepository extends JpaRepository<Utilizador, Long> {
-    UserDetails findbyNumeroMecanografico(long numeroMecanografico);
+    UserDetails findByNumeroMecanografico(Long numeroMecanografico);
 }
