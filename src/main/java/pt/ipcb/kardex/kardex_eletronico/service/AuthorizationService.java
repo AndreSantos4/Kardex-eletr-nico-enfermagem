@@ -17,6 +17,6 @@ public class AuthorizationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String numeroMecanograficoString) throws UsernameNotFoundException {
         var numeroMecanografico = Long.parseLong(numeroMecanograficoString);
-        return repository.findbyNumeroMecanografico(numeroMecanografico);
+        return repository.findByNumeroMecanografico(numeroMecanografico);
     }
 }
