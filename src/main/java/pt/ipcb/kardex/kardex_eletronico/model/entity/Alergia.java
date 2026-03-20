@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,15 +11,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "alerta")
-public class Alerta {
+@Table(name = "alergia")
+public class Alergia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  
-    public Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
     
-    @Column(name = "nome", nullable = false) 
+    @Column(name = "nome", nullable = false)
     public String nome;
     
-    @Column(name = "descricao")
+    @Column(name = "descricao", nullable = false)
     public String descricao;
 }

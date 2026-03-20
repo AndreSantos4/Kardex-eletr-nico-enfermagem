@@ -1,10 +1,12 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.NivelRegisto;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegisto;
 
 @AllArgsConstructor
 @NoArgsConstructor

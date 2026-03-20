@@ -1,9 +1,11 @@
-package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,6 +13,8 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -57,23 +61,35 @@ public class Utilizador implements UserDetails{
     public LocalDateTime dataUltimaAtividade;
     
     @Column(name = "esta_ativo")
-    public Boolean ativo = false;
+    public Boolean ativo;
+
+    public Utilizador(Long numeroMecanografico, String passwordHash, Role role) {
+        this(
+            null, 
+            role, 
+            numeroMecanografico, 
+            "",
+            ' ',
+            "",
+            passwordHash,
+            0,
+            0, 
+            LocalDateTime.now(),
+            LocalDateTime.now(),
+            false
+        );
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = List.of(
-            new SimpleGrantedAuthority("ROLE_USER")
-        );
-
-        if(role == Role.ENFERMEIRO_CHEFE){
-            authorities.add(
-                new SimpleGrantedAuthority("ROLE_ENFERMEIRO")
-            );
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+    
+        if (role == Role.ENFERMEIRO_CHEFE) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ENFERMEIRO"));
         }
-
-        authorities.add(
-            new SimpleGrantedAuthority("ROLE_" + role.getRole())
-        );
+        
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
 
         return authorities;
     }
