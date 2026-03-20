@@ -1,4 +1,4 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model.enumerated;
 
 public enum TipoExame {
     HEMOGRAMA_COMPLETO("Hemograma Completo"),

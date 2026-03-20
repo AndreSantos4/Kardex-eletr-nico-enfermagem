@@ -1,6 +1,6 @@
-﻿package pt.ipcb.kardex.kardex_eletronico.model;
+package pt.ipcb.kardex.kardex_eletronico.model.enumerated;
 
-public enum Urgencia {
+public enum GravidadeIncidente {
     BAIXA("Baixa"),
     MODERADA("Moderada"),
     NORMAL("Normal"),
@@ -8,7 +8,7 @@ public enum Urgencia {
     
     public final String nome;
     
-    Urgencia(String nome) {
+    GravidadeIncidente(String nome) {
         this.nome = nome;
     }
 }
