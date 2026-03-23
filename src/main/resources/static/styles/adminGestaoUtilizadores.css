@@ -304,6 +304,21 @@ body, .container, .content-container {
   margin-bottom: 6px;
 }
 
+.pop-up-desativar input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius);
+  padding: 20px 10px;
+  font-size: 0.87rem;
+  color: var(--placeholder-color);
+  outline: none;
+  appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 6px;
+
+}
+
 .pop-up input::placeholder { color: var(--placeholder-color); }
 
 .pop-up input:focus, .pop-up select:focus {
@@ -357,3 +372,15 @@ body, .container, .content-container {
 
 .buttons button:hover { background: var(--btn-hover); }
 .buttons button:active { transform: scale(0.97); }
+
+.warning-box {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 7px 12px;
+}
+
+.pop-up-desativar p {
+  color: var(--text);
+  font-size: small;
+  padding-bottom: 10px;
+}
