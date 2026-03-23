@@ -3,6 +3,7 @@
 	width: 210px;
 	flex-shrink: 0;
 	background: var(--sidebar-bg);
+	align-self: stretch;
 	padding: 12px 0;
 }
 .sidebar-section-label {

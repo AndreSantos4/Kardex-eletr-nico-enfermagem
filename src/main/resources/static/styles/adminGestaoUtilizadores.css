@@ -1,68 +1,91 @@
-.topbar-user {
-    background: rgb(107, 56, 56);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 2px;
-    letter-spacing: 0.06em;
+:root {
+    --popup-bg: #1a5f7a;
+  --header-bg: #154e66;
+  --input-bg: #ffffff;
+  --label-color: #e0f0f8;
+  --placeholder-color: #9bb8c5;
+  --text-color: #1a3a4a;
+  --btn-bg: #2a7fa0;
+  --btn-hover: #236d8c;
+  --radius: 6px;
 }
 
+body, .container, .content-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+}
+
+.pop-up-container, .content-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.pop-up-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    z-index: 10;
+}
+
+/* Page header*/
 .page-header {
-    background: var(--panel);
-    border-radius: 4px;
-    padding: 10px 20px;
-    margin-top: 14px;
+	background: var(--panel);
+	border-radius: 4px;
+	padding: 14px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-
-.page-header-left h1 {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+.page-header h1 {
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+.page-header p {
+	font-size: 12px;
+	color: var(--muted);
+	margin-top: 2px;
+	font-family: var(--mono);
 }
 
-.page-header-left p {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
-    font-family: var(--mono);
+/* Search bar */
+.search-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
-
-.page-header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .search-input-wrap {
-    display: flex;
-    align-items: center;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 5px 10px;
-    gap: 6px;
+	display: flex;
+	align-items: center;
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	padding: 5px 10px;
+	gap: 6px;
 }
 .search-input-wrap input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #2a6f97;
-    font-family: var(--sans);
-    font-size: 13px;
-    width: 180px;
+	background: transparent;
+	border: none;
+	outline: none;
+	color: #2a6f97;
+	font-family: var(--sans);
+	font-size: 13px;
+	width: 180px;
 }
 .search-input-wrap input::placeholder {
-    color: var(--muted);
+	color: var(--muted);
 }
 .search-input-wrap svg {
-    fill: var(--muted);
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
+	fill: var(--muted);
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
 }
 
 .role-select {
@@ -108,25 +131,6 @@
 	flex: 1;
 	gap: 16px;
 	padding-right: 14px;
-}
-
-/* Page header*/
-.page-header {
-	background: var(--panel);
-	border-radius: 4px;
-	padding: 14px 20px;
-	margin-top: 14px;
-}
-.page-header h1 {
-	font-size: 15px;
-	font-weight: 700;
-	letter-spacing: 0.04em;
-}
-.page-header p {
-	font-size: 12px;
-	color: var(--muted);
-	margin-top: 2px;
-	font-family: var(--mono);
 }
 
 /* Users Table */
@@ -223,3 +227,133 @@
     background: #e07070;
     color: #fff;
 }
+
+/* === POP-UP === */
+.pop-up {
+  background: var(--popup-bg);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  width: 540px;
+  max-width: 95vw;
+  overflow: hidden;
+}
+
+/* === HEADER === */
+.pop-up-header {
+  background: var(--header-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.pop-up-header h3 {
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.pop-up-header a.cross {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  
+}
+
+.pop-up-header a.cross:hover { 
+  background: hsl(0, 0%, 73%); 
+}
+.pop-up-header a.cross svg { 
+  width: 13px; height: 13px; 
+}
+
+/* === FORMULÁRIO === */
+.pop-up-main {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pop-up label {
+  display: block;
+  color: var(--label-color);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pop-up input, .pop-up select {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 0.87rem;
+  color: var(--placeholder-color);
+  outline: none;
+  appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 6px;
+}
+
+.pop-up input::placeholder { color: var(--placeholder-color); }
+
+.pop-up input:focus, .pop-up select:focus {
+  border-color: rgba(255,255,255,0.85);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+}
+
+.pop-up option {
+  color: var(--text-color);
+}
+
+/* Linha de dois campos */
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-group { 
+  flex: 1; 
+}
+
+/* === FOOTER === */
+.pop-up-footer {
+  background: var(--header-bg);
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.buttons button {
+  flex: 1;
+  padding: 10px;
+  background: var(--btn-bg);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.buttons button:hover { background: var(--btn-hover); }
+.buttons button:active { transform: scale(0.97); }
