@@ -5,5 +5,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record AuthenticationDTO(
     @JsonProperty("numeroMecanografico") String numeroMecanografico, 
     @JsonProperty("password") String password) {
-
 }
