@@ -2,6 +2,7 @@ package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,6 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -63,17 +62,17 @@ public class Utilizador implements UserDetails{
     @Column(name = "esta_ativo")
     public Boolean ativo;
 
-    public Utilizador(Long numeroMecanografico, String passwordHash, Role role) {
+    public Utilizador(RegisterDTO data, String password) {
         this(
             null, 
-            role, 
-            numeroMecanografico, 
-            "",
-            ' ',
-            "",
-            passwordHash,
-            0,
-            0, 
+            data.role(), 
+            data.numeroMecanografico(), 
+            data.nome(),
+            data.sexo(),
+            data.email(),
+            password,
+            data.contacto(),
+            data.contactoEmergencia(), 
             LocalDateTime.now(),
             LocalDateTime.now(),
             false
