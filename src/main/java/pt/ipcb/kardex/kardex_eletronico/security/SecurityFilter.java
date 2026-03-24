@@ -13,7 +13,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 
 @Component
@@ -21,7 +20,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService service;
     private final UtilizadorRepository repository;
-
+    
     public SecurityFilter(TokenService service, UtilizadorRepository repository) {
         this.service = service;
         this.repository = repository;
