@@ -7,6 +7,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 public record RegisterDTO(
     @JsonProperty("numeroMecanografico") Long numeroMecanografico, 
+    @JsonProperty("numeroSNS") Long numeroSNS,
     @JsonProperty("role") Role role,
     @JsonProperty("email") String email,
     @JsonProperty("nome") String nome,

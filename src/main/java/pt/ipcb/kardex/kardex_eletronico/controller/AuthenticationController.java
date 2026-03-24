@@ -33,4 +33,10 @@ public class AuthenticationController {
         service.register(data);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador criado com sucesso", null));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<?>> logout(HttpServletResponse response) {
+        service.logout(response);
+        return ResponseEntity.ok(ApiResponse.ok("Logout efetuado com successo", null));
+    }
 }
