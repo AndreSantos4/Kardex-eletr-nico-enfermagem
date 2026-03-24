@@ -35,6 +35,9 @@ public class Utilizador implements UserDetails{
     
     @Column(name = "numero_mecanografico", nullable = false, unique = true)
     public Long numeroMecanografico;
+
+    @Column(name = "numero_sns", unique = true)
+    public Long numeroSNS;
     
     @Column(name = "nome", nullable = false)
     public String nome;
@@ -69,6 +72,7 @@ public class Utilizador implements UserDetails{
             null, 
             data.role(), 
             data.numeroMecanografico(), 
+            data.numeroSNS(),
             data.nome(),
             data.sexo(),
             data.email(),
