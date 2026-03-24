@@ -6,6 +6,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +37,9 @@ public class Utilizador implements UserDetails{
     @Column(name = "numero_mecanografico", nullable = false, unique = true)
     public Long numeroMecanografico;
 
+    @Column(name = "numero_cc", unique = true)
+    public String numeroCC;
+
     @Column(name = "numero_sns", unique = true)
     public Long numeroSNS;
     
@@ -57,6 +61,9 @@ public class Utilizador implements UserDetails{
     
     @Column(name = "contacto_emergencia", nullable = false)
     public Integer contactoEmergencia;
+
+    @Column(name = "data_nascimento", nullable = false)
+    public LocalDate dataNascimento;
     
     @Column(name = "data_criacao", nullable = false)
     public LocalDateTime dataCriacao;
@@ -71,14 +78,16 @@ public class Utilizador implements UserDetails{
         this(
             null, 
             data.role(), 
-            data.numeroMecanografico(), 
+            data.numeroMecanografico(),
+            data.numeroCC(), 
             data.numeroSNS(),
             data.nome(),
             data.sexo(),
             data.email(),
             password,
             data.contacto(),
-            data.contactoEmergencia(), 
+            data.contactoEmergencia(),
+            data.dataNascimento(), 
             LocalDateTime.now(),
             LocalDateTime.now(),
             false
