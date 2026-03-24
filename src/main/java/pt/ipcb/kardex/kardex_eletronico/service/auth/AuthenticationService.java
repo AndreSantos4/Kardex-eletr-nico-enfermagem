@@ -1,7 +1,5 @@
 package pt.ipcb.kardex.kardex_eletronico.service.auth;
 
-import java.io.Console;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
