@@ -17,6 +17,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @AllArgsConstructor
@@ -63,6 +65,7 @@ public class Utilizador implements UserDetails{
     public Integer contactoEmergencia;
 
     @Column(name = "data_nascimento", nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     public LocalDate dataNascimento;
     
     @Column(name = "data_criacao", nullable = false)

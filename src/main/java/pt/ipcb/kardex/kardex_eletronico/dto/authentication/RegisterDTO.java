@@ -2,6 +2,7 @@ package pt.ipcb.kardex.kardex_eletronico.dto.authentication;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
@@ -17,6 +18,6 @@ public record RegisterDTO(
     @JsonProperty("sexo") Sexo sexo,
     @JsonProperty("contacto") int contacto,
     @JsonProperty("contactoEmergencia") int contactoEmergencia,
-    @JsonProperty("dataNascimento") LocalDate dataNascimento
+    @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento
 ) {
 }
