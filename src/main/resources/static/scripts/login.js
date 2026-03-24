@@ -49,11 +49,14 @@ function validateForm(event) {
     .then(async (res) => {
       if (res.status === 200) {
         const data = await res.json();
-        console.log("Login bem-sucedido!");
-        console.log("Token:", data.token);
-        document.getElementById("login-campo-auth").style.display = "none";
-        document.getElementById("login-campo-m2f").style.display = "block";
-        //CONTINUAÇÃO COM O JAVA SCRIPT
+        //FALCATRUAR O 2FA
+        //document.getElementById("login-campo-auth").style.display = "none";
+        //document.getElementById("login-campo-m2f").style.display = "block";
+        window.location.replace(
+          "http://localhost:8080/pages/admin/adminDashboard.html",
+        );
+
+        //CONTINUAÇÃO COM O 2FA
       } else {
         showErrorWithCountdown();
       }
