@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("auth")
+@RequestMapping("api/auth")
 public class AuthenticationController {
 
     private final IAuthenticationService service;
