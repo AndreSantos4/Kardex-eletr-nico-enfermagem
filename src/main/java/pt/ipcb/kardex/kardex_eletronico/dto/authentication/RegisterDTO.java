@@ -3,13 +3,14 @@ package pt.ipcb.kardex.kardex_eletronico.dto.authentication;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 public record RegisterDTO(
     @JsonProperty("numeroMecanografico") Long numeroMecanografico, 
     @JsonProperty("role") Role role,
     @JsonProperty("email") String email,
     @JsonProperty("nome") String nome,
-    @JsonProperty("sexo") char sexo,
+    @JsonProperty("sexo") Sexo sexo,
     @JsonProperty("contacto") int contacto,
     @JsonProperty("contactoEmergencia") int contactoEmergencia) {
 }

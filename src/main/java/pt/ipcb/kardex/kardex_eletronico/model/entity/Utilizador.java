@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,7 +40,8 @@ public class Utilizador implements UserDetails{
     public String nome;
     
     @Column(name = "sexo", nullable = false)
-    public Character sexo;
+    @Enumerated(EnumType.STRING)
+    public Sexo sexo;
     
     @Column(name = "email", nullable = false, unique = true)
     public String email;
