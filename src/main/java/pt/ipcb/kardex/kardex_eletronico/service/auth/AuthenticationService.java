@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.LoginResponseDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
@@ -53,7 +54,11 @@ public class AuthenticationService implements IAuthenticationService {
         String passwordHash = new BCryptPasswordEncoder().encode("123456789");
         Utilizador newUser = new Utilizador(data, passwordHash);
 
-        repository.save(newUser);
+        try {
+            repository.save(newUser);
+        } catch (Exception e) {
+            throw new ConflictFieldsException();
+        }
     }
 
     @Override
