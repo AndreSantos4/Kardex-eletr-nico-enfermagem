@@ -9,4 +9,5 @@ public interface IAuthenticationService {
 
     LoginResponseDTO login(AuthenticationDTO data, HttpServletResponse response);
     void register(RegisterDTO data);
+    void logout(HttpServletResponse response);
 }

@@ -2,6 +2,7 @@ package pt.ipcb.kardex.kardex_eletronico.service.auth;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,13 +35,11 @@ public class AuthenticationService implements IAuthenticationService {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.numeroMecanografico(), data.password());
             var auth = authenticationManager.authenticate(usernamePassword);
-
             var token = tokenService.generateToken((Utilizador) auth.getPrincipal());
-            var cookie = createCookie(token);
+            var cookie = createCookie(token, COOKIE_MAX_AGE);
             response.addCookie(cookie);
-
             return new LoginResponseDTO(token);
-        } catch (BadCredentialsException e) {
+        } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
             throw new InvalidCredentialsException();
         }
     }
@@ -57,9 +56,15 @@ public class AuthenticationService implements IAuthenticationService {
         repository.save(newUser);
     }
 
-    public Cookie createCookie(String token) {
+    @Override
+    public void logout(HttpServletResponse response) {
+        Cookie emptyCookie = createCookie(null, 0);
+        response.addCookie(emptyCookie);
+    }
+
+    private Cookie createCookie(String token, int age) {
         Cookie cookie = new Cookie(COOKIE_NAME, token);
-        cookie.setMaxAge(COOKIE_MAX_AGE);
+        cookie.setMaxAge(age);
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
