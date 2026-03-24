@@ -28,8 +28,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/register").hasRole("ADMIN")
                     .requestMatchers("/pages/login/login.html").permitAll()
                     .requestMatchers("/styles/**", "/scripts/**").permitAll()
                     .requestMatchers("/pages/admin/**").hasRole("ADMIN")
