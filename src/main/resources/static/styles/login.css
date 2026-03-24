@@ -71,7 +71,7 @@ body {
   border-color: #2d6aad;
 }
 
-#login-campo-authn {
+#login-campo-m2f {
   display: none;
 }
 
@@ -123,4 +123,11 @@ body {
   font-size: 10px;
   color: #6a8aaa;
   line-height: 1.5;
+}
+
+#msgError {
+  display: none;
+  text-align: center;
+  padding: 10px;
+  color: red;
 }
