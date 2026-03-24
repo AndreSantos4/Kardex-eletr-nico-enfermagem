@@ -2,6 +2,9 @@ package pt.ipcb.kardex.kardex_eletronico.exception;
 
 import org.springframework.http.HttpStatus;
 
+import lombok.Setter;
+
+@Setter
 public abstract class KardexException extends RuntimeException{
     private final HttpStatus statusCode;
 
