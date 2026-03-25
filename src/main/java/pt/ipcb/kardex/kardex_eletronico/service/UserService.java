@@ -1,14 +1,20 @@
 package pt.ipcb.kardex.kardex_eletronico.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.dto.UtilizadorDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.mappers.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
+import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +22,21 @@ public class UserService implements IUserService {
     
     private final UtilizadorRepository repository;
     private final UtilizadorMapper mapper;
+    private final CookieService cookieService;
+
+    @Override
+    public List<UtilizadorDTO> getAllUsers(Optional<String> filter) {
+        var users = repository.findAll();
+
+        if(filter.isPresent()) {
+            String f = filter.get().toLowerCase();
+            users = users.stream()
+                .filter(u -> u.getNome().toLowerCase().contains(f) || u.getNumeroMecanografico().toString().toLowerCase().contains(f))
+                .toList();
+        }
+        
+        return users.stream().map(mapper::toDTO).toList();
+    }
 
     @Override
     public UtilizadorDTO getUserById(Long id) {
@@ -25,8 +46,17 @@ public class UserService implements IUserService {
         return mapper.toDTO(user);
     }
 
+    public UtilizadorDTO getUserByToken(HttpServletRequest request) {
+        var token = cookieService.recoverCookie(request);
+        var subject = cookieService.validateToken(token);
+
+        var user = (Utilizador) repository.findByNumeroMecanografico(subject);
+
+        return mapper.toDTO(user);
+    }
+
     @Override
-    public void updateUser(Long id, UtilizadorDTO data) {
+    public void updateUser(Long id, UpdateUserDTO data) {
         Utilizador user = repository.findById(id)
             .orElseThrow(() -> UserNotFoundException.forId(id));
 

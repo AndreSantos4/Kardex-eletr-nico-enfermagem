@@ -18,7 +18,7 @@ import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
-import pt.ipcb.kardex.kardex_eletronico.security.TokenService;
+import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final UtilizadorRepository repository;
-    private final TokenService tokenService;
+    private final CookieService tokenService;
 
     @Override
     public LoginResponseDTO login(AuthenticationDTO data, HttpServletResponse response) {

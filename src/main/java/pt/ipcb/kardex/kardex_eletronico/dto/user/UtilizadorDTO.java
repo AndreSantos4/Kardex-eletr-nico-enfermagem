@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.dto;
+package pt.ipcb.kardex.kardex_eletronico.dto.user;
 
 import java.time.LocalDate;
 
@@ -9,6 +9,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 public record UtilizadorDTO(
+    @JsonProperty("id") Long id,
     @JsonProperty("numeroMecanografico") Long numeroMecanografico, 
     @JsonProperty("numeroCC") String numeroCC,
     @JsonProperty("numeroSNS") Long numeroSNS,
