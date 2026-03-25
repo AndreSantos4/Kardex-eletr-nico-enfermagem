@@ -27,8 +27,9 @@ public class UserController {
     private final IUserService service;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter) {
-        var users = service.getAllUsers(filter);
+    public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter, 
+                                                                        @RequestParam(name = "o", defaultValue = "NAME_DESC") OrderBy orderBy) {
+        var users = service.getAllUsers(filter, orderBy);
         return ResponseEntity.ok(ApiResponse.ok("Utilizadores encontrados com sucesso", users));
     }
 
@@ -50,8 +51,14 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.ok("Utilizador atualizado com sucesso", null));
     }
 
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<ApiResponse<?>> activateUser(@PathVariable Long id) {
+        service.activateUser(id);
+        return ResponseEntity.ok(ApiResponse.ok("Utilizador ativado com sucesso", null));
+    }
+
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable Long id, @RequestBody String reason) {
         service.deactivateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador desativado com sucesso", null));
     }
