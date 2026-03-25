@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.DeactivateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
-import pt.ipcb.kardex.kardex_eletronico.service.user.IUserService;
+import pt.ipcb.kardex.kardex_eletronico.service.IUserService;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable Long id, @RequestBody DeactivateUserDTO reason) {
+    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable("id") Long id, @RequestBody DeactivateUserDTO reason) {
         service.deactivateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador desativado com sucesso", null));
     }
