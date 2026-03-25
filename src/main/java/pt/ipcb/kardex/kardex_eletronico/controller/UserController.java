@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter, 
-                                                                        @RequestParam(name = "o", defaultValue = "NAME_DESC") OrderBy orderBy) {
+                                                                        @RequestParam(name = "o", defaultValue = "DESC") OrderBy orderBy) {
         var users = service.getAllUsers(filter, orderBy);
         return ResponseEntity.ok(ApiResponse.ok("Utilizadores encontrados com sucesso", users));
     }
