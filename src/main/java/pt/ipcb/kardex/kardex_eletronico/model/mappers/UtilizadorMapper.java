@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.UtilizadorDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 
 @Mapper(componentModel = "spring")
