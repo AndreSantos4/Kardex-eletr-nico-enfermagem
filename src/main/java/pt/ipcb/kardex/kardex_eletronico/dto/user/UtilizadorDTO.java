@@ -19,7 +19,8 @@ public record UtilizadorDTO(
     @JsonProperty("sexo") Sexo sexo,
     @JsonProperty("contacto") int contacto,
     @JsonProperty("contactoEmergencia") int contactoEmergencia,
-    @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento
+    @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento,
+    @JsonProperty("ativo") boolean ativo
 ) {
     
 }
