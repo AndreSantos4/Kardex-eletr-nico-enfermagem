@@ -15,16 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.DeactivateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
-import pt.ipcb.kardex.kardex_eletronico.service.IUserService;
+import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/users")
 public class UserController {
 
-    private final IUserService service;
+    private final UserService service;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter, 
@@ -46,19 +49,19 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO data) {
+    public ResponseEntity<ApiResponse<?>> updateUser(@PathVariable("id") Long id, @RequestBody UpdateUserDTO data) {
         service.updateUser(id, data);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador atualizado com sucesso", null));
     }
 
     @PatchMapping("/{id}/activate")
-    public ResponseEntity<ApiResponse<?>> activateUser(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<?>> activateUser(@PathVariable("id") Long id) {
         service.activateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador ativado com sucesso", null));
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable Long id, @RequestBody String reason) {
+    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable("id") Long id, @RequestBody DeactivateUserDTO reason) {
         service.deactivateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador desativado com sucesso", null));
     }
