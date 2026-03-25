@@ -30,6 +30,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/logout").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/register").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
                     .requestMatchers("/pages/login/login.html").permitAll()
                     .requestMatchers("/styles/**", "/scripts/**").permitAll()
                     .requestMatchers("/pages/admin/**").hasRole("ADMIN")
