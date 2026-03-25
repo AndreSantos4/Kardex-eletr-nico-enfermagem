@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.dto;
+package pt.ipcb.kardex.kardex_eletronico.dto.user;
 
 import java.time.LocalDate;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
-public record UtilizadorDTO(
+public record UpdateUserDTO(
     @JsonProperty("numeroMecanografico") Long numeroMecanografico, 
     @JsonProperty("numeroCC") String numeroCC,
     @JsonProperty("numeroSNS") Long numeroSNS,
@@ -20,5 +20,5 @@ public record UtilizadorDTO(
     @JsonProperty("contactoEmergencia") int contactoEmergencia,
     @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento
 ) {
-    
+
 }
