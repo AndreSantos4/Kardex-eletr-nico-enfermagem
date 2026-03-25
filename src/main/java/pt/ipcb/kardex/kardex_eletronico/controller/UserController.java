@@ -47,13 +47,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO data) {
+    public ResponseEntity<ApiResponse<?>> updateUser(@PathVariable("id") Long id, @RequestBody UpdateUserDTO data) {
         service.updateUser(id, data);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador atualizado com sucesso", null));
     }
 
     @PatchMapping("/{id}/activate")
-    public ResponseEntity<ApiResponse<?>> activateUser(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<?>> activateUser(@PathVariable("id") Long id) {
         service.activateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador ativado com sucesso", null));
     }
