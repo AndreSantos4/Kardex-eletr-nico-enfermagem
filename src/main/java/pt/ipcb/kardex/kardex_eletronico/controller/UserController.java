@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.DeactivateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
-import pt.ipcb.kardex.kardex_eletronico.service.IUserService;
+import pt.ipcb.kardex.kardex_eletronico.service.user.IUserService;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable Long id, @RequestBody String reason) {
+    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable Long id, @RequestBody DeactivateUserDTO reason) {
         service.deactivateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador desativado com sucesso", null));
     }
