@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.controller;
+package pt.ipcb.kardex.kardex_eletronico.controller.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.controller;
+package pt.ipcb.kardex.kardex_eletronico.controller.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
