@@ -31,4 +31,9 @@ public class Funcionario {
     )
     @ManyToMany(fetch = FetchType.LAZY)
     public Set<Turno> turnos = new HashSet<>();
+
+    public Funcionario(Utilizador user){
+        id = null;
+        utilizador = user;
+    }
 }
