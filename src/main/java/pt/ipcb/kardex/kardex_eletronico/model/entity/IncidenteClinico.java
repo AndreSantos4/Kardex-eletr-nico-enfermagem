@@ -19,6 +19,14 @@ public class IncidenteClinico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
+
+    @JoinColumn(name = "id_funcionario", nullable = false)
+    @ManyToOne
+    public Funcionario funcionario;
+
+    @JoinColumn(name = "id_turno", nullable = false)
+    @ManyToOne
+    public Turno turno;
     
     @Column(name = "descricao", nullable = false)
     public String descricao;
