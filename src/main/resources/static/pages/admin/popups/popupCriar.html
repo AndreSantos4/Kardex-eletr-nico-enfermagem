@@ -62,8 +62,10 @@
               type="text"
               name="n-identificacao"
               id="n-identificacao"
-              placeholder="BI/CC"
-              maxlength="14"
+              placeholder="123456789AB1"
+              maxlength="12"
+              pattern="\d{9}[A-Z]{2}\d"
+              title="9 dígitos, 2 letras maiúsculas e 1 dígito"
               required
             />
           </div>

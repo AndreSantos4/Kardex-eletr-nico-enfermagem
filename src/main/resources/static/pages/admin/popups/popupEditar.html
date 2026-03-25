@@ -33,6 +33,7 @@
           name="name"
           id="edit-name"
           placeholder="Nome Completo"
+          required
         />
 
         <div class="form-row">
@@ -42,6 +43,7 @@
               type="date"
               name="data-nascimento"
               id="edit-data-nascimento"
+              required
             />
           </div>
           <div class="form-group">
@@ -60,7 +62,11 @@
               type="text"
               name="n-identificacao"
               id="edit-n-identificacao"
-              placeholder="BI/CC"
+              placeholder="123456789AB1"
+              maxlength="12"
+              pattern="\d{9}[A-Z]{2}\d"
+              title="9 dígitos, 2 letras maiúsculas e 1 dígito"
+              required
             />
           </div>
           <div class="form-group">
@@ -69,13 +75,21 @@
               type="text"
               name="n-sns"
               id="edit-n-sns"
+              pattern="\d{9}"
               placeholder="Número SNS"
+              required
             />
           </div>
         </div>
 
         <label for="edit-email">EMAIL *</label>
-        <input type="email" name="email" id="edit-email" placeholder="Email" />
+        <input
+          type="email"
+          name="email"
+          id="edit-email"
+          placeholder="Email"
+          required
+        />
 
         <div class="form-row">
           <div class="form-group">
@@ -85,6 +99,8 @@
               name="contacto"
               id="edit-contacto"
               placeholder="Contacto"
+              pattern="[0-9]{9}"
+              required
             />
           </div>
           <div class="form-group">
@@ -94,6 +110,8 @@
               name="contacto-emg"
               id="edit-contacto-emg"
               placeholder="Contacto de Emergência"
+              pattern="[0-9]{9}"
+              required
             />
           </div>
         </div>
