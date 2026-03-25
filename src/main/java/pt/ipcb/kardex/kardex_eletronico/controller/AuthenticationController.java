@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
-import pt.ipcb.kardex.kardex_eletronico.service.auth.IAuthenticationService;
+import pt.ipcb.kardex.kardex_eletronico.service.auth.AuthenticationService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("api/auth")
 public class AuthenticationController {
 
-    private final IAuthenticationService service;
+    private final AuthenticationService service;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> postMethodName(@RequestBody @Validated AuthenticationDTO data,
