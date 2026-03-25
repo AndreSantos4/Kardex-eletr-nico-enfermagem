@@ -1,0 +1,14 @@
+package pt.ipcb.kardex.kardex_eletronico.service.worker;
+
+import java.util.List;
+
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
+
+public interface WorkerService {
+
+    void createWorkerByUser(Utilizador user);
+
+    List<TurnoDTO> getWorkerShifts(Long id, int range);
+
+}
