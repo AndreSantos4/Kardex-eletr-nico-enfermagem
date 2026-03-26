@@ -6,11 +6,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.dto.worker.TurnoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.WorkerRepository;
 
 @Service
@@ -18,11 +20,38 @@ import pt.ipcb.kardex.kardex_eletronico.repository.WorkerRepository;
 public class WorkerServiceImpl implements WorkerService {
 
     private final WorkerRepository repository;
+    private final TurnoRepository shiftRepository;
     private final TurnoMapper turnoMapper;
 
     @Override
     public void createWorkerByUser(Utilizador user) {
         var worker = new Funcionario(user);
+        repository.save(worker);
+    }
+
+    @Override
+    public void addToShift(Long workerId, Long shiftId) {
+        var worker = repository.findById(workerId)
+            .orElseThrow(() -> EntityNotFoundException.forId(workerId, "Funcionário"));
+        var shift = shiftRepository.findById(shiftId)
+            .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        worker.turnos.add(shift);
+        shift.funcionariosAlocados.add(worker);
+
+        repository.save(worker);
+    }
+
+    @Override
+    public void removeFromShift(Long workerId, Long shiftId) {
+        var worker = repository.findById(workerId)
+            .orElseThrow(() -> EntityNotFoundException.forId(workerId, "Funcionário"));
+        var shift = shiftRepository.findById(shiftId)
+            .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        worker.turnos.remove(shift);
+        shift.funcionariosAlocados.remove(worker);
+
         repository.save(worker);
     }
 
