@@ -16,12 +16,11 @@ import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
-import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerServiceImpl;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +59,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         
         try {
             repository.save(newUser);
-            workerService.createWorkerByUser(newUser);
+
+            if(newUser.getRole() != Role.ADMIN){
+                workerService.createWorkerByUser(newUser);
+            }
         } catch (Exception e) {
             throw new ConflictFieldsException();
         }
