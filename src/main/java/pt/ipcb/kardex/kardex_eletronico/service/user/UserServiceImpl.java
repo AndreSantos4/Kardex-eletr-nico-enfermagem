@@ -11,7 +11,7 @@ import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
-import pt.ipcb.kardex.kardex_eletronico.exception.UserNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UtilizadorDTO getUserById(Long id) {
         Utilizador user = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         return mapper.toDTO(user);
     }
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(Long id, UpdateUserDTO data) {
         Utilizador user = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         user.setNome(data.nome());
         user.setNumeroMecanografico(data.numeroMecanografico());
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void activateUser(Long id) {
         Utilizador utilizador = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         utilizador.setAtivo(true);
         repository.save(utilizador);
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deactivateUser(Long id) {
         Utilizador utilizador = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         utilizador.setAtivo(false);
         repository.save(utilizador);
