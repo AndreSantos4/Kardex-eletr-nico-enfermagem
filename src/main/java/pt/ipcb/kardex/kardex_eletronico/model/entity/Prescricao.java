@@ -22,17 +22,21 @@ public class Prescricao {
     public Long id;
     
     @JoinColumn(name = "id_medicamento", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public Medicamento medicamento;
+
+    @JoinColumn(name = "id_processo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProcessoClinico processo;
     
     @Column(name = "e_sos", nullable = false)
-    public Boolean sos;
+    public Boolean sos  = false;
     
     @Column(name = "motivo")
-    public String motivo;
+    public String motivo = "";
     
     @Column(name = "esta_ativa", nullable = false)
-    public Boolean ativa;
+    public Boolean ativa = true;
     
     @Column(name = "data_inicio", nullable = false)
     public LocalDate dataInicio;
