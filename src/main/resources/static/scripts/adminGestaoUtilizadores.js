@@ -171,7 +171,7 @@ function fecharPopUp() {
   contentContainer.style.opacity = "1";
 }
 
-/*let debounceTimer;
+let debounceTimer;
 document
   .querySelector(".search-input-wrap input")
   .addEventListener("input", (e) => {
@@ -188,7 +188,7 @@ document
       renderizarTabela();
       renderizarPaginacao();
     }, 300);
-  });*/
+  });
 
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarPopups();
