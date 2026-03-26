@@ -26,6 +26,10 @@ public class AdministracaoMedicacao {
     @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
+
+    @JoinColumn(name = "id_turno", nullable = false)
+    @ManyToOne
+    public Turno turno;
     
     @Column(name = "observacoes")
     public String observacoes;
