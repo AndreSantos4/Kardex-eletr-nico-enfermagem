@@ -1,5 +1,14 @@
 let utilizadorOriginal = null;
 
+function _getDataMax() {
+  if (typeof dataMax !== "undefined") return dataMax;
+  const h = new Date();
+  const ano = h.getFullYear() - 18;
+  const mes = String(h.getMonth() + 1).padStart(2, "0");
+  const dia = String(h.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+}
+
 function ehCCValido(cc) {
   return /^\d{9}[A-Z]{2}\d$/.test(cc);
 }
@@ -17,7 +26,9 @@ function calcularIdade(dataNascimento) {
 }
 
 function inicializarFormEditar() {
-  document.getElementById("edit-data-nascimento").setAttribute("max", dataMax);
+  document
+    .getElementById("edit-data-nascimento")
+    .setAttribute("max", _getDataMax());
 
   document
     .getElementById("edit-n-identificacao")
@@ -30,8 +41,12 @@ function inicializarFormEditar() {
     });
 }
 
-function abrirEditar(id) {
-  const u = todosUtilizadores.find((x) => x.id === id);
+async function abrirEditar(id) {
+  const respUser = await fetch(`http://localhost:8080/api/users/${id}`, {
+    credentials: "include",
+  });
+
+  const u = (await respUser.json()).data;
   if (!u) return;
 
   const form = popUpEditar.querySelector("form");
@@ -143,7 +158,12 @@ async function guardarEdicao() {
     if (!resp.ok) throw new Error("Erro ao guardar utilizador");
 
     fecharPopUp();
-    await carregarUtilizadores();
+
+    if (typeof carregarUtilizadores === "function") {
+      await carregarUtilizadores();
+    } else if (typeof carregarPerfil === "function") {
+      await carregarPerfil();
+    }
   } catch (err) {
     console.error(err);
   }
