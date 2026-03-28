@@ -14,13 +14,15 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.FuncionarioMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
-import pt.ipcb.kardex.kardex_eletronico.repository.WorkerRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.FuncionarioRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
 
 @Service
@@ -29,11 +31,19 @@ public class WorkerServiceImpl implements WorkerService {
 
     private static final int SHIFTS_INFO_RANGE_MONTHS = -28;
 
-    private final WorkerRepository repository;
+    private final FuncionarioRepository repository;
+    private final FuncionarioMapper mapper;
     private final TurnoRepository shiftRepository;
     private final TurnoMapper turnoMapper;
 
     private final UserService userService;
+
+    @Override
+    public FuncionarioDTO getWorkerFromUserId(Long userId) {
+        var worker = repository.findByUserId(userId)
+                .orElseThrow(() -> EntityNotFoundException.forId(userId, "Utilizador"));
+        return mapper.toDTO(worker);
+    }
 
     @Override
     public void createWorkerByUser(Utilizador user) {

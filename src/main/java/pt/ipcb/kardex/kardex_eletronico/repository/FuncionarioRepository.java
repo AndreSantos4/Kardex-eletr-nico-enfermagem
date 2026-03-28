@@ -14,7 +14,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 
 @Repository
-public interface WorkerRepository extends JpaRepository<Funcionario, Long> {
+public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
 
     @Query("SELECT t FROM Funcionario f JOIN f.turnos t WHERE f.id = :id AND t.inicio >= :from AND t.inicio < :to ORDER BY t.inicio ASC")
     List<Turno> findNextTurnos(@Param("id") Long id, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
