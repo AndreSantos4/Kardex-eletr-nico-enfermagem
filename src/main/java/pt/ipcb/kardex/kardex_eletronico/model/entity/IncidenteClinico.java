@@ -38,5 +38,5 @@ public class IncidenteClinico {
     public String medidasTomadas;
     
     @Column(name = "data", nullable = false)
-    public LocalDateTime data;
+    public LocalDateTime data = LocalDateTime.now();
 }
