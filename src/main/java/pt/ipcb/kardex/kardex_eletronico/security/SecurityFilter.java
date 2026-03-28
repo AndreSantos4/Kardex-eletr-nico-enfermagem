@@ -8,33 +8,61 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
+import pt.ipcb.kardex.kardex_eletronico.repository.IpRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.SessaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 
 @Component
+@RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
+    private final ObjectMapper objectMapper;
     private final CookieService service;
     private final UtilizadorRepository repository;
-    
-    public SecurityFilter(CookieService service, UtilizadorRepository repository) {
-        this.service = service;
-        this.repository = repository;
-    }
+    private final SessaoRepository sessaoRepository;
+    private final IpRepository ipRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         var token = service.recoverCookie(request);
-        if (token != null) {
-            var subject = service.validateToken(token);
-            UserDetails user = repository.findByNumeroMecanografico(subject);
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        var subject = service.validateToken(token);
+        if (subject == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UserDetails user = repository.findByNumeroMecanografico(subject);
+        if (user != null && sessaoRepository.findByUtilizador((Utilizador) user).isPresent()) {
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+
+        boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null;
+        if (!isAuthenticated) {
+            String ip = request.getRemoteAddr();
+            if (ipRepository.existsByEnderecoIP(ip)) {
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write(
+                        objectMapper.writeValueAsString(ApiResponse.error("Acesso Bloqueado")));
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
