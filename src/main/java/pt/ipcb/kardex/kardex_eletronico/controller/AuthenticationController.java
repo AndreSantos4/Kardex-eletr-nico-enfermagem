@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
@@ -24,8 +25,9 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> postMethodName(@RequestBody @Validated AuthenticationDTO data,
-            HttpServletResponse response) {
-        service.login(data, response);
+            HttpServletResponse response,
+            HttpServletRequest request) {
+        service.login(data, response, request);
         return ResponseEntity.ok(ApiResponse.ok("Login efetuado com successo", null));
     }
 
