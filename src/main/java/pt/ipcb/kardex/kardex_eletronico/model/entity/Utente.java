@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ public class Utente {
     public Integer numeroSNS;
     
     @Column(name = "numero_cc", nullable = false)
-    public Integer numeroCC;
+    public String numeroCC;
     
     @Column(name = "primeiro_nome", nullable = false)
     public String primeiroNome;
@@ -36,7 +37,8 @@ public class Utente {
     public String apelido;
     
     @Column(name = "sexo", nullable = false)
-    public Character sexo;
+    @Enumerated(EnumType.STRING)
+    public Sexo sexo;
     
     @Column(name = "contacto", nullable = false)
     public Integer contacto;
@@ -46,7 +48,7 @@ public class Utente {
     
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
-    public EstadoUtente estadoUtente;
+    public EstadoUtente estado = EstadoUtente.EM_ANALISE;
     
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     public List<ProcessoClinico> processosClinicos = new ArrayList<>();

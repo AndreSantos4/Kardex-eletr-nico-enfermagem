@@ -15,17 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.DeactivateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
-import pt.ipcb.kardex.kardex_eletronico.service.IUserService;
+import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/users")
 public class UserController {
 
-    private final IUserService service;
+    private final UserService service;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter, 

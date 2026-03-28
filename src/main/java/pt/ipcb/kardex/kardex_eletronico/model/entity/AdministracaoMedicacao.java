@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +26,10 @@ public class AdministracaoMedicacao {
     @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
+
+    @JoinColumn(name = "id_turno", nullable = false)
+    @ManyToOne
+    public Turno turno;
     
     @Column(name = "observacoes")
     public String observacoes;
@@ -33,6 +37,6 @@ public class AdministracaoMedicacao {
     @Column(name = "foi_administrado")
     public Boolean administrado;
     
-    @Column(name = "timestamp")
-    public Timestamp timestamp;
+    @Column(name = "data_administrado")
+    public LocalDateTime data = LocalDateTime.now();
 }

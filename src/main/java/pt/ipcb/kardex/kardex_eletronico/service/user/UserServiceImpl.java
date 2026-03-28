@@ -1,26 +1,26 @@
-package pt.ipcb.kardex.kardex_eletronico.service;
+package pt.ipcb.kardex.kardex_eletronico.service.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.controller.OrderBy;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
-import pt.ipcb.kardex.kardex_eletronico.exception.UserNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
-import pt.ipcb.kardex.kardex_eletronico.model.mappers.UtilizadorMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService {
+public class UserServiceImpl implements UserService {
 
     private final UtilizadorRepository repository;
     private final UtilizadorMapper mapper;
@@ -37,7 +37,7 @@ public class UserService implements IUserService {
                             || u.getNumeroMecanografico().toString().toLowerCase().contains(f))
                     .toList();
         }
-
+        
         switch (orderBy) {
             case ASC:
                 users = users.stream().sorted((u1, u2) -> u2.getNome().compareTo(u1.getNome())).toList();
@@ -53,7 +53,7 @@ public class UserService implements IUserService {
     @Override
     public UtilizadorDTO getUserById(Long id) {
         Utilizador user = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         return mapper.toDTO(user);
     }
@@ -63,6 +63,8 @@ public class UserService implements IUserService {
         var subject = cookieService.validateToken(token);
 
         var user = (Utilizador) repository.findByNumeroMecanografico(subject);
+        user.setDataUltimaAtividade(LocalDateTime.now());
+        repository.save(user);
 
         return mapper.toDTO(user);
     }
@@ -70,7 +72,7 @@ public class UserService implements IUserService {
     @Override
     public void updateUser(Long id, UpdateUserDTO data) {
         Utilizador user = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         user.setNome(data.nome());
         user.setNumeroMecanografico(data.numeroMecanografico());
@@ -93,7 +95,7 @@ public class UserService implements IUserService {
     @Override
     public void activateUser(Long id) {
         Utilizador utilizador = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         utilizador.setAtivo(true);
         repository.save(utilizador);
@@ -102,7 +104,7 @@ public class UserService implements IUserService {
     @Override
     public void deactivateUser(Long id) {
         Utilizador utilizador = repository.findById(id)
-                .orElseThrow(() -> UserNotFoundException.forId(id));
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
 
         utilizador.setAtivo(false);
         repository.save(utilizador);

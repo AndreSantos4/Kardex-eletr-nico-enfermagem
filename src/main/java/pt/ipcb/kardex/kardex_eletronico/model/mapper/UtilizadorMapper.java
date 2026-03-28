@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.model.mappers;
+package pt.ipcb.kardex.kardex_eletronico.model.mapper;
 
 import java.util.List;
 
