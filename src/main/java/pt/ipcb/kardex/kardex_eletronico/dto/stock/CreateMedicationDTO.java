@@ -4,6 +4,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record CreateMedicationDTO(
@@ -12,7 +13,7 @@ public record CreateMedicationDTO(
     @JsonProperty("formaFarmaceutica") String formaFarmaceutica,
     @JsonProperty("quantidade") Long quantidade,
     @JsonProperty("unidadeMedida") UnidadeMedida unidade,
-    @JsonProperty("dataValidade") LocalDate dataValidade
+    @JsonProperty("dataValidade") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataValidade
 ) {
 
 }
