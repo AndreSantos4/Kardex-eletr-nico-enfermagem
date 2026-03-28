@@ -47,7 +47,10 @@ public class UserServiceImpl implements UserService {
                 break;
         }
 
-        return users.stream().map(mapper::toDTO).toList();
+        return users
+            .stream()
+            .map(mapper::toDTO)
+            .toList();
     }
 
     @Override
