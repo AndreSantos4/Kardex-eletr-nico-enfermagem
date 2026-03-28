@@ -2,7 +2,12 @@ package pt.ipcb.kardex.kardex_eletronico.service.worker;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 
 public interface WorkerService {
@@ -15,4 +20,11 @@ public interface WorkerService {
 
     void removeFromShift(Long workerId, Long shiftId);
 
+    Funcionario getAutenticatedWorker(HttpServletRequest request);
+
+    Turno getCurrentShift(Long id);
+
+    List<ShiftSummaryDTO> getWorkerShiftsInfo(Long id);
+
+    WorkerActivitySummary getWorkerActivitySummary(Long workerId);
 }
