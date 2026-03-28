@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
@@ -23,6 +24,12 @@ import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 public class WorkerController {
 
     private final WorkerService service;
+
+    @GetMapping("/users/{userId}/worker")
+    public ResponseEntity<ApiResponse<FuncionarioDTO>> getWorkerByUserId(@PathVariable("userId") Long userId){
+        var worker = service.getWorkerFromUserId(userId);
+        return ResponseEntity.ok(ApiResponse.ok("Funcionário obtido com sucesso", worker));
+    }
 
     @GetMapping("/{workerId}/summary")
     public ResponseEntity<ApiResponse<WorkerActivitySummary>> getWorkerActivitySummary(@PathVariable("workerId") Long workerId){
