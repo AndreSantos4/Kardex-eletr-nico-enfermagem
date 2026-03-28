@@ -48,7 +48,7 @@ public class Utente {
     
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
-    public EstadoUtente estado;
+    public EstadoUtente estado = EstadoUtente.EM_ANALISE;
     
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     public List<ProcessoClinico> processosClinicos = new ArrayList<>();
