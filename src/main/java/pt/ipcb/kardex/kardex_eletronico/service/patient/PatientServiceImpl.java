@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
@@ -34,7 +35,9 @@ public class PatientServiceImpl implements PatientService{
         var process = processoMapper.fromCreate(data);
 
         process.setUtente(patient);
+        patient.setEstado(EstadoUtente.INTERNADO);
 
         processoRepository.save(process);
+        repository.save(patient);
     }
 }
