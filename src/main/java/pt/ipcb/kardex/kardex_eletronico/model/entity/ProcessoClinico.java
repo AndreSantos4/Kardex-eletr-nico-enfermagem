@@ -31,7 +31,7 @@ public class ProcessoClinico {
     public String diagnosticoPrincipal;
     
     @JoinColumn(name = "id_cama")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     public Cama cama;
     
     @Column(name = "data_entrada", nullable = false)
@@ -57,8 +57,8 @@ public class ProcessoClinico {
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
     public List<Exame> exames = new ArrayList<>();
     
-    @JoinColumn(name = "id_servico", nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_servico")
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
     public Servico servico;
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
