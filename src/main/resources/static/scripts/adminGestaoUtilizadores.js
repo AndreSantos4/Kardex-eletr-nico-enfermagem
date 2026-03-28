@@ -1,4 +1,4 @@
-const popUpContainer = document.querySelector(".pop-up-container");
+const popUpContainer = document.querySelector(".pop-up-container"); 
 let popUpCriar;
 let popUpEditar;
 let popUpDesativar;
