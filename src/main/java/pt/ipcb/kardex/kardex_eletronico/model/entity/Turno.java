@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,10 +27,16 @@ public class Turno {
     public String nome;
     
     @Column(name = "inicio", nullable = false)
-    public LocalDate inicio;
+    public LocalDateTime inicio;
+
+    @Column(name = "fim", nullable = false)
+    public LocalDateTime fim;
     
     @ManyToMany(mappedBy = "turnos")
     public Set<Funcionario> funcionariosAlocados = new HashSet<>();
+
+    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL)
+    public List<AdministracaoMedicacao> administracoes = new ArrayList<>();
 
     @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL)
     public List<IncidenteClinico> incidentes = new ArrayList<>();
