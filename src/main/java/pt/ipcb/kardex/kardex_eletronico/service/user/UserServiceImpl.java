@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,8 @@ public class UserServiceImpl implements UserService {
         var subject = cookieService.validateToken(token);
 
         var user = (Utilizador) repository.findByNumeroMecanografico(subject);
+        user.setDataUltimaAtividade(LocalDateTime.now());
+        repository.save(user);
 
         return mapper.toDTO(user);
     }
