@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,24 +38,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final CookieService tokenService;
     private final WorkerService workerService;
     private final SessionService sessionService;
+    private final LoginAttemptService tentativaLoginService;
 
     @Override
     public LoginResponseDTO login(AuthenticationDTO data, HttpServletResponse response, HttpServletRequest request) {
+        var ip = request.getRemoteAddr();
+
         try {
-            var usernamePassword = new UsernamePasswordAuthenticationToken(data.numeroMecanografico(), data.password());
+            var usernamePassword = new UsernamePasswordAuthenticationToken(
+                    data.numeroMecanografico(), data.password());
             var auth = authenticationManager.authenticate(usernamePassword);
-            var user = (Utilizador) auth.getPrincipal();
-            var token = tokenService.generateToken(user);
-            var cookie = createCookie(token, COOKIE_MAX_AGE);
+            var utilizador = (Utilizador) auth.getPrincipal();
 
-            user.setDataUltimaAtividade(LocalDateTime.now());
+            tentativaLoginService.registar(Long.parseLong(data.numeroMecanografico()), ip, true, null);
 
-            response.addCookie(cookie);
-
-            sessionService.createOrUpdate(user, request.getRemoteAddr());
-
+            var token = tokenService.generateToken(utilizador);
+            response.addCookie(createCookie(token, COOKIE_MAX_AGE));
             return new LoginResponseDTO(token);
-        } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
+
+        } catch (BadCredentialsException e) {
+            tentativaLoginService.registar(Long.parseLong(data.numeroMecanografico()), ip, false, "Credenciais inválidas");
             throw new InvalidCredentialsException();
         }
     }
