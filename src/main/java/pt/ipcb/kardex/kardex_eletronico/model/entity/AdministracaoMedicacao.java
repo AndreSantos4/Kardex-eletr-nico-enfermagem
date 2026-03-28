@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +37,6 @@ public class AdministracaoMedicacao {
     @Column(name = "foi_administrado")
     public Boolean administrado;
     
-    @Column(name = "timestamp")
-    public Timestamp timestamp;
+    @Column(name = "data_administrado")
+    public LocalDateTime data = LocalDateTime.now();
 }
