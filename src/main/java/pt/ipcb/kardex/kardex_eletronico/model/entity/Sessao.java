@@ -1,5 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +25,7 @@ public class Sessao {
     
     @Column(name = "endereco_ip", nullable = false)
     public String enderecoIP;
+
+    @Column(name = "inicio", nullable = false)
+    public LocalDateTime inicio;
 }
