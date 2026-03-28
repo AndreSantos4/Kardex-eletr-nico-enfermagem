@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @RestController
@@ -21,6 +23,12 @@ import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 public class WorkerController {
 
     private final WorkerService service;
+
+    @GetMapping("/{workerId}/summary")
+    public ResponseEntity<ApiResponse<WorkerActivitySummary>> getWorkerActivitySummary(@PathVariable("workerId") Long workerId){
+        var summary = service.getWorkerActivitySummary(workerId);
+        return ResponseEntity.ok(ApiResponse.ok("Resumo do funcionário obtico com sucesso", summary));
+    }
 
     @PostMapping("{workerId}/shifts/add/{shiftId}")
     public ResponseEntity<ApiResponse<?>> addToShift(@PathVariable("workerId") Long workerId, @PathVariable("shiftId") Long shiftId){
@@ -34,9 +42,15 @@ public class WorkerController {
         return ResponseEntity.ok(ApiResponse.ok("Funcionário removido do turno com sucesso", null));
     }
 
-    @GetMapping("{id}/shifts")
-    public ResponseEntity<ApiResponse<List<TurnoDTO>>> getWorkerShifts(@PathVariable Long id, @RequestParam(name = "r", defaultValue = "28") int range) {
-        var shifts = service.getWorkerShifts(id, range);
+    @GetMapping("{workerId}/shifts")
+    public ResponseEntity<ApiResponse<List<TurnoDTO>>> getWorkerShifts(@PathVariable Long workerId, @RequestParam(name = "r", defaultValue = "28") int range) {
+        var shifts = service.getWorkerShifts(workerId, range);
         return ResponseEntity.ok(ApiResponse.ok("Turnos encontrados com sucesso", shifts));
+    }
+
+    @GetMapping("{workerId}/shifts/summary")
+    public ResponseEntity<ApiResponse<List<ShiftSummaryDTO>>> getWorkerShiftsSummary(@PathVariable Long workerId) {
+        var shiftsInfo = service.getWorkerShiftsInfo(workerId);
+        return ResponseEntity.ok(ApiResponse.ok("Resumo do turnos obtidos com sucesso", shiftsInfo));
     }
 }
