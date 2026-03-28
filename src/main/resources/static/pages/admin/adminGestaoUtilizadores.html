@@ -4,9 +4,13 @@
     <meta charset="UTF-8" />
     <title>Admin Gestão de Utilizadores</title>
     <link rel="stylesheet" href="../../styles/pageHeader.css" />
-    <link rel="stylesheet" href="../../styles/adminGestaoUtilizadores.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/sideBar.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../styles/adminGestaoUtilizadores.css"
+    />
     <link
       rel="stylesheet"
       type="text/css"
@@ -118,7 +122,7 @@
             <div class="page-header">
               <div class="page-header-left">
                 <h1>Administração do Sistema</h1>
-                <p>12 utilizadores</p>
+                <p>0 utilizadores</p>
               </div>
               <div class="search-bar">
                 <div class="search-input-wrap">
@@ -147,404 +151,23 @@
                     <th></th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>123456789</td>
-                    <td>Ana Rodrigues</td>
-                    <td>Enfermeiro</td>
-                    <td>ana.rodrigues@clinica.pt</td>
-                    <td>07/03 14:03</td>
-                    <td><span class="badge-ativo">Ativo</span></td>
-                    <td class="actions">
-                      <button
-                        class="btn-table"
-                        id="btn-editar"
-                        onclick="abrirEditar()"
-                      >
-                        EDITAR
-                      </button>
-                      <button
-                        class="btn-table"
-                        onclick="
-                          window.location.href = 'perfilColaborador.html'
-                        "
-                      >
-                        PERFIL
-                      </button>
-                      <button class="btn-table" id="btn-password">
-                        PASSWORD
-                      </button>
-                      <button
-                        class="btn-table"
-                        id="btn-desativar"
-                        onclick="abrirDesativar()"
-                      >
-                        DESATIVAR
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>987654321</td>
-                    <td>Sofia Lopes</td>
-                    <td>Enf. Chefe</td>
-                    <td>sofia.lopes@clinica.pt</td>
-                    <td>07/03 08:00</td>
-                    <td><span class="badge-ativo">Ativo</span></td>
-                    <td class="actions">
-                      <button
-                        class="btn-table"
-                        id="btn-editar"
-                        onclick="abrirEditar()"
-                      >
-                        EDITAR
-                      </button>
-                      <button class="btn-table">PERFIL</button>
-                      <button class="btn-table" id="btn-password">
-                        PASSWORD
-                      </button>
-                      <button
-                        class="btn-table"
-                        id="btn-desativar"
-                        onclick="abrirDesativar()"
-                      >
-                        DESATIVAR
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="pop-up-container" style="display: none">
-        <div class="pop-up-criar" style="display: none">
-          <div class="pop-up">
-            <div class="pop-up-header">
-              <div class="title">
-                <h3>Criar Utilizador</h3>
-              </div>
-              <div class="icon">
-                <a href="" class="cross">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15"
-                    width="15"
-                    viewBox="0 0 384 512"
-                  >
-                    <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com/ License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                      fill="rgb(220, 49, 26)"
-                      d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            <div class="pop-up-main">
-              <form onsubmit="createUser(event)" method="post">
-                <label for="name">NOME COMPLETO *</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Nome Completo"
-                  required
-                />
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="data-nascimento">DATA DE NASCIMENTO *</label>
-                    <input
-                      type="date"
-                      name="data-nascimento"
-                      placeholder="dd/mm/aaaa"
-                      id="data-nascimento"
-                      required
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label for="sexo">Sexo *</label>
-                    <select name="sexo" id="sexo">
-                      <option value="MASCULINO">Masculino</option>
-                      <option value="FEMININO">Feminino</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="n-identificacao">Nº IDENTIFICAÇÃO *</label>
-                    <input
-                      type="text"
-                      name="n-identificacao"
-                      id="n-identificacao"
-                      placeholder="BI/CC"
-                      maxlength="14"
-                      pattern="[0-9]{8} [0-9]{1} [A-Z]{2}[0-9]{1}"
-                      title="Formato inválido. Exemplo: 12345678 1 AB2"
-                      required
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="n-sns">Nº SNS *</label>
-                    <input
-                      type="text"
-                      name="n-sns"
-                      id="n-sns"
-                      pattern="\d{9}"
-                      title="Apenas números são permitidos. O número mecanográfico deve ter exatamente 9 dígitos."
-                      placeholder="Número SNS"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <label for="email">EMAIL *</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Email"
-                  required
-                />
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="contacto">CONTACTO *</label>
-                    <input
-                      type="tel"
-                      name="contacto"
-                      id="contacto"
-                      placeholder="Contacto"
-                      pattern="[0-9]{9}"
-                      required
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="contacto-emg">CONTACTO EMERGÊNCIA *</label>
-                    <input
-                      type="tel"
-                      name="contacto-emg"
-                      id="contacto-emg"
-                      placeholder="Contacto de Emergência"
-                      pattern="[0-9]{9}"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="funcao">FUNÇÃO *</label>
-                    <select id="funcao" name="funcao">
-                      <option value="ADMIN">Administrador</option>
-                      <option value="MEDICO">Médico</option>
-                      <option value="ENFERMEIRO_CHEFE">Enfermeiro-Chefe</option>
-                      <option value="ENFERMEIRO">Enfermeiro</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="n-sns">Nº Mecanográfico *</label>
-                    <input
-                      type="text"
-                      name="n-mecanografico"
-                      id="n-mecanografico"
-                      pattern="\d{9}"
-                      title="Apenas números são permitidos. O número mecanográfico deve ter exatamente 9 dígitos."
-                      placeholder="Número Mecanográfico"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="warning-box" id="errorBox">
-                  <p id="errorMsg">Dados já se encontram no sistema!</p>
-                </div>
-                <div class="buttons">
-                  <input
-                    type="button"
-                    value="Cancelar"
-                    class="btn-cancelar"
-                    onclick="fecharPopUp()"
-                  />
-                  <input type="submit" value="Guardar" />
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="pop-up-editar" style="display: none">
-          <div class="pop-up">
-            <div class="pop-up-header">
-              <div class="title">
-                <h3>Editar Utilizador</h3>
-              </div>
-              <div class="icon">
-                <a href="" class="cross">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15"
-                    width="15"
-                    viewBox="0 0 384 512"
-                  >
-                    <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com/ License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                      fill="rgb(220, 49, 26)"
-                      d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            <div class="pop-up-main">
-              <form method="post">
-                <label for="name">NOME COMPLETO *</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Nome Completo"
-                />
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="data-nascimento">DATA DE NASCIMENTO *</label>
-                    <input
-                      type="date"
-                      name="data-nascimento"
-                      placeholder="dd/mm/aaaa"
-                      id="data-nascimento"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label for="sexo">Sexo *</label>
-                    <select name="sexo" id="sexo">
-                      <option value="Masculino">Masculino</option>
-                      <option value="Feminino">Feminino</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="n-identificacao">Nº IDENTIFICAÇÃO *</label>
-                    <input
-                      type="text"
-                      name="n-identificacao"
-                      id="n-identificacao"
-                      placeholder="BI/CC"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="n-sns">Nº SNS *</label>
-                    <input
-                      type="text"
-                      name="n-sns"
-                      id="n-sns"
-                      placeholder="Número SNS"
-                    />
-                  </div>
-                </div>
-
-                <label for="email">EMAIL *</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Email"
-                />
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="contacto">CONTACTO *</label>
-                    <input
-                      type="tel"
-                      name="contacto"
-                      id="contacto"
-                      placeholder="Contacto"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="contacto-emg">CONTACTO EMERGÊNCIA *</label>
-                    <input
-                      type="tel"
-                      name="contacto-emg"
-                      id="contacto-emg"
-                      placeholder="Contacto de Emergência"
-                    />
-                  </div>
-                </div>
-                <label for="funcao">FUNÇÃO *</label>
-                <select id="funcao" name="funcao">
-                  <option value="ADMIN">Administrador</option>
-                  <option value="MEDICO">Médico</option>
-                  <option value="ENFERMEIRO_CHEFE">Enfermeiro-Chefe</option>
-                  <option value="ENFERMEIRO">Enfermeiro</option>
-                </select>
-              </form>
-            </div>
-            <div class="pop-up-footer">
-              <div class="warning-box">
-                <label>Alterações ficam registadas no log de autoria</label>
-              </div>
-              <div class="buttons">
-                <button class="btn-cancelar" onclick="fecharPopUp()">
-                  Cancelar
-                </button>
-                <button>Guardar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="pop-up-desativar" style="display: none">
-          <div class="pop-up">
-            <div class="pop-up-header">
-              <div class="title">
-                <h3>Desativar Utilizador</h3>
-              </div>
-              <div class="icon">
-                <a href="" class="cross">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15"
-                    width="15"
-                    viewBox="0 0 384 512"
-                  >
-                    <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com/ License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                      fill="rgb(220, 49, 26)"
-                      d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            <div class="pop-up-main">
-              <div class="warning-box">
-                <label
-                  >O utilizador perderá imediatamente acesso ao sistema. Todas
-                  as sessões serão revogadas.
-                </label>
-              </div>
-              <p>Utilizador - Ana Rodrigues(Enf.) - Nº 12345678</p>
-              <form action="">
-                <label for="name">Motivo*</label>
-                <input type="text" placeholder="Motivo" />
-              </form>
-            </div>
-            <div class="pop-up-footer">
-              <div class="buttons">
-                <button onclick="fecharPopUp()">Cancelar</button>
-                <button>Desativar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Popups carregados dinamicamente -->
+      <div
+        class="pop-up-container"
+        style="display: none"
+        id="popUpContainer"
+      ></div>
     </div>
+    <script src="../../scripts/popups/popupCriar.js"></script>
+    <script src="../../scripts/popups/popupEditar.js"></script>
+    <script src="../../scripts/popups/popupDesativar.js"></script>
     <script src="../../scripts/adminGestaoUtilizadores.js"></script>
   </body>
 </html>

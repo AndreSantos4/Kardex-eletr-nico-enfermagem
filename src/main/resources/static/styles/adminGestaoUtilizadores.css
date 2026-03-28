@@ -199,6 +199,16 @@ body,
   letter-spacing: 0.06em;
 }
 
+.badge-inativo {
+  background: #e07070;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+
 .actions {
   display: flex;
   gap: 6px;
@@ -227,13 +237,23 @@ body,
   color: var(--accent);
 }
 
-#btn-desativar {
+.btn-desativar {
   border-color: #e07070;
   color: #e07070;
 }
 
-#btn-desativar:hover {
-  background: #e07070;
+.btn-desativar:hover {
+  background: #d95b5b;
+  color: #fff;
+}
+
+.btn-ativar {
+  border-color: #2e9e6e;
+  color: #2e9e6e;
+}
+
+.btn-ativar:hover {
+  background: #1f9964;
   color: #fff;
 }
 
@@ -372,6 +392,30 @@ body,
   gap: 10px;
 }
 
+.buttons button {
+  flex: 1;
+  padding: 10px;
+  background: var(--btn-bg);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+.buttons button:hover {
+  background: var(--btn-hover);
+}
+.buttons button:active {
+  transform: scale(0.97);
+}
+
 .buttons input {
   flex: 1;
   padding: 10px;
@@ -412,4 +456,43 @@ body,
   color: red;
   text-align: center;
   display: none;
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 12px 4px 4px;
+}
+
+.btn-pagina {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.btn-pagina:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+
+.btn-pagina.ativo {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
 }
