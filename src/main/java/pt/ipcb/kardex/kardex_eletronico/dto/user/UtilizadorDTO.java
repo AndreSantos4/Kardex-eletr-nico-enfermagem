@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.user;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +21,8 @@ public record UtilizadorDTO(
     @JsonProperty("contacto") int contacto,
     @JsonProperty("contactoEmergencia") int contactoEmergencia,
     @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento,
+    @JsonProperty("dataCriacao") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime dataCriacao,
+    @JsonProperty("dataUltimaAtividade") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime dataUltimaAtividade,
     @JsonProperty("ativo") boolean ativo
 ) {
     
