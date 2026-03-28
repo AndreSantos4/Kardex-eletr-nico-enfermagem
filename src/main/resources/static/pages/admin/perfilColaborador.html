@@ -1,195 +1,224 @@
 <!doctype html>
 <html lang="pt">
-
-<head>
+  <head>
+    <meta charset="UTF-8" />
     <title>Admin Home</title>
-    <link rel="stylesheet" type="text/css" href="../../styles/perfilColaborador.css" />
-    <link rel="stylesheet"type="text/css"href="../../styles/rootAndBody.css"/>
-    <link rel="stylesheet"type="text/css"href="../../styles/topBar.css"/>
-    <link rel="stylesheet"type="text/css"href="../../styles/mainContent.css"/>
-    <link rel="stylesheet"type="text/css"href="../../styles/sideBar.css"/>
-</head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../styles/perfilColaborador.css"
+    />
+    <link rel="stylesheet" type="text/css" href="../../styles/popups.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../styles/rootAndBody.css"
+    />
+    <link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../styles/mainContent.css"
+    />
+    <link rel="stylesheet" type="text/css" href="../../styles/sideBar.css" />
+    <link rel="stylesheet" type="text/css" href="../../styles/p.css" />
+  </head>
 
-<body>
+  <body>
     <!-- Top Bar -->
     <div class="topbar">
-        <span class="topbar-brand">Admin Home</span>
-        <div class="topbar-right">
-            <span class="topbar-user">Administrador</span>
-            <button class="btn-sair">SAIR</button>
-        </div>
+      <span class="topbar-brand">Admin Home</span>
+      <div class="topbar-right">
+        <span class="topbar-user">Administrador</span>
+        <button class="btn-sair">SAIR</button>
+      </div>
     </div>
 
     <!-- Layout -->
     <div class="layout">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-section-label">Principal</div>
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sidebar-section-label">Principal</div>
 
-            <a href="adminDashboard.html" style="text-decoration: none">
-					<div class="sidebar-item">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 512 512"
-						>
-							<!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-							<path
-								d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"
-							/>
-						</svg>
-						Home
-					</div>
-				</a>
-           <a href="adminGestaoUtilizadores.html" style="text-decoration: none">
-					<div class="sidebar-item">
-						<svg
-							xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-							<!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-							<path
-								d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/>
-						</svg>
-						Utilizadores
-					</div>
-				</a>
-            <div class="sidebar-item">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                        d="M64 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112-96 0 0-112zM176 368c0-48.7 18.1-93.2 48-127l0-129C224 50.1 173.9 0 112 0S0 50.1 0 112L0 400c0 61.9 50.1 112 112 112 37.3 0 70.3-18.2 90.7-46.3-17-28.6-26.7-62-26.7-97.7zm64.7 67.4c4.6 8.7 16.3 9.7 23.3 2.7L438.1 264c7-7 6-18.7-2.7-23.3-20.1-10.7-43-16.7-67.4-16.7-79.5 0-144 64.5-144 144 0 24.3 6 47.3 16.7 67.4zM297.9 472c-7 7-6 18.7 2.7 23.3 20.1 10.7 43 16.7 67.4 16.7 79.5 0 144-64.5 144-144 0-24.3-6-47.3-16.7-67.4-4.6-8.7-16.3-9.7-23.3-2.7L297.9 472z" />
-                </svg>
-                Medicamentos
-            </div>
-            <div class="sidebar-section-label">Auditoria</div>
-            <div class="sidebar-item">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 384 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                        d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z" />
-                </svg>
-                Logs Auditoria
-            </div>
+        <a href="adminDashboard.html" style="text-decoration: none">
+          <div class="sidebar-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path
+                d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"
+              />
+            </svg>
+            Home
+          </div>
+        </a>
+        <a href="adminGestaoUtilizadores.html" style="text-decoration: none">
+          <div class="sidebar-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+              <path
+                d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"
+              />
+            </svg>
+            Utilizadores
+          </div>
+        </a>
+        <div class="sidebar-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+              d="M64 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112-96 0 0-112zM176 368c0-48.7 18.1-93.2 48-127l0-129C224 50.1 173.9 0 112 0S0 50.1 0 112L0 400c0 61.9 50.1 112 112 112 37.3 0 70.3-18.2 90.7-46.3-17-28.6-26.7-62-26.7-97.7zm64.7 67.4c4.6 8.7 16.3 9.7 23.3 2.7L438.1 264c7-7 6-18.7-2.7-23.3-20.1-10.7-43-16.7-67.4-16.7-79.5 0-144 64.5-144 144 0 24.3 6 47.3 16.7 67.4zM297.9 472c-7 7-6 18.7 2.7 23.3 20.1 10.7 43 16.7 67.4 16.7 79.5 0 144-64.5 144-144 0-24.3-6-47.3-16.7-67.4-4.6-8.7-16.3-9.7-23.3-2.7L297.9 472z"
+            />
+          </svg>
+          Medicamentos
+        </div>
+        <div class="sidebar-section-label">Auditoria</div>
+        <div class="sidebar-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+            <path
+              d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
+            />
+          </svg>
+          Logs Auditoria
+        </div>
 
-            <div class="sidebar-section-label">Controlo</div>
-            <a href="adminSessoesAtivas.html" style="text-decoration: none">
-					<div class="sidebar-item">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 512 512"
-						>
-							<!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-							<path
-								d="M200 48l112 0c4.4 0 8 3.6 8 8l0 40-128 0 0-40c0-4.4 3.6-8 8-8zm-56 8l0 40-80 0C28.7 96 0 124.7 0 160l0 96 512 0 0-96c0-35.3-28.7-64-64-64l-80 0 0-40c0-30.9-25.1-56-56-56L200 0c-30.9 0-56 25.1-56 56zM512 304l-192 0 0 16c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-16-192 0 0 112c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-112z"
-							/>
-						</svg>
-						Sessões Ativas
-					</div>
-				</a>
-            <div class="sidebar-item">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                        d="M224 0l0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 5.5-.7 10.9-2 16l-252 0c-1.3-5.1-2-10.5-2-16l0-128c0-35.3 28.7-64 64-64l32 0zm96 512c-11.2 0-21.8-2.9-31-8 9.5-16.5 15-35.6 15-56l0-128c0-20.4-5.5-39.5-15-56 9.2-5.1 19.7-8 31-8l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64l-128 0zM0 320c0-35.3 28.7-64 64-64l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 320z" />
-                </svg>
-                Hist. Stock
-            </div>
-            <div class="sidebar-item">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-                    <path
-                        d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z" />
-                </svg>
-                Relatórios
-            </div>
-        </nav>
+        <div class="sidebar-section-label">Controlo</div>
+        <a href="adminSessoesAtivas.html" style="text-decoration: none">
+          <div class="sidebar-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path
+                d="M200 48l112 0c4.4 0 8 3.6 8 8l0 40-128 0 0-40c0-4.4 3.6-8 8-8zm-56 8l0 40-80 0C28.7 96 0 124.7 0 160l0 96 512 0 0-96c0-35.3-28.7-64-64-64l-80 0 0-40c0-30.9-25.1-56-56-56L200 0c-30.9 0-56 25.1-56 56zM512 304l-192 0 0 16c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-16-192 0 0 112c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-112z"
+              />
+            </svg>
+            Sessões Ativas
+          </div>
+        </a>
+        <div class="sidebar-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+              d="M224 0l0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 5.5-.7 10.9-2 16l-252 0c-1.3-5.1-2-10.5-2-16l0-128c0-35.3 28.7-64 64-64l32 0zm96 512c-11.2 0-21.8-2.9-31-8 9.5-16.5 15-35.6 15-56l0-128c0-20.4-5.5-39.5-15-56 9.2-5.1 19.7-8 31-8l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64l-128 0zM0 320c0-35.3 28.7-64 64-64l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 320z"
+            />
+          </svg>
+          Hist. Stock
+        </div>
+        <div class="sidebar-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path
+              d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z"
+            />
+          </svg>
+          Relatórios
+        </div>
+      </nav>
 
-        <main class="content">
-            <header class="content-header">
-                <h2>Perfil de Colaborador</h2>
-                <div class="content-header-actions">
-                    <button class="btn-secondary" onclick="window.location.href='adminGestaoUtilizadores.html'">UTILIZADORES</button>
-                    <button class="btn-primary">EDITAR</button>
+      <main class="content">
+        <header class="content-header">
+          <h2>Perfil de Colaborador</h2>
+          <div class="content-header-actions">
+            <button
+              class="btn-secondary"
+              onclick="window.location.href = 'adminGestaoUtilizadores.html'"
+            >
+              UTILIZADORES
+            </button>
+            <button class="btn-primary" id="btn-editar">EDITAR</button>
+          </div>
+        </header>
+
+        <section class="card-grid">
+          <article class="card profile-card">
+            <div class="profile-avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"
+                />
+              </svg>
+            </div>
+            <div class="profile-info">
+              <div class="profile-name"></div>
+              <div class="profile-role"></div>
+              <div class="profile-status"></div>
+            </div>
+          </article>
+
+          <article class="card info-card">
+            <h3>Dados Pessoais e Profissionais</h3>
+            <div class="info-columns">
+              <div class="info-column">
+                <div class="info-row">
+                  <span class="label">Nome Completo</span>
+                  <span class="value" id="val-nome"></span>
                 </div>
-            </header>
-        
-            <section class="card-grid">
-                <article class="card profile-card">
-                    <div class="profile-avatar" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path
-                                d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
-                        </svg>
-                    </div>
-                    <div class="profile-info">
-                        <div class="profile-name">Ana Rodrigues</div>
-                        <div class="profile-role">Enfermeira</div>
-                        <div class="profile-status">Ativo</div>
-                    </div>
-                </article>
-        
-                <article class="card info-card">
-                    <h3>Dados Pessoais e Profissionais</h3>
-                    <div class="info-columns">
-                        <div class="info-column">
-                            <div class="info-row"><span class="label">Nome Completo</span><span class="value">Ana
-                                    Maria Rodrigues</span></div>
-                            <div class="info-row"><span class="label">Email</span><span
-                                    class="value">ana.rodrigues@clinica.pt</span></div>
-                            <div class="info-row"><span class="label">Data de Admissão</span><span
-                                    class="value">12/03/2018</span></div>
-                            <div class="info-row"><span class="label">Especialidade</span><span class="value">Saúde
-                                    Mental e Psiquiátrica</span></div>
-                        </div>
-                        <div class="info-column">
-                            <div class="info-row"><span class="label">Nº Mecanográfico</span><span
-                                    class="value">123456789</span></div>
-                            <div class="info-row"><span class="label">Role</span><span class="value">Enfermeiro</span></div>
-                            <div class="info-row"><span class="label">Contacto</span><span class="value">+351 912
-                                    345 678</span></div>
-                            <div class="info-row"><span class="label">Cédula de Nº</span><span class="value">12345</span></div>
-                        </div>
-                    </div>
-                </article>
-        
-                <article class="card activity-card">
-                    <h3>Atividade Recente</h3>
-                    <div class="activity-row"><span class="label">Último acesso</span><span class="value">07/03
-                            14:05</span></div>
-                    <div class="activity-row"><span class="label">Turnos este mês</span><span class="value">12</span></div>
-                    <div class="activity-row"><span class="label">Adm. este mês</span><span class="value">213</span>
-                    </div>
-                    <div class="activity-row"><span class="label">Incidentes</span><span class="value">0</span>
-                    </div>
-                </article>
-        
-                <article class="card shifts-card">
-                    <h3>Turnos Recentes</h3>
-                    <div class="shifts-table">
-                        <div class="shifts-row shifts-header">
-                            <span>Data</span>
-                            <span>Turno</span>
-                            <span>Utentes</span>
-                            <span>Adm.</span>
-                            <span>Incidentes</span>
-                        </div>
-                        <div class="shifts-row">
-                            <span>07/03</span>
-                            <span>Tarde</span>
-                            <span>6</span>
-                            <span>18</span>
-                            <span>1</span>
-                        </div>
-                        <div class="shifts-row">
-                            <span>06/03</span>
-                            <span>Manhã</span>
-                            <span>6</span>
-                            <span>20</span>
-                            <span>0</span>
-                        </div>
-                    </div>
-                </article>
-            </section>
-        </main>
-    </div>
-</body>
+                <div class="info-row">
+                  <span class="label">Email</span>
+                  <span class="value" id="val-email"></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Contacto</span>
+                  <span class="value" id="val-contacto"></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Data de Admissão</span>
+                  <span class="value" id="val-admissao"></span>
+                </div>
+              </div>
+              <div class="info-column">
+                <div class="info-row">
+                  <span class="label">Nº Mecanográfico</span>
+                  <span class="value" id="val-mecanografico"></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Role</span>
+                  <span class="value" id="val-role"></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Contacto Emergência</span>
+                  <span class="value" id="val-contactoeme"></span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Identificação (CC/BI)</span>
+                  <span class="value" id="val-cc"></span>
+                </div>
+              </div>
+            </div>
+          </article>
 
+          <article class="card activity-card">
+            <h3>Atividade Recente</h3>
+            <div class="activity-row">
+              <span class="label">Último acesso</span>
+              <span class="value" id="val-ultimo-acesso"></span>
+            </div>
+            <div class="activity-row">
+              <span class="label">Turnos este mês</span>
+              <span class="value" id="val-turnos-mes"></span>
+            </div>
+            <div class="activity-row">
+              <span class="label">Adm. este mês</span>
+              <span class="value" id="val-adm-mes"></span>
+            </div>
+            <div class="activity-row">
+              <span class="label">Incidentes</span>
+              <span class="value" id="val-incidentes"></span>
+            </div>
+          </article>
+
+          <article class="card shifts-card">
+            <h3>Turnos Recentes</h3>
+            <div class="shifts-table">
+              <div class="shifts-row shifts-header">
+                <span>Data</span>
+                <span>Turno</span>
+                <span>Administrações</span>
+                <span>Incidentes</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+      <div
+        class="pop-up-container"
+        style="display: none"
+        id="popUpContainer"
+      ></div>
+    </div>
+    <script src="../../scripts/popups/popupEditar.js"></script>
+    <script src="../../scripts/perfilColaborador.js"></script>
+  </body>
 </html>
