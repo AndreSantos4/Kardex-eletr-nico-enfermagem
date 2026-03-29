@@ -10,4 +10,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 @Repository
 public interface UtilizadorRepository extends JpaRepository<Utilizador, Long> {
     UserDetails findByNumeroMecanografico(Long numeroMecanografico);
+
+    long countByAtivoTrue();
 }

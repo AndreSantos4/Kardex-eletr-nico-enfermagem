@@ -13,4 +13,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;;
 public interface MedicamentoRepository extends JpaRepository<Medicamento, Long>{
     @Query("SELECT m FROM Medicamento m WHERE m.nome = :nome AND m.unidade = :unidade")
     Optional<Medicamento> findByNome(String nome, UnidadeMedida unidade);
+
+    @Query("SELECT COUNT(DISTINCT m.nome) FROM Medicamento m")
+    Long countUniqueMedications();
 }
