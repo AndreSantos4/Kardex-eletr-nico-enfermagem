@@ -28,4 +28,9 @@ public class StockServiceImpl implements StockService{
         }
     }
 
+    @Override
+    public long getMedicationsCount() {
+        return medicamentoRepository.countUniqueMedications();
+    }
+
 }
