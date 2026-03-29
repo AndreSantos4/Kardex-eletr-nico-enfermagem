@@ -15,14 +15,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.LoginResponseDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.PasswordResetRequestDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.PasswordResetRequest;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
+import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
+import pt.ipcb.kardex.kardex_eletronico.service.email.EmailSenderService;
 import pt.ipcb.kardex.kardex_eletronico.service.session.SessionService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
@@ -39,6 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final WorkerService workerService;
     private final SessionService sessionService;
     private final LoginAttemptService tentativaLoginService;
+    private final EmailSenderService emailSenderService;
+    private final PasswordResetRequestRepository passwordResetRequestRepository;
 
     @Override
     public LoginResponseDTO login(AuthenticationDTO data, HttpServletResponse response, HttpServletRequest request) {
@@ -50,7 +56,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             var auth = authenticationManager.authenticate(usernamePassword);
             var utilizador = (Utilizador) auth.getPrincipal();
                 
-        
             sessionService.createOrUpdate(utilizador, ip);
             tentativaLoginService.registar(Long.parseLong(data.numeroMecanografico()), ip, true, null);
 
@@ -79,6 +84,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (newUser.getRole() != Role.ADMIN) {
                 workerService.createWorkerByUser(newUser);
             }
+
+            passwordReset(new PasswordResetRequestDTO(newUser.getNumeroMecanografico().toString()));
         } catch (Exception e) {
             throw new ConflictFieldsException();
         }
@@ -107,5 +114,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         cookie.setPath("/");
 
         return cookie;
+    }
+
+    @Override
+    public void passwordReset(PasswordResetRequestDTO data) {
+        var token = tokenService.generateTokenForPasswordReset(data.numeroMecanografico());
+        var passwordResetRequest = new PasswordResetRequest(Long.parseLong(data.numeroMecanografico()), token, LocalDateTime.now());
+
+        passwordResetRequestRepository.save(passwordResetRequest);
+
+        var user = (Utilizador) repository.findByNumeroMecanografico(Long.parseLong(data.numeroMecanografico()));
+        emailSenderService.sendPasswordResetEmail(user, token);
     }
 }

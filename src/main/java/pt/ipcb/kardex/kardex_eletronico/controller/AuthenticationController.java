@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.PasswordResetRequestDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.auth.AuthenticationService;
 
@@ -41,5 +42,11 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<?>> logout(HttpServletResponse response) {
         service.logout(response);
         return ResponseEntity.ok(ApiResponse.ok("Logout efetuado com successo", null));
+    }
+
+    @PostMapping("/password-reset")
+    public ResponseEntity<ApiResponse<?>> passwordReset(@RequestBody @Validated PasswordResetRequestDTO data) {
+        service.passwordReset(data);
+        return ResponseEntity.ok(ApiResponse.ok("Pedido de reset de password efetuado com successo", null));
     }
 }

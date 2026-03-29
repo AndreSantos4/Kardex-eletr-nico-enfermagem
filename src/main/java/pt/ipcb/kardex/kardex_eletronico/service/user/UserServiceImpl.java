@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
 
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UtilizadorRepository repository;
     private final UtilizadorMapper mapper;
     private final CookieService cookieService;
+    private final PasswordResetRequestRepository passwordResetRequestRepository;
 
     @Override
     public List<UtilizadorDTO> getAllUsers(Optional<String> filter, OrderBy orderBy) {
@@ -111,5 +114,32 @@ public class UserServiceImpl implements UserService {
 
         utilizador.setAtivo(false);
         repository.save(utilizador);
+    }
+
+    @Override
+    public void changePassword(Long id, String token, String newPassword) {
+        var user = repository.findById(id)
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
+        var passwordResetRequest = passwordResetRequestRepository.findById(user.getNumeroMecanografico())
+                .orElseThrow(() -> EntityNotFoundException.forId(user.getNumeroMecanografico(), "Pedido de Reset de Password"));
+
+        if(passwordResetRequest.getPedidoEm().plusMinutes(15).isBefore(LocalDateTime.now())) {
+            passwordResetRequestRepository.delete(passwordResetRequest);
+            throw new RuntimeException("Token expirado para reset de password");
+        }
+
+        if (!passwordResetRequest.getToken().equals(token)) {
+            throw new RuntimeException("Token inválido para reset de password");
+        }
+
+        var encodedPasssword = new BCryptPasswordEncoder().encode(newPassword);
+        user.setPasswordHash(encodedPasssword);
+
+        if(user.getAtivo() == false) {
+            user.setAtivo(true);
+        }
+
+        repository.save(user);
+        passwordResetRequestRepository.delete(passwordResetRequest);
     }
 }
