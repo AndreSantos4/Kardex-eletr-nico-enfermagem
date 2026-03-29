@@ -40,6 +40,10 @@ public class CookieService {
         return LocalDateTime.now().plusHours(8).toInstant(ZoneOffset.of("+00:00"));
     }
 
+    private Instant getExpirationDateForPasswordReset() {
+        return LocalDateTime.now().plusMinutes(15).toInstant(ZoneOffset.of("+00:00"));
+    }
+
     public Long validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -66,5 +70,20 @@ public class CookieService {
         }
 
         return null;
+    }
+
+    public String generateTokenForPasswordReset(String numeroMecanografico) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            String token = JWT.create()
+                    .withIssuer("kardex-eletronico-enfermagem")
+                    .withSubject(numeroMecanografico)
+                    .withExpiresAt(getExpirationDateForPasswordReset())
+                    .sign(algorithm);
+
+            return token;
+        } catch (JWTCreationException ex) {
+            throw new RuntimeException("Error while generating token");
+        }
     }
 }
