@@ -1,12 +1,13 @@
 <!doctype html>
 <html lang="pt">
 	<head>
+		<meta charset="UTF-8"/>
 		<title>Admin Sessões Ativas</title>
-		<link rel="stylesheet"type="text/css"href="../../styles/adminSessoesAtivas.css"/>
-        <link rel="stylesheet"type="text/css"href="../../styles/topBar.css"/>
-        <link rel="stylesheet"type="text/css"href="../../styles/sideBar.css"/>
-        <link rel="stylesheet"type="text/css"href="../../styles/mainContent.css"/>
-        <link rel="stylesheet"type="text/css"href="../../styles/rootAndBody.css"/>
+		<link rel="stylesheet" type="text/css" href="../../styles/adminSessoesAtivas.css"/>
+		<link rel="stylesheet" type="text/css" href="../../styles/topBar.css"/>
+		<link rel="stylesheet" type="text/css" href="../../styles/sideBar.css"/>
+		<link rel="stylesheet" type="text/css" href="../../styles/mainContent.css"/>
+		<link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css"/>
 	</head>
 	<body>
 		<!-- Top Bar -->
@@ -23,73 +24,52 @@
 			<!-- Sidebar -->
 			<nav class="sidebar">
 				<div class="sidebar-section-label">Principal</div>
-                <a href="adminDashboard.html" style="text-decoration: none;">
-                    <div class="sidebar-item">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512">
-                            <path
-                                d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"/>
-                        </svg>
-                        Home
-                    </div>
-          		</a>
+				<a href="adminDashboard.html" style="text-decoration: none;">
+					<div class="sidebar-item">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							<path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"/>
+						</svg>
+						Home
+					</div>
+				</a>
 				<a href="adminGestaoUtilizadores.html" style="text-decoration: none">
 					<div class="sidebar-item">
-						<svg
-							xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-							<!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
-							<path
-								d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+							<path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/>
 						</svg>
 						Utilizadores
 					</div>
 				</a>
 				<div class="sidebar-item">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 512 512">
-						<path
-							d="M64 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112-96 0 0-112zM176 368c0-48.7 18.1-93.2 48-127l0-129C224 50.1 173.9 0 112 0S0 50.1 0 112L0 400c0 61.9 50.1 112 112 112 37.3 0 70.3-18.2 90.7-46.3-17-28.6-26.7-62-26.7-97.7zm64.7 67.4c4.6 8.7 16.3 9.7 23.3 2.7L438.1 264c7-7 6-18.7-2.7-23.3-20.1-10.7-43-16.7-67.4-16.7-79.5 0-144 64.5-144 144 0 24.3 6 47.3 16.7 67.4zM297.9 472c-7 7-6 18.7 2.7 23.3 20.1 10.7 43 16.7 67.4 16.7 79.5 0 144-64.5 144-144 0-24.3-6-47.3-16.7-67.4-4.6-8.7-16.3-9.7-23.3-2.7L297.9 472z"/>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+						<path d="M64 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112-96 0 0-112zM176 368c0-48.7 18.1-93.2 48-127l0-129C224 50.1 173.9 0 112 0S0 50.1 0 112L0 400c0 61.9 50.1 112 112 112 37.3 0 70.3-18.2 90.7-46.3-17-28.6-26.7-62-26.7-97.7zm64.7 67.4c4.6 8.7 16.3 9.7 23.3 2.7L438.1 264c7-7 6-18.7-2.7-23.3-20.1-10.7-43-16.7-67.4-16.7-79.5 0-144 64.5-144 144 0 24.3 6 47.3 16.7 67.4zM297.9 472c-7 7-6 18.7 2.7 23.3 20.1 10.7 43 16.7 67.4 16.7 79.5 0 144-64.5 144-144 0-24.3-6-47.3-16.7-67.4-4.6-8.7-16.3-9.7-23.3-2.7L297.9 472z"/>
 					</svg>
 					Medicamentos
 				</div>
 				<div class="sidebar-section-label">Auditoria</div>
 				<div class="sidebar-item">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 384 512">
-						<path
-							d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+						<path d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
 					</svg>
 					Logs Auditoria
 				</div>
 
 				<div class="sidebar-section-label">Controlo</div>
 				<div class="sidebar-item active">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 512 512">
-						<path
-							d="M200 48l112 0c4.4 0 8 3.6 8 8l0 40-128 0 0-40c0-4.4 3.6-8 8-8zm-56 8l0 40-80 0C28.7 96 0 124.7 0 160l0 96 512 0 0-96c0-35.3-28.7-64-64-64l-80 0 0-40c0-30.9-25.1-56-56-56L200 0c-30.9 0-56 25.1-56 56zM512 304l-192 0 0 16c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-16-192 0 0 112c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-112z"/>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+						<path d="M200 48l112 0c4.4 0 8 3.6 8 8l0 40-128 0 0-40c0-4.4 3.6-8 8-8zm-56 8l0 40-80 0C28.7 96 0 124.7 0 160l0 96 512 0 0-96c0-35.3-28.7-64-64-64l-80 0 0-40c0-30.9-25.1-56-56-56L200 0c-30.9 0-56 25.1-56 56zM512 304l-192 0 0 16c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-16-192 0 0 112c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-112z"/>
 					</svg>
 					Sessões Ativas
 				</div>
 				<div class="sidebar-item">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 512 512">
-						<path
-							d="M224 0l0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 5.5-.7 10.9-2 16l-252 0c-1.3-5.1-2-10.5-2-16l0-128c0-35.3 28.7-64 64-64l32 0zm96 512c-11.2 0-21.8-2.9-31-8 9.5-16.5 15-35.6 15-56l0-128c0-20.4-5.5-39.5-15-56 9.2-5.1 19.7-8 31-8l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64l-128 0zM0 320c0-35.3 28.7-64 64-64l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 320z"/>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+						<path d="M224 0l0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 5.5-.7 10.9-2 16l-252 0c-1.3-5.1-2-10.5-2-16l0-128c0-35.3 28.7-64 64-64l32 0zm96 512c-11.2 0-21.8-2.9-31-8 9.5-16.5 15-35.6 15-56l0-128c0-20.4-5.5-39.5-15-56 9.2-5.1 19.7-8 31-8l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64l-128 0zM0 320c0-35.3 28.7-64 64-64l32 0 0 64c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-64 32 0c35.3 0 64 28.7 64 64l0 128c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 320z"/>
 					</svg>
 					Hist. Stock
 				</div>
 				<div class="sidebar-item">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 448 512">
-						<path
-							d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z"/>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+						<path d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z"/>
 					</svg>
 					Relatórios
 				</div>
@@ -104,13 +84,10 @@
 					</div>
 					<div class="search-bar">
 						<div class="search-input-wrap">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 512 512">
-								<path
-									d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+								<path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
 							</svg>
-							<input type="text" placeholder="Utilizador, IP" />
+							<input type="text" placeholder="Utilizador, IP, Role" />
 						</div>
 					</div>
 				</div>
@@ -127,40 +104,14 @@
 						<span></span>
 					</div>
 
-					<!-- Row 1 - Normal session -->
-					<div class="table-row">
-						<div class="row-user">
-							<span class="row-user-name">Ana Rodrigues</span>
-							<span class="row-user-id">Nº 12345</span>
-						</div>
-						<span class="row-role">Enfermeiro</span>
-						<span class="row-ip">192.168.1.42</span>
-						<span class="row-time">14:05</span>
-						<span class="row-time">17:31</span>
-						<span class="row-desc">Kardex 2026-0214</span>
-						<div class="row-actions">
-							<button class="btn-revogar">REVOGAR</button>
-						</div>
-					</div>
+					<div id="sessions-body"></div>
 
-					<!-- Row 2 - Suspicious -->
-					<div class="table-row">
-						<div class="row-user">
-							<span class="row-user-name"
-								>Utilizador desconhecido</span>
-							<span class="row-user-id">&nbsp;</span>
-						</div>
-						<span class="row-role">Desconhecido</span>
-						<span class="row-ip">192.168.5.12</span>
-						<span class="row-time">15:55</span>
-						<span class="row-time">---</span>
-						<span class="row-desc">Login Falhado x 3</span>
-						<div class="row-actions">
-							<button class="btn-bloquear">BLOQUEAR IP</button>
-						</div>
-					</div>
+					<!-- Paginação -->
+					<div class="pagination-bar" id="pagination"></div>
 				</div>
 			</div>
 		</div>
+
+		<script src="../../scripts/adminSessoesAtivas.js"></script>
 	</body>
 </html>
