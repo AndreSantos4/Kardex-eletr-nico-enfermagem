@@ -1,4 +1,4 @@
-const popUpContainer = document.querySelector(".pop-up-container"); 
+const popUpContainer = document.querySelector(".pop-up-container");
 let popUpCriar;
 let popUpEditar;
 let popUpDesativar;
@@ -93,7 +93,7 @@ function renderizarTabela() {
         <td class="actions">
           <button class="btn-table" onclick="abrirEditar(${u.id})">EDITAR</button>
           <button class="btn-table" onclick="irParaPerfil(${u.id})">PERFIL</button>
-          <button class="btn-table" onclick="abrirPassword(${u.id})">PASSWORD</button>
+          <button class="btn-table" onclick="resetPassword(${u.id})">PASSWORD</button>
           ${btnEstado}
         </td>
       </tr>`;
@@ -189,6 +189,37 @@ document
       renderizarPaginacao();
     }, 300);
   });
+
+async function resetPassword(id) {
+  try {
+    const respUser = await fetch(`http://localhost:8080/api/users/${id}`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    });
+
+    if (!respUser.ok) throw new Error("Erro ao obter utilizador");
+
+    const json = await respUser.json();
+    const email = json.data.email;
+    const numeroMecanografico = json.data.numeroMecanografico;
+
+    if (!confirm(`Enviar email de reset de password para ${email}, numero mecanográfico ${numeroMecanografico}?`)) return;
+
+    const response = await fetch("http://localhost:8080/api/auth/password-reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ numeroMecanografico }),
+    });
+
+    if (response.ok) {
+      alert(`Email de reset enviado para ${email}.`);
+    } else {
+      const data = await response.json().catch(() => ({}));
+      alert(data?.message || "Erro ao enviar email de reset.");
+    }
+  } catch (_) {
+    alert("Erro de ligação ao servidor.");
+  }
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarPopups();
