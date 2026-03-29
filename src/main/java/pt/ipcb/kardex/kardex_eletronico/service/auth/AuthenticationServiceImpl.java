@@ -49,7 +49,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     data.numeroMecanografico(), data.password());
             var auth = authenticationManager.authenticate(usernamePassword);
             var utilizador = (Utilizador) auth.getPrincipal();
-
+                
+        
+            sessionService.createOrUpdate(utilizador, ip);
             tentativaLoginService.registar(Long.parseLong(data.numeroMecanografico()), ip, true, null);
 
             var token = tokenService.generateToken(utilizador);
