@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,6 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void register(RegisterDTO data) {
         if (this.repository.findByNumeroMecanografico(data.numeroMecanografico()) != null) {
             throw new UserAlreadyExistsException(data.numeroMecanografico());
@@ -92,6 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void logout(HttpServletResponse response) {
         var user = (Utilizador) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
@@ -117,6 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void passwordReset(PasswordResetRequestDTO data) {
         var token = tokenService.generateTokenForPasswordReset(data.numeroMecanografico());
         var passwordResetRequest = new PasswordResetRequest(Long.parseLong(data.numeroMecanografico()), token, LocalDateTime.now());

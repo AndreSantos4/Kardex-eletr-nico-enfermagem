@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.repository.TentativaLoginRepository;
@@ -20,6 +21,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
     private final TentativaLoginRepository repository;
     private final TentativaLoginMapper mapper;
 
+    @Transactional
     public void registar(Long numeroMecanografico, String ip, boolean sucesso, String motivoFalha) {
         repository.save(new TentativaLogin(
             null,
@@ -31,6 +33,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
         ));
     }
 
+    @Transactional(readOnly = true)
     public List<StrangeAttempDTO> getStrangeActivity() {
         LocalDateTime since = LocalDateTime.now().minusMinutes(10);
         return repository.findStrangeActivity(since)
@@ -43,6 +46,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
             .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<TentativaLoginDTO> getLoginAttemps(Optional<Boolean> success){
         if(success.isPresent()){
             return repository.findBySucesso(success.get())

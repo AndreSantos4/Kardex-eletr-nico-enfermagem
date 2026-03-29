@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetRequestRepository passwordResetRequestRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<UtilizadorDTO> getAllUsers(Optional<String> filter, OrderBy orderBy) {
         var users = repository.findAll();
 
@@ -58,6 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UtilizadorDTO getUserById(Long id) {
         Utilizador user = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
@@ -65,6 +68,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDTO(user);
     }
 
+    @Transactional
     public UtilizadorDTO getUserByToken(HttpServletRequest request) {
         var token = cookieService.recoverCookie(request);
         var subject = cookieService.validateToken(token);
@@ -77,6 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateUser(Long id, UpdateUserDTO data) {
         Utilizador user = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
@@ -100,6 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void activateUser(Long id) {
         Utilizador utilizador = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
@@ -109,6 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deactivateUser(Long id) {
         Utilizador utilizador = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
@@ -118,6 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changePassword(Long id, String token, ChangeUserPasswordDTO newPassword) {
         var user = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
@@ -145,6 +153,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getActiveUsersCount() {
         return repository.countByAtivoTrue();
     }

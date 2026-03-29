@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.stock;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.CreateMedicationDTO;
@@ -15,6 +16,7 @@ public class StockServiceImpl implements StockService{
     private final MedicamentoMapper medicamentoMapper;
 
     @Override
+    @Transactional
     public void addMedication(CreateMedicationDTO data) {
         var existingMedication = medicamentoRepository.findByNome(data.nome(), data.unidade());
         
@@ -29,6 +31,7 @@ public class StockServiceImpl implements StockService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getMedicationsCount() {
         return medicamentoRepository.countUniqueMedications();
     }
