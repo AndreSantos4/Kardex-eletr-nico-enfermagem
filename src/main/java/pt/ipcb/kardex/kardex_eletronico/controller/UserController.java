@@ -65,4 +65,10 @@ public class UserController {
         service.deactivateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador desativado com sucesso", null));
     }
+    
+    @PatchMapping("/{id}/change-password")
+    public ResponseEntity<ApiResponse<?>> changePassword(@PathVariable("id") Long id, @RequestParam("token") String token, @RequestBody String newPassword) {
+        service.changePassword(id, token, newPassword);
+        return ResponseEntity.ok(ApiResponse.ok("Password alterada com sucesso", null));
+    }
 }
