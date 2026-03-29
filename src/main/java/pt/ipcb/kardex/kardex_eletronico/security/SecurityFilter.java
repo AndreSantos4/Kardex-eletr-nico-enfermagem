@@ -34,6 +34,15 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String ip = request.getRemoteAddr(); 
+        if (ipRepository.existsByEnderecoIP(ip)) {
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write(
+                    objectMapper.writeValueAsString(ApiResponse.error("Acesso Bloqueado")));
+            return;
+        }
+        
         var token = service.recoverCookie(request);
         if (token == null) {
             filterChain.doFilter(request, response);
@@ -51,18 +60,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             var authentication = new UsernamePasswordAuthenticationToken(
                     user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-
-        boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication() != null;
-        if (!isAuthenticated) {
-            String ip = request.getRemoteAddr();
-            if (ipRepository.existsByEnderecoIP(ip)) {
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write(
-                        objectMapper.writeValueAsString(ApiResponse.error("Acesso Bloqueado")));
-                return;
-            }
         }
 
         filterChain.doFilter(request, response);
