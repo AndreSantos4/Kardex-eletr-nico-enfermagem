@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.ChangeUserPasswordDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.DeactivateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
@@ -67,7 +68,7 @@ public class UserController {
     }
     
     @PatchMapping("/{id}/change-password")
-    public ResponseEntity<ApiResponse<?>> changePassword(@PathVariable("id") Long id, @RequestParam("token") String token, @RequestBody String newPassword) {
+    public ResponseEntity<ApiResponse<?>> changePassword(@PathVariable("id") Long id, @RequestParam("token") String token, @RequestBody ChangeUserPasswordDTO newPassword) {
         service.changePassword(id, token, newPassword);
         return ResponseEntity.ok(ApiResponse.ok("Password alterada com sucesso", null));
     }
