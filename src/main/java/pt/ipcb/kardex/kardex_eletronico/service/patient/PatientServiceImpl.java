@@ -40,4 +40,9 @@ public class PatientServiceImpl implements PatientService{
         processoRepository.save(process);
         repository.save(patient);
     }
+
+    @Override
+    public long getHospitalizedPatientsCount() {
+        return repository.countByEstado(EstadoUtente.INTERNADO);
+    }
 }
