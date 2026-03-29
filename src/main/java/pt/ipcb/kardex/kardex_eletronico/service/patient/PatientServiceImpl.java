@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.patient;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientDTO;
@@ -22,12 +23,14 @@ public class PatientServiceImpl implements PatientService{
     private final ProcessoMapper processoMapper;
 
     @Override
+    @Transactional
     public void createPatient(CreatePatientDTO data) {
         var patient = mapper.fromCreate(data);
         repository.save(patient);
     }
 
     @Override
+    @Transactional
     public void createProcess(Long patientId, CreateProcessDTO data) {
         var patient = repository.findById(patientId)
             .orElseThrow(() -> EntityNotFoundException.forId(patientId, "Utente"));
@@ -42,6 +45,7 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getHospitalizedPatientsCount() {
         return repository.countByEstado(EstadoUtente.INTERNADO);
     }

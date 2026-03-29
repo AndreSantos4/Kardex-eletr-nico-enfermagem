@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.process;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final WorkerService workerService;
 
     @Override
+    @Transactional
     public void createPrescription(Long processId, CreatePrescriptionDTO data) {
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
@@ -43,6 +45,7 @@ public class ProcessServiceImpl implements ProcessService{
     }
 
     @Override
+    @Transactional
     public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data, HttpServletRequest request) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescrição"));

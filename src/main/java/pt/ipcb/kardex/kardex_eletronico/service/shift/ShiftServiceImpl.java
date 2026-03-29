@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.shift;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,14 @@ public class ShiftServiceImpl implements ShiftService{
     private final WorkerService workerService;
 
     @Override
+    @Transactional
     public void CreateShift(CreateShiftDTO data) {
         var shift = mapper.fromCreate(data);
         repository.save(shift);
     }
 
     @Override
+    @Transactional
     public void createIncident(CreateIncidentDTO data, HttpServletRequest request) {
         var worker = workerService.getAutenticatedWorker(request);
         var shift = workerService.getCurrentShift(worker.getId());
