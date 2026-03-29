@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
+import pt.ipcb.kardex.kardex_eletronico.dto.user.ChangeUserPasswordDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(Long id, String token, String newPassword) {
+    public void changePassword(Long id, String token, ChangeUserPasswordDTO newPassword) {
         var user = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
         var passwordResetRequest = passwordResetRequestRepository.findById(user.getNumeroMecanografico())
@@ -132,7 +133,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Token inválido para reset de password");
         }
 
-        var encodedPasssword = new BCryptPasswordEncoder().encode(newPassword);
+        var encodedPasssword = new BCryptPasswordEncoder().encode(newPassword.newPassword());
         user.setPasswordHash(encodedPasssword);
 
         if(user.getAtivo() == false) {
@@ -141,5 +142,10 @@ public class UserServiceImpl implements UserService {
 
         repository.save(user);
         passwordResetRequestRepository.delete(passwordResetRequest);
+    }
+
+    @Override
+    public long getActiveUsersCount() {
+        return repository.countByAtivoTrue();
     }
 }
