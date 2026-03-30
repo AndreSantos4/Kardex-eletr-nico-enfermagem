@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasAnyRole("ADMIN", "ENFERMEIRO_CHEFE")
                         .requestMatchers(HttpMethod.PUT, "/api/users/{userId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/users/{id}/activate", "/api/users/{id}/deactivate")
@@ -39,8 +39,16 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/auth/password-reset").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/users/{id}/change-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/workers/{workerId}", 
+                                                                    "/api/workers/{workerId}/summary", 
+                                                                    "/api/workers/{workerId}/shifts/summary", 
+                                                                    "/api/workers/{workerId}/shifts")
+                            .hasAnyRole("ADMIN", "ENFERMEIRO_CHEFE")
                         .requestMatchers(HttpMethod.GET, "/api/sessions").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/{sessionId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/sessions/ip").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/sessions/ip").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "api/stats/**").hasAnyRole("ADMIN")
                         .requestMatchers("/pages/login/login.html", "/styles/**", "/scripts/**").permitAll()
                         .requestMatchers("/pages/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

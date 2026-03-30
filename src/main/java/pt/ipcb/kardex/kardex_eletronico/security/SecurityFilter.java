@@ -56,10 +56,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         UserDetails user = repository.findByNumeroMecanografico(subject);
-        if (user != null && sessaoRepository.findByUtilizador((Utilizador) user).isPresent()) {
-            var authentication = new UsernamePasswordAuthenticationToken(
+        Utilizador utilizadorENtity = (Utilizador) user;
+        if (utilizadorENtity != null && sessaoRepository.findByUtilizador(utilizadorENtity).isPresent()) {
+            if (utilizadorENtity.getAtivo()) {
+                var authentication = new UsernamePasswordAuthenticationToken(
                     user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
 
         filterChain.doFilter(request, response);
