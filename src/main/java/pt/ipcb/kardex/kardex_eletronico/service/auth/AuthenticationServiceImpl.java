@@ -18,6 +18,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.LoginResponseDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.PasswordResetRequestDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.VerifyTwoFactorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
@@ -27,7 +28,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
-import pt.ipcb.kardex.kardex_eletronico.service.email.EmailSenderService;
+import pt.ipcb.kardex.kardex_eletronico.service.external.EmailSenderService;
 import pt.ipcb.kardex.kardex_eletronico.service.session.SessionService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
@@ -46,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final LoginAttemptService tentativaLoginService;
     private final EmailSenderService emailSenderService;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
+    private final TwoFactorService twoFactorService;
 
     @Override
     public LoginResponseDTO login(AuthenticationDTO data, HttpServletResponse response, HttpServletRequest request) {
@@ -56,14 +58,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     data.numeroMecanografico(), data.password());
             var auth = authenticationManager.authenticate(usernamePassword);
             var utilizador = (Utilizador) auth.getPrincipal();
-                
-            sessionService.createOrUpdate(utilizador, ip);
-            tentativaLoginService.registar(Long.parseLong(data.numeroMecanografico()), ip, true, null);
+            
+            twoFactorService.enviarCodigo(utilizador);
 
-            var token = tokenService.generateToken(utilizador);
-            response.addCookie(createCookie(token, COOKIE_MAX_AGE));
-            return new LoginResponseDTO(token);
-
+            return new LoginResponseDTO(true);
         } catch (BadCredentialsException e) {
             tentativaLoginService.registar(Long.parseLong(data.numeroMecanografico()), ip, false, "Credenciais inválidas");
             throw new InvalidCredentialsException();
@@ -107,6 +105,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    @Override
+    public LoginResponseDTO verify2FA(VerifyTwoFactorDTO data, HttpServletResponse response, HttpServletRequest request) {
+        var ip = request.getRemoteAddr();
+        Utilizador utilizador = (Utilizador) repository.findByNumeroMecanografico(data.numeroMecanografico());
+        twoFactorService.verificarCodigo(utilizador, data.codigo());
+
+        sessionService.createOrUpdate(utilizador, ip);
+        tentativaLoginService.registar(data.numeroMecanografico(), ip, true, null);
+
+        var token = tokenService.generateToken(utilizador);
+        response.addCookie(createCookie(token, COOKIE_MAX_AGE));
+
+        return new LoginResponseDTO(false);
     }
 
     private Cookie createCookie(String token, int age) {

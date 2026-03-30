@@ -6,6 +6,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.LoginResponseDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.PasswordResetRequestDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.VerifyTwoFactorDTO;
 
 public interface AuthenticationService {
 
@@ -13,4 +14,5 @@ public interface AuthenticationService {
     void register(RegisterDTO data);
     void logout(HttpServletResponse response);
     void passwordReset(PasswordResetRequestDTO data);
+    public LoginResponseDTO verify2FA(VerifyTwoFactorDTO data, HttpServletResponse response, HttpServletRequest request);
 }
