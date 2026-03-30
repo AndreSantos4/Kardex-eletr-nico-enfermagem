@@ -40,7 +40,9 @@
             <input type="submit" value="ENTRAR" class="login-botao" />
           </form>
 
-          <form action="">
+          <form
+            onsubmit="validateM2F(event)"
+            method="post">
             <div class="login-campo" id="login-campo-m2f">
               <label>Código de Autencação</label>
               <div class="login-authn">
