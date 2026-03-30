@@ -1,4 +1,5 @@
 let errorTimer = null;
+let numeroMecanografico = 0;
 
 function showErrorWithCountdown() {
   const msg = document.getElementById("msgError");
@@ -24,12 +25,13 @@ function showErrorWithCountdown() {
 function validateForm(event) {
   event.preventDefault();
 
-  const numeroMecanografico = document.getElementById(
+  numeroMecanografico = document.getElementById(
     "numero_mecanografico",
   ).value;
+
   const password = document.getElementById("password").value;
 
-  if (!numeroMecanografico || !password) {
+  if (!numeroMecanografico || !password || numeroMecanografico == 0) {
     alert("Preenche todos os campos!");
     return;
   }
@@ -47,16 +49,49 @@ function validateForm(event) {
     .then(async (res) => {
       if (res.status === 200) {
         const data = await res.json();
-        //FALCATRUAR O 2FA
-        //document.getElementById("login-campo-auth").style.display = "none";
-        //document.getElementById("login-campo-m2f").style.display = "block";
+        document.getElementById("login-campo-auth").style.display = "none";
+        document.getElementById("login-campo-m2f").style.display = "block";
+      } else {
+        showErrorWithCountdown();
+      }
+    })
+    .catch((err) => {
+      console.log("Erro na requisição:", err);
+    });
+}
+
+function validateM2F(event) {
+  event.preventDefault();
+
+  const codigo = document.getElementById(
+    "code-authn",
+  ).value;
+
+  if (!codigo || !numeroMecanografico || numeroMecanografico == 0) {
+    alert("Preenche todos os campos!");
+    return;
+  }
+
+  console.log(numeroMecanografico);
+  console.log(codigo);
+
+  fetch("http://localhost:8080/api/auth/verify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      numeroMecanografico,
+      codigo,
+    }),
+  })
+    .then(async (res) => {
+      if (res.status === 200) {
+        document.getElementById("login-campo-auth").style.display = "block";
+        document.getElementById("login-campo-m2f").style.display = "none";
         window.location.replace(
           "http://localhost:8080/pages/admin/adminDashboard.html",
         );
-
-        //CONTINUAÇÃO COM O 2FA
-      } else {
-        showErrorWithCountdown();
       }
     })
     .catch((err) => {
