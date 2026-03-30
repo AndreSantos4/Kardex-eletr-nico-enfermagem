@@ -77,6 +77,12 @@ public class Utilizador implements UserDetails{
     @Column(name = "esta_ativo")
     public Boolean ativo;
 
+    @Column(name = "codigo_verificacao")
+    private String codigoVerificacao;
+
+    @Column(name = "codigo_expira_em")
+    private LocalDateTime codigoExpiraEm;
+
     public Utilizador(RegisterDTO data, String password) {
         this(
             null, 
@@ -93,7 +99,9 @@ public class Utilizador implements UserDetails{
             data.dataNascimento(), 
             LocalDateTime.now(),
             LocalDateTime.now(),
-            false
+            false,
+            null,
+            null
         );
     }
 
