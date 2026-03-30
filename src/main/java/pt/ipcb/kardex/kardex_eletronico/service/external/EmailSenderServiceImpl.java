@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.service.email;
+package pt.ipcb.kardex.kardex_eletronico.service.external;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

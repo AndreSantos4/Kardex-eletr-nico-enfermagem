@@ -1,4 +1,4 @@
-package pt.ipcb.kardex.kardex_eletronico.service.email;
+package pt.ipcb.kardex.kardex_eletronico.service.external;
 
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 
