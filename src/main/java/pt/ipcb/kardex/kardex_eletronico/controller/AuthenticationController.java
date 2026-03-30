@@ -8,8 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.AuthenticationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.LoginResponseDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.PasswordResetRequestDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.authentication.VerifyTwoFactorDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.auth.AuthenticationService;
 
 import org.springframework.http.ResponseEntity;
@@ -25,11 +27,11 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<?>> postMethodName(@RequestBody @Validated AuthenticationDTO data,
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> postMethodName(@RequestBody @Validated AuthenticationDTO data,
             HttpServletResponse response,
             HttpServletRequest request) {
-        service.login(data, response, request);
-        return ResponseEntity.ok(ApiResponse.ok("Login efetuado com successo", null));
+        var loginResponse = service.login(data, response, request);
+        return ResponseEntity.ok(ApiResponse.ok("Login efetuado com successo", loginResponse));
     }
 
     @PostMapping("/register")
@@ -49,4 +51,12 @@ public class AuthenticationController {
         service.passwordReset(data);
         return ResponseEntity.ok(ApiResponse.ok("Pedido de reset de password efetuado com successo", null));
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<?>> verify(@RequestBody @Validated VerifyTwoFactorDTO data,
+                                                                         HttpServletResponse response, 
+                                                                         HttpServletRequest request) {
+    var result = service.verify2FA(data, response, request);
+    return ResponseEntity.ok(ApiResponse.ok("Login efetuado com sucesso", result));
+}
 }
