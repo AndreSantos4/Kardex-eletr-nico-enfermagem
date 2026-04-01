@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/{sessionId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/ip").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/sessions/ip").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "api/stats/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("ADMIN")
                         .requestMatchers("/pages/login/login.html", "/styles/**", "/scripts/**").permitAll()
                         .requestMatchers("/pages/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
