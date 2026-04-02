@@ -49,9 +49,18 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/ip").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/sessions/ip").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("ADMIN")
+
+
                         .requestMatchers("/pages/login/login.html", "/styles/**", "/scripts/**").permitAll()
-                        .requestMatchers("/pages/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/login", "/recuperarPassword").permitAll()
+                        .requestMatchers("/adminDashboard", "/adminGestaoUtilizadores", "/adminSessoesAtivas", "/perfilColaborador")
+                            .hasRole("ADMIN")
+                        .requestMatchers("/medicoDashboard").hasRole("MEDICO")
+
+                        
                         .anyRequest().authenticated())
+
+
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, e) -> {
                             response.setContentType("application/json");
