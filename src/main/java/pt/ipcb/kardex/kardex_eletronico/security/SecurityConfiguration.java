@@ -37,7 +37,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, "/api/users/{id}/activate", "/api/users/{id}/deactivate")
                             .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/auth/password-reset").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/{id}/change-password").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/password-reset").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/change-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/workers/{workerId}", 
                                                                     "/api/workers/{workerId}/summary", 
@@ -51,8 +52,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("ADMIN")
 
 
-                        .requestMatchers("/pages/login/login.html", "/styles/**", "/scripts/**").permitAll()
-                        .requestMatchers("/login", "/recuperarPassword").permitAll()
+                        .requestMatchers("/styles/**", "/scripts/**").permitAll()
+                        .requestMatchers("/login", "/pages/login/login.html", "/recuperarPassword", "/pages/login/recuperarPassword.html").permitAll()
                         .requestMatchers("/adminDashboard", "/adminGestaoUtilizadores", "/adminSessoesAtivas", "/perfilColaborador")
                             .hasRole("ADMIN")
                         .requestMatchers("/medicoDashboard").hasRole("MEDICO")
