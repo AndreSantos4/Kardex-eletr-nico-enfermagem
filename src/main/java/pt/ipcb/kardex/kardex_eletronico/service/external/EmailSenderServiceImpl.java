@@ -18,6 +18,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     private final JavaMailSender mailSender;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Value("${app.mail.from}")
     private String from;
 
@@ -48,13 +51,17 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                 <p>Olá %s,</p>
                 <p>Recebemos um pedido para resetar a sua password. Se não foi você, por favor ignore este email.</p>
                 <p>Para resetar a sua password, clique no link abaixo:</p>
-                <p><a href="http://localhost:8080/pages/login/recuperarPassword.html?u=%d&t=%s">Resetar Password</a></p>
+                <p><a href="%s">Resetar Password</a></p>
                 <p>Obrigado,<br>Kardex Eletrónico</p>
-                """, user.getNome(), user.getId(), token);
+                """, user.getNome(), String.format(getResetUrl(), token));
         try {
             sendHtml(to, subject, body);
         } catch (MessagingException e) {
             throw new FailedEmailMessageException(to, "Reset de Password");
         }
+    }
+
+    private String getResetUrl(){
+        return baseUrl + "/api/users/password-reset?t=%s";
     }
 }
