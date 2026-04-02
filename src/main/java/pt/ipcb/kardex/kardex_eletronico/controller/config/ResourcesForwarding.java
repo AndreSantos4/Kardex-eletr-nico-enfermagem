@@ -3,7 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.controller.config;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -17,8 +17,8 @@ public class ResourcesForwarding {
     }
 
     @GetMapping("/recuperarPassword")
-    public ModelAndView recuperarPassword(){
-        return new ModelAndView("forward:/pages/login/recuperarPassword.html");
+    public ModelAndView recuperarPassword(@RequestParam("t") String token){
+        return new ModelAndView("forward:/pages/login/recuperarPassword.html?t=" + token);
     }
 
     @GetMapping("/adminDashboard")

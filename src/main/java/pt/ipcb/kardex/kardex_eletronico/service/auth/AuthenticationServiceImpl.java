@@ -22,12 +22,12 @@ import pt.ipcb.kardex.kardex_eletronico.dto.authentication.VerifyTwoFactorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.PasswordResetRequest;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
+import pt.ipcb.kardex.kardex_eletronico.security.PasswordTokenService;
 import pt.ipcb.kardex.kardex_eletronico.service.external.EmailSenderService;
 import pt.ipcb.kardex.kardex_eletronico.service.session.SessionService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
@@ -47,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final LoginAttemptService tentativaLoginService;
     private final EmailSenderService emailSenderService;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
+    private final PasswordTokenService passwordResetService;
     private final TwoFactorService twoFactorService;
 
     @Override
@@ -135,12 +136,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public void passwordReset(PasswordResetRequestDTO data) {
-        var token = tokenService.generateTokenForPasswordReset(data.numeroMecanografico());
-        var passwordResetRequest = new PasswordResetRequest(Long.parseLong(data.numeroMecanografico()), token, LocalDateTime.now());
+        var request = passwordResetService.generatePasswordRequest(data);
 
-        passwordResetRequestRepository.save(passwordResetRequest);
+        passwordResetRequestRepository.save(request);
 
         var user = (Utilizador) repository.findByNumeroMecanografico(Long.parseLong(data.numeroMecanografico()));
-        emailSenderService.sendPasswordResetEmail(user, token);
+        emailSenderService.sendPasswordResetEmail(user, request.getTokenUUID());
     }
 }

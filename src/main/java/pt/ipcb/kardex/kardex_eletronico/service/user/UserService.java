@@ -16,6 +16,7 @@ public interface UserService {
     UtilizadorDTO getUserByToken(HttpServletRequest request);
     void deactivateUser(Long id);
     void activateUser(Long id);
-    void changePassword(Long id, String token, ChangeUserPasswordDTO newPassword);
+    long validatePasswordResetRequest(String token);
+    void changePassword(Long numeroMecanografico, ChangeUserPasswordDTO newPassword);
     long getActiveUsersCount();
 }

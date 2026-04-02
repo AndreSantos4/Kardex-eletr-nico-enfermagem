@@ -16,20 +16,25 @@ import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.ExpiredResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
 import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
+import pt.ipcb.kardex.kardex_eletronico.security.PasswordTokenService;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final int PASSWORD_RESET_TOKEN_EXPIRY_MINUTES = 15;
+
     private final UtilizadorRepository repository;
     private final UtilizadorMapper mapper;
     private final CookieService cookieService;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
+    private final PasswordTokenService passwordTokenService;
 
     @Override
     @Transactional(readOnly = true)
@@ -124,37 +129,36 @@ public class UserServiceImpl implements UserService {
         repository.save(utilizador);
     }
 
-    @Override
-    @Transactional
-    public void changePassword(Long id, String token, ChangeUserPasswordDTO newPassword) {
-        var user = repository.findById(id)
-                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
-        var passwordResetRequest = passwordResetRequestRepository.findById(user.getNumeroMecanografico())
-                .orElseThrow(() -> EntityNotFoundException.forId(user.getNumeroMecanografico(), "Pedido de Reset de Password"));
-
-        if(passwordResetRequest.getPedidoEm().plusMinutes(15).isBefore(LocalDateTime.now())) {
-            passwordResetRequestRepository.delete(passwordResetRequest);
-            throw new RuntimeException("Token expirado para reset de password");
-        }
-
-        if (!passwordResetRequest.getToken().equals(token)) {
-            throw new RuntimeException("Token inválido para reset de password");
-        }
-
-        var encodedPasssword = new BCryptPasswordEncoder().encode(newPassword.newPassword());
-        user.setPasswordHash(encodedPasssword);
-
-        if(user.getAtivo() == false) {
-            user.setAtivo(true);
-        }
-
-        repository.save(user);
-        passwordResetRequestRepository.delete(passwordResetRequest);
-    }
 
     @Override
     @Transactional(readOnly = true)
     public long getActiveUsersCount() {
         return repository.countByAtivoTrue();
+    }
+
+    @Override
+    public long validatePasswordResetRequest(String token) {
+        var tokenHash = passwordTokenService.hashPasswordResetUUID(token);
+
+        var resetRequest = passwordResetRequestRepository.findByTokenHash(tokenHash);
+
+        if(!resetRequest.isValid(PASSWORD_RESET_TOKEN_EXPIRY_MINUTES)){
+            throw new ExpiredResourceException("Token de Reset de Password");
+        }
+
+        return resetRequest.getNumeroMecanografico();
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long numeroMecanografico, ChangeUserPasswordDTO newPassword) {
+        if(!passwordResetRequestRepository.existsById(numeroMecanografico))
+            throw new EntityNotFoundException("Password reset request");
+        var user = (Utilizador) repository.findByNumeroMecanografico(numeroMecanografico);
+
+        var newPasswordHash = new BCryptPasswordEncoder().encode(newPassword.newPassword());
+        user.setPasswordHash(newPasswordHash);
+
+        repository.save(user);
     }
 }
