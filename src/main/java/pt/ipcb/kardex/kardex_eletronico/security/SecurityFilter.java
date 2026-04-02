@@ -34,6 +34,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         String ip = request.getRemoteAddr(); 
         if (ipRepository.existsByEnderecoIP(ip)) {
             response.setContentType("application/json");
@@ -56,9 +57,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         UserDetails user = repository.findByNumeroMecanografico(subject);
-        Utilizador utilizadorENtity = (Utilizador) user;
-        if (utilizadorENtity != null && sessaoRepository.findByUtilizador(utilizadorENtity).isPresent()) {
-            if (utilizadorENtity.getAtivo()) {
+        Utilizador utilizadorEntity = (Utilizador) user;
+        if (utilizadorEntity != null && sessaoRepository.findByUtilizador(utilizadorEntity).isPresent()) {
+            if (utilizadorEntity.getAtivo()) {
                 var authentication = new UsernamePasswordAuthenticationToken(
                     user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
