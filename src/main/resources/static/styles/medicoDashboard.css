@@ -11,6 +11,7 @@
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	gap: 50px;
+	padding-top: 10px;
 }
 .stat-card {
 	background: var(--card);
@@ -86,9 +87,9 @@
 
 .table-row {
 	display: grid;
-	grid-template-columns: 160px 120px 130px 110px 110px 1fr 130px;
+	grid-template-columns: 180px 160px 130px 180px 200px 1fr 130px;
 	padding: 12px 20px;
-	border-bottom: 2px solid var(--card);
+	border-bottom: 2px solid var(--border);
 	align-items: center;
 	transition: background 0.1s;
 	background: var(--bg);
@@ -195,4 +196,31 @@
 
 .info-header-left h2 {
     margin-bottom: 0;
+}
+
+.infomation-row {
+	font-size: 13px;
+	font-family: var(--sans);
+}
+
+.btn-ver {
+	background: transparent;
+	border: 1.5px solid var(--card);
+	color: var(--card);
+	font-family: var(--sans);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	padding: 4px 10px;
+	cursor: pointer;
+	border-radius: 4px;
+	transition:
+    background 0.15s,
+    color 0.15s;
+	white-space: nowrap;
+}
+
+.btn-ver:hover {
+	background: var(--card);
+	color: var(--accent);
 }
