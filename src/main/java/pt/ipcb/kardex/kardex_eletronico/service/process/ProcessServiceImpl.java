@@ -7,9 +7,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
@@ -21,13 +26,30 @@ import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 public class ProcessServiceImpl implements ProcessService{
 
     private final ProcessoClinicoRepository repository;
+    private final ProcessoMapper mapper;
     private final MedicamentoRepository medicamentoRepository;
     private final PrescricaoMapper prescricaoMapper;
     private final PrescricaoRepository prescricaoRepository;
     private final AdministracaoRepository administracaoRepository;
     private final AdministracaoMapper administracaoMapper;
-
     private final WorkerService workerService;
+
+    @Override
+    @Transactional
+    public void createProcess(Utente patient, CreateProcessDTO data) {        
+        if(repository.existsByUtente(patient)){
+            throw new ConflictEntitiesException("Este utente ja possui um processo ativo");
+        }
+        
+        var process = mapper.fromCreate(data);
+        var medic = workerService.getMedicById(data.medicoId());
+
+        process.setMedicoResponsavel(medic);
+        process.setUtente(patient);
+        patient.setEstado(EstadoUtente.INTERNADO);
+
+        repository.save(process);
+    }
 
     @Override
     @Transactional
