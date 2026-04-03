@@ -14,7 +14,7 @@ import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.ChangeUserPasswordDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
-import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.ExpiredResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
         try {
             repository.save(user);
         } catch (Exception e) {
-            throw new ConflictFieldsException();
+            throw new ConflictEntitiesException("Conflito com utilizadores existentes em um dos campos preenchidos");
         }
     }
 
