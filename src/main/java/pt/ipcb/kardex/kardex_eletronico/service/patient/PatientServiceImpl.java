@@ -4,44 +4,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
-import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
-import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.PatientFileMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtenteRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
 
 @Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService{
 
     private final UtenteRepository repository;
-    private final ProcessoClinicoRepository processoRepository;
-    private final UtenteMapper mapper;
-    private final ProcessoMapper processoMapper;
+    private final PatientFileMapper fileMapper;
+    private final ProcessService processService;
 
     @Override
     @Transactional
-    public void createPatient(CreatePatientDTO data) {
-        var patient = mapper.fromCreate(data);
-        repository.save(patient);
-    }
+    public void createPatient(CreatePatientFileDTO data) {
+        var patient = fileMapper.toUtente(data);
+        var process = fileMapper.toProcessDTO(data);
 
-    @Override
-    @Transactional
-    public void createProcess(Long patientId, CreateProcessDTO data) {
-        var patient = repository.findById(patientId)
-            .orElseThrow(() -> EntityNotFoundException.forId(patientId, "Utente"));
-        
-        var process = processoMapper.fromCreate(data);
+        var createdPatient = repository.save(patient);
 
-        process.setUtente(patient);
-        patient.setEstado(EstadoUtente.INTERNADO);
-
-        processoRepository.save(process);
-        repository.save(patient);
+        processService.createProcess(createdPatient, process);
     }
 
     @Override
