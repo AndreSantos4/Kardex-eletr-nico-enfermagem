@@ -67,7 +67,7 @@ public class Utente {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "utente_flags", joinColumns = @JoinColumn(name = "id_utente"))
     @Column(name = "flag_risco")
-    public Set<FlagRisco> flagRiscos = new HashSet<>();
+    public Set<FlagRisco> flagsRisco = new HashSet<>();
     
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     public List<RegistoClinico> historico = new ArrayList<>();
