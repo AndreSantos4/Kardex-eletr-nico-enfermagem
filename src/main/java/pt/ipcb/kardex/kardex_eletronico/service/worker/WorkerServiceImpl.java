@@ -11,11 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.UnwantedResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.FuncionarioMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
@@ -134,5 +136,17 @@ public class WorkerServiceImpl implements WorkerService {
         var administrationsThisMonth = repository.getAdministrationsCountThisMonth(workerId);
 
         return new WorkerActivitySummary(lastActivity, shiftsThisMonth, incidentsThisMonth, administrationsThisMonth);
+    }
+
+    @Override
+    public Funcionario getMedicById(long medicoId) {
+        var worker = repository.findById(medicoId)
+                .orElseThrow(() -> EntityNotFoundException.forId(medicoId, "Funcionario"));
+
+        if(worker.utilizador.getRole() != Role.MEDICO){
+                throw new UnwantedResourceException("O funcionario com id " + medicoId +  " nao e um medico");
+        }
+
+        return worker;
     }
 }

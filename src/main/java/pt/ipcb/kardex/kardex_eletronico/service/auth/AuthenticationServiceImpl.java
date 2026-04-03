@@ -19,7 +19,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.authentication.LoginResponseDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.PasswordResetRequestDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.RegisterDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.VerifyTwoFactorDTO;
-import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InvalidCredentialsException;
 import pt.ipcb.kardex.kardex_eletronico.exception.UserAlreadyExistsException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
@@ -88,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             passwordReset(new PasswordResetRequestDTO(newUser.getNumeroMecanografico().toString()));
         } catch (Exception e) {
-            throw new ConflictFieldsException();
+            throw new ConflictEntitiesException("Conflito com outros utilizadores existentes em um dos campos preenchidos");
         }
     }
 

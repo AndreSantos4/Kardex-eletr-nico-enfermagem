@@ -1,17 +1,22 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.patient;
 
-import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
+import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
+
 public record CreatePatientDTO(
-    @JsonProperty("numeroSNS") int numeroSNS,
-    @JsonProperty("numeroCC") String numeroCC,
-    @JsonProperty("primeiroNome") String primeiroNome,
-    @JsonProperty("apelido") String apelido,
+    @JsonProperty("nome") String nome,
+    @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento,
     @JsonProperty("sexo") Sexo sexo,
-    @JsonProperty("contacto") int contacto,
-    @JsonProperty("contactoEmergencia") int contactoEmergencia
+    @JsonProperty("numeroCC") String numeroCC,
+    @JsonProperty("numeroSNS") long numeroSNS,
+    @JsonProperty("alergias") Alergia[] alergias,
+    @JsonProperty("flagsRisco") FlagRisco[] flagsRisco
 ) {
 
 }

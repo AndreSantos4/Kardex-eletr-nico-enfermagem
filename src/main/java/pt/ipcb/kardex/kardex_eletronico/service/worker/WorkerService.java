@@ -30,4 +30,6 @@ public interface WorkerService {
     List<ShiftSummaryDTO> getWorkerShiftsInfo(Long id);
 
     WorkerActivitySummary getWorkerActivitySummary(Long workerId);
+
+    Funcionario getMedicById(long medicoId);
 }

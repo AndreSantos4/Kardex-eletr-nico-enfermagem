@@ -8,7 +8,7 @@ public enum CalibreCateter {
     CATETER_HEMODIALISE("Cateter hemodiálise"),
     CATETER_DUPLO_J ("Cateter duplo J"),
     CATETER_URINARIO("Cateter urinário"),
-    CATETER_NASAL("Cateter nasal"),;
+    CATETER_NASAL("Cateter nasal");
     
     public final String nome;
     
