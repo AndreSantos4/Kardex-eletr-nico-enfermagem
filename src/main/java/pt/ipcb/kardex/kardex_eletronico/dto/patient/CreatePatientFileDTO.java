@@ -5,6 +5,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,9 +21,9 @@ public record CreatePatientFileDTO(
         @JsonProperty("contactoEmergencia") int contactoEmergencia,
     @JsonProperty("medicoId") Long medicoId,
     @JsonProperty("camaId") String camaId,
-    @JsonProperty("alergias") Alergia[] alergias,
+    @JsonProperty("alergias") List<Alergia> alergias,
     @JsonProperty("motivoInternamento") String motivoInternamento,
-    @JsonProperty("flagsRisco") FlagRisco[] flagsRisco
+    @JsonProperty("flagsRisco") List<FlagRisco> flagsRisco
 ) {
 
 }
