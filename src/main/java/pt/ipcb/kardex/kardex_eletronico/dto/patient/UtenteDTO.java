@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.patient;
 
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public record UtenteDTO(
     @JsonProperty("contactoEmergencia") int contactoEmergencia,
     @JsonProperty("estado") EstadoUtente estado,
     @JsonProperty("alergias") List<AlergiaDTO> alergias,
-    @JsonProperty("flags") List<FlagRiscoDTO> flagsRiscos
+    @JsonProperty("flags") List<FlagRisco> flagsRiscos
 ) {
 
 }
