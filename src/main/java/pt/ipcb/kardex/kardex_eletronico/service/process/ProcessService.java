@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.process;
 
 import jakarta.servlet.http.HttpServletRequest;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
@@ -13,5 +14,7 @@ public interface ProcessService {
     void createPrescription(Long processId, CreatePrescriptionDTO data);
 
     void administrateMedication(Long prescriptionId, CreateAdministrationDTO data, HttpServletRequest request);
+
+    public void editActiveProcess(Utente patient, UpdatePacientFileDTO data);
 
 }

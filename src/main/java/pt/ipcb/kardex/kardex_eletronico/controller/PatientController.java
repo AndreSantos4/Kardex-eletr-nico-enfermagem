@@ -1,7 +1,9 @@
 package pt.ipcb.kardex.kardex_eletronico.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
 
 @RestController
@@ -22,5 +25,11 @@ public class PatientController {
     public ResponseEntity<ApiResponse<?>> createPatientFile(@RequestBody CreatePatientFileDTO data){
         service.createPatient(data);
         return ResponseEntity.ok(ApiResponse.ok("Ficha de utente criada com sucesso", null));
+    }
+
+    @PutMapping("/{patientId}")
+    public ResponseEntity<ApiResponse<?>> editPatientFile(@PathVariable("patientId") Long id, @RequestBody UpdatePacientFileDTO data){
+        service.editPatientFile(id, data);
+        return ResponseEntity.ok(ApiResponse.ok("Ficha de utente editada com sucesso", null));
     }
 }

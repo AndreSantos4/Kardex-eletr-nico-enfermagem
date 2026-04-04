@@ -1,6 +1,5 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.patient;
 
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
@@ -21,7 +20,7 @@ public record CreatePatientFileDTO(
         @JsonProperty("contactoEmergencia") int contactoEmergencia,
     @JsonProperty("medicoId") Long medicoId,
     @JsonProperty("camaId") String camaId,
-    @JsonProperty("alergias") List<Alergia> alergias,
+    @JsonProperty("alergiasId") List<AlergiaDTO> alergias,
     @JsonProperty("motivoInternamento") String motivoInternamento,
     @JsonProperty("flagsRisco") List<FlagRisco> flagsRisco
 ) {

@@ -27,7 +27,7 @@ public class Utente {
     public Long id;
     
     @Column(name = "numero_sns", nullable = false)
-    public Integer numeroSNS;
+    public Long numeroSNS;
     
     @Column(name = "numero_cc", nullable = false)
     public String numeroCC;

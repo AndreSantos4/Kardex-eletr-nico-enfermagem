@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
@@ -16,6 +17,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
@@ -33,6 +35,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final AdministracaoRepository administracaoRepository;
     private final AdministracaoMapper administracaoMapper;
     private final WorkerService workerService;
+    private final CamaRepository camaRepository;
 
     @Override
     @Transactional
@@ -43,9 +46,11 @@ public class ProcessServiceImpl implements ProcessService{
         
         var process = mapper.fromCreate(data);
         var medic = workerService.getMedicById(data.medicoId());
+        var bed = camaRepository.findById(data.camaId()).orElse(null);
 
         process.setMedicoResponsavel(medic);
         process.setUtente(patient);
+        process.setCama(bed);
         patient.setEstado(EstadoUtente.INTERNADO);
 
         repository.save(process);
@@ -80,5 +85,22 @@ public class ProcessServiceImpl implements ProcessService{
         administration.setTurno(shift);
 
         administracaoRepository.save(administration);
+    }
+
+    @Override
+    public void editActiveProcess(Utente patient, UpdatePacientFileDTO data) {
+        var process = repository.findByUtenteAndAltaFalse(patient)
+            .orElseThrow(() -> new EntityNotFoundException("O utente com id " + patient.getId() + " nao possui nenhum processo ativo"));
+
+        var medic = workerService.getMedicById(data.medicoId());
+
+        if(data.camaId() != null){
+            var bed = camaRepository.findById(data.camaId()).orElse(null);
+            process.setCama(bed);
+        }
+        
+        process.setMedicoResponsavel(medic);
+
+        repository.save(process);
     }
 }
