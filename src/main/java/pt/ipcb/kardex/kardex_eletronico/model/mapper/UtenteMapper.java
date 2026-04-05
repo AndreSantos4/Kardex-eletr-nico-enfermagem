@@ -5,6 +5,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreateAlergyDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Prescricao;
@@ -19,6 +20,8 @@ public interface UtenteMapper {
     List<UtenteDTO> toDTOList(List<Utente> utilizadores);
 
     Alergia toAlergiaEntity(AlergiaDTO data);
+
+    Alergia fromCreateAlergy(CreateAlergyDTO data);
 
     AlergiaDTO toAlergiaDTO(Alergia data);
 }

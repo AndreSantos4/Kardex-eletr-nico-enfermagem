@@ -15,10 +15,17 @@ public record UpdatePacientFileDTO(
     @JsonProperty("sexo") Sexo sexo,
     @JsonProperty("numeroCC") String numeroCC,
     @JsonProperty("numeroSNS") long numeroSNS,
+    @JsonProperty("contacto") int contacto,
+    @JsonProperty("contactoEmergencia") int contactoEmergencia,
     @JsonProperty("camaId") String camaId,
     @JsonProperty("medicoId") long medicoId,
     @JsonProperty("flagsRisco") List<FlagRisco> flagsRisco,
-    @JsonProperty("alergias") List<AlergiaDTO> alergias
+    @JsonProperty("alergias") List<CreateAlergyDTO> alergias
 ) {
 
+    public UpdatePacientFileDTO {
+        if (camaId == null) camaId = "N/A";
+        if (alergias == null) alergias = List.of();
+        if (flagsRisco == null) flagsRisco = List.of();
+    }
 }
