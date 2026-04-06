@@ -153,6 +153,10 @@ body {
     margin: 0;
 }
 
+.page-header p{
+    margin: 0;
+}
+
 /*Status Bar*/
 .status-bar {
 	padding: 14px 20px;
