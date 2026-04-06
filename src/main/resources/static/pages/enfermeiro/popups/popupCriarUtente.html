@@ -1,0 +1,158 @@
+<link rel="stylesheet" href="../../../styles/popupCriarUtente.css">
+
+<div class="pop-up-criar"> <!--style="display: none"-->
+  <div class="pop-up">
+    <div class="pop-up-header">
+      <div class="title"><h3>Criar Ficha de Utente</h3></div>
+      <div class="icon">
+        <a
+          href=""
+          class="cross"
+          onclick="
+            fecharPopUp();
+            return false;
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="15"
+            width="15"
+            viewBox="0 0 384 512"
+          >
+            <path
+              fill="rgb(220, 49, 26)"
+              d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="pop-up-main">
+      <form onsubmit="createUser(event)" method="post">
+        <label for="name">NOME COMPLETO *</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Nome Completo"
+          required
+        />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="data-nascimento">DATA DE NASCIMENTO *</label>
+            <input
+              type="date"
+              name="data-nascimento"
+              id="data-nascimento"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="sexo">Sexo *</label>
+            <select name="sexo" id="sexo">
+              <option value="MASCULINO">Masculino</option>
+              <option value="FEMININO">Feminino</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cama">CAMA *</label>
+            <select name="cama" id="cama">
+                <!--TODO: André falta adiocionar aqui as camas que estão disponíveis-->
+                <option value="">1</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="n-identificacao">Nº IDENTIFICAÇÃO *</label>
+            <input
+              type="text"
+              name="n-identificacao"
+              id="n-identificacao"
+              placeholder="BI/CC"
+              maxlength="12"
+              pattern="\d{9}[A-Z]{2}\d"
+              title="9 dígitos, 2 letras maiúsculas e 1 dígito"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="n-sns">Nº SNS *</label>
+            <input
+              type="text"
+              name="n-sns"
+              id="n-sns"
+              pattern="\d{9}"
+              placeholder="Número SNS"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="medico-responsavel">MÉDICO RESPONSÁVEL *</label>
+            <select name="medico-responsavel" id="medico-responsavel">
+                <!--TODO: André falta adiocionar aqui as camas que estão disponíveis-->
+                <option value="">Joaquim</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="diagnostico-principal">DIAGNÓSTICO PRINCIPAL *</label>
+                <input type="text" name="diagnostico-principal" id="diagnostico-principal" placeholder="CID-10 / Diagnóstico" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contacto">CONTACTO *</label>
+                <input type="tel" name="contacto" id="contacto" placeholder="Contacto" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contacto-emg">CONTACTO EMERGÊNCIA *</label>
+                <input type="tel" name="contacto" id="contacto" placeholder="Contacto" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>ALERGIAS CONHECIDAS</label>
+                <div class="alergias-box">
+                    <div class="alergia-item">
+                        <input type="text" placeholder="Alergia" />
+                        <button type="button" class="btn-remover-alergia">−</button>
+                    </div>
+                    <button type="button" class="btn-adicionar-alergia">+ Adicionar outras Alergias</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>FLAGS DE RISCO</label>
+                <div class="flags-box">
+                    <label class="flag-item"><input type="checkbox" name="flags" value="fuga"> Risco de Fuga</label>
+                    <label class="flag-item"><input type="checkbox" name="flags" value="automotilacao"> Risco de Automotilação</label>
+                    <label class="flag-item"><input type="checkbox" name="flags" value="queda"> Risco de Queda</label>
+                    <label class="flag-item"><input type="checkbox" name="flags" value="agressividade"> Risco de Agressividade</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>MOTIVO DE INTERNAMENTO</label>
+                <textarea name="motivo-internamento" placeholder="Motivo de internamento e contexto clínico ..."></textarea>
+            </div>
+        </div>
+
+        <div class="buttons-bottom">
+          <input
+            type="button"
+            value="Cancelar"
+            class="btn-cancelar"
+            onclick="fecharPopUp()"
+          />
+          <input type="submit" value="Guardar" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
