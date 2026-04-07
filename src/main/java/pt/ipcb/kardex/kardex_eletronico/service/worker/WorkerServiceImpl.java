@@ -149,4 +149,10 @@ public class WorkerServiceImpl implements WorkerService {
 
         return worker;
     }
+
+    @Override
+    public List<FuncionarioDTO> getAllMedics() {
+        var teste = repository.findByDadosRole(Role.MEDICO);
+        return mapper.toDTOList(teste);
+    }
 }
