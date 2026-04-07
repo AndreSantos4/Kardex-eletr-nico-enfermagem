@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.model.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
@@ -10,7 +11,8 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 
 @Mapper(componentModel = "spring")
 public interface ProcessoMapper {
-    ProcessoClinicoDTO toDTO(ProcessoClinico utilizador);
+    @Mapping(target = "utenteId", source = "data.utente.id")
+    ProcessoClinicoDTO toDTO(ProcessoClinico data);
 
     ProcessoClinico toEntity(ProcessoClinicoDTO dto);
 

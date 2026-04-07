@@ -1,6 +1,10 @@
 package pt.ipcb.kardex.kardex_eletronico.service.patient;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +13,11 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreateAlergyDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PatientFileMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
@@ -84,5 +91,34 @@ public class PatientServiceImpl implements PatientService{
         var newAlergy = mapper.fromCreateAlergy(data);
 
         return alergiaRepository.save(newAlergy);
+    }
+
+    @Override
+    public List<UtenteDTO> getAllPatients(Optional<String> filter) {
+        var patients = repository.findAll();
+        var activeProcesses = processService.getAllActiveProcesses();
+
+        Map<Long, ProcessoClinicoDTO> processoByUtenteId = activeProcesses.stream()
+                .collect(Collectors.toMap(p -> p.utenteId(), p -> p));
+
+        Stream<Utente> stream = patients.stream();
+
+        if (filter.isPresent()) {
+            String f = filter.get().toLowerCase();
+            stream = stream.filter(u -> {
+                boolean matchesPatient = u.getNome().toLowerCase().contains(f)
+                        || u.getNumeroSNS().toString().contains(f);
+
+                ProcessoClinicoDTO processo = processoByUtenteId.get(u.getId());
+                boolean matchesProcess = processo != null
+                        && String.valueOf(processo.id()).contains(f);
+
+                return matchesPatient || matchesProcess;
+            });
+        }
+
+        return stream
+                .map(u -> mapper.toDto(u, processoByUtenteId.get(u.getId())))
+                .toList();
     }
 }

@@ -130,7 +130,7 @@ public class WorkerServiceImpl implements WorkerService {
     public WorkerActivitySummary getWorkerActivitySummary(Long workerId) {
         var worker = repository.findById(workerId)
                 .orElseThrow(() -> EntityNotFoundException.forId(workerId, "Funcionário"));
-        var lastActivity = worker.getUtilizador().getDataUltimaAtividade();
+        var lastActivity = worker.getDados().getDataUltimaAtividade();
         var shiftsThisMonth = repository.getShiftsCountThisMonthById(workerId);
         var incidentsThisMonth = repository.getIncidentsCountThisMonthById(workerId);
         var administrationsThisMonth = repository.getAdministrationsCountThisMonth(workerId);
@@ -143,7 +143,7 @@ public class WorkerServiceImpl implements WorkerService {
         var worker = repository.findById(medicoId)
                 .orElseThrow(() -> EntityNotFoundException.forId(medicoId, "Funcionario"));
 
-        if(worker.utilizador.getRole() != Role.MEDICO){
+        if(worker.getDados().getRole() != Role.MEDICO){
                 throw new UnwantedResourceException("O funcionario com id " + medicoId +  " nao e um medico");
         }
 

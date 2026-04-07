@@ -22,7 +22,7 @@ public class Funcionario {
     
     @JoinColumn(name = "id_utilizador", nullable = false)
     @OneToOne(fetch = FetchType.EAGER)
-    public Utilizador utilizador;
+    public Utilizador dados;
     
     @JoinTable(
             name = "funcionario_turno",
@@ -34,6 +34,6 @@ public class Funcionario {
 
     public Funcionario(Utilizador user){
         id = null;
-        utilizador = user;
+        dados = user;
     }
 }
