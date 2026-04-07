@@ -5,12 +5,14 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 
 public record ProcessoClinicoDTO(
     @JsonProperty("id") Long id,
-    @JsonProperty("utente") UtenteDTO utente,
+    @JsonProperty("utenteId") Long utenteId,
+    @JsonProperty("medicoResponsavel") FuncionarioDTO medicoResponsavel,
     @JsonProperty("diagnosticoPrincipal") String diagnosticoPrincipal,
+    @JsonProperty("motivoInternamento") String motivoInternamento,
     @JsonProperty("cama") CamaDTO cama,
     @JsonProperty("dataEntrada") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataEntrada,
     @JsonProperty("dataSaida") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataSaida,
