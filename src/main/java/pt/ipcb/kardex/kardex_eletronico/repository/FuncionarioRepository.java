@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
@@ -41,4 +42,6 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
 
     @Query("SELECT COUNT(a) FROM Funcionario f JOIN f.turnos t JOIN t.administracoes a WHERE f.id = :id AND MONTH(t.inicio) = MONTH(CURRENT_DATE) AND YEAR(t.inicio) = YEAR(CURRENT_DATE)")
     int getAdministrationsCountThisMonth(@Param("id") Long id);
+
+    List<Funcionario> findByDadosRole(Role role);
 }
