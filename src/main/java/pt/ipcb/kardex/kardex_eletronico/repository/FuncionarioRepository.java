@@ -21,7 +21,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     @Query("SELECT t FROM Funcionario f JOIN f.turnos t WHERE f.id = :id AND t.inicio <= :from AND t.inicio > :to ORDER BY t.inicio DESC")
     List<Turno> findPreviousTurnos(@Param("id") Long id, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
-    @Query("SELECT f FROM Funcionario f JOIN f.utilizador u WHERE u.id = :id")
+    @Query("SELECT f FROM Funcionario f JOIN f.dados u WHERE u.id = :id")
     Optional<Funcionario> findByUserId(Long id);
 
     @Query("SELECT t FROM Funcionario f JOIN f.turnos t WHERE f.id = :id AND t.inicio <= :now AND t.fim >= :now")
