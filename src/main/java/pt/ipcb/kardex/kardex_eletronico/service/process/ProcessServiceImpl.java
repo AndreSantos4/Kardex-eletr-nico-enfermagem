@@ -1,5 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.process;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +11,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
@@ -102,5 +105,10 @@ public class ProcessServiceImpl implements ProcessService{
         process.setMedicoResponsavel(medic);
 
         repository.save(process);
+    }
+
+    @Override
+    public List<ProcessoClinicoDTO> getAllActiveProcesses() {
+        return mapper.toDTOList(repository.findAllActive());
     }
 }
