@@ -57,6 +57,10 @@ public class ProcessServiceImpl implements ProcessService{
         process.setCama(bed);
         patient.setEstado(EstadoUtente.INTERNADO);
 
+        if(bed != null){
+            bed.setOcupada(true);
+        }
+
         repository.save(process);
     }
 
@@ -100,7 +104,10 @@ public class ProcessServiceImpl implements ProcessService{
 
         if(data.camaId() != null){
             var bed = camaRepository.findById(data.camaId()).orElse(null);
+            var previousBed = process.getCama();
+            previousBed.setOcupada(false);
             process.setCama(bed);
+            bed.setOcupada(true);
         }
         
         process.setMedicoResponsavel(medic);
