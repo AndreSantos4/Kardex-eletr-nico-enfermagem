@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record AlergiaDTO(
     @JsonProperty("id") Long id,
-    @JsonProperty("nome") String nome,
-    @JsonProperty("descricao") String descricao
+    @JsonProperty("nome") String nome
 ) {
 
 }

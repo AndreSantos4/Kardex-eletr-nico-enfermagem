@@ -19,7 +19,4 @@ public class Alergia {
     
     @Column(name = "nome", nullable = false)
     public String nome;
-    
-    @Column(name = "descricao", nullable = false)
-    public String descricao;
 }
