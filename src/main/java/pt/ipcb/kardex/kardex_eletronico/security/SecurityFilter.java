@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -35,15 +34,14 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String ip = request.getRemoteAddr(); 
+        String ip = request.getRemoteAddr();
         if (ipRepository.existsByEnderecoIP(ip)) {
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write(
-                    objectMapper.writeValueAsString(ApiResponse.error("Acesso Bloqueado")));
+            response.getWriter().write(objectMapper.writeValueAsString(ApiResponse.error("Acesso Bloqueado")));
             return;
         }
-        
+
         var token = service.recoverCookie(request);
         if (token == null) {
             filterChain.doFilter(request, response);
@@ -56,14 +54,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             return;
         }
 
-        UserDetails user = repository.findByNumeroMecanografico(subject);
-        Utilizador utilizadorEntity = (Utilizador) user;
-        if (utilizadorEntity != null && sessaoRepository.findByUtilizador(utilizadorEntity).isPresent()) {
-            if (utilizadorEntity.getAtivo()) {
-                var authentication = new UsernamePasswordAuthenticationToken(
-                    user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        Utilizador user = (Utilizador) repository.findByNumeroMecanografico(subject);
+
+        if (user != null && user.getAtivo() && sessaoRepository.findByUtilizador(user).isPresent()) {
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
