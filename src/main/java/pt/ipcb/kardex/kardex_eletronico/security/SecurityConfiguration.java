@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/users/password-reset").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/users/change-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/workers/medics").hasAnyRole("ENFERMEIRO", "MEDICO")
                         .requestMatchers(HttpMethod.GET, "/api/workers/{workerId}", 
                                                                     "/api/workers/{workerId}/summary", 
                                                                     "/api/workers/{workerId}/shifts/summary", 
@@ -49,7 +50,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/{sessionId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/ip").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/sessions/ip").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/stats/**").hasRole("ADMIN")
 
 
                         .requestMatchers("/styles/**", "/scripts/**").permitAll()
