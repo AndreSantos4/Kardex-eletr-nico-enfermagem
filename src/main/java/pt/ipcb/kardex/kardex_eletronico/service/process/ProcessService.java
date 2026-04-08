@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.service.process;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
@@ -24,5 +25,7 @@ public interface ProcessService {
     List<ProcessoClinicoDTO> getAllActiveProcesses();
 
     List<CamaDTO> getAllBeds(boolean occupied);
+
+    public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns, HttpServletRequest request);
 
 }
