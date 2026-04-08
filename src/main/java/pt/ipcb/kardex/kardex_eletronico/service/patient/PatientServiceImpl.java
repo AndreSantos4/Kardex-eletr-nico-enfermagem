@@ -67,6 +67,7 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
+    @Transactional
     public void editPatientFile(Long id, UpdatePacientFileDTO data) {
         var patient = repository.findById(id)
             .orElseThrow(() -> EntityNotFoundException.forId(id, "Utente"));
@@ -93,6 +94,7 @@ public class PatientServiceImpl implements PatientService{
 
     }
 
+    @Transactional
     private Alergia verifyAlergy(CreateAlergyDTO data){
         var alergy = alergiaRepository.findByNome(data.nome());
 
@@ -106,6 +108,7 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UtenteDTO> getAllPatients(PatientState filter, Optional<String> search) {
         List<Utente> patients;
         var parsedFilter = toEstadoUtente(filter);
@@ -151,6 +154,7 @@ public class PatientServiceImpl implements PatientService{
 }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AlergiaDTO> getAllAlergies() {
         return mapper.toAlergiaDTOList(alergiaRepository.findAll());
     }

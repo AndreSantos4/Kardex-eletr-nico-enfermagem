@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class WorkerServiceImpl implements WorkerService {
     private final UserService userService;
 
     @Override
+    @Transactional(readOnly = true)
     public FuncionarioDTO getWorkerFromUserId(Long userId) {
         var worker = repository.findByUserId(userId)
                 .orElseThrow(() -> EntityNotFoundException.forId(userId, "Utilizador"));
@@ -46,12 +48,14 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional
     public void createWorkerByUser(Utilizador user) {
         var worker = new Funcionario(user);
         repository.save(worker);
     }
 
     @Override
+    @Transactional
     public void addToShift(Long workerId, Long shiftId) {
         var worker = repository.findById(workerId)
                 .orElseThrow(() -> EntityNotFoundException.forId(workerId, "Funcionário"));
@@ -65,6 +69,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional
     public void removeFromShift(Long workerId, Long shiftId) {
         var worker = repository.findById(workerId)
                 .orElseThrow(() -> EntityNotFoundException.forId(workerId, "Funcionário"));
@@ -78,6 +83,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TurnoDTO> getWorkerShifts(Long id, int range) {
         var from = LocalDateTime.now();
         var to = from.plusDays(range);
@@ -91,6 +97,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Funcionario getAutenticatedWorker(HttpServletRequest request) {
         var user = userService.getUserByToken(request);
         return repository.findByUserId(user.id())
@@ -98,11 +105,13 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Turno getCurrentShift(Long id) {
         return repository.findCurrentTurno(id, LocalDateTime.now());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ShiftSummaryDTO> getWorkerShiftsInfo(Long id) {
         var shifts = getWorkerShifts(id, SHIFTS_INFO_RANGE_MONTHS);
         var shiftIds = shifts.stream().map(TurnoDTO::id).toList();
@@ -127,6 +136,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public WorkerActivitySummary getWorkerActivitySummary(Long workerId) {
         var worker = repository.findById(workerId)
                 .orElseThrow(() -> EntityNotFoundException.forId(workerId, "Funcionário"));
@@ -139,6 +149,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Funcionario getMedicById(long medicoId) {
         var worker = repository.findById(medicoId)
                 .orElseThrow(() -> EntityNotFoundException.forId(medicoId, "Funcionario"));
@@ -151,6 +162,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FuncionarioDTO> getAllMedics() {
         var teste = repository.findByDadosRole(Role.MEDICO);
         return mapper.toDTOList(teste);

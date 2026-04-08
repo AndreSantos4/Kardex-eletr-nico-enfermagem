@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
@@ -96,6 +97,7 @@ public class ProcessServiceImpl implements ProcessService{
     }
 
     @Override
+    @Transactional
     public void editActiveProcess(Utente patient, UpdatePacientFileDTO data) {
         var process = repository.findByUtenteAndAltaFalse(patient)
             .orElseThrow(() -> new EntityNotFoundException("O utente com id " + patient.getId() + " nao possui nenhum processo ativo"));
@@ -116,12 +118,28 @@ public class ProcessServiceImpl implements ProcessService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProcessoClinicoDTO> getAllActiveProcesses() {
         return mapper.toDTOList(repository.findAllActive());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CamaDTO> getAllBeds(boolean occupied) {
         return camaRepository.findByOcupada(occupied);
+    }
+
+    @Override
+    @Transactional
+    public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns, HttpServletRequest request) {
+        var process = repository.findById(processId)
+            .orElseThrow(() -> EntityNotFoundException.forId(processId, "Process Clinico"));
+
+        var vitalSign = mapper.fromVitalSignRegister(vitalSigns);
+        vitalSign.setProcessoClinico(process);
+        vitalSign.setFuncionario(workerService.getAutenticatedWorker(request));
+        process.getSinaisVitais().add(vitalSign);
+
+        repository.save(process);
     }
 }

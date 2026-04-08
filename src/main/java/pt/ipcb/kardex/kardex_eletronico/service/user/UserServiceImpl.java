@@ -137,6 +137,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long validatePasswordResetRequest(String token) {
         var tokenHash = passwordTokenService.hashPasswordResetUUID(token);
 

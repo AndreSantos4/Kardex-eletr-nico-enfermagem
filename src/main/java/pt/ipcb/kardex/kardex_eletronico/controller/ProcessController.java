@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
@@ -45,5 +46,14 @@ public class ProcessController {
     public ResponseEntity<ApiResponse<List<CamaDTO>>> getAllBeds(@RequestParam(name = "o", defaultValue = "false") boolean occupied){
         var beds = service.getAllBeds(occupied);
         return ResponseEntity.ok(ApiResponse.ok("Camas obtidas com sucesso", beds));
+    }
+
+    @PostMapping("/{processId}/vitals")
+    public ResponseEntity<ApiResponse<?>> registerVitalSigns(@PathVariable("processId") Long processId, 
+        @RequestBody RegisterVitalSignsDTO vitalSigns, 
+        HttpServletRequest request){
+
+        service.registerVitalSigns(processId, vitalSigns, request);
+        return ResponseEntity.ok(ApiResponse.ok("Sinais vitais registados com sucesso"));
     }
 }
