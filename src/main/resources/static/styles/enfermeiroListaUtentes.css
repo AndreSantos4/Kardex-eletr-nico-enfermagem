@@ -320,6 +320,11 @@ body {
   width: 10%;
 }
 
+.lista-utentes th:nth-child(9),
+.lista-utentes td:nth-child(9) {
+  width: 10%;
+}
+
 .lista-utentes thead tr {
   background-color: var(--primary);
   color: var(--white);
