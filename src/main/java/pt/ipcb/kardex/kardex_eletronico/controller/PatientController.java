@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
 
 @RestController
@@ -41,8 +43,10 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UtenteDTO>>> getAllPatitents(@RequestParam("f") Optional<String> filter){
-        var patients = service.getAllPatients(filter);
+    public ResponseEntity<ApiResponse<List<UtenteDTO>>> getAllPatitents(@RequestParam(name = "f", defaultValue = "ALL") PatientState filter, 
+        @RequestParam("s") Optional<String> search){
+
+        var patients = service.getAllPatients(filter, search);
         return ResponseEntity.ok(ApiResponse.ok("Utentes obtidos com sucesso", patients));
     }
 
