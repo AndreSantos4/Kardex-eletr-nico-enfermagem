@@ -8,7 +8,7 @@
     --alertas: hsl(0, 98%, 36%);
 }
 
-/*Body*/
+/*Body*/ 
 body {
     font-family: var(--sans);
     color: var(--text);

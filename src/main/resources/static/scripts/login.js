@@ -105,12 +105,12 @@ function validateM2F(event) {
                   break;
                 case "MEDICO":
                   window.location.replace(
-                    "http://localhost:8080/pages/medico/medicoDashboard.html",
+                    "http://localhost:8080/medicoDashboard",
                   );
                   break;
                 case "ENFERMEIRO":
                   window.location.replace(
-                    "http://localhost:8080/pages/medico/medicoDashboard.html",
+                    "http://localhost:8080/enfermeiroDashboard",
                   );
                   break;
                 case "ENFERMEIRO_CHEFE":

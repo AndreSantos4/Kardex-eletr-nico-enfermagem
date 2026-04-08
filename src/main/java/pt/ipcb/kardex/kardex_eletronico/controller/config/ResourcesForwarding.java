@@ -10,39 +10,53 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("")
 public class ResourcesForwarding {
 
+    @GetMapping("")
+    public ModelAndView none() {
+        return new ModelAndView("forward:/pages/login/login.html");
+    }
 
     @GetMapping("/login")
-    public ModelAndView login(){
+    public ModelAndView login() {
         return new ModelAndView("forward:/pages/login/login.html");
     }
 
     @GetMapping("/recuperarPassword")
-    public ModelAndView recuperarPassword(@RequestParam("t") String token){
+    public ModelAndView recuperarPassword(@RequestParam("t") String token) {
         return new ModelAndView("forward:/pages/login/recuperarPassword.html?t=" + token);
     }
 
     @GetMapping("/adminDashboard")
-    public ModelAndView adminDashboard(){
+    public ModelAndView adminDashboard() {
         return new ModelAndView("forward:/pages/admin/adminDashboard.html");
     }
 
     @GetMapping("/adminGestaoUtilizadores")
-    public ModelAndView adminGestaoUtilizadores(){
+    public ModelAndView adminGestaoUtilizadores() {
         return new ModelAndView("forward:/pages/admin/adminGestaoUtilizadores.html");
     }
 
     @GetMapping("/adminSessoesAtivas")
-    public ModelAndView adminSessoesAtivas(){
+    public ModelAndView adminSessoesAtivas() {
         return new ModelAndView("forward:/pages/admin/adminSessoesAtivas.html");
     }
 
     @GetMapping("/perfilColaborador")
-    public ModelAndView perfilColaborador(){
+    public ModelAndView perfilColaborador() {
         return new ModelAndView("forward:/pages/admin/perfilColaborador.html");
     }
 
     @GetMapping("/medicoDashboard")
-    public ModelAndView medicoDashboard(){
+    public ModelAndView medicoDashboard() {
         return new ModelAndView("forward:/pages/medico/medicoDashboard.html");
+    }
+
+    @GetMapping("/enfermeiroDashboard")
+    public ModelAndView enfermeiroDashboard() {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroDashboard.html");
+    }
+
+    @GetMapping("/perfilUtente")
+    public ModelAndView perfilUtente() {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroListaUtentes.html");
     }
 }
