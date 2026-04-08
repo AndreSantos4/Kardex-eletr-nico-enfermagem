@@ -40,7 +40,7 @@ public class WorkerController {
     @GetMapping("/medics")
     public ResponseEntity<ApiResponse<List<FuncionarioDTO>>> getAllMedics(){
         var medics = service.getAllMedics();
-        return ResponseEntity.ok(ApiResponse.ok(medics));
+        return ResponseEntity.ok(ApiResponse.ok("Medicos obtidos com sucesso", medics));
     } 
 
     @PostMapping("{workerId}/shifts/add/{shiftId}")
