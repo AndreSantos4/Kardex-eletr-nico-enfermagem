@@ -1,0 +1,49 @@
+<link rel="stylesheet" href="../../../styles/popupRegistarAlta.css">
+
+<div class="pop-up-registar">
+    <div class="pop-up">
+        <div class="pop-up-header">
+            <div class="title">
+                <h3>Registar alta clínica</h3>
+            </div>
+            <div class="icon">
+                <a href="" class="cross" onclick="
+            fecharPopUp();
+            return false;
+          ">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)"
+                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="pop-up-main">
+
+            <div class="info-box">               
+                <div>
+                    <p>André Miguel Fonseca Santos
+                        <br>Nº Processo: 20260214
+                    </p>
+                </div>
+            </div>
+            
+            <form onsubmit="createUser(event)" method="post">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data-nascimento">DATA/HORA *</label>
+                        <input type="datetime-local" name="dataHora" id="dataHora" required />
+                        <label for="notas">NOTAS DA ALTA *</label>
+                        <textarea name="notas" id="notas"
+                            placeholder="Descreve as notas da alta clínica (motivo etc...)." required></textarea>
+                    </div>
+                </div>
+                <div class="buttons-bottom">
+                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUp()" />
+                    <input type="submit" value="Registar" />
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
