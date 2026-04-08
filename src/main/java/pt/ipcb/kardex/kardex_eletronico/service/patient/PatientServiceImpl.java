@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreateAlergyDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
@@ -48,9 +50,13 @@ public class PatientServiceImpl implements PatientService{
                 .collect(Collectors.toSet())
         );
 
-        var createdPatient = repository.save(patient);
+        try {
+            var createdPatient = repository.save(patient);
+            processService.createProcess(createdPatient, process);
+        } catch (Exception e) {
+            throw new ConflictEntitiesException("A nova ficha de utentes esta em conflito com uma das fichas ja exitentes em algum dos campos");
+        }
 
-        processService.createProcess(createdPatient, process);
     }
 
     @Override
@@ -76,9 +82,14 @@ public class PatientServiceImpl implements PatientService{
                 .collect(Collectors.toSet())
         );
         
-        repository.save(patient);
+        try {
+            repository.save(patient);
 
-        processService.editActiveProcess(patient, data);
+            processService.editActiveProcess(patient, data);
+        } catch (Exception e) {
+            throw new ConflictEntitiesException("Os novos dado da ficha estao em conflito com dados ja existentes");
+        }
+
     }
 
     private Alergia verifyAlergy(CreateAlergyDTO data){
@@ -120,5 +131,10 @@ public class PatientServiceImpl implements PatientService{
         return stream
                 .map(u -> mapper.toDto(u, processoByUtenteId.get(u.getId())))
                 .toList();
+    }
+
+    @Override
+    public List<AlergiaDTO> getAllAlergies() {
+        return mapper.toAlergiaDTOList(alergiaRepository.findAll());
     }
 }
