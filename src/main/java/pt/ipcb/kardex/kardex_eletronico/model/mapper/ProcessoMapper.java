@@ -5,9 +5,11 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.SinalVital;
 
 @Mapper(componentModel = "spring")
 public interface ProcessoMapper {
@@ -17,6 +19,8 @@ public interface ProcessoMapper {
     ProcessoClinico toEntity(ProcessoClinicoDTO dto);
 
     ProcessoClinico fromCreate(CreateProcessDTO dto);
-
+     
     List<ProcessoClinicoDTO> toDTOList(List<ProcessoClinico> utilizadores);
+
+    SinalVital fromVitalSignRegister(RegisterVitalSignsDTO data);
 }
