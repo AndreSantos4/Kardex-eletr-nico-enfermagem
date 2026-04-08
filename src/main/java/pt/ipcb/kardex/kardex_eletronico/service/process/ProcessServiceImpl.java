@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
@@ -110,5 +111,10 @@ public class ProcessServiceImpl implements ProcessService{
     @Override
     public List<ProcessoClinicoDTO> getAllActiveProcesses() {
         return mapper.toDTOList(repository.findAllActive());
+    }
+
+    @Override
+    public List<CamaDTO> getAllBeds(boolean occupied) {
+        return camaRepository.findByOcupada(occupied);
     }
 }
