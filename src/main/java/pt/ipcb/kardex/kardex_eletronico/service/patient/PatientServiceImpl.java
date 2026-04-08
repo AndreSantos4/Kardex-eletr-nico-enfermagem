@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreateAlergyDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
@@ -105,8 +106,16 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public List<UtenteDTO> getAllPatients(Optional<String> filter) {
-        var patients = repository.findAll();
+    public List<UtenteDTO> getAllPatients(PatientState filter, Optional<String> search) {
+        List<Utente> patients;
+        var parsedFilter = toEstadoUtente(filter);
+
+        if(parsedFilter == null){
+            patients = repository.findAll();
+        } else{
+            patients = repository.findByEstado(parsedFilter);
+        }
+        
         var activeProcesses = processService.getAllActiveProcesses();
 
         Map<Long, ProcessoClinicoDTO> processoByUtenteId = activeProcesses.stream()
@@ -114,8 +123,8 @@ public class PatientServiceImpl implements PatientService{
 
         Stream<Utente> stream = patients.stream();
 
-        if (filter.isPresent()) {
-            String f = filter.get().toLowerCase();
+        if (search.isPresent()) {
+            String f = search.get().toLowerCase();
             stream = stream.filter(u -> {
                 boolean matchesPatient = u.getNome().toLowerCase().contains(f)
                         || u.getNumeroSNS().toString().contains(f);
@@ -132,6 +141,14 @@ public class PatientServiceImpl implements PatientService{
                 .map(u -> mapper.toDto(u, processoByUtenteId.get(u.getId())))
                 .toList();
     }
+
+    public static EstadoUtente toEstadoUtente(PatientState state) {
+        return switch (state) {
+            case HOSPITALIZED -> EstadoUtente.INTERNADO;
+            case INACTIVE     -> EstadoUtente.INATIVO;
+            case ALL          -> null;
+    };
+}
 
     @Override
     public List<AlergiaDTO> getAllAlergies() {
