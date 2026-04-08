@@ -37,6 +37,12 @@ public class WorkerController {
         return ResponseEntity.ok(ApiResponse.ok("Resumo do funcionário obtico com sucesso", summary));
     }
 
+    @GetMapping("/medics")
+    public ResponseEntity<ApiResponse<List<FuncionarioDTO>>> getAllMedics(){
+        var medics = service.getAllMedics();
+        return ResponseEntity.ok(ApiResponse.ok("Medicos obtidos com sucesso", medics));
+    } 
+
     @PostMapping("{workerId}/shifts/add/{shiftId}")
     public ResponseEntity<ApiResponse<?>> addToShift(@PathVariable("workerId") Long workerId, @PathVariable("shiftId") Long shiftId){
         service.addToShift(workerId, shiftId);

@@ -32,4 +32,6 @@ public interface WorkerService {
     WorkerActivitySummary getWorkerActivitySummary(Long workerId);
 
     Funcionario getMedicById(long medicoId);
+    
+    List<FuncionarioDTO> getAllMedics();
 }
