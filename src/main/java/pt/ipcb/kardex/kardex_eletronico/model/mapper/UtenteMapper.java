@@ -1,6 +1,8 @@
 package pt.ipcb.kardex.kardex_eletronico.model.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,6 +13,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 
 @Mapper(componentModel = "spring")
 public interface UtenteMapper {
@@ -29,4 +32,8 @@ public interface UtenteMapper {
     AlergiaDTO toAlergiaDTO(Alergia data);
 
     List<AlergiaDTO> toAlergiaDTOList(List<Alergia> data);
+
+    default List<FlagRisco> toList(Set<FlagRisco> set) {
+        return set == null ? new ArrayList<>() : new ArrayList<>(set);
+    }
 }
