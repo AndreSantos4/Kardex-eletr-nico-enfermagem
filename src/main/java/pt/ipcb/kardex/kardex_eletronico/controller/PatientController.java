@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
@@ -43,5 +44,11 @@ public class PatientController {
     public ResponseEntity<ApiResponse<List<UtenteDTO>>> getAllPatitents(@RequestParam("f") Optional<String> filter){
         var patients = service.getAllPatients(filter);
         return ResponseEntity.ok(ApiResponse.ok("Utentes obtidos com sucesso", patients));
+    }
+
+    @GetMapping("/alergies")
+    public ResponseEntity<ApiResponse<List<AlergiaDTO>>> getAllAlergies(){
+        var alergies = service.getAllAlergies();
+        return ResponseEntity.ok(ApiResponse.ok("Alergias obtidas com sucesso", alergies));
     }
 }

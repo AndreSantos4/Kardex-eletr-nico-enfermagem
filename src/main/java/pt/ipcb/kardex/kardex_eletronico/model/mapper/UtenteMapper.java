@@ -27,4 +27,6 @@ public interface UtenteMapper {
     Alergia fromCreateAlergy(CreateAlergyDTO data);
 
     AlergiaDTO toAlergiaDTO(Alergia data);
+
+    List<AlergiaDTO> toAlergiaDTOList(List<Alergia> data);
 }
