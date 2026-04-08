@@ -26,10 +26,10 @@ public class Utente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
-    @Column(name = "numero_sns", nullable = false)
+    @Column(name = "numero_sns", unique = true)
     public Long numeroSNS;
     
-    @Column(name = "numero_cc", nullable = false)
+    @Column(name = "numero_cc", unique = true)
     public String numeroCC;
     
     @Column(name = "nome", nullable = false)
