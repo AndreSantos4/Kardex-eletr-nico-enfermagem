@@ -10,7 +10,7 @@
 
 /*Body*/
 body {
-  font-family: var(--sans); 
+  font-family: var(--sans);
   color: var(--text);
   margin: 0;
   display: flex;
@@ -23,20 +23,13 @@ body {
   flex: 1;
 }
 
-.content {
-  position: relative;
-  min-height: 100vh;
-}
-
 .main-content {
   flex: 1;
+  margin-left: 210px;
 }
 
 /*Top Bar*/
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
   height: 52px;
   background: var(--primary);
   display: flex;
@@ -92,11 +85,11 @@ body {
 .sidebar {
   width: 210px;
   background: var(--primary);
-  position: sticky;
-  top: 52px;
-  height: calc(100vh - 52px);
-  overflow-y: auto;
+  position: fixed;
+  top: 53px;
+  height: calc(100vh - 53px);
   padding: 12px 0;
+  border-top: 1px solid var(--white);
 }
 
 .sidebar ul {
@@ -146,6 +139,7 @@ body {
 
 /*Page Header*/
 .page-header {
+  color: var(--text);
   background: var(--primary);
   border-radius: 4px;
   padding: 14px 20px;
@@ -376,4 +370,43 @@ body {
   background: var(--white);
   color: var(--primary);
   border: 2px solid var(--primary);
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 12px 4px 4px;
+}
+
+.btn-pagina {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1.5px solid var(--primary);
+  border-radius: 4px;
+  color: var(--primary);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.btn-pagina:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: transparent;
+}
+
+.btn-pagina.ativo {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--text);
 }
