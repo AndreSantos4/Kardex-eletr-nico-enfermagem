@@ -59,4 +59,9 @@ public class ResourcesForwarding {
     public ModelAndView perfilUtente() {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroListaUtentes.html");
     }
+
+    @GetMapping("/enfermeiroKardexUtente")
+    public ModelAndView enfermeiroKardexUtente(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroKardexUtente.html?id=" + id);
+    }
 }
