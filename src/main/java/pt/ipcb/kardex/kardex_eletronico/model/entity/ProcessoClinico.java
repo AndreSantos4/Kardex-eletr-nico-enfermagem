@@ -49,6 +49,9 @@ public class ProcessoClinico {
     
     @Column(name = "alta")
     public Boolean alta = false;
+
+    @Column(name = "notas_alta")
+    public String notasAlta;
     
     @JoinTable(
             name = "processo_clinico_prescricao",
