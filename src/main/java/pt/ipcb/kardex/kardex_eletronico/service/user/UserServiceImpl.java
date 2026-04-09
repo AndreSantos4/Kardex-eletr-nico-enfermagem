@@ -48,20 +48,16 @@ public class UserServiceImpl implements UserService {
                             || u.getNumeroMecanografico().toString().toLowerCase().contains(f))
                     .toList();
         }
-        
+
         switch (orderBy) {
-            case ASC:
-                users = users.stream().sorted((u1, u2) -> u2.getNome().compareTo(u1.getNome())).toList();
-                break;
-            case DESC:
-                users = users.stream().sorted((u1, u2) -> u1.getNome().compareTo(u2.getNome())).toList();
-                break;
+            case ASC -> users = users.stream().sorted((u1, u2) -> u2.getNome().compareTo(u1.getNome())).toList();
+            case DESC -> users = users.stream().sorted((u1, u2) -> u1.getNome().compareTo(u2.getNome())).toList();
         }
 
         return users
-            .stream()
-            .map(mapper::toDTO)
-            .toList();
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
     }
 
     @Override
@@ -73,6 +69,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toDTO(user);
     }
 
+    @Override
     @Transactional
     public UtilizadorDTO getUserByToken(HttpServletRequest request) {
         var token = cookieService.recoverCookie(request);
@@ -129,7 +126,6 @@ public class UserServiceImpl implements UserService {
         repository.save(utilizador);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public long getActiveUsersCount() {
@@ -143,7 +139,7 @@ public class UserServiceImpl implements UserService {
 
         var resetRequest = passwordResetRequestRepository.findByTokenHash(tokenHash);
 
-        if(!resetRequest.isValid(PASSWORD_RESET_TOKEN_EXPIRY_MINUTES)){
+        if (!resetRequest.isValid(PASSWORD_RESET_TOKEN_EXPIRY_MINUTES)) {
             throw new ExpiredResourceException("Token de Reset de Password");
         }
 
@@ -153,7 +149,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(Long numeroMecanografico, ChangeUserPasswordDTO newPassword) {
-        if(!passwordResetRequestRepository.existsById(numeroMecanografico))
+        if (!passwordResetRequestRepository.existsById(numeroMecanografico))
             throw new EntityNotFoundException("Password reset request");
         var user = (Utilizador) repository.findByNumeroMecanografico(numeroMecanografico);
 
