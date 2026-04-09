@@ -14,6 +14,7 @@ import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreateAlergyDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.PatientKardexDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
@@ -157,5 +158,14 @@ public class PatientServiceImpl implements PatientService{
     @Transactional(readOnly = true)
     public List<AlergiaDTO> getAllAlergies() {
         return mapper.toAlergiaDTOList(alergiaRepository.findAll());
+    }
+
+    @Override
+    public PatientKardexDTO getPatientKardex(Long patientId) {
+        var patient = repository.findById(patientId)
+            .orElseThrow(() -> EntityNotFoundException.forId(patientId, "Utente"));
+        var process = processService.getKardexProcess(patient);
+
+        return new PatientKardexDTO(mapper.toDto(patient, process));
     }
 }

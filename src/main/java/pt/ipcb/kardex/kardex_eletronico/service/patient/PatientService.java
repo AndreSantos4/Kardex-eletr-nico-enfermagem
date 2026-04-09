@@ -6,6 +6,7 @@ import java.util.Optional;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.PatientKardexDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 
@@ -16,4 +17,5 @@ public interface PatientService {
     void editPatientFile(Long id, UpdatePacientFileDTO data);
     List<UtenteDTO> getAllPatients(PatientState filter2, Optional<String> filter);
     List<AlergiaDTO> getAllAlergies();
+    PatientKardexDTO getPatientKardex(Long patientId);
 }
