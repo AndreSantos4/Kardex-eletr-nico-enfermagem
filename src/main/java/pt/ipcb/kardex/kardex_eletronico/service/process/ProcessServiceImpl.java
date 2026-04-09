@@ -171,4 +171,10 @@ public class ProcessServiceImpl implements ProcessService{
 
         repository.save(process);
     }
+
+    @Override
+    public ProcessoClinicoDTO getKardexProcess(Utente patient) {
+        var process = repository.findKardexProcess(patient.getId()).orElse(null);
+        return mapper.toDTO(process);
+    }
 }
