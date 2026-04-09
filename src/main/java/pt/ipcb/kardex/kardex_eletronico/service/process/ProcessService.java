@@ -9,6 +9,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 
@@ -27,5 +28,7 @@ public interface ProcessService {
     List<CamaDTO> getAllBeds(boolean occupied);
 
     public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns, HttpServletRequest request);
+
+    public void dischargePatient(Long processId, DischargePatientDTO data);
 
 }
