@@ -50,6 +50,16 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/medico/medicoDashboard.html");
     }
 
+    @GetMapping("/medicoListaUtentes")
+    public ModelAndView medicoListaUtentes() {
+        return new ModelAndView("forward:/pages/medico/medicoListaUtentes.html");
+    }
+
+    @GetMapping("/medicoKardexUtente")
+    public ModelAndView medicoKardexUtente() {
+        return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html");
+    }
+
     @GetMapping("/enfermeiroDashboard")
     public ModelAndView enfermeiroDashboard() {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroDashboard.html");

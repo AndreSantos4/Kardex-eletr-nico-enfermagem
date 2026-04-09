@@ -1,222 +1,185 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroListaUtentes.css" />
-    <link rel="stylesheet" href="../../styles/enfermeiro/popups/popupCriarUtente.css" />
-    <title>Lista de Utentes</title>
-  </head>
-  <body>
-    <div class="content">
-      <div class="content-container">
-        <!--Top Bar-->
-        <div class="topbar">
-          <span class="topbar-page">Lista de Utentes</span>
-          <div class="topbar-right">
-            <span class="topbar-user">
-              <span id="nome-enf"></span> | Turno: <span id="turno"></span
-            ></span>
-            <button class="btn-sair" onclick="logout()">SAIR</button>
-          </div>
-        </div>
 
-        <!--Side Bar-->
-        <div class="main-container">
-          <aside class="sidebar">
-            <nav>
-              <div class="sidebar-section-label">Principal</div>
-              <ul>
-                <li class="sidebar-item">
-                  <a href="enfermeiroDashboard">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path
-                        d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"
-                      />
-                    </svg>
-                    Home
-                  </a>
-                </li>
-                <li class="sidebar-item active">
-                  <a href="">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 640 512"
-                    >
-                      <path
-                        d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"
-                      />
-                    </svg>
-                    Lista de Utentes
-                  </a>
-                </li>
-              </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroListaUtentes.css" />
+  <link rel="stylesheet" href="../../styles/enfermeiro/popups/popupCriarUtente.css" />
+  <title>Lista de Utentes</title>
+</head>
 
-              <div class="sidebar-section-label">Turno</div>
-              <ul>
-                <li class="sidebar-item">
-                  <a href="#perfil">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path
-                        d="M470.6 118.6c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S352 19.1 352 32l0 32-160 0C86 64 0 150 0 256 0 273.7 14.3 288 32 288s32-14.3 32-32c0-70.7 57.3-128 128-128l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64zM41.4 393.4c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9S160 492.9 160 480l0-32 160 0c106 0 192-86 192-192 0-17.7-14.3-32-32-32s-32 14.3-32 32c0 70.7-57.3 128-128 128l-160 0 0-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64z"
-                      />
-                    </svg>
-                    Passagem de Turno
-                  </a>
-                </li>
-              </ul>
-
-              <div class="sidebar-section-label">Cuidados</div>
-              <ul>
-                <li class="sidebar-item">
-                  <a href="#perfil">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 384 512"
-                    >
-                      <path
-                        d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM136 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0z"
-                      />
-                    </svg>
-                    Planos de Cuidados
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a href="#perfil">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 576 512"
-                    >
-                      <path
-                        d="M32 48C32 21.5 53.5 0 80 0l48 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0 0 128c0 53 43 96 96 96s96-43 96-96l0-128-32 0c-17.7 0-32-14.3-32-32S238.3 0 256 0l48 0c26.5 0 48 21.5 48 48l0 144c0 77.4-55 142-128 156.8l0 19.2c0 61.9 50.1 112 112 112s112-50.1 112-112l0-85.5c-37.3-13.2-64-48.7-64-90.5 0-53 43-96 96-96s96 43 96 96c0 41.8-26.7 77.4-64 90.5l0 85.5c0 97.2-78.8 176-176 176S160 465.2 160 368l0-19.2C87 334 32 269.4 32 192L32 48zM480 224a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"
-                      />
-                    </svg>
-                    Cateteres
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a href="#perfil">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path
-                        d="M208.5 32c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 140.9 122-70.4c15.3-8.8 34.9-3.6 43.7 11.7l16 27.7c8.8 15.3 3.6 34.9-11.7 43.7l-122 70.4 122 70.4c15.3 8.8 20.6 28.4 11.7 43.7l-16 27.7c-8.8 15.3-28.4 20.6-43.7 11.7l-122-70.4 0 140.9c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-140.9-122 70.4c-15.3 8.8-34.9 3.6-43.7-11.7l-16-27.7c-8.8-15.3-3.6-34.9 11.7-43.7l122-70.4-122-70.4c-15.3-8.8-20.5-28.4-11.7-43.7l16-27.7c8.8-15.3 28.4-20.5 43.7-11.7l122 70.4 0-140.9z"
-                      />
-                    </svg>
-                    Administração SOS
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a href="#perfil">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path
-                        d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z"
-                      />
-                    </svg>
-                    Contenção Química
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </aside>
-
-          <main class="main-content">
-            <!--Page Header-->
-            <div class="page-header">
-              <div class="page-header-left">
-                <h4>Lista de Utentes - Serviço Internamento</h4>
-                <p id="current-datetime"></p>
-              </div>
-              <div class="page-header-right">
-                <button class="btn-novo-utente" onclick="abrirpopup()">
-                  Novo Utente
-                </button>
-
-                <div class="search-bar">
-                  <div class="search-input-wrap">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path
-                        d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-                      />
-                    </svg>
-                    <input type="text" placeholder="Nome, Processo ou SNS" />
-                  </div>
-                </div>
-
-                <select name="estados" id="estados">
-                  <option value="todos">Todos</option>
-                  <option value="internado">Internado</option>
-                  <option value="alta">Alta</option>
-                </select>
-              </div>
-            </div>
-
-            <!--Lista Utentes Bar-->
-            <div class="lista-utentes-bar">
-              <div class="lista-utentes-table">
-                <table class="lista-utentes">
-                  <thead>
-                    <tr>
-                      <th>Nº Processo</th>
-                      <th>Nome</th>
-                      <th>Cama</th>
-                      <th>Diagnóstico</th>
-                      <th>Médico</th>
-                      <th>Admissão</th>
-                      <th>Estado</th>
-                      <th>Alertas</th>
-                      <th>Ação</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td id="n-processo">2026-0214</td>
-                      <td id="nome">Manuel Ferreira</td>
-                      <td id="cama-utente">2B-04</td>
-                      <td id="diagnostico">Esquizofrenia paranoide F20.0</td>
-                      <td id="medico">Dr. Mendes Mendes</td>
-                      <td id="admissao">05/03/2026</td>
-                      <td id="estado">Internado</td>
-                      <td id="alertas">Alergias</td>
-                      <td>
-                        <button
-                          class="ver-mais"
-                          onclick="
-                            location.href =
-                              '../enfermeiro/enfermeiroKardexUtente.html'
-                          "
-                        >
-                          VER MAIS
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </main>
+<body>
+  <div class="content">
+    <div class="content-container">
+      <!--Top Bar-->
+      <div class="topbar">
+        <span class="topbar-page">Lista de Utentes</span>
+        <div class="topbar-right">
+          <span class="topbar-user">
+            <span id="nome-enf"></span> | Turno: <span id="turno"></span></span>
+          <button class="btn-sair" onclick="logout()">SAIR</button>
         </div>
       </div>
-      <div
-        class="pop-up-container"
-        style="display: none"
-        id="popUpContainer"
-      ></div>
+
+      <!--Side Bar-->
+      <div class="main-container">
+        <aside class="sidebar">
+          <nav>
+            <div class="sidebar-section-label">Principal</div>
+            <ul>
+              <li class="sidebar-item">
+                <a href="enfermeiroDashboard">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z" />
+                  </svg>
+                  Home
+                </a>
+              </li>
+              <li class="sidebar-item active">
+                <a href="">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                    <path
+                      d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
+                  </svg>
+                  Lista de Utentes
+                </a>
+              </li>
+            </ul>
+
+            <div class="sidebar-section-label">Turno</div>
+            <ul>
+              <li class="sidebar-item">
+                <a href="#perfil">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="M470.6 118.6c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S352 19.1 352 32l0 32-160 0C86 64 0 150 0 256 0 273.7 14.3 288 32 288s32-14.3 32-32c0-70.7 57.3-128 128-128l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64zM41.4 393.4c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9S160 492.9 160 480l0-32 160 0c106 0 192-86 192-192 0-17.7-14.3-32-32-32s-32 14.3-32 32c0 70.7-57.3 128-128 128l-160 0 0-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64z" />
+                  </svg>
+                  Passagem de Turno
+                </a>
+              </li>
+            </ul>
+
+            <div class="sidebar-section-label">Cuidados</div>
+            <ul>
+              <li class="sidebar-item">
+                <a href="#perfil">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                    <path
+                      d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM136 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0z" />
+                  </svg>
+                  Planos de Cuidados
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#perfil">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                    <path
+                      d="M32 48C32 21.5 53.5 0 80 0l48 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0 0 128c0 53 43 96 96 96s96-43 96-96l0-128-32 0c-17.7 0-32-14.3-32-32S238.3 0 256 0l48 0c26.5 0 48 21.5 48 48l0 144c0 77.4-55 142-128 156.8l0 19.2c0 61.9 50.1 112 112 112s112-50.1 112-112l0-85.5c-37.3-13.2-64-48.7-64-90.5 0-53 43-96 96-96s96 43 96 96c0 41.8-26.7 77.4-64 90.5l0 85.5c0 97.2-78.8 176-176 176S160 465.2 160 368l0-19.2C87 334 32 269.4 32 192L32 48zM480 224a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+                  </svg>
+                  Cateteres
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#perfil">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="M208.5 32c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 140.9 122-70.4c15.3-8.8 34.9-3.6 43.7 11.7l16 27.7c8.8 15.3 3.6 34.9-11.7 43.7l-122 70.4 122 70.4c15.3 8.8 20.6 28.4 11.7 43.7l-16 27.7c-8.8 15.3-28.4 20.6-43.7 11.7l-122-70.4 0 140.9c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-140.9-122 70.4c-15.3 8.8-34.9 3.6-43.7-11.7l-16-27.7c-8.8-15.3-3.6-34.9 11.7-43.7l122-70.4-122-70.4c-15.3-8.8-20.5-28.4-11.7-43.7l16-27.7c8.8-15.3 28.4-20.5 43.7-11.7l122 70.4 0-140.9z" />
+                  </svg>
+                  Administração SOS
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#perfil">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z" />
+                  </svg>
+                  Contenção Química
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        <main class="main-content">
+          <!--Page Header-->
+          <div class="page-header">
+            <div class="page-header-left">
+              <h4>Lista de Utentes - Serviço Internamento</h4>
+              <p id="current-datetime"></p>
+            </div>
+            <div class="page-header-right">
+              <button class="btn-novo-utente" onclick="abrirpopup()">
+                Novo Utente
+              </button>
+
+              <div class="search-bar">
+                <div class="search-input-wrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                  </svg>
+                  <input type="text" placeholder="Nome, Processo ou SNS" />
+                </div>
+              </div>
+
+              <select name="estados" id="estados">
+                <option value="todos">Todos</option>
+                <option value="internado">Internado</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+          </div>
+
+          <!--Lista Utentes Bar-->
+          <div class="lista-utentes-bar">
+            <div class="lista-utentes-table">
+              <table class="lista-utentes">
+                <thead>
+                  <tr>
+                    <th>Nº Processo</th>
+                    <th>Nome</th>
+                    <th>Cama</th>
+                    <th>Diagnóstico</th>
+                    <th>Médico</th>
+                    <th>Admissão</th>
+                    <th>Estado</th>
+                    <th>Alertas</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td id="n-processo">2026-0214</td>
+                    <td id="nome">Manuel Ferreira</td>
+                    <td id="cama-utente">2B-04</td>
+                    <td id="diagnostico">Esquizofrenia paranoide F20.0</td>
+                    <td id="medico">Dr. Mendes Mendes</td>
+                    <td id="admissao">05/03/2026</td>
+                    <td id="estado">Internado</td>
+                    <td id="alertas">Alergias</td>
+                    <td>
+                      <button class="ver-mais" onclick="
+                            location.href =
+                              '../enfermeiro/enfermeiroKardexUtente.html'
+                          ">
+                        VER MAIS
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
-  </body>
-  <script src="../../scripts/popups/popupCriarUtente.js"></script>
-  <script src="../../scripts/enfermeiroListaUtentes.js"></script>
+    <div class="pop-up-container" style="display: none" id="popUpContainer"></div>
+  </div>
+</body>
+<script src="../../scripts/popups/popupCriarUtente.js"></script>
+<script src="../../scripts/enfermeiroListaUtentes.js"></script>
+
 </html>
