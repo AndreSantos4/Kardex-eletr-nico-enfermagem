@@ -18,6 +18,7 @@ import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.PatientKardexDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
@@ -53,5 +54,11 @@ public class PatientController {
     public ResponseEntity<ApiResponse<List<AlergiaDTO>>> getAllAlergies(){
         var alergies = service.getAllAlergies();
         return ResponseEntity.ok(ApiResponse.ok("Alergias obtidas com sucesso", alergies));
+    }
+
+    @GetMapping("/{patientId}")
+    public ResponseEntity<ApiResponse<PatientKardexDTO>> getPatientKardex(@PathVariable("patientId") Long patientId){
+        var kardex = service.getPatientKardex(patientId);
+        return ResponseEntity.ok(ApiResponse.ok("Kardex do utento obtido com sucesso", kardex));
     }
 }

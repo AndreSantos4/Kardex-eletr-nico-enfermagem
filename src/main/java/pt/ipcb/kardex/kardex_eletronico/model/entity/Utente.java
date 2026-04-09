@@ -52,7 +52,7 @@ public class Utente {
     @Enumerated(EnumType.STRING)
     public EstadoUtente estado = EstadoUtente.EM_ANALISE;
     
-    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<ProcessoClinico> processosClinicos = new ArrayList<>();
     
     @JoinTable(

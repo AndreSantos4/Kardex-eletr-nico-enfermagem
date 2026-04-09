@@ -31,4 +31,5 @@ public interface ProcessService {
 
     public void dischargePatient(Long processId, DischargePatientDTO data);
 
+    public ProcessoClinicoDTO getKardexProcess(Utente patient);
 }
