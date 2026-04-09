@@ -13,9 +13,11 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
@@ -70,6 +72,11 @@ public class ProcessServiceImpl implements ProcessService{
     public void createPrescription(Long processId, CreatePrescriptionDTO data) {
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
+
+        if(!process.getAlta()){
+            throw new InactiveResourceException("Processo Clinico");
+        }
+
         var medication = medicamentoRepository.findById(data.idMedicamento())
             .orElseThrow(() -> EntityNotFoundException.forId(data.idMedicamento(), "Medicamento"));
 
@@ -85,6 +92,11 @@ public class ProcessServiceImpl implements ProcessService{
     public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data, HttpServletRequest request) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescrição"));
+
+        if(!prescription.getProcesso().getAlta()){
+            throw new InactiveResourceException("Processo Clinico");
+        }
+
         var worker = workerService.getAutenticatedWorker(request);
         var shift = workerService.getCurrentShift(worker.getId());
 
@@ -135,10 +147,27 @@ public class ProcessServiceImpl implements ProcessService{
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Process Clinico"));
 
+        if(!process.getAlta()){
+            throw new InactiveResourceException("Processo Clinico");
+        }
+
         var vitalSign = mapper.fromVitalSignRegister(vitalSigns);
         vitalSign.setProcessoClinico(process);
         vitalSign.setFuncionario(workerService.getAutenticatedWorker(request));
         process.getSinaisVitais().add(vitalSign);
+
+        repository.save(process);
+    }
+
+    @Override
+    @Transactional
+    public void dischargePatient(Long processId, DischargePatientDTO data) {
+        var process = repository.findById(processId)
+            .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo Clinico"));
+
+        process.setAlta(true);
+        process.setNotasAlta(data.notasAlta());
+        process.setDataSaida(data.data().toLocalDate());
 
         repository.save(process);
     }
