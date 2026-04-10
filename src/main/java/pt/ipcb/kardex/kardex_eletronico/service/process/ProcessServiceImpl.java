@@ -147,7 +147,7 @@ public class ProcessServiceImpl implements ProcessService{
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Process Clinico"));
 
-        if(!process.getAlta()){
+        if(process.getAlta()){
             throw new InactiveResourceException("Processo Clinico");
         }
 
