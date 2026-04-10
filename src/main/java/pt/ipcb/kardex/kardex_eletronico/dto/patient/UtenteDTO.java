@@ -7,6 +7,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 import java.util.List;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record UtenteDTO(
