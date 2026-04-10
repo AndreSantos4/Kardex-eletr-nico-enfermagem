@@ -5,7 +5,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 
 import java.util.List;
-import java.util.LocalDate;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
