@@ -5,6 +5,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 
 import java.util.List;
+import java.util.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,6 +14,7 @@ public record UtenteDTO(
     @JsonProperty("numeroSNS") int numeroSNS,
     @JsonProperty("numeroCC") String numeroCC,
     @JsonProperty("nome") String nome,
+    @JsonProperty("dataNascimento") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento,
     @JsonProperty("sexo") Sexo sexo,
     @JsonProperty("contacto") int contacto,
     @JsonProperty("contactoEmergencia") int contactoEmergencia,
