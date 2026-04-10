@@ -10,11 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("")
 public class ResourcesForwarding {
 
-    @GetMapping("")
-    public ModelAndView none() {
-        return new ModelAndView("forward:/pages/login/login.html");
-    }
-
     @GetMapping("/login")
     public ModelAndView login() {
         return new ModelAndView("forward:/pages/login/login.html");
@@ -45,6 +40,25 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/admin/perfilColaborador.html");
     }
 
+    /* ENFERMEIRO */
+
+    @GetMapping("/enfermeiroKardexUtente")
+    public ModelAndView enfermeiroKardexUtente(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroKardexUtente.html?id=" + id);
+    }
+
+    @GetMapping("/enfermeiroDashboard")
+    public ModelAndView enfermeiroDashboard() {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroDashboard.html");
+    }
+
+    @GetMapping("/enfermeiroListaUtentes")
+    public ModelAndView enfermeiroListaUtentes() {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroListaUtentes.html");
+    }
+
+    /* MÉDICO */
+
     @GetMapping("/medicoDashboard")
     public ModelAndView medicoDashboard() {
         return new ModelAndView("forward:/pages/medico/medicoDashboard.html");
@@ -58,20 +72,5 @@ public class ResourcesForwarding {
     @GetMapping("/medicoKardexUtente")
     public ModelAndView medicoKardexUtente() {
         return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html");
-    }
-
-    @GetMapping("/enfermeiroDashboard")
-    public ModelAndView enfermeiroDashboard() {
-        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroDashboard.html");
-    }
-
-    @GetMapping("/perfilUtente")
-    public ModelAndView perfilUtente() {
-        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroListaUtentes.html");
-    }
-
-    @GetMapping("/enfermeiroKardexUtente")
-    public ModelAndView enfermeiroKardexUtente(@RequestParam("id") Long id) {
-        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroKardexUtente.html?id=" + id);
     }
 }

@@ -17,6 +17,7 @@ function onFiltroEstado(valor) {
     utilizadoresFiltrados = [...todosUtilizadores];
   } else {
     utilizadoresFiltrados = todosUtilizadores.filter((u) => {
+      if (!u.processo) return false; // ← guard added
       const estaDeAlta = u.processo.alta;
       if (estadoSelecionado === "alta") return estaDeAlta;
       if (estadoSelecionado === "internado") return !estaDeAlta;
@@ -60,6 +61,8 @@ function renderizarTabela() {
   }
 
   pagina.forEach((u) => {
+    if (!u.processo) return;
+
     const estado = u.processo.alta ? "Alta" : "Internado";
     const cama = u.processo.cama?.id ?? "Nenhuma";
 
@@ -75,7 +78,7 @@ function renderizarTabela() {
       <td>${u.processo.temAlergias}</td>
       <td>
         <button class="ver-mais"
-            onclick="location.href = '/medicoKardexUtente?id=${u.id}'">
+            onclick="location.href = '/enfermeiroKardexUtente?id=${u.id}'">
             VER MAIS
         </button>
       </td>

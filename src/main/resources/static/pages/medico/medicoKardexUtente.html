@@ -55,13 +55,12 @@
                     <p id="current-datetime"></p>
                 </div>
                 <div class="page-header-right">
-                    <!--TODO: TENS QUE FAZER ISTO ANDRÉ-->
-                    <button class="page-header-button" onclick="">DAR ALTA</button>
-                    <button class="page-header-button" onclick="">NOTAS</button>
-                    <button class="page-header-button" onclick="">PLANO</button>
-                    <button class="page-header-button" onclick="">LISTA</button>
-                    <button class="page-header-button" onclick="">HISTÓRICO</button>
-                    <button class="page-header-button" onclick="">PRESCREVER</button>
+                    <button class="page-header-button" onclick="daralta()">DAR ALTA</button>
+                    <button class="page-header-button" onclick="mostrarNotas()">NOTAS</button>
+                    <button class="page-header-button" onclick="mostrarPlano()">PLANO</button>
+                    <button class="page-header-button" onclick="mostrarLista()">LISTA</button>
+                    <button class="page-header-button" onclick="mostrarHistorico()">HISTÓRICO</button>
+                    <button class="page-header-button" onclick="prescrever()">PRESCREVER</button>
                 </div>
 
             </div>
@@ -70,55 +69,49 @@
             <div class="info-utente-bar">
                 <div class="info-utente-1">
                     <div class="nome-utente">
-                        <p id="nome-utente" style="color: white; font-size: 16px; font-weight: bolder;">Manuel Ferreira
-                        </p>
+                        <p id="nome-utente" style="color: white; font-size: 16px; font-weight: bolder;"></p>
                     </div>
                     <div class="sexo-idade">
                         <p style="color: white; font-weight: bolder;">Sexo/Idade: &nbsp;</p>
-                        <p id="sexo">Masculino</p>
+                        <p id="sexo"></p>
                         <p> &nbsp;-&nbsp;</p>
-                        <p id="idade">52</p>
+                        <p id="idade"></p>
                         <p>&nbsp;Anos</p>
                     </div>
                     <div class="admissao">
                         <p style="color: white; font-weight: bolder;">Admissão: &nbsp;</p>
-                        <p id="data">05/03/2026</p>
+                        <p id="data"></p>
                         <p>&nbsp;</p>
-                        <p id="hora">10:30</p>
+                        <p id="hora"></p>
                     </div>
                     <div class="medico">
                         <p style="color: white; font-weight: bolder;">Médico: &nbsp;</p>
-                        <p id="medico">Dr. Ana Rodrigues</p>
+                        <p id="medico"></p>
                     </div>
                 </div>
                 <div class="info-utente-2">
                     <div class="processo">
                         <p style="color: white; font-weight: bolder;">Proc: &nbsp;</p>
-                        <p id="processo">24</p>
+                        <p id="processo"></p>
                         <p>&nbsp;-&nbsp;</p>
                         <p style="color: white; font-weight: bolder;">Nasc:&nbsp;</p>
-                        <p id="data-nascimento">14/03/1973</p>
+                        <p id="data-nascimento"></p>
                     </div>
                     <div class="cama">
                         <p style="color: white; font-weight: bolder;">Cama:&nbsp;</p>
-                        <p id="cama">2B-04</p>
+                        <p id="cama"></p>
                     </div>
                     <div class="estado">
                         <p style="color: white; font-weight: bolder;">Estado:&nbsp;</p>
-                        <p id="estado">Internado</p>
+                        <p id="estado"></p>
                         <p>&nbsp;-&nbsp;</p>
-                        <!--TODO: André só deve aparecer se estiver internado-->
-                        <p>Dia&nbsp;</p>
-                        <p id="dias-internado">2</p>
+                        <p id="dias-internado-label">Dia&nbsp;</p>
+                        <p id="dias-internado"></p>
                     </div>
                 </div>
                 <div class="info-utente-3">
                     <div class="riscos">
                         <p style="color: white; font-weight: bolder;">Riscos:&nbsp;</p>
-                        <!--TODO: Adnré isto é para ir adicionando e colocar uma barra reta entre cada um-->
-                        <p id="risco">Fuga</p>
-                        <p>&nbsp;|&nbsp;</p>
-                        <p id="risco">Automotilação</p>
                     </div>
                 </div>
             </div>
@@ -128,19 +121,7 @@
                 <div class="alertas-label">
                     Alergias - Atenção antes de qualquer medicação
                 </div>
-                <div class="alertas">
-                    <div class="alerta">
-                        <p id="nome-medicamento" style="color: white; font-weight: bolder;">Penicilna</p>
-                        <p>&nbsp;-&nbsp;</p>
-                        <p>(
-                        <p id="alergia">anafilaxia</p>)</p>
-                    </div>
-                    <div class="alerta">
-                        <p id="nome-medicamento" style="color: white; font-weight: bolder;">Clorpromazina</p>
-                        <p>&nbsp;-&nbsp;</p>
-                        <p>(
-                        <p id="alergia">sd.extrapiramidal</p>)</p>
-                    </div>
+                <div class="alertas" id="alertas">
                 </div>
             </div>
 
@@ -151,31 +132,31 @@
                     </div>
                     <div class="sinais-vitais">
                         <div class="tensao-art">
-                            <p id="tensao-art">138/88</p>
+                            <p id="tensao-art"></p>
                             <p>mmHg</p>
                             <p>Tensão Art.</p>
                         </div>
                         <div class="freq-card">
-                            <p id="freq-card">98</p>
+                            <p id="freq-card"></p>
                             <p>bpm</p>
                             <p>Freq. Card.</p>
                         </div>
                         <div class="temperatura">
-                            <p id="temperatura">36.8</p>
+                            <p id="temperatura"></p>
                             <p>ºC</p>
                             <p>Temperatura</p>
                         </div>
                         <div class="spo2">
-                            <p id="spo2">97</p>
+                            <p id="spo2"></p>
                             <p>%</p>
                             <p>SpO2</p>
                         </div>
                         <div class="dor">
-                            <p id="dor">8</p>
+                            <p id="dor"></p>
                             <p>Dor</p>
                         </div>
                         <div class="glicemia">
-                            <p id="glicemia">182</p>
+                            <p id="glicemia"></p>
                             <p>mg/dL</p>
                             <p>Glicémia</p>
                         </div>
@@ -192,10 +173,10 @@
                     </div>
                     <div class="plano-cuidados">
                         <div class="plano-cuidados-left">
-                            <p id="atividade">Monitorização sinais vitais</p>
+                            <p id="atividade"></p>
                         </div>
                         <div class="plano-cuidados-right">
-                            <p id="hora-atividade">15:00</p>
+                            <p id="hora-atividade"></p>
                         </div>
                     </div>
                 </div>
@@ -208,27 +189,27 @@
                     <div class="medicacao">
                         <div class="medicacao-left">
                             <div class="medicacao-left-cima">
-                                <p id="medicamento">Risperidona</p>
-                                <p id="dosagem">2</p>
+                                <p id="medicamento"></p>
+                                <p id="dosagem"></p>
                                 <p>mg&nbsp;</p>
                                 <p>Atraso&nbsp;</p>
-                                <p id="atraso">22</p>
+                                <p id="atraso"></p>
                                 <p>min</p>
                             </div>
                             <div class="medicacao-left-baixo">
-                                <p id="via">Oral</p>
+                                <p id="via"></p>
                                 <p>&nbsp;-&nbsp;</p>
                                 <!--TODO: André este campo pode mudar consoante o que foi administrado-->
-                                <p>2</p>
+                                <p></p>
                                 <p>x/dia -&nbsp;</p>
-                                <p id="Médico">Dr. Mendes</p>
+                                <p id="Médico"></p>
                                 <p>&nbsp;-&nbsp;</p>
-                                <p id="data">05/03</p>
+                                <p id="data-medicacao"></p>
                             </div>
                         </div>
                         <div class="medicacao-right">
                             <!--TODO-->
-                            <p id="hora">22:00</p>
+                            <p id="hora-medicacao"></p>
                         </div>
                     </div>
                 </div>
@@ -240,39 +221,39 @@
                         <!--TODO: André depois quando meteres o JavaScript quando aparecer mais do que um exames-cateteres-cima o segundo mete uma margin no topo de 5px-->
                         <div class="exames-cateteres-info">
                             <div class="exames-cateteres-cima">
-                                <p id="exame">Hemograma</p>
+                                <p id="exame"></p>
                                 <p>&nbsp;</p>
                                 <!--TODO: colocar a prioridade-->
-                                <p id="prioridade">Urgente</p>
+                                <p id="prioridade"></p>
                                 <!--TODO: se o exame já tem resultado ou não-->
                                 <p>&nbsp;</p>
-                                <p id="resultado-exame">Aguardar resultado</p>
+                                <p id="resultado-exame"></p>
                             </div>
                             <div class="exames-cateteres-baixo">
                                 <p>Pedido a&nbsp;</p>
                                 <!--TODO-->
-                                <p id="pedido-exame">06/03</p>
+                                <p id="pedido-exame"></p>
                                 <p>&nbsp;-&nbsp;</p>
                                 <!--TODO-->
-                                <p id="medico">Dr. Mendes</p>
+                                <p id="medico-exame"></p>
                             </div>
                         </div>
                         <div class="exames-cateteres-info">
                             <div class="exames-cateteres-cima">
-                                <p id="cateter">CVP</p>
+                                <p id="cateter"></p>
                                 <p>&nbsp;-&nbsp;</p>
-                                <p id="local-insercao-cateter">MSE</p>
+                                <p id="local-insercao-cateter"></p>
                                 <p>&nbsp;</p>
-                                <p id="tempo-checkar">48h</p>
+                                <p id="tempo-checkar"></p>
                                 <p>&nbsp;- verificar</p>
                             </div>
                             <div class="exames-cateteres-baixo">
                                 <p>Inserido&nbsp;</p>
                                 <!--TODO-->
-                                <p id="data-insercao-cateter">05/03/2026</p>
+                                <p id="data-insercao-cateter"></p>
                                 <p>&nbsp;- Calibre</p>
                                 <!--TODO-->
-                                <p id="calibre-cateter">22G</p>
+                                <p id="calibre-cateter"></p>
                             </div>
                         </div>
                     </div>
@@ -286,19 +267,19 @@
                     <!--TODO: as ocorrências right podem mais formatos-->
                     <div class="ocorrencias">
                         <div class="ocorrencias-left">
-                            <p id="hora-ocorrencia">16:33</p>
+                            <p id="hora-ocorrencia"></p>
                         </div>
                         <div class="ocorrencias-middle">
-                            <p id="nome-enf">Enf. Ana R.</p>
+                            <p id="nome-enf"></p>
                         </div>
                         <div class="ocorrencias-right">
-                            <p id="medicamento">Lorazepam</p>
-                            <p id="dosagem">1</p>
+                            <p id="medicamento-ocorrencia"></p>
+                            <p id="dosagem-ocorrencia"></p>
                             <p>mg&nbsp;</p>
-                            <p id="tipo-medicacao">SOS</p>
+                            <p id="tipo-medicacao"></p>
                             <p>&nbsp;-&nbsp;</p>
-                            <p id="motivo">agitação psicomotora.</p>
-                            <p id="">&nbsp;Resolveu em 15min.</p>
+                            <p id="motivo"></p>
+                            <p id="resolucao"></p>
                         </div>
                     </div>
                 </div>
@@ -316,12 +297,7 @@
                                         <th>Hora</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td id="tipo-registo">Dor</td>
-                                        <td id="valor-registo">4/10 - Cefaleia</td>
-                                        <td id="hora-registo">16:00</td>
-                                    </tr>
+                                <tbody id="registos-tbody">
                                 </tbody>
                             </table>
                         </div>
@@ -330,6 +306,7 @@
             </div>
         </main>
     </div>
+    <script src="../../scripts/medico/medicoKardexUtente.js"></script>
 </body>
 
 </html>
