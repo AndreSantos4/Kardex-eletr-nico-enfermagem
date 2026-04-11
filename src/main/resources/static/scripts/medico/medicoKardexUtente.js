@@ -1,5 +1,4 @@
 const params = new URLSearchParams(window.location.search);
-
 const id = params.get("id");
 
 async function carregarUtente(id) {
@@ -16,14 +15,11 @@ async function carregarUtente(id) {
 
     document.getElementById("nome-utente").innerHTML = dados.nome;
     document.getElementById("sexo").innerHTML = dados.sexo;
-    document.getElementById("idade").innerHTML =
-      "fuck"; /*sem idade no crlho do endpoint*/
+    document.getElementById("idade").innerHTML = "fuck";
     document.getElementById("data").innerHTML = dados.processo.dataEntrada;
-    document.getElementById("hora").innerHTML =
-      "fuck"; /*sem hora no crlho do endpoint*/
+    document.getElementById("hora").innerHTML = "fuck";
     document.getElementById("medico").innerHTML =
       dados.processo.medicoResponsavel.dados.nome;
-
     document.getElementById("processo").innerHTML = dados.processo.id;
     document.getElementById("data-nascimento").innerHTML = dados.dataNascimento;
     document.getElementById("cama").innerHTML = dados.processo.cama.id;
@@ -31,32 +27,24 @@ async function carregarUtente(id) {
     const [dia, mes, ano] = dataEntrada.split("/");
     const data = new Date(ano, mes - 1, dia);
     const hoje = new Date();
-    const diff = hoje - data;
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const dias = Math.floor((hoje - data) / (1000 * 60 * 60 * 24));
 
     document.getElementById("estado").innerHTML = "Internado";
     document.getElementById("dias-internado").innerHTML = dias;
 
     const riscos = dados.flags;
-    const container = document.querySelector(".riscos");
     const lista = riscos.map((r) => {
-      let texto = r.replace("RISCO_", "").toLowerCase();
+      const texto = r.replace("RISCO_", "").toLowerCase();
       return texto.charAt(0).toUpperCase() + texto.slice(1);
     });
-    container.innerHTML = `
-        <p style="color: white; font-weight: bolder;">
-            Riscos:&nbsp; ${lista.join(" | ")}
-        </p>
+    document.querySelector(".riscos").innerHTML = `
+      <p style="color: white; font-weight: bolder;">Riscos:&nbsp; ${lista.join(" | ")}</p>
     `;
 
-    const alertasContainer = document.getElementById("alertas");
-    alertasContainer.innerHTML = dados.alergias
+    document.getElementById("alertas").innerHTML = dados.alergias
       .map(
-        (a) => `
-        <div class="alerta">
-            <p id="nome-medicamento">${a.nome}</p>
-        </div>
-    `,
+        (a) =>
+          `<div class="alerta"><p id="nome-medicamento">${a.nome}</p></div>`,
       )
       .join("");
 
@@ -76,4 +64,21 @@ async function carregarUtente(id) {
   }
 }
 
-carregarUtente(id);
+function daralta() {
+  const nomeUtente = document.getElementById("nome-utente").innerHTML;
+  const processoId = document.getElementById("processo").innerHTML;
+
+  document.getElementById("popup-nome-utente").innerHTML =
+    `${nomeUtente}<br>Nº Processo: ${processoId}`;
+  document.getElementById("popup-alta").style.display = "flex";
+}
+
+async function iniciar() {
+  const resp = await fetch("../../pages/medico/popups/popUpRegistarAlta.html");
+  const html = await resp.text();
+  document.getElementById("popup-container").innerHTML = html;
+  document.getElementById("form-alta").addEventListener("submit", submeterAlta);
+  carregarUtente(id);
+}
+
+iniciar();
