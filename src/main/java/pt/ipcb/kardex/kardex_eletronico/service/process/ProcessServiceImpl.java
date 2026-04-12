@@ -168,6 +168,7 @@ public class ProcessServiceImpl implements ProcessService{
         process.setAlta(true);
         process.setNotasAlta(data.notasAlta());
         process.setDataSaida(data.data().toLocalDate());
+        process.getUtente().setEstado(EstadoUtente.INATIVO);
 
         repository.save(process);
     }
