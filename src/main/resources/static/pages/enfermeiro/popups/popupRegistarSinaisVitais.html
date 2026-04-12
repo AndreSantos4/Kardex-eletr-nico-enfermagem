@@ -1,32 +1,16 @@
-<link
-	rel="stylesheet"
-	href="../../../styles/enfermeiro/popups/popupRegistarSinaisVitais.css"
-/>
+<link rel="stylesheet" href="../../styles/enfermeiro/popups/popupRegistarSinaisVitais.css" />
 
-<div class="pop-up-sinaisVitais">
-	<!--style="display: none"-->
+<div class="pop-up-sinaisVitais" style="display: none">
 	<div class="pop-up">
 		<div class="pop-up-header">
-			<div class="title"><h3>Registar Sinais Vitais</h3></div>
+			<div class="title">
+				<h3>Registar Sinais Vitais</h3>
+			</div>
 			<div class="icon">
-				<a
-					href=""
-					class="cross"
-					onclick="
-						fecharPopUp();
-						return false;
-					"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						height="15"
-						width="15"
-						viewBox="0 0 384 512"
-					>
-						<path
-							fill="rgb(220, 49, 26)"
-							d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
-						/>
+				<a href="" class="cross" onclick="fecharPopUp('.pop-up-sinaisVitais'); return false;">
+					<svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
+						<path fill="rgb(220, 49, 26)"
+							d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
 					</svg>
 				</a>
 			</div>
@@ -36,113 +20,46 @@
 				<div class="form-row">
 					<div class="form-group">
 						<label for="pa-sistolica">PA SISTÓLICA (mmHg) *</label>
-						<input
-							type="number"
-							name="pa-sistolica"
-							id="pa-sistolica"
-							placeholder="Ex: 120"
-							required
-						/>
+						<input type="number" id="pa-sistolica" placeholder="Ex: 120" required />
 					</div>
 					<div class="form-group">
-						<label for="pa-diastolica"
-							>PA DIASTÓLICA (mmHg) *</label
-						>
-						<input
-							type="number"
-							name="pa-diastolica"
-							id="pa-diastolica"
-							placeholder="Ex: 80"
-							required
-						/>
+						<label for="pa-diastolica">PA DIASTÓLICA (mmHg) *</label>
+						<input type="number" id="pa-diastolica" placeholder="Ex: 80" required />
 					</div>
 					<div class="form-group">
-						<label for="freq-cardiaca"
-							>FREQ. CARDÍACA (bpm) *</label
-						>
-						<input
-							type="number"
-							name="freq-cardiaca"
-							id="freq-cardiaca"
-							placeholder="Ex: 72"
-							required
-						/>
+						<label for="freq-cardiaca">FREQ. CARDÍACA (bpm) *</label>
+						<input type="number" id="freq-cardiaca" placeholder="Ex: 72" required />
 					</div>
 				</div>
-
 				<div class="form-row">
 					<div class="form-group">
 						<label for="temperatura">TEMPERATURA (ºC) *</label>
-						<input
-							type="number"
-							step="0.1"
-							name="temperatura"
-							id="temperatura"
-							placeholder="Ex: 36.5"
-							required
-						/>
+						<input type="number" step="0.1" id="temperatura" placeholder="Ex: 36.5" required />
 					</div>
 					<div class="form-group">
 						<label for="spo2">SpO2 (%) *</label>
-						<input
-							type="number"
-							name="spo2"
-							id="spo2"
-							placeholder="Ex: 98"
-							required
-						/>
+						<input type="number" id="spo2" placeholder="Ex: 98" required />
 					</div>
 					<div class="form-group">
 						<label for="dor">DOR *</label>
-						<input
-							type="number"
-							min="0"
-							max="10"
-							name="dor"
-							id="dor"
-							placeholder="Ex: 8"
-							required
-						/>
+						<input type="number" min="0" max="10" id="dor" placeholder="Ex: 8" required />
 					</div>
 				</div>
-
 				<div class="form-row">
 					<div class="form-group">
-						<label for="glicemia">GLICÉMIA (mg/dL)*</label>
-						<input
-							type="number"
-							name="glicemia"
-							id="glicemia"
-							placeholder="Ex: 182"
-							required
-						/>
+						<label for="glicemia">GLICÉMIA (mg/dL) *</label>
+						<input type="number" id="glicemia" placeholder="Ex: 182" required />
 						<label for="data-hora">DATA/HORA *</label>
-						<input
-							type="datetime-local"
-							name="data-hora"
-							id="data-hora"
-							required
-						/>
+						<input type="datetime-local" id="data-hora" required />
 					</div>
 					<div class="form-group form-group--observacoes">
 						<label for="observacoes">OBSERVAÇÕES</label>
-						<textarea
-							name="observacoes"
-							id="observacoes"
-							placeholder="Estado do utente, contexto ...."
-						></textarea>
+						<textarea id="observacoes" placeholder="Estado do utente, contexto ...."></textarea>
 					</div>
 				</div>
-
-				<div class="form-row"></div>
-
 				<div class="buttons-bottom">
-					<input
-						type="button"
-						value="Cancelar"
-						class="btn-cancelar"
-						onclick="fecharPopUp()"
-					/>
+					<input type="button" value="Cancelar" class="btn-cancelar"
+						onclick="fecharPopUp('.pop-up-sinaisVitais')" />
 					<input type="submit" value="Registar" />
 				</div>
 			</form>
