@@ -34,4 +34,6 @@ public interface WorkerService {
     Funcionario getMedicById(long medicoId);
     
     List<FuncionarioDTO> getAllMedics();
+
+    long getActiveNursesCount();
 }

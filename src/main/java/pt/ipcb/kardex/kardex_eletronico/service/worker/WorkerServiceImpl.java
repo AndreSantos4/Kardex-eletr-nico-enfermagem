@@ -167,4 +167,9 @@ public class WorkerServiceImpl implements WorkerService {
         var teste = repository.findByDadosRole(Role.MEDICO);
         return mapper.toDTOList(teste);
     }
+
+    @Override
+    public long getActiveNursesCount() {
+        return repository.countByDadosRoleAndDadosAtivo(Role.ENFERMEIRO, true);
+    }
 }
