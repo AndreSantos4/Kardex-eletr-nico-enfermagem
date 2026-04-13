@@ -6,9 +6,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
@@ -28,6 +30,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AlergiaRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtenteRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
+import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +41,11 @@ public class PatientServiceImpl implements PatientService{
     private final UtenteMapper mapper;
     private final ProcessService processService;
     private final AlergiaRepository alergiaRepository;
+    private final RecordService recordService;
 
     @Override
     @Transactional
-    public void createPatient(CreatePatientFileDTO data) {
+    public void createPatient(CreatePatientFileDTO data, HttpServletRequest request) {
         var patient = fileMapper.toUtente(data);
         var process = fileMapper.toProcessDTO(data);
 
@@ -54,11 +58,11 @@ public class PatientServiceImpl implements PatientService{
 
         try {
             var createdPatient = repository.save(patient);
-            processService.createProcess(createdPatient, process);
-        } catch (Exception e) {
+            var createdProcess = processService.createProcess(createdPatient, process);
+            recordService.recordPatientAcceptance(createdProcess, true, request);
+        } catch (DataIntegrityViolationException e) {
             throw new ConflictEntitiesException("A nova ficha de utentes esta em conflito com uma das fichas ja exitentes em algum dos campos");
         }
-
     }
 
     @Override
@@ -89,7 +93,7 @@ public class PatientServiceImpl implements PatientService{
             repository.save(patient);
 
             processService.editActiveProcess(patient, data);
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
             throw new ConflictEntitiesException("Os novos dado da ficha estao em conflito com dados ja existentes");
         }
 

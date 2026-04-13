@@ -2,8 +2,8 @@ package pt.ipcb.kardex.kardex_eletronico.model.enumerated;
 
 public enum TipoRegisto {
     AUTH("Autenticação"),
-    DATABASE("Base de dados"),
-    UTILIZADOR("Utilizador");
+    PATIENT_ACCEPTANCE("Utente admitido"),
+    PATIENT_DISCHARGE("Utente liberado");
     
     public final String nome;
     

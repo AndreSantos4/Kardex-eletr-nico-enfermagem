@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
@@ -31,8 +32,8 @@ public class PatientController {
     private final PatientService service;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> createPatientFile(@RequestBody CreatePatientFileDTO data){
-        service.createPatient(data);
+    public ResponseEntity<ApiResponse<?>> createPatientFile(@RequestBody CreatePatientFileDTO data, HttpServletRequest request){
+        service.createPatient(data, request);
         return ResponseEntity.ok(ApiResponse.ok("Ficha de utente criada com sucesso", null));
     }
 
