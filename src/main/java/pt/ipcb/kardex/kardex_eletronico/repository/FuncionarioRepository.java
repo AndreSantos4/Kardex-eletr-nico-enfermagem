@@ -44,4 +44,6 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     int getAdministrationsCountThisMonth(@Param("id") Long id);
 
     List<Funcionario> findByDadosRole(Role role);
+
+    long countByDadosRoleAndDadosAtivo(Role enfermeiro, boolean ativo);
 }
