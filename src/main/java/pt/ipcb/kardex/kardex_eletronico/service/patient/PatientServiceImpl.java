@@ -1,5 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.patient;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,6 +84,7 @@ public class PatientServiceImpl implements PatientService{
         patient.setSexo(data.sexo());
         patient.setNumeroCC(data.numeroCC());
         patient.setNumeroSNS(data.numeroSNS());
+        patient.setFlagsRisco(new HashSet<>(data.flagsRisco()));
         patient.setAlergias(
             data.alergias()
                 .stream()
