@@ -60,8 +60,8 @@ public class ProcessController {
     }
 
     @PatchMapping("/{processId}/discharge")
-    public ResponseEntity<ApiResponse<?>> dischargePatient(@PathVariable("processId") Long processId, @RequestBody DischargePatientDTO data){
-        service.dischargePatient(processId, data);
+    public ResponseEntity<ApiResponse<?>> dischargePatient(@PathVariable("processId") Long processId, @RequestBody DischargePatientDTO data, HttpServletRequest request){
+        service.dischargePatient(processId, data, request);
         return ResponseEntity.ok(ApiResponse.ok("Alta clinica registada", null));
     }
 }
