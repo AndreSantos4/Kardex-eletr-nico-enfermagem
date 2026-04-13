@@ -1,5 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,4 +41,7 @@ public class Registo {
     
     @Column(name = "detalhes")
     public String detalhes;
+
+    @Column(name = "stamp")
+    public LocalDateTime stamp;
 }
