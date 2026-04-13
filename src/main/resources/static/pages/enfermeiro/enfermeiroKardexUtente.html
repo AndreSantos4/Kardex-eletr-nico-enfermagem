@@ -13,11 +13,9 @@
 <body>
 
     <div class="topbar">
-        <span class="service-header">
-            <h2 id="servico"></h2>
-        </span>
+        <span class="topbar-page">Enfermeiro Home</span>
         <div class="topbar-right">
-            <span class="topbar-user" id="topbar-user"></span>
+            <span class="topbar-user"> <span id="nome-enf"></span> | Turno: <span id="turno"></span></span>
             <button class="btn-sair" onclick="logout()">SAIR</button>
         </div>
     </div>
@@ -114,7 +112,7 @@
                         <button class="btn-action"
                             onclick="location.href='../enfermeiro/enfermeiroListaUtentes.html'">LISTA</button>
                         <button class="btn-action">HIST. CLÍNICO</button>
-                        <button class="btn-action">EDITAR</button>
+                        <button class="btn-action" onclick="abrirPopUpEditarFichaUtente()">EDITAR</button>
                         <button class="btn-action">HIST. PRESCRIÇÕES</button>
                     </div>
                 </div>
