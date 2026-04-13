@@ -28,6 +28,7 @@ import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
@@ -43,10 +44,11 @@ public class ProcessServiceImpl implements ProcessService{
     private final AdministracaoMapper administracaoMapper;
     private final WorkerService workerService;
     private final CamaRepository camaRepository;
+    private final RecordService recordService;
 
     @Override
     @Transactional
-    public void createProcess(Utente patient, CreateProcessDTO data) {        
+    public ProcessoClinicoDTO createProcess(Utente patient, CreateProcessDTO data) {        
         if(repository.existsByUtente(patient)){
             throw new ConflictEntitiesException("Este utente ja possui um processo ativo");
         }
@@ -64,7 +66,7 @@ public class ProcessServiceImpl implements ProcessService{
             bed.setOcupada(true);
         }
 
-        repository.save(process);
+        return mapper.toDTO(repository.save(process));
     }
 
     @Override
@@ -119,9 +121,16 @@ public class ProcessServiceImpl implements ProcessService{
         if(data.camaId() != null){
             var bed = camaRepository.findById(data.camaId()).orElse(null);
             var previousBed = process.getCama();
-            previousBed.setOcupada(false);
+            
+            if(previousBed != null){
+                previousBed.setOcupada(false);
+            }
+
             process.setCama(bed);
-            bed.setOcupada(true);
+
+            if(bed != null){
+                bed.setOcupada(true);
+            }
         }
         
         process.setMedicoResponsavel(medic);
@@ -161,7 +170,7 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
     @Transactional
-    public void dischargePatient(Long processId, DischargePatientDTO data) {
+    public void dischargePatient(Long processId, DischargePatientDTO data, HttpServletRequest request) {
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo Clinico"));
 
@@ -171,6 +180,8 @@ public class ProcessServiceImpl implements ProcessService{
         process.getUtente().setEstado(EstadoUtente.INATIVO);
 
         repository.save(process);
+        
+        recordService.recordPatientDischarge(mapper.toDTO(process), request);
     }
 
     @Override
