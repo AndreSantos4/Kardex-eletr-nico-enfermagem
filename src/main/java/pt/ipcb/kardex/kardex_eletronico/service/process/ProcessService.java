@@ -15,7 +15,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 
 public interface ProcessService {
 
-    public void createProcess(Utente patient, CreateProcessDTO data);
+    public ProcessoClinicoDTO createProcess(Utente patient, CreateProcessDTO data);
 
     void createPrescription(Long processId, CreatePrescriptionDTO data);
 
@@ -29,7 +29,7 @@ public interface ProcessService {
 
     public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns, HttpServletRequest request);
 
-    public void dischargePatient(Long processId, DischargePatientDTO data);
+    public void dischargePatient(Long processId, DischargePatientDTO data, HttpServletRequest request);
 
     public ProcessoClinicoDTO getKardexProcess(Utente patient);
 }
