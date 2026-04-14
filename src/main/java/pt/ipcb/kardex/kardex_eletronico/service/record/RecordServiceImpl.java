@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.record;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -9,9 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Registo;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.NivelRegisto;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegisto;
 import pt.ipcb.kardex.kardex_eletronico.repository.RegistoRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
@@ -20,10 +23,12 @@ public class RecordServiceImpl implements RecordService {
 
     private final RegistoRepository repository;
     private final WorkerService workerService;
+    private final UserService userService;
 
     @Override
     @Transactional
     public void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess, HttpServletRequest request) {
+        var details = newProcess ? "E o primeiro processo associado ao cliente" : "O utente ja possuia um ou mais processos a ele associado";
         var record = new Registo(
             null, 
             workerService.getAutenticatedWorker(request).getDados(),
@@ -31,16 +36,9 @@ public class RecordServiceImpl implements RecordService {
             TipoRegisto.PATIENT_ACCEPTANCE, 
             "processo_clinico&utente", 
             String.format("O processo clinico numero %d foi aberto para o utente de id %d", process.id(), process.utenteId()), 
-            null, 
+            details, 
             LocalDateTime.now()
         );
-
-        if(newProcess){
-            record.setDetalhes("E o primeiro processo associado ao cliente");
-        }
-        else{
-            record.setDetalhes("O utente ja possuia um ou mais processos a ele associado");
-        }
 
         repository.save(record);
     }
@@ -50,12 +48,12 @@ public class RecordServiceImpl implements RecordService {
     public void recordPatientDischarge(ProcessoClinicoDTO process, HttpServletRequest request) {
         var record = new Registo(
             null, 
-            workerService.getAutenticatedWorker(request).getDados(), 
+            userService.getUserByToken(request), 
             NivelRegisto.INFO, 
             TipoRegisto.PATIENT_DISCHARGE, 
             "processo_clinico&utente", 
             String.format("O processo clinico numero %d foi finalizado, e o utente de id %d foi liberado", process.id(), process.utenteId()), 
-            "n/a",
+            null,
             LocalDateTime.now()
         );
 
@@ -63,14 +61,106 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public long getAcceptedPatientsCountToday() {
-        var after = LocalDateTime.now().minusHours(24);
-        return repository.countByTipoRegistoAndStampAfter(TipoRegisto.PATIENT_ACCEPTANCE, after);
+    @Transactional
+    public void recordUserRegistration(Utilizador newUser, boolean isWorker) {
+        var originTable = isWorker ? "utilizador&funcionario" : "utilizador";
+        var record = new Registo(
+            null, 
+            newUser, 
+            NivelRegisto.INFO, 
+            TipoRegisto.USER_CREATION, 
+            originTable, 
+            String.format("O utilizador de id %d foi registado", newUser.getId()), 
+            null,
+            LocalDateTime.now()
+        );
+
+        if(isWorker){
+            record.setDetalhes("E foi criado um funcionario a ele associado");
+        }
+
+        repository.save(record);
     }
 
     @Override
+    @Transactional
+    public void recordUserLogout(Utilizador user) {
+        var record = new Registo(
+            null, 
+            user, 
+            NivelRegisto.INFO, 
+            TipoRegisto.AUTH, 
+            "sessao", 
+            String.format("O utilizador de id %d efetuou logout", user.getId()), 
+            null,
+            LocalDateTime.now()
+        );
+
+        repository.save(record);
+    }
+
+    @Override
+    @Transactional
+    public void recordUserLogin(Utilizador user) {
+        var record = new Registo(
+            null, 
+            user, 
+            NivelRegisto.INFO, 
+            TipoRegisto.AUTH, 
+            "sessao", 
+            String.format("O utilizador de id %d efetuou login", user.getId()), 
+            null,
+            LocalDateTime.now()
+        );
+
+        repository.save(record);
+    }
+
+    @Override
+    @Transactional
+    public void recordLoginAttempt(Long numeroMecanografico, String ip, boolean sucess) {
+        var details = sucess ? "Tentativa bem sucedida" : "Tentativa mal sucedida";
+        var record = new Registo(
+            null, 
+            null, 
+            NivelRegisto.ALERTA, 
+            TipoRegisto.AUTH, 
+            "tentativa_login", 
+            String.format("Uma tentativa de login para o numero mecanografico %d foi efetuada pelo ip %s", numeroMecanografico, ip), 
+            details,
+            LocalDateTime.now()
+        );
+
+        repository.save(record);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getAcceptedPatientsCountToday() {
+        var startOfDay = LocalDate.now().atStartOfDay();
+        return repository.countByTipoRegistoAndStampAfter(TipoRegisto.PATIENT_ACCEPTANCE, startOfDay);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public long getDischargedPatientsCountToday() {
-        var after = LocalDateTime.now().minusHours(24);
-        return repository.countByTipoRegistoAndStampAfter(TipoRegisto.PATIENT_DISCHARGE, after);
+        var startOfDay = LocalDate.now().atStartOfDay();
+        return repository.countByTipoRegistoAndStampAfter(TipoRegisto.PATIENT_DISCHARGE, startOfDay);
+    }
+
+    @Override
+    public void recordPasswordResetRequest(Utilizador user) {
+        var record = new Registo(
+            null, 
+            user, 
+            NivelRegisto.INFO, 
+            TipoRegisto.AUTH, 
+            "tentativa_login", 
+            String.format("Foi efetuado um pedido de reset de password para o utilizador de id %d", user.getId()), 
+            null,
+            LocalDateTime.now()
+        );
+
+        repository.save(record);
     }
 }
