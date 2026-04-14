@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UtilizadorDTO>> getCurrentUser(HttpServletRequest request) {
-        UtilizadorDTO user = service.getUserByToken(request);
+        UtilizadorDTO user = service.getUserDTOByToken(request);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador encontrado com sucesso", user));
     }
 
