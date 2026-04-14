@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UtilizadorDTO getUserByToken(HttpServletRequest request) {
+    public Utilizador getUserByToken(HttpServletRequest request) {
         var token = cookieService.recoverCookie(request);
         var subject = cookieService.validateToken(token);
 
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
         user.setDataUltimaAtividade(LocalDateTime.now());
         repository.save(user);
 
-        return mapper.toDTO(user);
+        return user;
     }
 
     @Override
