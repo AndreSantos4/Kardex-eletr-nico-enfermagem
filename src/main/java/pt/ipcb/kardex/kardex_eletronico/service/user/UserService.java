@@ -15,6 +15,7 @@ public interface UserService {
     void updateUser(Long id, UpdateUserDTO data);
     UtilizadorDTO getUserById(Long id);
     Utilizador getUserByToken(HttpServletRequest request);
+    UtilizadorDTO getUserDTOByToken(HttpServletRequest request);
     void deactivateUser(Long id);
     void activateUser(Long id);
     long validatePasswordResetRequest(String token);
