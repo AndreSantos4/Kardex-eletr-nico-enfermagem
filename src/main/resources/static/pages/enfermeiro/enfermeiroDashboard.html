@@ -13,14 +13,15 @@
     <div class="topbar">
         <span class="topbar-page">Enfermeiro Home</span>
         <div class="topbar-right">
-            <span class="topbar-user"> <span id="nome-enf"></span> | Turno: <span id="turno"></span></span>
+            <span class="topbar-user">
+                <span id="nome-enf">—</span> | Turno: <span id="turno">—</span>
+            </span>
             <button class="btn-sair" onclick="logout()">SAIR</button>
         </div>
     </div>
 
     <!--Side Bar-->
     <div class="main-container">
-
         <aside class="sidebar">
             <nav>
                 <div class="sidebar-section-label">Principal</div>
@@ -110,70 +111,39 @@
             <!--Status Bar-->
             <div class="status-bar">
                 <div class="status">
-                    <p id="utentes-atribuidos" class="status-number">06</p>
+                    <p id="utentes-atribuidos" class="status-number">—</p>
                     <p class="status-text">Utentes Atribuídos</p>
                 </div>
                 <div class="status">
-                    <p id="medicacoes-pendentes" class="status-number">04</p>
+                    <p id="medicacoes-pendentes" class="status-number">—</p>
                     <p class="status-text">Medicações Pendentes</p>
                 </div>
                 <div class="status">
-                    <p id="administracao-atrasada" class="status-number">01</p>
+                    <p id="administracao-atrasada" class="status-number">—</p>
                     <p class="status-text">Administração Atrasada</p>
                 </div>
                 <div class="status">
-                    <p id="sinais-vitais-registar" class="status-number">03</p>
+                    <p id="sinais-vitais-registar" class="status-number">—</p>
                     <p class="status-text">Sinais Vitais a Registar</p>
                 </div>
                 <div class="status">
-                    <p id="pendencias-turno-anterior" class="status-number">02</p>
+                    <p id="pendencias-turno-anterior" class="status-number">—</p>
                     <p class="status-text">Pendências do Turno Anterior</p>
                 </div>
             </div>
 
             <!--Alertas-->
             <div class="alertas-bar">
-                <div class="alertas-label">
-                    Alertas Ativos
-                </div>
-                <div class="alertas">
-                    <div class="alerta">
-                        <p id="nome-comprimido"></p>
-                        <p id="dosagem"></p>
-                        <p> - </p>
-                        <p id="utente"></p>
-                        <p>(
-                        <p id="cama"></p>)</p>
-                        <p> - atraso
-                        <p id="atraso"></p>
-                        </p>
-                    </div>
-                    <!--<div class="alerta">
-                        <p>Stock crítico: </p>
-                        <p id="nome-comprimido"></p>
-                        <p id="dosagem"></p>
-                        <p> - </p>
-                        <p id="unidades-rest"></p>
-                        <p> unidades restantes</p>
-                    </div>-->
-                    <!--<div class="alerta">
-                        <p>Cateter </p>
-                        <p id="cateter"></p>
-                        <p> - </p>
-                        <p id="utente"></p>
-                        <p> - </p>
-                        <p id="tempo"></p>
-                        <p> inserido, substituição recomendada</p>
-                    </div>-->
+                <div class="alertas-label">Alertas Ativos</div>
+                <div class="alertas" id="alertas-container">
+                    <p class="alertas-empty">A carregar alertas...</p>
                 </div>
             </div>
 
             <!--Lista Utentes Bar-->
             <div class="lista-utentes-bar">
                 <div class="lista-utentes-label">
-                    <div class="lista-utentes-label-text">
-                        Utentes
-                    </div>
+                    <div class="lista-utentes-label-text">Utentes</div>
                     <div class="lista-utentes-label-button">
                         <button class="ver-lista" onclick="location.href='enfermeiroListaUtentes.html'">Ver
                             Lista</button>
@@ -193,16 +163,11 @@
                                 <th>Ação</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="lista-utentes-tbody">
                             <tr>
-                                <td id="n-processo">2026-0214</td>
-                                <td id="nome">Manuel Ferreira</td>
-                                <td id="cama">2B-04</td>
-                                <td id="diagnostico">Esquizofrenia paranoide F20.0</td>
-                                <td id="prox-medicacao">Atrasado 22min Risperidona 2mg</td>
-                                <td id="sv">15:30</td>
-                                <td id="alertas">Alergias</td>
-                                <td><button class="ver-mais">VER MAIS</button></td>
+                                <td colspan="8" style="text-align:center; padding:20px; color:#888;">
+                                    A carregar utentes...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -211,9 +176,9 @@
 
             <!--Lista de Pendências Turno Anterior-->
             <div class="pendencias-turno-anterior-bar">
-                <div class="pendencias-turno-anterior-label">Pendências Turno Anterior&nbsp <span
-                        id="turno">(Manhã)</span></div>
-
+                <div class="pendencias-turno-anterior-label">
+                    Pendências Turno Anterior&nbsp;<span id="label-turno">(—)</span>
+                </div>
                 <div class="pendencias-turno-anterior-table">
                     <table class="pendencias-turno-anterior">
                         <thead>
@@ -224,13 +189,11 @@
                                 <th>Prioridade</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="pendencias-tbody">
                             <tr>
-                                <td id="utente">Manuel Ferreira -&nbsp <span id="cama">0214</span></td>
-                                <td id="tipo">Medicação</td>
-                                <td id="descricao">Haloperidol 5mg -&nbsp <span id="info">utente recusou às 09:00</span>
+                                <td colspan="4" style="text-align:center; padding:20px; color:#888;">
+                                    — Sem dados disponíveis (endpoint pendente) —
                                 </td>
-                                <td id="prioridade">Alta</td>
                             </tr>
                         </tbody>
                     </table>
@@ -238,6 +201,8 @@
             </div>
         </main>
     </div>
+    <script src="../../scripts/logout.js"></script>
+    <script src="../../scripts/enfermeiro/enfermeiroDashBoard.js"></script>
 </body>
 
 </html>
