@@ -21,7 +21,7 @@ public class Registo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
-    @JoinColumn(name = "id_utilizador", nullable = false)
+    @JoinColumn(name = "id_utilizador")
     @ManyToOne(fetch = FetchType.LAZY)
     public Utilizador utilizador;
     

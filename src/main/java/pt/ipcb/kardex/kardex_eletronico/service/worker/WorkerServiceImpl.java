@@ -100,8 +100,8 @@ public class WorkerServiceImpl implements WorkerService {
     @Transactional(readOnly = true)
     public Funcionario getAutenticatedWorker(HttpServletRequest request) {
         var user = userService.getUserByToken(request);
-        return repository.findByUserId(user.id())
-                .orElseThrow(() -> EntityNotFoundException.forId(user.id(), "Funcionario"));
+        return repository.findByUserId(user.getId())
+                .orElseThrow(() -> EntityNotFoundException.forId(user.getId(), "Funcionario"));
     }
 
     @Override
