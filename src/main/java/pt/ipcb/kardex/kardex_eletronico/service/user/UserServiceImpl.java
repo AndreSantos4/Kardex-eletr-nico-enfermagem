@@ -84,6 +84,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UtilizadorDTO getUserDTOByToken(HttpServletRequest request) {
+        return mapper.toDTO(getUserByToken(request));
+    }
+
+
+    @Override
+    @Transactional
     public void updateUser(Long id, UpdateUserDTO data) {
         Utilizador user = repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
