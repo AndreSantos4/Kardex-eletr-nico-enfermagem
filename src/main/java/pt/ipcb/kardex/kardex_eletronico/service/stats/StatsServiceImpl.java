@@ -40,6 +40,8 @@ public class StatsServiceImpl implements StatsService {
                 var dischargedPatientsToday = recordService.getDischargedPatientsCountToday();
 
                 return KardexCountsDTO.forChiefNurse(patientsCount, activeNurses, acceptedPatientsToday, dischargedPatientsToday);
+            case Role.MEDICO:
+                return KardexCountsDTO.forMedic(patientsCount);
             case Role.ADMIN:
                 var usersCount = userService.getActiveUsersCount();
                 var stocksCount = stockService.getMedicationsCount();
