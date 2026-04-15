@@ -1,14 +1,13 @@
 package pt.ipcb.kardex.kardex_eletronico.service.record;
 
-import jakarta.servlet.http.HttpServletRequest;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 
 public interface RecordService {
 
-    void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess, HttpServletRequest request);
+    void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess);
 
-    void recordPatientDischarge(ProcessoClinicoDTO proces, HttpServletRequest request);
+    void recordPatientDischarge(ProcessoClinicoDTO proces);
 
     void recordUserRegistration(Utilizador newUser, boolean isWorker);
 

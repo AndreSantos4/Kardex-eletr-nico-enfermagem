@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
@@ -40,8 +39,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UtilizadorDTO>> getCurrentUser(HttpServletRequest request) {
-        UtilizadorDTO user = service.getUserDTOByToken(request);
+    public ResponseEntity<ApiResponse<UtilizadorDTO>> getCurrentUser() {
+        UtilizadorDTO user = service.getUserDTOByToken();
         return ResponseEntity.ok(ApiResponse.ok("Utilizador encontrado com sucesso", user));
     }
 

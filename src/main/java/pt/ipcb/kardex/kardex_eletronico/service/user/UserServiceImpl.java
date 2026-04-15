@@ -1,14 +1,12 @@
 package pt.ipcb.kardex.kardex_eletronico.service.user;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.ChangeUserPasswordDTO;
@@ -21,7 +19,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
-import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
 import pt.ipcb.kardex.kardex_eletronico.security.PasswordTokenService;
 
 @Service
@@ -32,7 +29,6 @@ public class UserServiceImpl implements UserService {
 
     private final UtilizadorRepository repository;
     private final UtilizadorMapper mapper;
-    private final CookieService cookieService;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordTokenService passwordTokenService;
 
@@ -71,23 +67,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Utilizador getUserByToken(HttpServletRequest request) {
-        var token = cookieService.recoverCookie(request);
-        var subject = cookieService.validateToken(token);
-
-        var user = (Utilizador) repository.findByNumeroMecanografico(subject);
-        user.setDataUltimaAtividade(LocalDateTime.now());
-        repository.save(user);
-
-        return user;
+    public UtilizadorDTO getUserDTOByToken() {
+        var user = (Utilizador) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        return mapper.toDTO(user);
     }
-
-    @Override
-    @Transactional
-    public UtilizadorDTO getUserDTOByToken(HttpServletRequest request) {
-        return mapper.toDTO(getUserByToken(request));
-    }
-
 
     @Override
     @Transactional
