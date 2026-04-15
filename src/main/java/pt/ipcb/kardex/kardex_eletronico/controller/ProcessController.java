@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
@@ -36,11 +35,9 @@ public class ProcessController {
     }
 
     @PostMapping("/prescriptions/{prescriptionId}/administrations")
-    public ResponseEntity<ApiResponse<?>> administrateMedication(@PathVariable("prescriptionId") Long prescriptionId, 
-        @RequestBody CreateAdministrationDTO data,
-        HttpServletRequest request){
+    public ResponseEntity<ApiResponse<?>> administrateMedication(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody CreateAdministrationDTO data){
 
-        service.administrateMedication(prescriptionId, data, request);
+        service.administrateMedication(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Administracao efetuada com sucesso", null));
     }
 
@@ -51,17 +48,14 @@ public class ProcessController {
     }
 
     @PostMapping("/{processId}/vitals")
-    public ResponseEntity<ApiResponse<?>> registerVitalSigns(@PathVariable("processId") Long processId, 
-        @RequestBody RegisterVitalSignsDTO vitalSigns, 
-        HttpServletRequest request){
-
-        service.registerVitalSigns(processId, vitalSigns, request);
+    public ResponseEntity<ApiResponse<?>> registerVitalSigns(@PathVariable("processId") Long processId, @RequestBody RegisterVitalSignsDTO vitalSigns){
+        service.registerVitalSigns(processId, vitalSigns);
         return ResponseEntity.ok(ApiResponse.ok("Sinais vitais registados com sucesso"));
     }
 
     @PatchMapping("/{processId}/discharge")
-    public ResponseEntity<ApiResponse<?>> dischargePatient(@PathVariable("processId") Long processId, @RequestBody DischargePatientDTO data, HttpServletRequest request){
-        service.dischargePatient(processId, data, request);
+    public ResponseEntity<ApiResponse<?>> dischargePatient(@PathVariable("processId") Long processId, @RequestBody DischargePatientDTO data){
+        service.dischargePatient(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Alta clinica registada", null));
     }
 }

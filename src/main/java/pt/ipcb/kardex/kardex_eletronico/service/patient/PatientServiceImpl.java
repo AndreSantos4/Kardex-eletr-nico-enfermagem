@@ -11,7 +11,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.PatientState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
@@ -46,7 +45,7 @@ public class PatientServiceImpl implements PatientService{
 
     @Override
     @Transactional
-    public void createPatient(CreatePatientFileDTO data, HttpServletRequest request) {
+    public void createPatient(CreatePatientFileDTO data) {
         var patient = fileMapper.toUtente(data);
         var process = fileMapper.toProcessDTO(data);
 
@@ -60,7 +59,7 @@ public class PatientServiceImpl implements PatientService{
         try {
             var createdPatient = repository.save(patient);
             var createdProcess = processService.createProcess(createdPatient, process);
-            recordService.recordPatientAcceptance(createdProcess, true, request);
+            recordService.recordPatientAcceptance(createdProcess, true);
         } catch (DataIntegrityViolationException e) {
             throw new ConflictEntitiesException("A nova ficha de utentes esta em conflito com uma das fichas ja exitentes em algum dos campos");
         }

@@ -3,10 +3,10 @@ package pt.ipcb.kardex.kardex_eletronico.service.record;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Registo;
@@ -14,24 +14,24 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.NivelRegisto;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegisto;
 import pt.ipcb.kardex.kardex_eletronico.repository.RegistoRepository;
-import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
-import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
 @RequiredArgsConstructor
 public class RecordServiceImpl implements RecordService {
 
     private final RegistoRepository repository;
-    private final WorkerService workerService;
-    private final UserService userService;
 
     @Override
     @Transactional
-    public void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess, HttpServletRequest request) {
+    public void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess) {
+        var user = (Utilizador) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
         var details = newProcess ? "E o primeiro processo associado ao cliente" : "O utente ja possuia um ou mais processos a ele associado";
+
         var record = new Registo(
             null, 
-            workerService.getAutenticatedWorker(request).getDados(),
+            user,
             NivelRegisto.INFO,
             TipoRegisto.PATIENT_ACCEPTANCE, 
             "processo_clinico&utente", 
@@ -45,10 +45,13 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     @Transactional
-    public void recordPatientDischarge(ProcessoClinicoDTO process, HttpServletRequest request) {
+    public void recordPatientDischarge(ProcessoClinicoDTO process) {
+        var user = (Utilizador) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+                
         var record = new Registo(
             null, 
-            userService.getUserByToken(request), 
+            user, 
             NivelRegisto.INFO, 
             TipoRegisto.PATIENT_DISCHARGE, 
             "processo_clinico&utente", 

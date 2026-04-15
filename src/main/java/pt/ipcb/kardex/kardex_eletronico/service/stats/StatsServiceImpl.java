@@ -28,7 +28,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional(readOnly = true)
     public KardexCountsDTO getCounts(HttpServletRequest request) {
-        var worker = workerService.getAutenticatedWorker(request);
+        var worker = workerService.getAutenticatedWorker();
         var workerRole = worker.getDados().getRole();
 
         var patientsCount = patientService.getHospitalizedPatientsCount();

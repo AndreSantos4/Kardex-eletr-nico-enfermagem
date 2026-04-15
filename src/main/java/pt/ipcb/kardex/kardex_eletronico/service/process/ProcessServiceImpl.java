@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
@@ -91,7 +90,7 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
     @Transactional
-    public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data, HttpServletRequest request) {
+    public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescrição"));
 
@@ -99,7 +98,7 @@ public class ProcessServiceImpl implements ProcessService{
             throw new InactiveResourceException("Processo Clinico");
         }
 
-        var worker = workerService.getAutenticatedWorker(request);
+        var worker = workerService.getAutenticatedWorker();
         var shift = workerService.getCurrentShift(worker.getId());
 
         var administration = administracaoMapper.fromCreate(data);
@@ -152,7 +151,7 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
     @Transactional
-    public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns, HttpServletRequest request) {
+    public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns) {
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Process Clinico"));
 
@@ -162,7 +161,7 @@ public class ProcessServiceImpl implements ProcessService{
 
         var vitalSign = mapper.fromVitalSignRegister(vitalSigns);
         vitalSign.setProcessoClinico(process);
-        vitalSign.setFuncionario(workerService.getAutenticatedWorker(request));
+        vitalSign.setFuncionario(workerService.getAutenticatedWorker());
         process.getSinaisVitais().add(vitalSign);
 
         repository.save(process);
@@ -170,7 +169,7 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
     @Transactional
-    public void dischargePatient(Long processId, DischargePatientDTO data, HttpServletRequest request) {
+    public void dischargePatient(Long processId, DischargePatientDTO data) {
         var process = repository.findById(processId)
             .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo Clinico"));
 
@@ -181,7 +180,7 @@ public class ProcessServiceImpl implements ProcessService{
 
         repository.save(process);
         
-        recordService.recordPatientDischarge(mapper.toDTO(process), request);
+        recordService.recordPatientDischarge(mapper.toDTO(process));
     }
 
     @Override

@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
@@ -24,7 +24,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.FuncionarioMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.FuncionarioRepository;
-import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +35,6 @@ public class WorkerServiceImpl implements WorkerService {
     private final FuncionarioMapper mapper;
     private final TurnoRepository shiftRepository;
     private final TurnoMapper turnoMapper;
-
-    private final UserService userService;
 
     @Override
     @Transactional(readOnly = true)
@@ -98,8 +95,10 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Funcionario getAutenticatedWorker(HttpServletRequest request) {
-        var user = userService.getUserByToken(request);
+    public Funcionario getAutenticatedWorker() {
+        var user = (Utilizador) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
         return repository.findByUserId(user.getId())
                 .orElseThrow(() -> EntityNotFoundException.forId(user.getId(), "Funcionario"));
     }

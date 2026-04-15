@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateIncidentDTO;
@@ -27,8 +26,8 @@ public class ShiftController{
     }
 
     @PostMapping("/incidents")
-    public ResponseEntity<ApiResponse<?>> createIncident(@RequestBody CreateIncidentDTO data, HttpServletRequest request){
-        service.createIncident(data, request);
+    public ResponseEntity<ApiResponse<?>> createIncident(@RequestBody CreateIncidentDTO data){
+        service.createIncident(data);
         return ResponseEntity.ok(ApiResponse.ok("Incidente registado com sucesso", null));
     }
 }
