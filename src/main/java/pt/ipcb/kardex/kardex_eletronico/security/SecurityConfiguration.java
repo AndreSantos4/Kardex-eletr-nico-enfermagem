@@ -52,13 +52,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/sessions/ip").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/stats/**").authenticated()
 
-
                         .requestMatchers("/styles/**", "/scripts/**").permitAll()
                         .requestMatchers("/login", "/pages/login/login.html", "/recuperarPassword", "/pages/login/recuperarPassword.html").permitAll()
                         .requestMatchers("/adminDashboard", "/adminGestaoUtilizadores", "/adminSessoesAtivas", "/perfilColaborador")
                             .hasRole("ADMIN")
                         .requestMatchers("/medicoDashboard").hasRole("MEDICO")
-
                         
                         .anyRequest().authenticated())
 
