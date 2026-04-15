@@ -16,7 +16,10 @@
 	<div class="topbar">
 		<span class="topbar-brand">Enfermeiro Chefe Home</span>
 		<div class="topbar-right">
-			<span class="topbar-user">Dr. Ana Rodrigues | Turno: Tarde <time id="current-datetime"></time></span>
+			<span class="topbar-user">
+				<span id="nome-chefe">—</span> | Turno: <span id="turno-chefe">—</span>
+				<time id="current-datetime"></time>
+			</span>
 			<button class="btn-sair" onclick="logout()">SAIR</button>
 		</div>
 	</div>
@@ -43,17 +46,16 @@
 				</div>
 			</a>
 			<div class="sidebar-item">
-				<svg xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
 					<path
 						d="M416 224C398.3 224 384 209.7 384 192C384 174.3 398.3 160 416 160L576 160C593.7 160 608 174.3 608 192L608 352C608 369.7 593.7 384 576 384C558.3 384 544 369.7 544 352L544 269.3L374.6 438.7C362.1 451.2 341.8 451.2 329.3 438.7L224 333.3L86.6 470.6C74.1 483.1 53.8 483.1 41.3 470.6C28.8 458.1 28.8 437.8 41.3 425.3L201.3 265.3C213.8 252.8 234.1 252.8 246.6 265.3L352 370.7L498.7 224L416 224z" />
 				</svg>
 				Stock
 			</div>
+
 			<div class="sidebar-section-label">Supervisão</div>
 			<div class="sidebar-item">
-				<svg xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
 					<path
 						d="M448 96L439.4 96C428.4 76.9 407.7 64 384 64L256 64C232.3 64 211.6 76.9 200.6 96L192 96C156.7 96 128 124.7 128 160L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 160C512 124.7 483.3 96 448 96zM264 176C250.7 176 240 165.3 240 152C240 138.7 250.7 128 264 128L376 128C389.3 128 400 138.7 400 152C400 165.3 389.3 176 376 176L264 176z" />
 				</svg>
@@ -63,18 +65,15 @@
 			<div class="sidebar-section-label">Cuidados</div>
 			<a href="adminSessoesAtivas.html" style="text-decoration: none">
 				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
 						<path
 							d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM288 344L288 384L248 384C239.2 384 232 391.2 232 400L232 432C232 440.8 239.2 448 248 448L288 448L288 488C288 496.8 295.2 504 304 504L336 504C344.8 504 352 496.8 352 488L352 448L392 448C400.8 448 408 440.8 408 432L408 400C408 391.2 400.8 384 392 384L352 384L352 344C352 335.2 344.8 328 336 328L304 328C295.2 328 288 335.2 288 344z" />
 					</svg>
 					Relatórios
 				</div>
 			</a>
-
 			<div class="sidebar-item">
-				<svg xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
 					<path
 						d="M534.6 182.6C547.1 170.1 547.1 149.8 534.6 137.3L470.6 73.3C461.4 64.1 447.7 61.4 435.7 66.4C423.7 71.4 416 83.1 416 96L416 128L256 128C150 128 64 214 64 320C64 337.7 78.3 352 96 352C113.7 352 128 337.7 128 320C128 249.3 185.3 192 256 192L416 192L416 224C416 236.9 423.8 248.6 435.8 253.6C447.8 258.6 461.5 255.8 470.7 246.7L534.7 182.7zM105.4 457.4C92.9 469.9 92.9 490.2 105.4 502.7L169.4 566.7C178.6 575.9 192.3 578.6 204.3 573.6C216.3 568.6 224 556.9 224 544L224 512L384 512C490 512 576 426 576 320C576 302.3 561.7 288 544 288C526.3 288 512 302.3 512 320C512 390.7 454.7 448 384 448L224 448L224 416C224 403.1 216.2 391.4 204.2 386.4C192.2 381.4 178.5 384.2 169.3 393.3L105.3 457.3z" />
 				</svg>
@@ -90,38 +89,37 @@
 		</nav>
 
 		<div class="main">
-
 			<div class="management-panel">
 				<div class="panel-left">
 					<h3>Painel de Gestão</h3>
-					<span class="panel-info">07/03/2025 - 16:42 - Turno da Tarde</span>
+					<span class="panel-info" id="panel-datetime">—</span>
 				</div>
 				<button class="btn-turnos">Turnos</button>
 			</div>
 
 			<div class="stats-row">
 				<div class="stat-card">
-					<span class="stat-number" id="stat-PORDEFENIR">—</span>
+					<span class="stat-number" id="stat-utentes-internados">—</span>
 					<span class="stat-label">Utentes internados</span>
 				</div>
 				<div class="stat-card">
-					<span class="stat-number" id="stat-PORDEFENIR">—</span>
+					<span class="stat-number" id="stat-enfermeiros-servico">—</span>
 					<span class="stat-label">Enfermeiros em serviço</span>
 				</div>
 				<div class="stat-card">
-					<span class="stat-number" id="stat-PORDEFENIR">—</span>
-					<span class="stat-label">Stock Cítico</span>
+					<span class="stat-number" id="stat-stock-critico">—</span>
+					<span class="stat-label">Stock Crítico</span>
 				</div>
 				<div class="stat-card">
-					<span class="stat-number" id="stat-PORDEFENIR">—</span>
+					<span class="stat-number" id="stat-turno-validacao">—</span>
 					<span class="stat-label">Turno aguarda validação</span>
 				</div>
 				<div class="stat-card">
-					<span class="stat-number" id="stat-PORDEFENIR">—</span>
+					<span class="stat-number" id="stat-admissoes-hoje">—</span>
 					<span class="stat-label">Admissões hoje</span>
 				</div>
 				<div class="stat-card">
-					<span class="stat-number" id="stat-PORDEFENIR">—</span>
+					<span class="stat-number" id="stat-altas-hoje">—</span>
 					<span class="stat-label">Altas hoje</span>
 				</div>
 			</div>
@@ -142,33 +140,17 @@
 								<span>Estado</span>
 							</div>
 						</div>
-						<div id="PORDEFINIR">
+						<div id="turnos-hoje-body" class="scrollable-panel">
 							<div class="table-row compact-table-row">
-								<span class="row-shift">Manhã</span>
-								<span class="row-user-name">Carlos S. - Lia M. - Ana P.</span>
-								<span class="row-time">8h-14h</span>
-								<span class="row-role">Validado</span>
-							</div>
-							<div class="table-row compact-table-row">
-								<span class="row-shift">Tarde</span>
-								<span class="row-user-name">14h-22h</span>
-								<span class="row-role">Ana R. - Bruno C. - Paula T.</span>
-								<span class="row-time">Em curso</span>
-							</div>
-							<div class="table-row compact-table-row">
-								<span class="row-shift">Noite</span>
-								<span class="row-user-name">22h-8h</span>
-								<span class="row-role">Pedro A. - Carla N. - Rui P.</span>
-								<span class="row-time">Agendado</span>
+								<span colspan="4" style="padding:12px;color:#888;">A carregar...</span>
 							</div>
 						</div>
 					</div>
 
 					<div class="info-panel">
 						<h2>Passagem Aguarda Validações</h2>
-						<div class="infomation-row">
-							<span>Turno Tarde - Enf. Ana Rodrigues - 07/03 14:00</span><br>
-							<span>3 pendências - 18 adm. - 1 incidente</span>
+						<div id="passagens-validacao-body" class="scrollable-panel infomation-row">
+							<span style="color:#888;">A carregar...</span>
 						</div>
 					</div>
 				</div>
@@ -187,34 +169,18 @@
 								<span>Min</span>
 								<span>Estado</span>
 							</div>
+						</div>
+						<div id="stock-critico-body" class="scrollable-panel">
 							<div class="table-row compact-table-row">
-								<span class="row-shift">Haloperidol 5mg</span>
-								<span class="row-user-name">3</span>
-								<span class="row-role">10</span>
-								<span class="row-desc">Crítico</span>
-							</div>
-							<div class="table-row compact-table-row">
-								<span class="row-shift">Lorazepam 1mg</span>
-								<span class="row-user-name">8</span>
-								<span class="row-role">15</span>
-								<span class="row-desc">Baixo</span>
-							</div>
-							<div class="table-row compact-table-row">
-								<span class="row-shift">Risperidona 2mg</span>
-								<span class="row-user-name">43</span>
-								<span class="row-role">20</span>
-								<span class="row-desc">Ok</span>
+								<span colspan="4" style="padding:12px;color:#888;">A carregar...</span>
 							</div>
 						</div>
 					</div>
 
 					<div class="info-panel">
 						<h2>Últimas Atividades</h2>
-						<div class="infomation-row">
-							<div class="activity-item"><span class="activity-time">16:33</span>Enf. Ana R. — SOS
-								Lorazepam adm. — Ferreira</div>
-							<div class="activity-item"><span class="activity-time">16:30</span>Incidente: agitação —
-								Ferreira</div>
+						<div id="ultimas-atividades-body" class="scrollable-panel infomation-row">
+							<span style="color:#888;">A carregar...</span>
 						</div>
 					</div>
 				</div>
@@ -223,7 +189,7 @@
 	</div>
 
 	<script src="../../scripts/logout.js"></script>
-	<script src="../../scripts/adminDashboard.js"></script>
+	<script src="../../scripts/enfermeiroChefe/enfermeiroChefeDashboard.js"></script>
 </body>
 
 </html>

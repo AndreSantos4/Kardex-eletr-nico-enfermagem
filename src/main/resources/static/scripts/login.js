@@ -115,7 +115,7 @@ function validateM2F(event) {
                   break;
                 case "ENFERMEIRO_CHEFE":
                   window.location.replace(
-                    "http://localhost:8080/pages/medico/medicoDashboard.html",
+                    "http://localhost:8080/enfermeiroChefeDashboard",
                   );
                   break;
                 default:
