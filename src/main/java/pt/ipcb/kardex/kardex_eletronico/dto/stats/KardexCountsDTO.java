@@ -22,6 +22,18 @@ public record KardexCountsDTO(
             dischargedPatientsToday
         );
     }
+    
+    public static KardexCountsDTO forMedic(long hospitalizedPatients){
+        return new KardexCountsDTO(
+            null, 
+            hospitalizedPatients, 
+            null, 
+            null, 
+            null, 
+            null, 
+            null
+        );
+    }
 
     public static KardexCountsDTO forAdmin(long activeUsers, long hospitalizedPatients, long openSessions, long medicationsCatalog){
         return new KardexCountsDTO(
