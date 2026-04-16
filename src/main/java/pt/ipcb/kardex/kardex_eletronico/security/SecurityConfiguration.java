@@ -46,6 +46,15 @@ public class SecurityConfiguration {
                                                                     "/api/workers/{workerId}/shifts/summary", 
                                                                     "/api/workers/{workerId}/shifts")
                             .hasAnyRole("ADMIN", "ENFERMEIRO_CHEFE")
+
+                        .requestMatchers(HttpMethod.POST, "api/patients").hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
+                        .requestMatchers(HttpMethod.PUT, "api/patients/patientId").hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
+                        .requestMatchers(HttpMethod.GET, "api/patients", "api/patients/patiendId")
+                            .hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE", "MEDICO")
+
+                        .requestMatchers(HttpMethod.PATCH, "api/processes/processId/discharge").hasAnyRole("MEDICO")
+                        .requestMatchers(HttpMethod.POST, "api/processes/processId/vitals").hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
+
                         .requestMatchers(HttpMethod.GET, "/api/sessions").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/{sessionId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/ip").hasRole("ADMIN")
@@ -56,7 +65,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/login", "/pages/login/login.html", "/recuperarPassword", "/pages/login/recuperarPassword.html").permitAll()
                         .requestMatchers("/adminDashboard", "/adminGestaoUtilizadores", "/adminSessoesAtivas", "/perfilColaborador")
                             .hasRole("ADMIN")
-                        .requestMatchers("/medicoDashboard").hasRole("MEDICO")
+                        .requestMatchers("/medicoDashboard", "/medicoKardexUtente", "/medicoListaUtentes").hasRole("MEDICO")
+                        .requestMatchers("/enfermeiroDashboard", "/enfermeiroKardexUntente", "enfermeiroListaUtentes").hasRole("ENFERMEIRO")
+                        .requestMatchers("/enfermeiroChefeDashboard").hasRole("ENFERMEIRO_CHEFE")
                         
                         .anyRequest().authenticated())
 
