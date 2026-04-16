@@ -1,0 +1,196 @@
+:root {
+	--popup-bg: #1a5f7a;
+	--header-bg: #154e66;
+	--input-bg: #ffffff;
+	--label-color: #e0f0f8;
+	--placeholder-color: #9bb8c5;
+	--text-color: #1a3a4a;
+	--btn-bg: #2a7fa0;
+	--btn-hover: #236d8c;
+	--radius: 6px;
+}
+
+.pop-up-sinaisVitais {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+
+.pop-up {
+	background: var(--popup-bg);
+	border-radius: 8px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+	width: 700px;
+	max-width: 95vw;
+	overflow: hidden;
+}
+
+.pop-up-header {
+	background: var(--header-bg);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 18px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pop-up-header h3 {
+	color: var(--input-bg);
+	font-size: 1.05rem;
+	font-weight: 600;
+}
+
+.pop-up-header a.cross {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--bg);
+	border-radius: 50%;
+	width: 28px;
+	height: 28px;
+}
+
+.pop-up-header a.cross:hover {
+	background: hsl(0, 0%, 73%);
+}
+
+.pop-up-header a.cross svg {
+	width: 13px;
+	height: 13px;
+}
+
+.pop-up-main {
+	padding: 14px 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.pop-up label {
+	display: block;
+	color: var(--label-color);
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	margin-bottom: 4px;
+}
+
+.pop-up input,
+.pop-up select {
+	width: 100%;
+	background: var(--input-bg);
+	border: 1.5px solid rgba(255, 255, 255, 0.35);
+	border-radius: var(--radius);
+	padding: 8px 10px;
+	font-size: 0.87rem;
+	color: var(--placeholder-color);
+	outline: none;
+	appearance: none;
+	transition:
+		border-color 0.2s,
+		box-shadow 0.2s;
+	margin-bottom: 6px;
+	box-sizing: border-box;
+}
+
+.pop-up input::placeholder {
+	color: var(--placeholder-color);
+}
+
+.pop-up input:focus,
+.pop-up select:focus {
+	border-color: rgba(255, 255, 255, 0.85);
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+.pop-up option {
+	color: var(--text-color);
+}
+
+.form-row {
+	display: flex;
+	gap: 12px;
+}
+
+.form-group {
+	flex: 1;
+}
+
+.form-group--observacoes {
+	flex: 2;
+}
+
+.pop-up textarea {
+	width: 100%;
+	background: var(--input-bg);
+	border: 1.5px solid rgba(255, 255, 255, 0.35);
+	border-radius: var(--radius);
+	padding: 8px 10px;
+	font-size: 0.87rem;
+	color: var(--placeholder-color);
+	outline: none;
+	resize: vertical;
+	min-height: 95px;
+	height: auto;
+	font-family: inherit;
+	box-sizing: border-box;
+	margin-bottom: 6px;
+}
+
+.pop-up textarea::placeholder {
+	color: var(--placeholder-color);
+}
+
+.pop-up textarea:focus {
+	border-color: rgba(255, 255, 255, 0.85);
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+.form-group--data {
+	flex: 1;
+	max-width: calc(33.33% - 8px);
+}
+
+.buttons-bottom {
+	display: flex;
+	padding: 2% 0%;
+	gap: 10px;
+}
+
+.buttons-bottom input {
+	flex: 1;
+	padding: 10px;
+	background: transparent;
+	color: #fff;
+	border: 2px solid rgba(255, 255, 255, 0.5);
+	border-radius: var(--radius);
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition:
+		background 0.2s,
+		transform 0.1s;
+}
+
+.buttons-bottom input:hover {
+	background: var(--btn-hover);
+}
+
+.buttons-bottom input:active {
+	transform: scale(0.97);
+}
+
+#errorBox {
+	color: red;
+	text-align: center;
+	display: none;
+}

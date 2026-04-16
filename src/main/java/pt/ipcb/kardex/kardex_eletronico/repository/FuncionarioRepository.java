@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
@@ -21,8 +22,8 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     @Query("SELECT t FROM Funcionario f JOIN f.turnos t WHERE f.id = :id AND t.inicio <= :from AND t.inicio > :to ORDER BY t.inicio DESC")
     List<Turno> findPreviousTurnos(@Param("id") Long id, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
-    @Query("SELECT f FROM Funcionario f JOIN f.utilizador u WHERE u.id = :id")
-    Optional<Funcionario> findByUserId(Long id);
+    @Query("SELECT f FROM Funcionario f JOIN f.dados u WHERE u.id = :id")
+    Optional<Funcionario> findByUserId(@Param("id") Long id);
 
     @Query("SELECT t FROM Funcionario f JOIN f.turnos t WHERE f.id = :id AND t.inicio <= :now AND t.fim >= :now")
     Turno findCurrentTurno(Long id, LocalDateTime now);
@@ -41,4 +42,8 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
 
     @Query("SELECT COUNT(a) FROM Funcionario f JOIN f.turnos t JOIN t.administracoes a WHERE f.id = :id AND MONTH(t.inicio) = MONTH(CURRENT_DATE) AND YEAR(t.inicio) = YEAR(CURRENT_DATE)")
     int getAdministrationsCountThisMonth(@Param("id") Long id);
+
+    List<Funcionario> findByDadosRole(Role role);
+
+    long countByDadosRoleAndDadosAtivo(Role enfermeiro, boolean ativo);
 }

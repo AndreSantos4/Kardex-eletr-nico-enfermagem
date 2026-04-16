@@ -12,4 +12,6 @@ public interface PasswordResetRequestRepository extends JpaRepository<PasswordRe
 
 	void deleteAllByPedidoEmBefore(LocalDateTime cutoff);
 
+    PasswordResetRequest findByTokenHash(String hashToken);
+
 }

@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Sexo;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,17 +26,14 @@ public class Utente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
-    @Column(name = "numero_sns", nullable = false)
-    public Integer numeroSNS;
+    @Column(name = "numero_sns", unique = true)
+    public Long numeroSNS;
     
-    @Column(name = "numero_cc", nullable = false)
+    @Column(name = "numero_cc", unique = true)
     public String numeroCC;
     
-    @Column(name = "primeiro_nome", nullable = false)
-    public String primeiroNome;
-    
-    @Column(name = "apelido", nullable = false)
-    public String apelido;
+    @Column(name = "nome", nullable = false)
+    public String nome;
     
     @Column(name = "sexo", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -45,12 +44,15 @@ public class Utente {
     
     @Column(name = "contacto_emergencia", nullable = false)
     public Integer contactoEmergencia;
+
+    @Column(name = "data_nascimento")
+    public LocalDate dataNascimento;
     
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
     public EstadoUtente estado = EstadoUtente.EM_ANALISE;
     
-    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<ProcessoClinico> processosClinicos = new ArrayList<>();
     
     @JoinTable(
@@ -61,13 +63,11 @@ public class Utente {
     @ManyToMany
     public Set<Alergia> alergias = new HashSet<>();
 
-    @JoinTable(
-            name = "utente_flag",
-            joinColumns = @JoinColumn(name = "id_utente"),
-            inverseJoinColumns = @JoinColumn(name = "id_flag")
-    )
-    @ManyToMany
-    public Set<FlagRisco> flagRiscos = new HashSet<>();
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "utente_flags", joinColumns = @JoinColumn(name = "id_utente"))
+    @Column(name = "flag_risco")
+    public Set<FlagRisco> flagsRisco = new HashSet<>();
     
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     public List<RegistoClinico> historico = new ArrayList<>();

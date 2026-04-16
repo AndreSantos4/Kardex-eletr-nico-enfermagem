@@ -1,0 +1,452 @@
+
+.main-container {
+	display: flex;
+	flex: 1;
+}
+
+.main-content {
+	flex: 1;
+	overflow-x: hidden;
+}
+
+/* Top Bar */
+
+
+/* Side Bar */
+.sidebar {
+	width: 210px;
+	background: var(--surface);
+	position: sticky;
+	top: 52px;
+	height: calc(100vh - 52px);
+	overflow-y: auto;
+	padding: 12px 0;
+	flex-shrink: 0;
+}
+
+.sidebar ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar-item a {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 18px;
+	text-decoration: none;
+	color: var(--text);
+	font-size: 14px;
+	transition: background 0.2s;
+}
+
+.sidebar-item a:hover {
+	background: rgba(255, 255, 255, 0.15);
+	color: var(--accent);
+}
+
+.sidebar-item.active a {
+	background: var(--accent);
+	color: var(--surface);
+}
+
+.sidebar-item svg {
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+	fill: currentColor;
+}
+
+.sidebar-section-label {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	color: var(--accent);
+	padding: 14px 18px 6px;
+	text-transform: uppercase;
+}
+
+/* Page content */
+.page-content {
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* Service Header */
+.service-header {
+	background: var(--surface);
+	border-radius: 4px;
+	padding: 10px 16px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.service-header h2 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--accent);
+}
+
+.service-header-right {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--text);
+}
+
+/* Utente Header Card */
+.utente-header {
+	background: var(--surface);
+	border-radius: 4px;
+	padding: 10px 16px;
+}
+
+.utente-header-title {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--accent);
+	margin-bottom: 2px;
+}
+
+.utente-header-sub {
+	font-size: 12px;
+	color: var(--muted);
+	margin-bottom: 10px;
+}
+
+/* Action Buttons */
+.action-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.btn-action {
+	background: transparent;
+	border: 1.5px solid var(--accent);
+	color: var(--accent);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	padding: 5px 12px;
+	cursor: pointer;
+	border-radius: 6px;
+	transition:
+		background 0.15s,
+		color 0.15s;
+	white-space: nowrap;
+}
+
+.btn-action:hover {
+	background: var(--accent);
+	color: var(--surface);
+}
+
+/* Utente Info Row */
+.utente-info-card {
+	background: var(--surface);
+	border-radius: 4px;
+	padding: 12px 16px;
+}
+
+.utente-info-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 8px 24px;
+	font-size: 12.5px;
+}
+
+.utente-info-grid .utente-nome {
+	grid-column: 1 / -1;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--accent);
+	margin-bottom: 4px;
+}
+
+.info-field {
+	color: var(--muted);
+}
+
+.info-field span {
+	color: var(--accent);
+	font-weight: 600;
+}
+
+.info-riscos {
+	grid-column: 1 / -1;
+	color: hsl(0, 98%, 36%);
+	font-size: 12px;
+	font-weight: 700;
+	margin-top: 4px;
+}
+
+/* Alergias */
+.alergias-card {
+	background: var(--surface);
+	border: 1.5px solid var(--muted);
+	border-radius: 4px;
+	padding: 10px 14px;
+}
+
+.alergias-title {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--muted);
+	margin-bottom: 4px;
+}
+
+.alergias-list {
+	font-size: 12px;
+	color: var(--text);
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+/* Main grid */
+.main-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+/* Panel */
+.panel {
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.panel-header {
+    background: var(--surface);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 14px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.panel-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--accent);
+}
+
+.panel-body {
+	padding: 12px 14px;
+    background-color: var(--accent);
+    border: 1.5px solid var(--card);
+}
+
+.btn-panel {
+	background: transparent;
+	border: 1.5px solid var(--accent);
+	color: var(--accent);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	padding: 4px 10px;
+	cursor: pointer;
+	border-radius: 6px;
+	transition:
+		background 0.15s,
+		color 0.15s;
+	white-space: nowrap;
+}
+
+.btn-panel:hover {
+	background: var(--accent);
+	color: var(--surface);
+}
+
+/* Sinais Vitais */
+.sv-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 6px;
+}
+
+.sv-item {
+	background: var(--card);
+	border-radius: 4px;
+	padding: 10px 14px;
+	text-align: center;
+	min-width: 70px;
+}
+
+.sv-value {
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--muted);
+	line-height: 1.2;
+}
+
+.sv-label {
+	font-size: 10px;
+	color: var(--muted);
+	margin-top: 4px;
+}
+
+/* Plano de Cuidados */
+.plano-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 6px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	font-size: 13px;
+    color: var(--card);
+}
+
+.plano-item:last-child {
+	border-bottom: none;
+}
+
+.plano-hora {
+	font-weight: 700;
+	color: var(--card);
+	font-size: 13px;
+}
+
+/* Medicação */
+.med-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: 7px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	font-size: 12.5px;
+	gap: 8px;
+}
+
+.med-item:last-child {
+	border-bottom: none;
+}
+
+.med-info-nome {
+	font-weight: 700;
+	color: var(--card);
+}
+
+.med-info-detalhe {
+	font-size: 11px;
+	color: var(--card);
+	margin-top: 1px;
+}
+
+.med-badge {
+	font-size: 11px;
+	font-weight: 700;
+	padding: 2px 8px;
+	border-radius: 10px;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+.sos-badge{
+	color: var(--card);
+}
+.ok-badge{
+	color: var(--card);
+}
+
+.badge-atrasado {
+	background: hsl(0, 98%, 36%);
+	color: accent;
+}
+
+.badge-hora {
+	color: var(--card);
+	font-size: 12px;
+}
+
+/* Exames e Cateteres */
+.exame-item {
+	padding: 6px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	font-size: 12.5px;
+}
+
+.exame-item:last-child {
+	border-bottom: none;
+}
+
+.exame-nome {
+	font-weight: 700;
+	color: var(--card);
+}
+
+.exame-detalhe {
+	font-size: 11px;
+	color: var(--card);
+	margin-top: 2px;
+}
+
+.exame-status {
+	font-size: 11px;
+	color: hsl(0, 98%, 36%);
+	font-weight: 600;
+}
+
+/* Ocorrências */
+.ocorrencia-item {
+	display: grid;
+	grid-template-columns: 48px 80px 1fr;
+	gap: 6px;
+	padding: 6px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	font-size: 12px;
+	align-items: start;
+}
+
+.ocorrencia-item:last-child {
+	border-bottom: none;
+}
+
+.ocorrencia-hora {
+	font-weight: 700;
+	color: var(--card);
+}
+
+.ocorrencia-enf {
+	color: var(--card);
+}
+
+.ocorrencia-desc {
+	color: var(--card);
+}
+
+/* Últimos Registos */
+.registos-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12.5px;
+}
+
+.registos-table th {
+	text-align: left;
+	padding: 4px 8px;
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--card);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.registos-table td {
+	padding: 6px 8px;
+	color: var(--card);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.registos-table tr:last-child td {
+	border-bottom: none;
+}

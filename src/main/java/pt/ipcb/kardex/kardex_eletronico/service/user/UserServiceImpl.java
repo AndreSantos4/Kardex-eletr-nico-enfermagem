@@ -1,35 +1,36 @@
 package pt.ipcb.kardex.kardex_eletronico.service.user;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.ChangeUserPasswordDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UpdateUserDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.user.UtilizadorDTO;
-import pt.ipcb.kardex.kardex_eletronico.exception.ConflictFieldsException;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.ExpiredResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.PasswordResetRequestRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtilizadorRepository;
-import pt.ipcb.kardex.kardex_eletronico.security.CookieService;
+import pt.ipcb.kardex.kardex_eletronico.security.PasswordTokenService;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final int PASSWORD_RESET_TOKEN_EXPIRY_MINUTES = 15;
+
     private final UtilizadorRepository repository;
     private final UtilizadorMapper mapper;
-    private final CookieService cookieService;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
+    private final PasswordTokenService passwordTokenService;
 
     @Override
     @Transactional(readOnly = true)
@@ -43,20 +44,16 @@ public class UserServiceImpl implements UserService {
                             || u.getNumeroMecanografico().toString().toLowerCase().contains(f))
                     .toList();
         }
-        
+
         switch (orderBy) {
-            case ASC:
-                users = users.stream().sorted((u1, u2) -> u2.getNome().compareTo(u1.getNome())).toList();
-                break;
-            case DESC:
-                users = users.stream().sorted((u1, u2) -> u1.getNome().compareTo(u2.getNome())).toList();
-                break;
+            case ASC -> users = users.stream().sorted((u1, u2) -> u2.getNome().compareTo(u1.getNome())).toList();
+            case DESC -> users = users.stream().sorted((u1, u2) -> u1.getNome().compareTo(u2.getNome())).toList();
         }
 
         return users
-            .stream()
-            .map(mapper::toDTO)
-            .toList();
+                .stream()
+                .map(mapper::toDTO)
+                .toList();
     }
 
     @Override
@@ -68,15 +65,11 @@ public class UserServiceImpl implements UserService {
         return mapper.toDTO(user);
     }
 
+    @Override
     @Transactional
-    public UtilizadorDTO getUserByToken(HttpServletRequest request) {
-        var token = cookieService.recoverCookie(request);
-        var subject = cookieService.validateToken(token);
-
-        var user = (Utilizador) repository.findByNumeroMecanografico(subject);
-        user.setDataUltimaAtividade(LocalDateTime.now());
-        repository.save(user);
-
+    public UtilizadorDTO getUserDTOByToken() {
+        var user = (Utilizador) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
         return mapper.toDTO(user);
     }
 
@@ -100,7 +93,7 @@ public class UserServiceImpl implements UserService {
         try {
             repository.save(user);
         } catch (Exception e) {
-            throw new ConflictFieldsException();
+            throw new ConflictEntitiesException("Conflito com utilizadores existentes em um dos campos preenchidos");
         }
     }
 
@@ -125,36 +118,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void changePassword(Long id, String token, ChangeUserPasswordDTO newPassword) {
-        var user = repository.findById(id)
-                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utilizador"));
-        var passwordResetRequest = passwordResetRequestRepository.findById(user.getNumeroMecanografico())
-                .orElseThrow(() -> EntityNotFoundException.forId(user.getNumeroMecanografico(), "Pedido de Reset de Password"));
-
-        if(passwordResetRequest.getPedidoEm().plusMinutes(15).isBefore(LocalDateTime.now())) {
-            passwordResetRequestRepository.delete(passwordResetRequest);
-            throw new RuntimeException("Token expirado para reset de password");
-        }
-
-        if (!passwordResetRequest.getToken().equals(token)) {
-            throw new RuntimeException("Token inválido para reset de password");
-        }
-
-        var encodedPasssword = new BCryptPasswordEncoder().encode(newPassword.newPassword());
-        user.setPasswordHash(encodedPasssword);
-
-        if(user.getAtivo() == false) {
-            user.setAtivo(true);
-        }
-
-        repository.save(user);
-        passwordResetRequestRepository.delete(passwordResetRequest);
+    @Transactional(readOnly = true)
+    public long getActiveUsersCount() {
+        return repository.countByAtivoTrue();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public long getActiveUsersCount() {
-        return repository.countByAtivoTrue();
+    public long validatePasswordResetRequest(String token) {
+        var tokenHash = passwordTokenService.hashPasswordResetUUID(token);
+
+        var resetRequest = passwordResetRequestRepository.findByTokenHash(tokenHash);
+
+        if (!resetRequest.isValid(PASSWORD_RESET_TOKEN_EXPIRY_MINUTES)) {
+            throw new ExpiredResourceException("Token de Reset de Password");
+        }
+
+        return resetRequest.getNumeroMecanografico();
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long numeroMecanografico, ChangeUserPasswordDTO newPassword) {
+        if (!passwordResetRequestRepository.existsById(numeroMecanografico))
+            throw new EntityNotFoundException("Password reset request");
+        var user = (Utilizador) repository.findByNumeroMecanografico(numeroMecanografico);
+
+        var newPasswordHash = new BCryptPasswordEncoder().encode(newPassword.newPassword());
+        user.setPasswordHash(newPasswordHash);
+
+        repository.save(user);
     }
 }

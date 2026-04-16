@@ -108,14 +108,13 @@ public class Utilizador implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-    
+        
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+        
         if (role == Role.ENFERMEIRO_CHEFE) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ENFERMEIRO"));
         }
         
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
-
         return authorities;
     }
 

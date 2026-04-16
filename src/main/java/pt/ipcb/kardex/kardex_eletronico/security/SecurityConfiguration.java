@@ -37,21 +37,41 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PATCH, "/api/users/{id}/activate", "/api/users/{id}/deactivate")
                             .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/auth/password-reset").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/{id}/change-password").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/password-reset").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/change-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/verify").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/workers/medics").hasAnyRole("ENFERMEIRO", "MEDICO")
                         .requestMatchers(HttpMethod.GET, "/api/workers/{workerId}", 
                                                                     "/api/workers/{workerId}/summary", 
                                                                     "/api/workers/{workerId}/shifts/summary", 
                                                                     "/api/workers/{workerId}/shifts")
                             .hasAnyRole("ADMIN", "ENFERMEIRO_CHEFE")
+
+                        .requestMatchers(HttpMethod.POST, "api/patients").hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
+                        .requestMatchers(HttpMethod.PUT, "api/patients/patientId").hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
+                        .requestMatchers(HttpMethod.GET, "api/patients", "api/patients/patiendId")
+                            .hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE", "MEDICO")
+
+                        .requestMatchers(HttpMethod.PATCH, "api/processes/processId/discharge").hasAnyRole("MEDICO")
+                        .requestMatchers(HttpMethod.POST, "api/processes/processId/vitals").hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
+
                         .requestMatchers(HttpMethod.GET, "/api/sessions").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/{sessionId}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/sessions/ip").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/sessions/ip").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("ADMIN")
-                        .requestMatchers("/pages/login/login.html", "/styles/**", "/scripts/**").permitAll()
-                        .requestMatchers("/pages/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/stats/**").authenticated()
+
+                        .requestMatchers("/styles/**", "/scripts/**").permitAll()
+                        .requestMatchers("/login", "/pages/login/login.html", "/recuperarPassword", "/pages/login/recuperarPassword.html").permitAll()
+                        .requestMatchers("/adminDashboard", "/adminGestaoUtilizadores", "/adminSessoesAtivas", "/perfilColaborador")
+                            .hasRole("ADMIN")
+                        .requestMatchers("/medicoDashboard", "/medicoKardexUtente", "/medicoListaUtentes").hasRole("MEDICO")
+                        .requestMatchers("/enfermeiroDashboard", "/enfermeiroKardexUntente", "enfermeiroListaUtentes").hasRole("ENFERMEIRO")
+                        .requestMatchers("/enfermeiroChefeDashboard").hasRole("ENFERMEIRO_CHEFE")
+                        
                         .anyRequest().authenticated())
+
+
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, e) -> {
                             response.setContentType("application/json");

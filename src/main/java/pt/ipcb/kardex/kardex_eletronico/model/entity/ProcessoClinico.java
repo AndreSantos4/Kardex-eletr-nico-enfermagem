@@ -29,10 +29,17 @@ public class ProcessoClinico {
     
     @Column(name = "diagnostico_principal", nullable = false)
     public String diagnosticoPrincipal;
+
+    @Column(name = "motivo_internamento", nullable = false)
+    public String motivoInternamento;
     
     @JoinColumn(name = "id_cama")
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     public Cama cama;
+
+    @JoinColumn(name = "id_medico")
+    @ManyToOne(fetch = FetchType.EAGER)
+    public Funcionario medicoResponsavel;
     
     @Column(name = "data_entrada", nullable = false)
     public LocalDate dataEntrada = LocalDate.now();
@@ -42,6 +49,9 @@ public class ProcessoClinico {
     
     @Column(name = "alta")
     public Boolean alta = false;
+
+    @Column(name = "notas_alta")
+    public String notasAlta;
     
     @JoinTable(
             name = "processo_clinico_prescricao",

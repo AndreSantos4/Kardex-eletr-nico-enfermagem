@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.repository.TentativaLoginRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.StrangeAttempDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.authentication.TentativaLoginDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.TentativaLogin;
@@ -20,6 +21,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
 
     private final TentativaLoginRepository repository;
     private final TentativaLoginMapper mapper;
+    private final RecordService recordService;
 
     @Transactional
     public void registar(Long numeroMecanografico, String ip, boolean sucesso, String motivoFalha) {
@@ -31,6 +33,8 @@ public class LoginAttemptServiceImpl implements LoginAttemptService{
             LocalDateTime.now(),
             sucesso ? null : motivoFalha
         ));
+
+        recordService.recordLoginAttempt(numeroMecanografico, ip, sucesso);
     }
 
     @Transactional(readOnly = true)

@@ -2,7 +2,6 @@ package pt.ipcb.kardex.kardex_eletronico.service.worker;
 
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
@@ -23,11 +22,17 @@ public interface WorkerService {
 
     void removeFromShift(Long workerId, Long shiftId);
 
-    Funcionario getAutenticatedWorker(HttpServletRequest request);
+    Funcionario getAutenticatedWorker();
 
     Turno getCurrentShift(Long id);
 
     List<ShiftSummaryDTO> getWorkerShiftsInfo(Long id);
 
     WorkerActivitySummary getWorkerActivitySummary(Long workerId);
+
+    Funcionario getMedicById(long medicoId);
+    
+    List<FuncionarioDTO> getAllMedics();
+
+    long getActiveNursesCount();
 }

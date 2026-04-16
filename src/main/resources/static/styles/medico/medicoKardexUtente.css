@@ -1,0 +1,643 @@
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --border: rgba(255, 255, 255, 0.12);
+    --sans: "IBM Plex Sans", sans-serif;
+    --alertas: hsl(0, 98%, 36%);
+}
+
+/*Body*/
+body {
+    font-family: var(--sans);
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    flex-grow: 1;
+    align-items: stretch;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/*Top Bar*/
+.topbar {
+    height: 52px;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar-page{
+    font-size: 13px;
+    color: var(--text);
+    letter-spacing: 0.06em;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.topbar-user {
+    background: red;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+}
+
+.btn-sair {
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 5px 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 
+        background 0.15s,
+        color 0.15s;
+}
+
+.btn-sair:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/*Side Bar*/
+.sidebar {
+    width: 210px;
+    background: var(--primary);
+    padding: 12px 0;
+    border-top: 1px solid var(--white);
+    
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.sidebar-item.active a, 
+.sidebar-item a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--white);
+    border-right: 1px solid var(--primary);
+}
+
+.sidebar-item.active a {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.sidebar-item svg {
+    width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+	fill: currentColor;
+}
+
+.sidebar-section-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 20px 18px 8px;
+    text-transform: uppercase;
+}
+
+/*Page Header*/
+.page-header {
+	background: var(--primary);
+	border-radius: 4px;
+	padding: 14px 20px;
+    margin: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.page-header h4{
+    margin: 0;
+}
+
+.page-header-left {
+    width: 50%;
+}
+
+.page-header-left p{
+    margin: 0;
+}
+
+.page-header-right{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 20px;
+}
+
+/*Page Header - buttons*/
+.page-header-button {
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 5px 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    white-space: nowrap;
+    transition: 
+        background 0.15s,
+        color 0.15s;
+}
+
+.page-header-button:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/*Info do Utente*/
+.info-utente-bar {
+    margin: 14px;
+    border-radius: 5px;
+    background: var(--primary);
+    padding: 10px 5px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+}
+
+.info-utente-1, .info-utente-2, .info-utente-3{
+    display: flex;
+    align-items: center;
+}
+
+.nome-utente, .sexo-idade, .admissao, .medico, .processo, .cama, .estado, .riscos {
+    display: flex;
+    align-items: center;
+}
+
+.nome-utente p, .sexo-idade p, .admissao p, .medico p, .processo p, .cama p, .estado p, .riscos p{
+    margin: 0;
+}
+
+.sexo-idade, .admissao, .medico, .cama, .estado {
+    margin: 5px;
+}
+
+.riscos {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/*Alertas Bar*/
+.alertas-bar {
+    margin: 14px;
+    border-radius: 5px;
+    border: 1px solid var(--primary);
+    font-size: 14px;
+}
+
+.alertas-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+}
+
+.alerta {
+    color: var(--alertas);
+    margin: 0;
+    padding: 5px;
+    display: flex;
+}
+
+.alerta p {
+    padding: 0;
+    margin: 0;
+}
+
+/*Barra do Sinais Vitais e Plano de Cuidados*/
+.sv-plano-cuidados-bar {
+    margin: 14px;
+    border-radius: 5px;
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 200px;
+}
+
+/*Barra Sinais Vitais*/
+.sinais-vitais-bar {
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    border-radius: 5px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+.sinais-vitais-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.sinais-vitais {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:15px;
+    margin: 10px;
+    flex: 1;
+}
+
+.tensao-art, .freq-card, .temperatura, .spo2, .dor, .glicemia {
+    background-color: var(--primary);
+    border-radius: 3px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+    width: 100px;
+    height: 83px;
+}
+
+.tensao-art p, .freq-card p, .temperatura p, .spo2 p, .dor p , .glicemia p{
+    margin: 2px;
+}
+
+/*Barra do plano de cuidados*/
+.plano-cuidados-bar {
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    border-radius: 5px;
+    flex: 1;
+}
+
+.plano-cuidados-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.plano-cuidados-label-left {
+    width: 50%;
+}
+
+.plano-cuidados-label-right {
+    width: 50%;
+    display: flex;
+    justify-content: end;
+}
+
+.btn-plano-cuidados-label {
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 5px 5px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 
+        background 0.15s,
+        color 0.15s;
+}
+
+.btn-plano-cuidados-label:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.plano-cuidados {
+    display: flex;
+    align-items:flex-start;
+    justify-content: center;
+    gap:15px;
+    margin: 5px;
+    flex: 1;
+    color: var(--primary);
+}
+
+.plano-cuidados-left {
+    width: 50%;
+}
+
+.plano-cuidados-right {
+    width: 50%;
+    display: flex;
+    justify-content: end;
+}
+
+.plano-cuidados-left p, .plano-cuidados-right p {
+    margin: 0;
+}
+
+/*Barra da Medição e dos Exames*/
+.medicacao-exames-bar {
+    margin: 14px;
+    border-radius: 5px;
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 200px;
+}
+
+/*Bara de Medicação*/
+.medicacao-bar {
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    border-radius: 5px;
+    flex: 1;
+}
+
+.medicacao-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.medicacao {
+    display: flex;
+    gap:15px;
+    margin: 5px;
+    align-items: center;
+    flex: 1;
+    color: var(--primary);
+}
+
+.medicacao-left {
+    width: 50%;
+    
+}
+
+.medicacao-right {
+    width: 50%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.medicacao-left-cima {
+    display: flex;
+    align-items: center;
+}
+
+.medicacao-left-baixo {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.medicacao-left-cima p, .medicacao-left-baixo p, .medicacao-right p {
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+/*Bara de Exames e Cateteres*/
+.exames-cateteres-bar {
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    border-radius: 5px;
+    flex: 1;
+}
+
+.exames-cateteres-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.exames-cateteres {
+    gap:15px;
+    margin: 5px;
+    align-items: center;
+    flex: 1;
+    color: var(--primary);
+}
+
+.exames-cateteres-cima {
+    display: flex;
+    align-items: center;
+}
+
+.exames-cateteres-baixo {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.exames-cateteres-cima p, .exames-cateteres-baixo p {
+    margin: 0;
+}
+
+/*Barra das Ocorrências e Registos*/
+.ocorrencias-registos-bar {
+    margin: 14px;
+    border-radius: 5px;
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 200px;
+}
+
+/*Barra de Ocorrências*/
+.ocorrencias-bar {
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    border-radius: 5px;
+    flex: 1;
+}
+
+.ocorrencias-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.ocorrencias {
+    gap:15px;
+    margin: 5px;
+    align-items: center;
+    display: flex;
+    flex: 1;
+    color: var(--primary);
+}
+
+.ocorrencias-left, .ocorrencias-middle, .ocorrencias-right {
+    display: flex;
+    align-items: center;
+}
+
+.ocorrencias-left p, .ocorrencias-middle p, .ocorrencias-right p {
+    margin: 0;
+}
+
+/*Barra de Registos*/
+.registos-bar {
+    width: 50%;
+    height: 100%;
+    border-right: 1px solid var(--primary);
+    border-left: 1px solid var(--primary);
+    border-radius: 5px;
+    flex: 1;
+}
+
+.registos-label {
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--sans);
+    padding: 5px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.registos {
+    gap:15px;
+    margin: 5px;
+    align-items: center;
+    display: flex;
+    flex: 1;
+    color: var(--primary);
+}
+
+.registos-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.lista-registos {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 1rem;
+  table-layout: fixed;
+}
+
+.lista-registos th:nth-child(1),
+.lista-registos td:nth-child(1) {
+  width: 9%;
+}
+
+.lista-registos th:nth-child(2),
+.lista-registos td:nth-child(2) {
+  width: 82%;
+}
+
+.lista-registos th:nth-child(3),
+.lista-registos td:nth-child(3) {
+  width: 9%;
+}
+
+.lista-registos thead tr {
+  color: var(--primary);
+  text-align: center;
+}
+
+.lista-registos thead th {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.lista-registos tbody tr {
+  color: var(--primary);
+  border-bottom: 1px solid #2a5a8c;
+}
+
+.lista-registos tbody td {
+  padding: 5px 16px;
+  vertical-align: middle;
+  text-align: center;
+}
+

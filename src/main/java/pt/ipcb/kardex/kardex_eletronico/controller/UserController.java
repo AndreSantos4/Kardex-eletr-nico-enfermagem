@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.OrderBy;
@@ -31,15 +32,15 @@ public class UserController {
     private final UserService service;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter, 
-                                                                        @RequestParam(name = "o", defaultValue = "DESC") OrderBy orderBy) {
+    public ResponseEntity<ApiResponse<List<UtilizadorDTO>>> getAllUsers(@RequestParam("f") Optional<String> filter,
+            @RequestParam(name = "o", defaultValue = "DESC") OrderBy orderBy) {
         var users = service.getAllUsers(filter, orderBy);
         return ResponseEntity.ok(ApiResponse.ok("Utilizadores encontrados com sucesso", users));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UtilizadorDTO>> getCurrentUser(HttpServletRequest request) {
-        UtilizadorDTO user = service.getUserByToken(request);
+    public ResponseEntity<ApiResponse<UtilizadorDTO>> getCurrentUser() {
+        UtilizadorDTO user = service.getUserDTOByToken();
         return ResponseEntity.ok(ApiResponse.ok("Utilizador encontrado com sucesso", user));
     }
 
@@ -62,14 +63,26 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/deactivate")
-    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable("id") Long id, @RequestBody DeactivateUserDTO reason) {
+    public ResponseEntity<ApiResponse<?>> deactivateUser(@PathVariable("id") Long id,
+            @RequestBody DeactivateUserDTO reason) {
         service.deactivateUser(id);
         return ResponseEntity.ok(ApiResponse.ok("Utilizador desativado com sucesso", null));
     }
-    
-    @PatchMapping("/{id}/change-password")
-    public ResponseEntity<ApiResponse<?>> changePassword(@PathVariable("id") Long id, @RequestParam("token") String token, @RequestBody ChangeUserPasswordDTO newPassword) {
-        service.changePassword(id, token, newPassword);
+
+    @GetMapping("/password-reset")
+    public ModelAndView passwordReset(@RequestParam("t") String token) {
+        var numeroMecanografico = service.validatePasswordResetRequest(token);
+
+        String uri = UriComponentsBuilder.fromPath("/recuperarPassword")
+                .queryParam("nm", numeroMecanografico)
+                .toUriString();
+
+        return new ModelAndView("forward:" + uri);
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ApiResponse<?>> changePassword(@RequestParam("nm") Long numeroMecanografico, @RequestBody ChangeUserPasswordDTO newPassword) {
+        service.changePassword(numeroMecanografico, newPassword);
         return ResponseEntity.ok(ApiResponse.ok("Password alterada com sucesso", null));
     }
 }
