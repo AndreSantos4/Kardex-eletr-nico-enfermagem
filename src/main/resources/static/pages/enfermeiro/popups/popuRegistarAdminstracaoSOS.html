@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarAdminstracaoSOS.css" />
+<div class="pop-up-criar-utente">
+    <div class="pop-up">
+        <div class="pop-up-header">
+            <div class="title">
+                <h3>Registar Adminstração SOS</h3>
+            </div>
+            <div class="icon">
+                <a href="" class="cross" onclick="
+            fecharPopUp();
+            return false;
+          ">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)"
+                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="pop-up-main">
+            <div class="info-box">
+                <div class="icon">i</div>
+                <div class="content">
+                    <p><strong>Lorazepam 1mg - Oral - SOS agitação - Prescrição Dr. Mendes</strong></p>
+                    <p>Dose máx: 2mg/episódio - Intervalo mínimo: 4h - Última adm. SOS: 07/03 12:00 (4h 33m atrás)</p>
+                    <p class="status">Intervalo respeitado</p>
+                </div>
+            </div>
+            <form method="post" autocomplete="off">
+                <label for="name">CONDIÇÃO CLINICA QUE JUSTIFICA A ADMINISTRAÇÃO *</label>
+                <select name="condicoes" id="condicoes">
+                    <option value="opt1">Agitação psicomotora</option>
+                </select>
+
+                <div class="form-group">
+                    <label for="descricao">DESCRIÇÃO DA SITUAÇÃO *</label>
+                    <textarea id="observacoes" name="observacoes" placeholder="Descreve o estado do utente e o que motivou a administração SOS..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="medico-responsavel">DATA/HORA *</label>
+                        <input type="datetime-local"/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="n-sns">DOSE ADMINISTRADA *</label>
+                        <input type="text" name="n-sns" placeholder="Eg: 5mg" required />
+                    </div>
+                </div>               
+
+                <div class="buttons-bottom">
+                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUp()" />
+                    <input type="submit" value="Guardar" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
