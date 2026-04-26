@@ -5,8 +5,13 @@ import org.springframework.http.HttpStatus;
 import lombok.Setter;
 
 @Setter
-public abstract class KardexException extends RuntimeException{
+public class KardexException extends RuntimeException{
     private final HttpStatus statusCode;
+    
+    public KardexException(String message){
+        super(message);
+        statusCode = HttpStatus.BAD_REQUEST;
+    }
 
     public KardexException(String message, HttpStatus status) {
         super(message);
