@@ -5,10 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ClasseFarmacologica;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FormaFarmaceutica;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ViaAdministracao;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -29,39 +33,42 @@ public class Medicamento {
     public String principioAtivo;
     
     @Column(name = "forma_farmaceutica", nullable = false)
-    public String formaFarmaceutica;
+    @Enumerated(EnumType.STRING)
+    public FormaFarmaceutica formaFarmaceutica;
+    
+    @Column(name = "classe_farmacologica", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public ClasseFarmacologica classeFarmacologica;
+    
+    @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Dosagem> dosagens = new ArrayList<>();
+    
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_dosagem_max")
+    public Dosagem dosagemMaxDiaria;
     
     @Column(name = "quantidade", nullable = false)
-    public Long quantidade;
+    public Long quantidade = 0l;
     
-    @Column(name = "unidade", nullable = false)
+    @Column(name = "unidadeMedida", nullable = false)
     @Enumerated(EnumType.STRING)
-    public UnidadeMedida unidade;
+    public UnidadeMedida unidadeMedida;
     
-    @Column(name = "data_validade", nullable = false)
-    public LocalDate dataValidade;
-    
-    @JoinTable(
-            name = "medicamento_via_administracao",
-            joinColumns = @JoinColumn(name = "id_medicamento"),
-            inverseJoinColumns = @JoinColumn(name = "id_via_administracao")
-    )
-    @ManyToMany(fetch = FetchType.EAGER)
-    public Set<ViaAdministracao> viasAdministracao = new HashSet<>();
+    @Column(name = "viaAdministracao", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public ViaAdministracao viaAdministracao;
 
-    @JoinTable(
-            name = "medicamento_alerta",
-            joinColumns = @JoinColumn(name = "id_medicamento"),
-            inverseJoinColumns = @JoinColumn(name = "id_alerta")
-    )
-    @ManyToMany(fetch = FetchType.EAGER)
-    public Set<Alerta> alertas = new HashSet<>();
+    @Column(name = "altoRisco")
+    public boolean altoRisco = false;
+    
+    @Column(name = "is_active", nullable = false)
+    public boolean active = true;
 
     @JoinTable(
             name = "medicamento_alergia",
             joinColumns = @JoinColumn(name = "id_medicamento"),
             inverseJoinColumns = @JoinColumn(name = "id_alergia")
     )
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     public Set<Alergia> alergiasIncompativeis = new HashSet<>();
 }
