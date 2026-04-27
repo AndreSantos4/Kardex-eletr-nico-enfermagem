@@ -65,9 +65,11 @@ public class ProcessServiceImpl implements ProcessService{
         process.setCama(bed);
         patient.setEstado(EstadoUtente.INTERNADO);
 
-        if(bed != null){
-            bed.setOcupada(true);
+        if(bed == null) {
+            throw new KardexException("Cama nao pode ser nula");
         }
+
+        bed.setOcupada(true);
 
         return mapper.toDTO(repository.save(process));
     }
@@ -184,7 +186,7 @@ public class ProcessServiceImpl implements ProcessService{
 
         process.setAlta(true);
         process.setNotasAlta(data.notasAlta());
-        process.setDataSaida(data.data().toLocalDate());
+        process.setDataSaida(data.data());
         process.getUtente().setEstado(EstadoUtente.INATIVO);
 
         repository.save(process);
