@@ -228,3 +228,86 @@
         </div>
     </div>
 </div>
+<link
+  rel="stylesheet"
+  href="../../../styles/admin/popup/popupDesativarMedicamento.css"
+/>
+
+<div class="pop-up-desativar-medicamento">
+  <div class="pop-up">
+    <div class="pop-up-header">
+      <div class="title"><h3>Desativar Medicamento</h3></div>
+      <div class="icon">
+        <a
+          href=""
+          class="cross"
+          onclick="
+            fecharPopUp('.pop-up-desativar-medicamento');
+            return false;
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="15"
+            width="15"
+            viewBox="0 0 384 512"
+          >
+            <path
+              fill="#ffffff"
+              d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="pop-up-main">
+      <div class="info-box">
+        <span class="info-icon">i</span>
+        <p>
+          Medicamento desativado não pode ser prescrito nem administrado.
+          Prescrições ativas são sinalizadas para revisão médica.
+        </p>
+      </div>
+
+      <p class="medicamento-info">
+        <strong>Medicamento:</strong>
+        <span id="desativar-med-nome">Risperidona - Antipsicótico - 1/2/3/4/6 mg</span>
+      </p>
+
+      <form
+        id="form-desativar-medicamento"
+        onsubmit="desativarMedicamento(event)"
+        data-medicamento-id=""
+      >
+        <label for="desativar-med-motivo">MOTIVO *</label>
+        <input
+          type="text"
+          name="motivo"
+          id="desativar-med-motivo"
+          placeholder="Motivo"
+          required
+        />
+
+        <p class="prescricoes-titulo">
+          PRESCRIÇÕES ATIVAS:
+          <span id="desativar-med-num-utentes">3 UTENTES</span>
+        </p>
+        <p class="prescricoes-detalhe" id="desativar-med-medicos">
+          Dr. Mendes, Dr. Ferreira e Dr. Costa serão notificados para revisão
+          das prescrições ativas.
+        </p>
+
+        <div class="buttons">
+          <input
+            type="button"
+            value="Cancelar"
+            class="btn-cancelar"
+            onclick="fecharPopUp('.pop-up-desativar-medicamento')"
+          />
+          <input type="submit" value="Desativar" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
