@@ -4,6 +4,7 @@ import java.util.List;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.CreateMedicationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 
 public interface StockService {
 
@@ -13,4 +14,5 @@ public interface StockService {
     void editMedication(Long medicationId, CreateMedicationDTO data);
     void deactivateMedication(Long medicationId);
 	void activateMedication(Long medicationId);
+	Medicamento getMedication(Long medicationId);
 }
