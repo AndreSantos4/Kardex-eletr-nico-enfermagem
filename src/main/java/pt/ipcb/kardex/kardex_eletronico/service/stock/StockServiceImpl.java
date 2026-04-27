@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.CreateMedicationDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.MedicamentoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;
@@ -111,5 +112,11 @@ public class StockServiceImpl implements StockService{
             .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
             
         medication.setActive(true);
+	}
+
+	@Override
+	public Medicamento getMedication(Long medicationId) {
+		return medicamentoRepository.findById(medicationId)
+		    .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
 	}
 }
