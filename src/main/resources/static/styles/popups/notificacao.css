@@ -1,0 +1,160 @@
+#notificacoes-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.notificacao {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  pointer-events: all;
+  animation: notificacao-entrar 0.3s ease forwards;
+}
+
+.notificacao.sair {
+  animation: notificacao-sair 0.3s ease forwards;
+}
+
+/* ícone lateral */
+.notificacao-icone {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notificacao-icone svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* cores do ícone por tipo */
+.notificacao[data-tipo="sucesso"] .notificacao-icone { background: #e6f4ea; }
+.notificacao[data-tipo="sucesso"] .notificacao-icone svg { color: #2e7d32; }
+
+.notificacao[data-tipo="erro"] .notificacao-icone { background: #fdecea; }
+.notificacao[data-tipo="erro"] .notificacao-icone svg { color: #c62828; }
+
+.notificacao[data-tipo="aviso"] .notificacao-icone { background: #fff8e1; }
+.notificacao[data-tipo="aviso"] .notificacao-icone svg { color: #f57f17; }
+
+.notificacao[data-tipo="info"] .notificacao-icone { background: #e3f2fd; }
+.notificacao[data-tipo="info"] .notificacao-icone svg { color: #1565c0; }
+
+/* barra de progresso lateral */
+.notificacao::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: transparent;
+}
+
+.notificacao {
+  position: relative;
+}
+
+.notificacao[data-tipo="sucesso"]::before { background: #2e7d32; }
+.notificacao[data-tipo="erro"]::before    { background: #c62828; }
+.notificacao[data-tipo="aviso"]::before   { background: #f57f17; }
+.notificacao[data-tipo="info"]::before    { background: #1565c0; }
+
+/* texto */
+.notificacao-texto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.notificacao-titulo {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111111;
+  line-height: 1.3;
+}
+
+.notificacao-mensagem {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #444444;
+  line-height: 1.4;
+}
+
+/* botão fechar */
+.notificacao-fechar {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: #888888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  align-self: flex-start;
+}
+
+.notificacao-fechar:hover {
+  color: #111111;
+  background: #f0f0f0;
+}
+
+.notificacao-fechar svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* animações */
+@keyframes notificacao-entrar {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes notificacao-sair {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 120px;
+    margin-bottom: 0;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(40px);
+    max-height: 0;
+    margin-bottom: -12px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
