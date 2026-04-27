@@ -1,6 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.process;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,8 +15,8 @@ public record ProcessoClinicoDTO(
     @JsonProperty("diagnosticoPrincipal") String diagnosticoPrincipal,
     @JsonProperty("motivoInternamento") String motivoInternamento,
     @JsonProperty("cama") CamaDTO cama,
-    @JsonProperty("dataEntrada") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataEntrada,
-    @JsonProperty("dataSaida") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataSaida,
+    @JsonProperty("dataEntrada") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime dataEntrada,
+    @JsonProperty("dataSaida") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime dataSaida,
     @JsonProperty("alta") Boolean alta,
     @JsonProperty("servico") ServicoDTO servico,
     @JsonProperty("sinaisVitais") List<SinalVitalDTO> sinaisVitais
