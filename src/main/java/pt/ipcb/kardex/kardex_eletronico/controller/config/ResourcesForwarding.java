@@ -20,6 +20,8 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/login/recuperarPassword.html?t=" + token);
     }
 
+    /* ADMIN */
+
     @GetMapping("/adminDashboard")
     public ModelAndView adminDashboard() {
         return new ModelAndView("forward:/pages/admin/adminDashboard.html");
@@ -38,6 +40,11 @@ public class ResourcesForwarding {
     @GetMapping("/perfilColaborador")
     public ModelAndView perfilColaborador() {
         return new ModelAndView("forward:/pages/admin/perfilColaborador.html");
+    }
+
+    @GetMapping("/adminMedicamentos")
+    public ModelAndView adminMedicamentos() {
+        return new ModelAndView("forward:/pages/admin/adminMedicamentos.html");
     }
 
     /* ENFERMEIRO */
