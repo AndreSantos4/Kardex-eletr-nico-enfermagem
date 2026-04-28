@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 
 public record ProcessoClinicoDTO(
@@ -19,7 +20,8 @@ public record ProcessoClinicoDTO(
     @JsonProperty("dataSaida") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime dataSaida,
     @JsonProperty("alta") Boolean alta,
     @JsonProperty("servico") ServicoDTO servico,
-    @JsonProperty("sinaisVitais") List<SinalVitalDTO> sinaisVitais
+    @JsonProperty("sinaisVitais") List<SinalVitalDTO> sinaisVitais,
+    @JsonProperty("prescricoes") List<PrescricaoDTO> prescricoes
 ) {
 
 }
