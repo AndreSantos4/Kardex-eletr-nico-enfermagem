@@ -104,6 +104,8 @@ public class StockServiceImpl implements StockService{
             .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
             
         medication.setActive(false);
+
+        medicamentoRepository.save(medication);
 	}
 
 	@Override
@@ -112,6 +114,8 @@ public class StockServiceImpl implements StockService{
             .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
             
         medication.setActive(true);
+
+        medicamentoRepository.save(medication);
 	}
 
 	@Override
