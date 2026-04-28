@@ -53,12 +53,7 @@ public class ProcessoClinico {
     @Column(name = "notas_alta")
     public String notasAlta;
     
-    @JoinTable(
-            name = "processo_clinico_prescricao",
-            joinColumns = @JoinColumn(name = "id_processo_clinico"),
-            inverseJoinColumns = @JoinColumn(name = "id_prescricao")
-    )
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL)
     public Set<Prescricao> prescricoes = new HashSet<>();
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
