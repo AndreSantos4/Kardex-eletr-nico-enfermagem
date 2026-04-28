@@ -89,16 +89,8 @@ public class ProcessServiceImpl implements ProcessService{
         prescription.setDose(dose);
 
         prescription.setProcesso(process);
-
-        checkForSOS(prescription);
         
         prescricaoRepository.save(prescription);
-    }
-
-    private void checkForSOS(Prescricao prescription) {
-        if(prescription.getDose().getDose() == prescription.getMedicamento().getDosagemMaxDiaria().getDose()) {
-            prescription.setSos(true);
-        }
     }
 
 	private Dosagem getDose(CreatePrescriptionDTO data, Medicamento medication) {
