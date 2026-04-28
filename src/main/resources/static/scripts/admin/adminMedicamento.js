@@ -3,9 +3,6 @@ const API_BASE = "http://localhost:8080/api/stock/medications";
 let _todosMedicamentos = [];
 let _termoPesquisa = "";
 
-/* ═══════════════════════════════════════════════════════════
-   INICIALIZAÇÃO
-═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
     _atualizarRelogio();
     setInterval(_atualizarRelogio, 1000);
@@ -16,13 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-/* ═══════════════════════════════════════════════════════════
-   CARREGAR POPUPS DINAMICAMENTE
-═══════════════════════════════════════════════════════════ */
 async function _carregarPopups() {
     const popups = [
         "../../pages/admin/popups/popupAdicionarMedicamento.html",
-        "../../pages/admin/popups/popupEditarMedicamento.html",
         "../../pages/admin/popups/popupDesativarMedicamento.html",
     ];
 
@@ -38,7 +31,7 @@ async function _carregarPopups() {
             div.innerHTML = html;
             // Garantir que todos os popups começam escondidos
             div.querySelectorAll(
-                ".pop-up-adicionar-medicamento, .pop-up-editar-medicamento, .pop-up-desativar-medicamento"
+                ".pop-up-adicionar-medicamento, .pop-up-desativar-medicamento"
             ).forEach(p => (p.style.display = "none"));
             document.body.appendChild(div);
         } catch (e) {
@@ -47,9 +40,6 @@ async function _carregarPopups() {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   LIGAR FORMS — chamado após os popups estarem no DOM
-═══════════════════════════════════════════════════════════ */
 function _ligarForms() {
     const formAdicionar = document.querySelector(".pop-up-adicionar-medicamento form");
     if (formAdicionar) {
@@ -57,14 +47,6 @@ function _ligarForms() {
         formAdicionar.addEventListener("submit", adicionarMedicamento);
     } else {
         console.warn("[forms] form de adicionar não encontrado.");
-    }
-
-    const formEditar = document.querySelector(".pop-up-editar-medicamento form");
-    if (formEditar) {
-        formEditar.removeAttribute("onsubmit");
-        formEditar.addEventListener("submit", editarMedicamento);
-    } else {
-        console.warn("[forms] form de editar não encontrado.");
     }
 
     const formDesativar = document.querySelector("#form-desativar-medicamento");
@@ -76,9 +58,6 @@ function _ligarForms() {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RELÓGIO
-═══════════════════════════════════════════════════════════ */
 function _atualizarRelogio() {
     const el = document.getElementById("current-datetime");
     if (!el) return;
@@ -89,9 +68,6 @@ function _atualizarRelogio() {
     });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   PESQUISA
-═══════════════════════════════════════════════════════════ */
 function _ligarPesquisa() {
     const input = document.querySelector(".search-input-wrap input");
     if (!input) return;
@@ -101,9 +77,6 @@ function _ligarPesquisa() {
     });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CARREGAR MEDICAMENTOS  (GET)
-═══════════════════════════════════════════════════════════ */
 async function carregarMedicamentos() {
     try {
         const res = await fetch(API_BASE);
@@ -126,9 +99,6 @@ async function carregarMedicamentos() {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RENDERIZAR TABELA
-═══════════════════════════════════════════════════════════ */
 function _renderizarTabela() {
     const tbody = document.querySelector(".lista-medicamentos tbody");
     if (!tbody) return;
@@ -172,15 +142,10 @@ function _criarLinhaTabela(m) {
       <td>${altoRisco}</td>
       <td><span class="badge ${estadoCls}">${estado}</span></td>
       <td>
-        <button class="btn-editar" onclick="abrirPopupEditar(${m.id})">Editar</button>
         ${btnToggle}
       </td>
     </tr>`;
 }
-
-/* ═══════════════════════════════════════════════════════════
-   POPUP — ABRIR / FECHAR
-═══════════════════════════════════════════════════════════ */
 
 // Chamado pelo botão "Adicionar" no HTML da página
 function abrirpopup() {
@@ -188,32 +153,6 @@ function abrirpopup() {
     if (!popup) { console.error("Popup adicionar não encontrado no DOM."); return; }
     const form = popup.querySelector("form");
     if (form) form.reset();
-    popup.style.display = "flex";
-    document.body.style.overflow = "hidden";
-}
-
-function abrirPopupEditar(id) {
-    const med = _todosMedicamentos.find(m => m.id === id);
-    if (!med) return;
-
-    const popup = document.querySelector(".pop-up-editar-medicamento");
-    if (!popup) { console.error("Popup editar não encontrado no DOM."); return; }
-
-    popup.querySelector("#edit-med-nome").value = med.nome;
-    popup.querySelector("#edit-med-principio").value = med.principioAtivo;
-    popup.querySelector("#edit-med-dosagens").value = _formatarDosagens(med.dosagens);
-    popup.querySelector("#edit-med-dose-max").value = med.dosagemMaxDiaria
-        ? `${_formatarNumero(med.dosagemMaxDiaria.dose)}${_abreviarUnidade(med.dosagemMaxDiaria.unidadeMedida)}`
-        : "";
-    popup.querySelector("#edit-med-alto-risco").checked = med.altoRisco;
-
-    _selecionarOption(popup.querySelector("#edit-med-classe"), med.classeFarmacologica);
-    _selecionarOption(popup.querySelector("#edit-med-via"), med.viaAdministracao);
-    _selecionarOption(popup.querySelector("#edit-med-forma"), med.formaFarmaceutica);
-
-    const form = popup.querySelector("form");
-    if (form) form.setAttribute("data-medicamento-id", id);
-
     popup.style.display = "flex";
     document.body.style.overflow = "hidden";
 }
@@ -255,7 +194,6 @@ function fecharPopUp(seletor) {
 document.addEventListener("click", (e) => {
     [
         ".pop-up-adicionar-medicamento",
-        ".pop-up-editar-medicamento",
         ".pop-up-desativar-medicamento",
     ].forEach(sel => {
         const popup = document.querySelector(sel);
@@ -263,9 +201,6 @@ document.addEventListener("click", (e) => {
     });
 });
 
-/* ═══════════════════════════════════════════════════════════
-   ADICIONAR  (POST)
-═══════════════════════════════════════════════════════════ */
 async function adicionarMedicamento(event) {
     event.preventDefault();
     const form = event.target;
@@ -305,56 +240,6 @@ async function adicionarMedicamento(event) {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   EDITAR  (PUT)
-═══════════════════════════════════════════════════════════ */
-async function editarMedicamento(event) {
-    event.preventDefault();
-    const form = event.target;
-    const id = parseInt(form.getAttribute("data-medicamento-id"), 10);
-    if (!id) {
-        mostrarNotificacao({ titulo: "Erro", mensagem: "ID do medicamento não encontrado.", tipo: "erro" });
-        return;
-    }
-
-    const dados = _extrairDadosFormulario(form);
-    if (!dados) return;
-
-    const btnSubmit = form.querySelector('[type="submit"]');
-    _setBtnLoading(btnSubmit, true, "A guardar…");
-
-    try {
-        const res = await fetch(`${API_BASE}/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dados),
-        });
-
-        if (!res.ok) {
-            const json = await res.json().catch(() => ({}));
-            throw new Error(json.message || `Erro ${res.status} ao editar medicamento.`);
-        }
-
-        mostrarNotificacao({
-            titulo: "Medicamento editado",
-            mensagem: `${dados.nome} foi atualizado com sucesso.`,
-            tipo: "sucesso",
-        });
-
-        fecharPopUp(".pop-up-editar-medicamento");
-        await carregarMedicamentos();
-
-    } catch (err) {
-        console.error(err);
-        mostrarNotificacao({ titulo: "Erro ao editar", mensagem: err.message, tipo: "erro" });
-    } finally {
-        _setBtnLoading(btnSubmit, false, "Editar");
-    }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   DESATIVAR  (PATCH /deactivate)
-═══════════════════════════════════════════════════════════ */
 async function desativarMedicamento(event) {
     event.preventDefault();
     const form = event.target;
@@ -394,14 +279,9 @@ async function desativarMedicamento(event) {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ATIVAR  (PATCH /activate)
-═══════════════════════════════════════════════════════════ */
 async function ativarMedicamento(id) {
     const med = _todosMedicamentos.find(m => m.id === id);
     if (!med) return;
-
-    if (!confirm(`Ativar o medicamento "${med.nome}"?`)) return;
 
     try {
         const res = await fetch(`${API_BASE}/${id}/activate`, { method: "PATCH" });
@@ -426,9 +306,6 @@ async function ativarMedicamento(id) {
     }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   UTILITÁRIOS — FORMULÁRIO
-═══════════════════════════════════════════════════════════ */
 function _extrairDadosFormulario(form) {
     const nome = form.querySelector("[name='nome']")?.value.trim();
     const principio = form.querySelector("[name='principio-ativo']")?.value.trim();
@@ -463,8 +340,6 @@ function _extrairDadosFormulario(form) {
         classeFarmacologica: classe,
         dosagens,
         dosagemMaxDiaria: doseMax,
-        quantidade: 0,
-        unidadeMedida: "MILIGRAMAS",
         viaAdministracao: via,
         altoRisco,
     };
@@ -494,9 +369,6 @@ function _mapearUnidade(u) {
     return mapa[u] || "MILIGRAMAS";
 }
 
-/* ═══════════════════════════════════════════════════════════
-   UTILITÁRIOS — DISPLAY
-═══════════════════════════════════════════════════════════ */
 function _formatarDosagens(dosagens) {
     if (!dosagens || dosagens.length === 0) return "—";
     return dosagens.map(d => `${_formatarNumero(d.dose)}${_abreviarUnidade(d.unidadeMedida)}`).join(" / ");
