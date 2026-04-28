@@ -201,13 +201,14 @@ body {
 .form-card {
     flex: 1;
     background: var(--primary);
-    border-radius: 6px;
+    border-color: var(--primary);
+    border-width: 3px;
+    border-radius: 8px;
     min-width: 0;
+    border-style: solid;
 }
 
 .form-card-header {
-    background: var(--bg-dark);
-    border-radius: 6px 6px 0 0;
     padding: 12px 18px;
     font-size: 16px;
     font-weight: 700;
@@ -215,6 +216,9 @@ body {
 }
 
 .form-card-body {
+    background: var(--white);
+    color: var(--primary);
+    border-radius: 8px;
     padding: 18px;
     display: flex;
     flex-direction: column;
@@ -241,12 +245,11 @@ body {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.08em;
-    color: var(--secondary);
     text-transform: uppercase;
 }
 
 .form-select {
-    background: var(--bg-dark);
+    background: var(--primary);
     border: none;
     border-radius: 4px;
     color: var(--white);
@@ -263,12 +266,18 @@ body {
     outline: 2px solid var(--secondary);
 }
 
+.form-select:disabled {
+    background: #8b9db0;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
 .form-select option {
     background: var(--bg-dark);
 }
 
 input.form-select[type="text"]::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--white);
 }
 
 input.form-select[type="date"]::-webkit-calendar-picker-indicator {
@@ -288,7 +297,7 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: var(--text);
+    color: var(--primary);
     cursor: pointer;
 }
 
@@ -296,12 +305,12 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: var(--secondary);
+    accent-color: var(--primary);
 }
 
 /*Verification Box*/
 .verificacao-box {
-    background: var(--bg-dark);
+    background: var(--primary);
     border-radius: 4px;
     padding: 12px 14px;
 }
@@ -325,10 +334,18 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
 
 .verificacao-body .warn-dose {
     color: var(--secondary);
+    margin-bottom: 4px;
+}
+
+.verificacao-body .warn-alergia {
+    color: var(--alertas);
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
 .verificacao-body .ok-alergia {
     color: #80e080;
+    margin-bottom: 4px;
 }
 
 /*Actions*/
@@ -339,8 +356,8 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
 
 .btn-confirmar {
     background: transparent;
-    border: 2px solid var(--white);
-    color: var(--white);
+    border: 2px solid var(--primary);
+    color: var(--primary);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -351,8 +368,8 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .btn-confirmar:hover {
-    background: var(--white);
-    color: var(--primary);
+    background: var(--primary);
+    color: var(--white);
 }
 
 /*Right Panels*/
@@ -371,7 +388,7 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .panel-header {
-    background: var(--bg-dark);
+    background: var(--primary);
     padding: 10px 14px;
     font-size: 14px;
     font-weight: 700;
@@ -383,6 +400,10 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    background: var(--white);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    border-radius: 0px 0px 6px 6px;
 }
 
 /*Medication Badge*/
