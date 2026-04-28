@@ -20,6 +20,7 @@ import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Prescricao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
@@ -88,8 +89,16 @@ public class ProcessServiceImpl implements ProcessService{
         prescription.setDose(dose);
 
         prescription.setProcesso(process);
+
+        checkForSOS(prescription);
         
         prescricaoRepository.save(prescription);
+    }
+
+    private void checkForSOS(Prescricao prescription) {
+        if(prescription.getDose().getDose() == prescription.getMedicamento().getDosagemMaxDiaria().getDose()) {
+            prescription.setSos(true);
+        }
     }
 
 	private Dosagem getDose(CreatePrescriptionDTO data, Medicamento medication) {
