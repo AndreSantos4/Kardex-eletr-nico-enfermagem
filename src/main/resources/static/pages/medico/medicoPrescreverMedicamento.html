@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="../../styles/medico/medicoPrescreverMedicamento.css" />
-	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
-	<title>Medico Prescrever Medicamento</title>
-</head>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			rel="stylesheet"
+			href="../../styles/medico/medicoPrescreverMedicamento.css"
+		/>
+		<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+		<title>Medico Prescrever Medicamento</title>
+	</head>
 
 <body>
 	<!--Top Bar-->
@@ -115,70 +117,109 @@
 				</div>
 			</div>
 
-			<!--Content-->
-			<div class="content-area">
-				<div class="form-card">
-					<div class="form-card-header">Medicamento</div>
-					<div class="form-card-body">
-						<div class="form-grid">
-							<div class="form-group">
-								<label class="form-label">MEDICAMENTO *</label>
-								<select class="form-select" id="medicamento">
-									<option value="">Selecionar...</option>
-								</select>
+				<!--Content-->
+				<div class="content-area">
+					<div class="form-card">
+						<div class="form-card-header">Medicamento</div>
+						<div class="form-card-body">
+							<div class="form-grid">
+								<div class="form-group">
+									<label class="form-label"
+										>MEDICAMENTO *</label
+									>
+									<select
+										class="form-select"
+										id="medicamento"
+									>
+										<option value="">Selecionar...</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label class="form-label">DOSE *</label>
+									<select class="form-select" id="dose">
+										<option value="">Selecionar...</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label class="form-label">VIA *</label>
+									<select class="form-select" id="via">
+										<option value="">Selecionar...</option>
+										<option value="Oral">Oral</option>
+										<option value="IV">IV</option>
+										<option value="IM">IM</option>
+										<option value="SC">SC</option>
+										<option value="SL">SL</option>
+										<option value="Tópica">Tópica</option>
+										<option value="Inalatória">
+											Inalatória
+										</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label class="form-label"
+										>FREQUENCIA *</label
+									>
+									<select class="form-select" id="frequencia">
+										<option value="">Selecionar...</option>
+										<option value="1x/dia">1x/dia</option>
+										<option value="2x/dia (8h-20h)">
+											2x/dia (8h-20h)
+										</option>
+										<option value="3x/dia (8h-14h-20h)">
+											3x/dia (8h-14h-20h)
+										</option>
+										<option value="4x/dia">4x/dia</option>
+										<option value="6/6h">6/6h</option>
+										<option value="8/8h">8/8h</option>
+										<option value="12/12h">12/12h</option>
+										<option value="SOS">SOS</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label class="form-label"
+										>DATA INICIO *</label
+									>
+									<input
+										class="form-select"
+										type="date"
+										id="data-inicio"
+									/>
+								</div>
+								<div class="form-group">
+									<label class="form-label">DATA FIM *</label>
+									<input
+										class="form-select"
+										type="date"
+										id="data-fim"
+									/>
+								</div>
 							</div>
-							<div class="form-group">
-								<label class="form-label">DOSE *</label>
-								<select class="form-select" id="dose" disabled>
-									<option value="">Selecionar...</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label class="form-label">VIA *</label>
-								<select class="form-select" id="via" disabled>
-									<option value="">Selecionar...</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label class="form-label">FREQUENCIA *</label>
-								<select class="form-select" id="frequencia">
-									<option value="">Selecionar...</option>
-									<option value="1x/dia">1x/dia</option>
-									<option value="2x/dia (8h-20h)">
-										2x/dia (8h-20h)
-									</option>
-									<option value="3x/dia (8h-14h-20h)">
-										3x/dia (8h-14h-20h)
-									</option>
-									<option value="4x/dia">4x/dia</option>
-									<option value="6/6h">6/6h</option>
-									<option value="8/8h">8/8h</option>
-									<option value="12/12h">12/12h</option>
-									<option value="SOS">SOS</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label class="form-label">DATA INICIO *</label>
-								<input class="form-select" type="date" id="data-inicio" />
-							</div>
-							<div class="form-group">
-								<label class="form-label">DATA FIM *</label>
-								<input class="form-select" type="date" id="data-fim" />
-							</div>
-						</div>
 
-						<div class="form-group form-group-full">
-							<label class="form-label">Itervalo de toma *</label>
-							<input class="form-select" type="text" id="intervalo-toma" placeholder="2h" />
-						</div>
+							<div class="form-group form-group-full">
+								<label class="form-label"
+									>Itervalo de toma *</label
+								>
+								<input
+									class="form-select"
+									type="text"
+									id="indicacao-clinica"
+									placeholder="2h"
+								/>
+							</div>
 
-						<div class="form-group form-group-full">
-							<label class="form-label">Indicação clínica *</label>
-							<input class="form-select" type="text" id="indicacao-clinica"
-								placeholder="Indicação clinica/justificação" />
-						</div>
+							<div class="form-group form-group-full">
+								<label class="form-label"
+									>Indicação clínica *</label
+								>
+								<input
+									class="form-select"
+									type="text"
+									id="indicacao-clinica"
+									placeholder="Indicação clinica/justificação"
+								/>
+							</div>
 
-
+							
 
 						<div class="form-checkboxes">
 							<label class="form-checkbox-label">
@@ -223,11 +264,8 @@
 		</main>
 	</div>
 
-	<script src="../../scripts/logout.js"></script>
-	<div id="notificacoes-container"></div>
-
-	<script src="../../scripts/notificacao.js"></script>
-	<script src="../../scripts/medico/medicoPrescreverMedicamento.js"></script>
-</body>
-
+		<script src="../../scripts/logout.js"></script>
+		<div id="notificacoes-container"></div>
+		<script src="../../scripts/notificacao.js"></script>
+	</body>
 </html>
