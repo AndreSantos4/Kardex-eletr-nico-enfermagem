@@ -19,7 +19,7 @@ function onFiltroEstado(valor) {
     utilizadoresFiltrados = [...todosUtilizadores];
   } else {
     utilizadoresFiltrados = todosUtilizadores.filter((u) => {
-      if (!u.processo) return false; // ← guard added
+      if (!u.processo) return false;
       const estaDeAlta = u.processo.alta;
       if (estadoSelecionado === "alta") return estaDeAlta;
       if (estadoSelecionado === "internado") return !estaDeAlta;
@@ -141,11 +141,31 @@ function renderizarPaginacao() {
 }
 
 function atualizarContador() {
-  document.querySelector(".page-header-left p").textContent =
-    `${utilizadoresFiltrados.length} utilizadores`;
+  const el = document.querySelector(".page-header-left p");
+  if (el) el.textContent = `${utilizadoresFiltrados.length} utilizadores`;
+}
+
+function renderTopbar() {
+  const nome = document.getElementById("nome-chefe");
+  const turno = document.getElementById("turno-chefe");
+  if (nome) nome.textContent = sessionStorage.getItem("nomeEnfermeiro") ?? "—";
+  if (turno) turno.textContent = sessionStorage.getItem("turno") ?? "—";
+}
+
+function updateClock() {
+  const el = document.getElementById("current-datetime");
+  if (!el) return;
+  el.textContent = new Date().toLocaleString("pt-PT", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  renderTopbar();
+  updateClock();
+  setInterval(updateClock, 60_000);
+
   await carregarUtilizadores();
 
   const inputPesquisa = document.querySelector(".search-input-wrap input");

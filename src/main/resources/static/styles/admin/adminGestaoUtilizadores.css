@@ -242,9 +242,47 @@ body,
 .paginacao {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
+  justify-content: space-between;
+  gap: 8px;
   padding: 12px 4px 4px;
+}
+
+.paginacao-tamanho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2a6f97;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.paginacao-tamanho select {
+  background: var(--bg);
+  border: 1.5px solid #2a6f97;
+  color: #2a6f97;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.paginacao-tamanho select:hover {
+  background: var(--muted);
+}
+
+.paginacao-tamanho select option {
+  background: var(--bg);
+  color: #2a6f97;
+}
+
+.paginacao-paginas {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
 }
 
 .btn-pagina {
@@ -252,9 +290,9 @@ body,
   height: 32px;
   padding: 0 10px;
   background: transparent;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid #2a6f97;
   border-radius: 4px;
-  color: var(--muted);
+  color: #2a6f97;
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
@@ -267,13 +305,11 @@ body,
 }
 
 .btn-pagina:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: transparent;
+  background: var(--muted);
 }
 
 .btn-pagina.ativo {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--surface);
+  background: #2a6f97;
+  border-color: #2a6f97;
+  color: #ffffff;
 }

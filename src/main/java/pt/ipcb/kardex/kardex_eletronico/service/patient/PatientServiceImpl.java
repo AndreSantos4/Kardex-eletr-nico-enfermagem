@@ -136,7 +136,7 @@ public class PatientServiceImpl implements PatientService{
             String f = search.get().toLowerCase();
             stream = stream.filter(u -> {
                 boolean matchesPatient = u.getNome().toLowerCase().contains(f)
-                        || u.getNumeroSNS().toString().contains(f);
+                        || String.valueOf(u.getId()).contains(f);
 
                 ProcessoClinicoDTO processo = processoByUtenteId.get(u.getId());
                 boolean matchesProcess = processo != null
@@ -147,6 +147,7 @@ public class PatientServiceImpl implements PatientService{
         }
 
         return stream
+                .sorted((a, b) -> Long.compare(a.getId(), b.getId()))
                 .map(u -> mapper.toDto(u, processoByUtenteId.get(u.getId())))
                 .toList();
     }

@@ -64,6 +64,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeDashboard.html");
     }
 
+    @GetMapping("/enfermeiroChefeListaUtentes")
+    public ModelAndView enfermeiroChefeListaUtentes() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeListaUtentes.html");
+    }
+
     /* MÉDICO */
 
     @GetMapping("/medicoDashboard")

@@ -121,7 +121,9 @@ public class SecurityConfiguration {
                                 "/enfermeiroKardexUntente",
                                 "/enfermeiroListaUtentes")
                         .hasRole("ENFERMEIRO")
-                        .requestMatchers("/enfermeiroChefeDashboard")
+                        .requestMatchers(
+                                "/enfermeiroChefeDashboard",
+                                "/enfermeiroChefeListaUtentes")
                         .hasRole("ENFERMEIRO_CHEFE")
                         .anyRequest()
                         .authenticated())
