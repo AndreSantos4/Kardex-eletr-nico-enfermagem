@@ -11,18 +11,22 @@ async function carregarUtente(id) {
     const json = await resp.json();
 
     const dados = json.data.dados;
-    const dataEntrada = dados.processo.dataEntrada;
 
     document.getElementById("nome-utente").innerHTML = dados.nome;
     document.getElementById("sexo").innerHTML = dados.sexo;
-    document.getElementById("idade").innerHTML = "fuck";
-    document.getElementById("data").innerHTML = dados.processo.dataEntrada;
-    document.getElementById("hora").innerHTML = "fuck";
+    document.getElementById("idade").innerHTML = calcularIdade(dados.dataNascimento);
+    const dataEntradaExtended = dados.processo.dataEntrada;
+    const partes = dataEntradaExtended.split(":");
+    const dataEntrada = partes[0];
+    const horaEntrada = partes.slice(1).join(":");
+
+    document.getElementById("data").innerHTML = dataEntrada;
+    document.getElementById("hora").innerHTML = horaEntrada;
     document.getElementById("medico").innerHTML =
       dados.processo.medicoResponsavel.dados.nome;
     document.getElementById("processo").innerHTML = dados.processo.id;
     document.getElementById("data-nascimento").innerHTML = dados.dataNascimento;
-    document.getElementById("cama").innerHTML = dados.processo.cama.id;
+    document.getElementById("cama").innerHTML = dados.processo.cama == null ? "Sem cama" : dados.processo.cama.id;
 
     const [dia, mes, ano] = dataEntrada.split("/");
     const data = new Date(ano, mes - 1, dia);
@@ -80,5 +84,31 @@ async function iniciar() {
   document.getElementById("form-alta").addEventListener("submit", submeterAlta);
   carregarUtente(id);
 }
+
+function calcularIdade(dataNascimentoStr) {
+  const [dia, mes, ano] = dataNascimentoStr.split("/").map(Number);
+
+  const hoje = new Date();
+  const nascimento = new Date(ano, mes - 1, dia);
+
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+
+  const mesAtual = hoje.getMonth();
+  const diaAtual = hoje.getDate();
+
+  if (
+    mesAtual < nascimento.getMonth() ||
+    (mesAtual === nascimento.getMonth() && diaAtual < nascimento.getDate())
+  ) {
+    idade--;
+  }
+
+  return idade;
+}
+
+function prescrever() {
+  window.location.replace("/medicoPrescreverMedicamento?id=" + id);
+}
+
 
 iniciar();
