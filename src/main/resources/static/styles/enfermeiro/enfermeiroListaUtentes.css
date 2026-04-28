@@ -375,9 +375,46 @@ body {
 .paginacao {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 8px 8px;
+}
+
+.paginacao-tamanho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.paginacao-tamanho select {
+  background: var(--white);
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.paginacao-tamanho select:hover {
+  background: var(--secondary);
+}
+
+.paginacao-tamanho label {
+  font-size: 13px;
+} 
+
+.paginacao-paginas {
+  display: flex;
+  align-items: center;
   gap: 4px;
-  padding: 12px 4px 4px;
+  margin-left: auto;
 }
 
 .btn-pagina {
