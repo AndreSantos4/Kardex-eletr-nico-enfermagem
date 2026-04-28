@@ -28,13 +28,10 @@ public class Frequencia {
     @Column(name = "frequencia")
     public int frequencia;
     
-    @Column(name = "periodo")
+    @Column(name = "periodo", nullable = false)
     @Enumerated(EnumType.STRING)
     public Periodo periodo;
 
-    @Column(name = "hora_inferior")
-    public int horaInferior;
-    
-    @Column(name = "hora_superior")
-    public int horaSuperior;
+    @Column(name = "intervaloMinHoras", nullable = false)
+    public int intervaloMinHoras;
 }
