@@ -12,7 +12,7 @@ public record CreateMedicationDTO(
     @JsonProperty("principioAtivo") String principioAtivo,
     @JsonProperty("formaFarmaceutica") FormaFarmaceutica formaFarmaceutica,
     @JsonProperty("classeFarmacologica") ClasseFarmacologica classeFarmacologica,
-    @JsonProperty("dosagens") DosagemDTO[] dosagens,
+    @JsonProperty("dosagens") CreateDosagemDTO[] dosagens,
     @JsonProperty("dosagemMaxDiaria") CreateDosagemDTO dosagemMaxDiaria, 
     @JsonProperty("quantidade") Long quantidade,
     @JsonProperty("unidadeMedida") UnidadeMedida unidadeMedida,
