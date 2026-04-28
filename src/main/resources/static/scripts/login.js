@@ -100,7 +100,7 @@ function validateM2F(event) {
               switch (data.data.role) {
                 case "ADMIN":
                   window.location.replace(
-                    "http://localhost:8080/pages/admin/adminDashboard.html",
+                    "http://localhost:8080/adminDashboard",
                   );
                   break;
                 case "MEDICO":
