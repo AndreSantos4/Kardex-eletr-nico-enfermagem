@@ -85,4 +85,9 @@ public class ResourcesForwarding {
     public ModelAndView medicoKardexUtente() {
         return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html");
     }
+
+    @GetMapping("/prescreverMedicamento")
+    public ModelAndView medicoPrescreverMedicamento(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoPrescreverMedicamento.html?id=" + id);
+    }
 }

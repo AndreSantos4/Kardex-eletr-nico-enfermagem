@@ -95,7 +95,7 @@ function filtrarLista(query) {
 }
 
 function verUtente(id) {
-    window.location.href = `medicoUtente.html?id=${id}`;
+    window.location.href = `/medicoKardexUtente?id=${id}`;
 }
 
 async function loadDashboard() {

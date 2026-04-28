@@ -17,6 +17,10 @@ import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
+import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
@@ -24,10 +28,10 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
-import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
+import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
@@ -36,7 +40,6 @@ public class ProcessServiceImpl implements ProcessService{
 
     private final ProcessoClinicoRepository repository;
     private final ProcessoMapper mapper;
-    private final MedicamentoRepository medicamentoRepository;
     private final PrescricaoMapper prescricaoMapper;
     private final PrescricaoRepository prescricaoRepository;
     private final AdministracaoRepository administracaoRepository;
@@ -44,6 +47,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final WorkerService workerService;
     private final CamaRepository camaRepository;
     private final RecordService recordService;
+    private final StockService stockService;
 
     @Override
     @Transactional
@@ -61,9 +65,11 @@ public class ProcessServiceImpl implements ProcessService{
         process.setCama(bed);
         patient.setEstado(EstadoUtente.INTERNADO);
 
-        if(bed != null){
-            bed.setOcupada(true);
+        if(bed == null) {
+            throw new KardexException("Cama nao pode ser nula");
         }
+
+        bed.setOcupada(true);
 
         return mapper.toDTO(repository.save(process));
     }
@@ -71,22 +77,33 @@ public class ProcessServiceImpl implements ProcessService{
     @Override
     @Transactional
     public void createPrescription(Long processId, CreatePrescriptionDTO data) {
-        var process = repository.findById(processId)
-            .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
+        var process = getValidProcess(processId);
+            
+        var medication = stockService.getMedication(data.idMedicamento());
+        var dose = getDose(data, medication);
 
-        if(!process.getAlta()){
-            throw new InactiveResourceException("Processo Clinico");
-        }
-
-        var medication = medicamentoRepository.findById(data.idMedicamento())
-            .orElseThrow(() -> EntityNotFoundException.forId(data.idMedicamento(), "Medicamento"));
-
-        var prescription = prescricaoMapper.fromCreate(data, medication);
+        var prescription = prescricaoMapper.fromCreate(data);
+    
+        prescription.setMedicamento(medication);
+        prescription.setDose(dose);
 
         prescription.setProcesso(process);
         
         prescricaoRepository.save(prescription);
     }
+
+	private Dosagem getDose(CreatePrescriptionDTO data, Medicamento medication) {
+		var dose = medication.getDosagens()
+            .stream()
+            .filter(d -> d.getId().equals(data.idDose()))
+            .toList();
+        
+        if(dose.isEmpty()) {
+            throw new KardexException("Este medicamento nao possui esta dose");
+        }
+        
+        return dose.getFirst();
+	}
 
     @Override
     @Transactional
@@ -152,12 +169,7 @@ public class ProcessServiceImpl implements ProcessService{
     @Override
     @Transactional
     public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns) {
-        var process = repository.findById(processId)
-            .orElseThrow(() -> EntityNotFoundException.forId(processId, "Process Clinico"));
-
-        if(process.getAlta()){
-            throw new InactiveResourceException("Processo Clinico");
-        }
+        var process = getValidProcess(processId);
 
         var vitalSign = mapper.fromVitalSignRegister(vitalSigns);
         vitalSign.setProcessoClinico(process);
@@ -170,18 +182,27 @@ public class ProcessServiceImpl implements ProcessService{
     @Override
     @Transactional
     public void dischargePatient(Long processId, DischargePatientDTO data) {
-        var process = repository.findById(processId)
-            .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo Clinico"));
+        var process = getValidProcess(processId);
 
         process.setAlta(true);
         process.setNotasAlta(data.notasAlta());
-        process.setDataSaida(data.data().toLocalDate());
+        process.setDataSaida(data.data());
         process.getUtente().setEstado(EstadoUtente.INATIVO);
 
         repository.save(process);
         
         recordService.recordPatientDischarge(mapper.toDTO(process));
     }
+    
+   	private ProcessoClinico getValidProcess(Long processId) {
+		var process = repository.findById(processId)
+               .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
+   
+        if(process.getAlta()){
+               throw new InactiveResourceException("Processo Clinico");
+        }
+		return process;
+	}
 
     @Override
     public ProcessoClinicoDTO getKardexProcess(Utente patient) {
