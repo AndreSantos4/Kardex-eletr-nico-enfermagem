@@ -57,7 +57,7 @@ public class ProcessoClinico {
     public Set<Prescricao> prescricoes = new HashSet<>();
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
-    public List<SinalVital> sinaisVitais = new ArrayList<>();
+    public Set<SinalVital> sinaisVitais = new HashSet<>();
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
     public List<Exame> exames = new ArrayList<>();
