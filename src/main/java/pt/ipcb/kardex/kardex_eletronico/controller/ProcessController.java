@@ -36,7 +36,7 @@ public class ProcessController {
 
     @PostMapping("/prescriptions/{prescriptionId}/administrations")
     public ResponseEntity<ApiResponse<?>> administrateMedication(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody CreateAdministrationDTO data){
-
+        
         service.administrateMedication(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Administracao efetuada com sucesso", null));
     }
