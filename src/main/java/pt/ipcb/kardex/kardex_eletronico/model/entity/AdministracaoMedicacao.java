@@ -27,7 +27,7 @@ public class AdministracaoMedicacao {
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
 
-    @JoinColumn(name = "id_turno", nullable = false)
+    @JoinColumn(name = "id_turno")
     @ManyToOne
     public Turno turno;
     
