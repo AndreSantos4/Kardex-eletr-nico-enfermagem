@@ -1,6 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.prescription;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,8 +14,8 @@ public record PrescricaoDTO(
     @JsonProperty("sos") Boolean sos,
     @JsonProperty("motivo") String motivo,
     @JsonProperty("ativa") Boolean ativa,
-    @JsonProperty("inicio") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss")  LocalDateTime dataInicio,
-    @JsonProperty("fim") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss")  LocalDateTime dataFim,
+    @JsonProperty("inicio") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataInicio,
+    @JsonProperty("fim") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataFim,
     @JsonProperty("dose") DosagemDTO dose,
     @JsonProperty("altoRisco") boolean altoRisco,
     @JsonProperty("frequencia") FrequenciaDTO frequencia

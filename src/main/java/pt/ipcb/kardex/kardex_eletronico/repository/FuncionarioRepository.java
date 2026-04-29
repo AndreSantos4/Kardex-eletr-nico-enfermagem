@@ -26,7 +26,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     Optional<Funcionario> findByUserId(@Param("id") Long id);
 
     @Query("SELECT t FROM Funcionario f JOIN f.turnos t WHERE f.id = :id AND t.inicio <= :now AND t.fim >= :now")
-    Turno findCurrentTurno(Long id, LocalDateTime now);
+    Turno findCurrentTurno(@Param("id") Long id, @Param("now") LocalDateTime now);
 
     @Query("SELECT t.id, COUNT(i) FROM Turno t LEFT JOIN t.incidentes i WHERE t.id IN :ids GROUP BY t.id")
     List<Object[]> countIncidentsByTurnoIds(@Param("ids") List<Long> ids);
