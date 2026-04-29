@@ -156,8 +156,8 @@ public class PatientServiceImpl implements PatientService{
             case HOSPITALIZED -> EstadoUtente.INTERNADO;
             case INACTIVE     -> EstadoUtente.INATIVO;
             case ALL          -> null;
-    };
-}
+        };
+    }
 
     @Override
     @Transactional(readOnly = true)
