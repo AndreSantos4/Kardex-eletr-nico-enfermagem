@@ -66,39 +66,6 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	@Transactional
-	public void editMedication(Long medicationId, CreateMedicationDTO data) {
-    	var medication = medicamentoRepository.findById(medicationId)
-            .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
-            
-        if(!medication.isActive()){
-            throw new InactiveResourceException("Medicamento");
-        }
-        
-        var updatedMed = medicamentoMapper.fromCreate(data);
-    
-        medication.setNome(data.nome());
-        medication.setPrincipioAtivo(data.principioAtivo());
-        medication.setFormaFarmaceutica(data.formaFarmaceutica());
-        medication.setClasseFarmacologica(data.classeFarmacologica());
-        medication.setViaAdministracao(data.viaAdministracao());
-        medication.setUnidadeMedida(data.unidadeMedida());
-        medication.setQuantidade(data.quantidade());
-        medication.setAltoRisco(data.altoRisco());
-    
-        medication.getDosagens().clear();
-        List<Dosagem> novasDosagens = updatedMed.getDosagens();
-        Dosagem maxDosagem = updatedMed.getDosagemMaxDiaria();
-        
-        novasDosagens.forEach(d -> {
-            d.setMedicamento(medication);
-            medication.getDosagens().add(d);
-        });
-        
-        medication.setDosagemMaxDiaria(maxDosagem);
-	}
-
-	@Override
-	@Transactional
 	public void deactivateMedication(Long medicationId) {
 	    var medication = medicamentoRepository.findById(medicationId)
             .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
