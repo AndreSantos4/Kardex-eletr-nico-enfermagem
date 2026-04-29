@@ -10,7 +10,6 @@
     --alertas: hsl(0, 98%, 36%);
 }
 
-/*Body*/
 body {
     font-family: var(--sans);
     color: var(--text);
@@ -34,7 +33,6 @@ body {
     min-width: 0;
 }
 
-/*Top Bar*/
 .topbar {
     height: 52px;
     background: var(--primary);
@@ -85,7 +83,6 @@ body {
     color: var(--primary);
 }
 
-/*Side Bar*/
 .sidebar {
     width: 210px;
     background: var(--primary);
@@ -136,7 +133,6 @@ body {
     text-transform: uppercase;
 }
 
-/*Patient Header Bar*/
 .paciente-header {
     background: var(--primary);
     margin: 14px 14px 0 14px;
@@ -188,7 +184,6 @@ body {
     color: var(--primary);
 }
 
-/*Content Area*/
 .content-area {
     display: flex;
     gap: 14px;
@@ -197,7 +192,6 @@ body {
     flex: 1;
 }
 
-/*Form Card*/
 .form-card {
     flex: 1;
     background: var(--primary);
@@ -276,8 +270,9 @@ body {
     background: var(--bg-dark);
 }
 
-input.form-select[type="text"]::placeholder {
-    color: var(--white);
+input.form-select[type="text"]::placeholder,
+input.form-select[type="number"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 input.form-select[type="date"]::-webkit-calendar-picker-indicator {
@@ -285,7 +280,27 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
-/*Checkboxes*/
+input.form-select[type="number"]::-webkit-inner-spin-button,
+input.form-select[type="number"]::-webkit-outer-spin-button {
+    filter: invert(1);
+    opacity: 0.6;
+}
+
+.intervalo-toma-group {
+    display: flex;
+    gap: 8px;
+}
+
+.intervalo-toma-group .intervalo-valor {
+    width: 100px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.intervalo-toma-group .intervalo-unidade {
+    flex: 1;
+}
+
 .form-checkboxes {
     display: flex;
     gap: 24px;
@@ -308,7 +323,6 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     accent-color: var(--primary);
 }
 
-/*Verification Box*/
 .verificacao-box {
     background: var(--primary);
     border-radius: 4px;
@@ -348,7 +362,6 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     margin-bottom: 4px;
 }
 
-/*Actions*/
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -372,7 +385,6 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--white);
 }
 
-/*Right Panels*/
 .right-panels {
     width: 280px;
     flex-shrink: 0;
@@ -406,7 +418,6 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     border-radius: 0px 0px 6px 6px;
 }
 
-/*Medication Badge*/
 .med-badge {
     background: var(--bg-dark);
     border-radius: 4px;
@@ -431,7 +442,6 @@ input.form-select[type="date"]::-webkit-calendar-picker-indicator {
     white-space: nowrap;
 }
 
-/*Allergy Item*/
 .alergia-item {
     font-size: 13px;
     color: var(--secondary);

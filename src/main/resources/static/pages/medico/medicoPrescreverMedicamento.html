@@ -10,17 +10,14 @@
 </head>
 
 <body>
-	<!--Top Bar-->
 	<div class="topbar">
 		<span class="topbar-page">Medico Prescrever Medicamento</span>
 		<div class="topbar-right">
-			<span class="topbar-user"><span id="nome-medico"></span> | Turno:
-				<span id="turno"></span></span>
+			<span class="topbar-user"><span id="nome-medico"></span> | Turno: <span id="turno"></span></span>
 			<button class="btn-sair" onclick="logout()">SAIR</button>
 		</div>
 	</div>
 
-	<!--Side Bar + Main-->
 	<div class="main-container">
 		<aside class="sidebar">
 			<nav>
@@ -93,7 +90,6 @@
 		</aside>
 
 		<main class="main-content">
-			<!--Page Header-->
 			<div class="paciente-header">
 				<div class="paciente-header-info">
 					<span class="paciente-nome" id="paciente-nome">Kardex - <span id="nome-utente"></span></span>
@@ -104,18 +100,12 @@
 						<span id="dias-internado"></span> dia(s) internado
 					</span>
 				</div>
-
 				<div class="paciente-header-actions">
-					<button class="btn-header" onclick="irParaKardex()">
-						Kardex
-					</button>
-					<button class="btn-header" onclick="irParaHistorico()">
-						HISTÓRICO
-					</button>
+					<button class="btn-header" onclick="irParaKardex()">Kardex</button>
+					<button class="btn-header" onclick="irParaHistorico()">HISTÓRICO</button>
 				</div>
 			</div>
 
-			<!--Content-->
 			<div class="content-area">
 				<div class="form-card">
 					<div class="form-card-header">Medicamento</div>
@@ -144,17 +134,12 @@
 								<select class="form-select" id="frequencia">
 									<option value="">Selecionar...</option>
 									<option value="1x/dia">1x/dia</option>
-									<option value="2x/dia (8h-20h)">
-										2x/dia (8h-20h)
-									</option>
-									<option value="3x/dia (8h-14h-20h)">
-										3x/dia (8h-14h-20h)
-									</option>
+									<option value="2x/dia (8h-20h)">2x/dia (8h-20h)</option>
+									<option value="3x/dia (8h-14h-20h)">3x/dia (8h-14h-20h)</option>
 									<option value="4x/dia">4x/dia</option>
 									<option value="6/6h">6/6h</option>
 									<option value="8/8h">8/8h</option>
 									<option value="12/12h">12/12h</option>
-									<option value="SOS">SOS</option>
 								</select>
 							</div>
 							<div class="form-group">
@@ -168,8 +153,16 @@
 						</div>
 
 						<div class="form-group form-group-full">
-							<label class="form-label">Itervalo de toma *</label>
-							<input class="form-select" type="text" id="intervalo-toma" placeholder="2h" />
+							<label class="form-label">Intervalo Mínimo de toma *</label>
+							<div class="intervalo-toma-group">
+								<input class="form-select intervalo-valor" type="number" id="intervalo-valor" min="1"
+									placeholder="—" />
+								<select class="form-select intervalo-unidade" id="intervalo-unidade">
+									<option value="horas">horas</option>
+									<option value="minutos">minutos</option>
+									<option value="dias">dias</option>
+								</select>
+							</div>
 						</div>
 
 						<div class="form-group form-group-full">
@@ -177,8 +170,6 @@
 							<input class="form-select" type="text" id="indicacao-clinica"
 								placeholder="Indicação clinica/justificação" />
 						</div>
-
-
 
 						<div class="form-checkboxes">
 							<label class="form-checkbox-label">
@@ -192,19 +183,14 @@
 						</div>
 
 						<div class="verificacao-box" id="verificacao-box">
-							<div class="verificacao-title">
-								Verificação Automatica
-							</div>
+							<div class="verificacao-title">Verificação Automatica</div>
 							<div class="verificacao-body" id="verificacao-body">
-								Selecione um medicamento para verificação
-								automática.
+								Selecione um medicamento para verificação automática.
 							</div>
 						</div>
 
 						<div class="form-actions">
-							<button class="btn-confirmar" type="button">
-								CONFIRMAR PRESCRIÇÃO
-							</button>
+							<button class="btn-confirmar" type="button">CONFIRMAR PRESCRIÇÃO</button>
 						</div>
 					</div>
 				</div>
@@ -225,7 +211,6 @@
 
 	<script src="../../scripts/logout.js"></script>
 	<div id="notificacoes-container"></div>
-
 	<script src="../../scripts/notificacao.js"></script>
 	<script src="../../scripts/medico/medicoPrescreverMedicamento.js"></script>
 </body>
