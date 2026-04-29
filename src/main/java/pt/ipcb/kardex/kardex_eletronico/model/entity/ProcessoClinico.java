@@ -53,11 +53,11 @@ public class ProcessoClinico {
     @Column(name = "notas_alta")
     public String notasAlta;
     
+    @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
+    public Set<SinalVital> sinaisVitais = new HashSet<>();
+
     @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL)
     public Set<Prescricao> prescricoes = new HashSet<>();
-    
-    @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
-    public List<SinalVital> sinaisVitais = new ArrayList<>();
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
     public List<Exame> exames = new ArrayList<>();
