@@ -28,6 +28,10 @@ public class Prescricao {
     @JoinColumn(name = "id_processo", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ProcessoClinico processo;
+
+    @JoinColumn(name = "id_medico", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Funcionario medico;
     
     @Column(name = "e_sos", nullable = false)
     public Boolean sos  = false;

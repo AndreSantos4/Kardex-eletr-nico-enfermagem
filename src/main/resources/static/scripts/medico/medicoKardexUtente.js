@@ -1,61 +1,90 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
+// ── Utilitários ───────────────────────────────────────────────────────────────
+
+function calcularIdade(dataNascimentoStr) {
+  if (!dataNascimentoStr) return "—";
+  const [dia, mes, ano] = dataNascimentoStr.split("/").map(Number);
+  const nasc = new Date(ano, mes - 1, dia);
+  const hoje = new Date();
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  if (
+    hoje.getMonth() < nasc.getMonth() ||
+    (hoje.getMonth() === nasc.getMonth() && hoje.getDate() < nasc.getDate())
+  ) idade--;
+  return idade;
+}
+
+function formatarPeriodo(periodo) {
+  const map = { DIARIO: "dia", SEMANAL: "semana", MENSAL: "mês", HORA: "hora" };
+  return map[periodo] ?? (periodo ?? "").toLowerCase();
+}
+
+function formatarUnidade(unidade) {
+  const map = { MILIGRAMAS: "mg", MICROGRAMAS: "mcg", GRAMAS: "g", MILILITROS: "mL" };
+  return map[unidade] ?? (unidade ?? "");
+}
+
+function formatarVia(via) {
+  const map = {
+    ORAL: "Oral", INTRAVENOSA: "IV", INTRAMUSCULAR: "IM",
+    SUBCUTANEA: "SC", TOPICA: "Tópica", INALATORIA: "Inalatória",
+  };
+  return map[via] ?? (via ?? "—");
+}
+
+// ── Carregar utente ───────────────────────────────────────────────────────────
+
 async function carregarUtente(id) {
   try {
-    const url = `http://localhost:8080/api/patients/${id}`;
-    const resp = await fetch(url, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    if (!resp.ok) throw new Error("Erro ao carregar utilizadores");
+    const resp = await fetch(`/api/patients/${id}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const json = await resp.json();
 
     const dados = json.data.dados;
+    const processo = dados.processo;
 
-    // ── Dados do utente ──────────────────────────────────────────────────────
+    // Page header title + subtitle
+    document.getElementById("page-title").textContent = `Kardex - ${dados.nome}`;
+    const [dE, mE, aE] = processo.dataEntrada.split("/").map(Number);
+    const diasInternado = Math.floor(
+      (Date.now() - new Date(aE, mE - 1, dE).getTime()) / 86400000
+    );
+    document.getElementById("page-subtitle").textContent =
+      `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "—"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
+
+    // Info bar
     document.getElementById("nome-utente").innerHTML = dados.nome;
     document.getElementById("sexo").innerHTML = dados.sexo;
     document.getElementById("idade").innerHTML = calcularIdade(dados.dataNascimento);
-
-    const dataEntradaExtended = dados.processo.dataEntrada;
-    const partes = dataEntradaExtended.split(":");
-    const dataEntrada = partes[0];
-    const horaEntrada = partes.slice(1).join(":");
-
-    document.getElementById("data").innerHTML = dataEntrada;
-    document.getElementById("hora").innerHTML = horaEntrada;
+    document.getElementById("data").innerHTML = processo.dataEntrada;
+    document.getElementById("hora").innerHTML = "—";
     document.getElementById("medico").innerHTML =
-      dados.processo.medicoResponsavel.dados.nome;
-    document.getElementById("processo").innerHTML = dados.processo.id;
+      processo.medicoResponsavel?.dados?.nome ?? "—";
+    document.getElementById("processo").innerHTML = processo.id;
     document.getElementById("data-nascimento").innerHTML = dados.dataNascimento;
     document.getElementById("cama").innerHTML =
-      dados.processo.cama == null ? "Sem cama" : dados.processo.cama.id;
-
-    const [dia, mes, ano] = dataEntrada.split("/");
-    const dataObj = new Date(ano, mes - 1, dia);
-    const hoje = new Date();
-    const dias = Math.floor((hoje - dataObj) / (1000 * 60 * 60 * 24));
-
+      processo.cama == null ? "Sem cama" : processo.cama.id;
     document.getElementById("estado").innerHTML = "Internado";
-    document.getElementById("dias-internado").innerHTML = dias;
+    document.getElementById("dias-internado").innerHTML = diasInternado;
 
-    // ── Riscos ───────────────────────────────────────────────────────────────
-    const riscos = dados.flags;
-    const lista = riscos.map((r) => {
+    // Riscos
+    const lista = (dados.flags ?? []).map((r) => {
       const texto = r.replace("RISCO_", "").toLowerCase();
       return texto.charAt(0).toUpperCase() + texto.slice(1);
     });
-    document.querySelector(".riscos").innerHTML = `
-      <p style="color: white; font-weight: bolder;">Riscos:&nbsp; ${lista.join(" | ")}</p>
-    `;
+    document.querySelector(".riscos").innerHTML = lista.length > 0
+      ? `<p style="color: white; font-weight: bolder;">Riscos:&nbsp; ${lista.join(" | ")}</p>`
+      : `<p style="color: white; font-weight: bolder;">Riscos:&nbsp; Nenhum</p>`;
 
-    // ── Alergias ─────────────────────────────────────────────────────────────
-    document.getElementById("alertas").innerHTML = dados.alergias
+    // Alergias
+    document.getElementById("alertas").innerHTML = (dados.alergias ?? [])
       .map((a) => `<div class="alerta"><p>${a.nome}</p></div>`)
-      .join("");
+      .join("") || "<p style='padding:5px;color:#888;'>Sem alergias registadas.</p>";
 
-    // ── Sinais Vitais ─────────────────────────────────────────────────────────
-    const sinaisVitais = dados.processo.sinaisVitais;
+    // Sinais Vitais
+    const sinaisVitais = processo.sinaisVitais;
     const svGrid = document.querySelector(".sinais-vitais");
     const svBar = document.querySelector(".sinais-vitais-bar");
 
@@ -77,136 +106,124 @@ async function carregarUtente(id) {
       svBar.appendChild(msg);
     }
 
-    // ── Medicação Ativa ───────────────────────────────────────────────────────
-    // A API devolve "prescricoes" — filtramos apenas as ativas
-    const prescricoes = (dados.processo.prescricoes ?? []).filter((p) => p.ativa);
-    const medicacaoContainer = document.querySelector(".medicacao");
-
-    if (prescricoes.length > 0) {
-      medicacaoContainer.innerHTML = "";
-
-      prescricoes.forEach((p) => {
-        const nomeMed = p.medicamento?.nome ?? "—";
-        const dose = p.dose?.dose ?? "—";
-        const unidade = formatarUnidade(p.dose?.unidadeMedida);
-        const via = formatarVia(p.medicamento?.viaAdministracao);
-        const freq = p.frequencia?.frequencia ?? "—";
-        const periodo = formatarPeriodo(p.frequencia?.periodo);
-        const intervalo = p.frequencia?.intervaloMinHoras ?? null;
-        const motivo = p.motivo ?? "";
-        const altoRisco = p.altoRisco;
-        const sos = p.sos;
-
-        const badges = [];
-        if (altoRisco) badges.push(
-          `<span style="background:#b91c1c;color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;">ALTO RISCO</span>`
-        );
-        if (sos) badges.push(
-          `<span style="background:#b45309;color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;">SOS</span>`
-        );
-
-        const item = document.createElement("div");
-        item.style.cssText =
-          "width:100%; border-bottom:1px solid rgba(42,111,151,0.15); padding:6px 0;";
-        item.innerHTML = `
-          <div class="medicacao-left-cima">
-            <p><strong>${nomeMed}</strong></p>
-            <p>&nbsp;${dose}&nbsp;${unidade}</p>
-            ${badges.join("")}
-          </div>
-          <div class="medicacao-left-baixo">
-            <p>${via}&nbsp;-&nbsp;${freq}x/${periodo}${intervalo ? ` (mín. ${intervalo}h entre tomas)` : ""}</p>
-            ${motivo ? `<p style="color:#555;">&nbsp;↳&nbsp;${motivo}</p>` : ""}
-          </div>
-        `;
-        medicacaoContainer.appendChild(item);
-      });
-    } else {
-      medicacaoContainer.innerHTML = `
-        <p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">
-          Sem medicação ativa registada.
-        </p>`;
-    }
+    // Medicação Ativa — carregada via endpoint de prescrições
+    carregarMedicacaoAtiva(processo.id);
 
   } catch (err) {
-    console.error(err);
-    mostrarNotificacao({
-      titulo: "Erro de ligação",
-      mensagem: "Não foi possível carregar os dados do utente.",
-      tipo: "erro",
-    });
+    console.error("[KardexUtente]", err);
+    alert("Erro de ligação ao servidor.");
   }
 }
 
-// ── Formatar helpers ──────────────────────────────────────────────────────────
-function formatarPeriodo(periodo) {
-  const map = { DIARIO: "dia", SEMANAL: "semana", MENSAL: "mês", HORA: "hora" };
-  return map[periodo] ?? (periodo ?? "").toLowerCase();
-}
+async function carregarMedicacaoAtiva(processId) {
+  const medicacaoContainer = document.querySelector(".medicacao");
+  try {
+    const resp = await fetch(`/api/processes/${processId}/prescriptions`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const json = await resp.json();
+    const prescricoes = (json.data ?? []).filter((p) => p.ativa);
 
-function formatarUnidade(unidade) {
-  const map = { MILIGRAMAS: "mg", MICROGRAMAS: "mcg", GRAMAS: "g", MILILITROS: "mL" };
-  return map[unidade] ?? (unidade ?? "");
-}
+    if (prescricoes.length === 0) {
+      medicacaoContainer.innerHTML =
+        `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Sem medicação ativa registada.</p>`;
+      return;
+    }
 
-function formatarVia(via) {
-  const map = {
-    ORAL: "Oral",
-    INTRAVENOSA: "IV",
-    INTRAMUSCULAR: "IM",
-    SUBCUTANEA: "SC",
-    TOPICA: "Tópica",
-    INALATORIA: "Inalatória",
-  };
-  return map[via] ?? (via ?? "—");
+    medicacaoContainer.innerHTML = "";
+    prescricoes.forEach((p) => {
+      const nomeMed = p.medicamento?.nome ?? "—";
+      const dose = p.dose ?? "—";
+      const unidade = formatarUnidade(p.medicamento?.unidadeMedida);
+      const via = formatarVia(p.medicamento?.viaAdministracao);
+      const motivo = p.motivo ?? "";
+      const badges = [];
+      if (p.sos) badges.push(
+        `<span style="background:#b45309;color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;">SOS</span>`
+      );
+
+      const item = document.createElement("div");
+      item.style.cssText = "width:100%; border-bottom:1px solid rgba(42,111,151,0.15); padding:6px 0;";
+      item.innerHTML = `
+        <div class="medicacao-left-cima">
+          <p><strong>${nomeMed}</strong></p>
+          <p>&nbsp;${dose}&nbsp;${unidade}</p>
+          ${badges.join("")}
+        </div>
+        <div class="medicacao-left-baixo">
+          <p>${via}${motivo ? ` — ${motivo}` : ""}</p>
+        </div>`;
+      medicacaoContainer.appendChild(item);
+    });
+  } catch (err) {
+    console.error("[Medicação Ativa]", err);
+    medicacaoContainer.innerHTML =
+      `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Erro ao carregar medicação.</p>`;
+  }
 }
 
 // ── Alta ──────────────────────────────────────────────────────────────────────
+
 function daralta() {
   const nomeUtente = document.getElementById("nome-utente").innerHTML;
   const processoId = document.getElementById("processo").innerHTML;
-
   document.getElementById("popup-nome-utente").innerHTML =
     `${nomeUtente}<br>Nº Processo: ${processoId}`;
   document.getElementById("popup-alta").style.display = "flex";
 }
 
+// ── Navegação ─────────────────────────────────────────────────────────────────
+
+function mostrarNotas() {
+  alert("Funcionalidade em desenvolvimento.");
+}
+
+function mostrarPlano() {
+  alert("Funcionalidade em desenvolvimento.");
+}
+
+function mostrarLista() {
+  window.location.href = "medicoListaUtentes";
+}
+
+function prescrever() {
+  window.location.href = `medicoPrescreverMedicamento?id=${id}`;
+}
+
+function toggleHistoricoMenu(event) {
+  event.stopPropagation();
+  document.getElementById("historico-menu").classList.toggle("open");
+}
+
+function irParaHistoricoClinico() {
+  alert("Funcionalidade em desenvolvimento.");
+  document.getElementById("historico-menu").classList.remove("open");
+}
+
+function irParaHistoricoIntervencoes() {
+  alert("Funcionalidade em desenvolvimento.");
+  document.getElementById("historico-menu").classList.remove("open");
+}
+
+function irParaHistoricoPrescricoes() {
+  window.location.href = `medicoHistoricoPrescricoes?id=${id}`;
+}
+
+document.addEventListener("click", () => {
+  document.getElementById("historico-menu")?.classList.remove("open");
+});
+
 // ── Inicialização ─────────────────────────────────────────────────────────────
+
 async function iniciar() {
   try {
     const resp = await fetch("../../pages/medico/popups/popUpRegistarAlta.html");
     const html = await resp.text();
     document.getElementById("popup-container").innerHTML = html;
     document.getElementById("form-alta").addEventListener("submit", submeterAlta);
-  } catch {
-    mostrarNotificacao({
-      titulo: "Erro",
-      mensagem: "Não foi possível carregar o popup de alta.",
-      tipo: "erro",
-    });
+  } catch (err) {
+    console.error("[Popup Alta]", err);
   }
-
   carregarUtente(id);
-}
-
-// ── Utilitários ───────────────────────────────────────────────────────────────
-function calcularIdade(dataNascimentoStr) {
-  const [dia, mes, ano] = dataNascimentoStr.split("/").map(Number);
-  const hoje = new Date();
-  const nascimento = new Date(ano, mes - 1, dia);
-  let idade = hoje.getFullYear() - nascimento.getFullYear();
-  if (
-    hoje.getMonth() < nascimento.getMonth() ||
-    (hoje.getMonth() === nascimento.getMonth() &&
-      hoje.getDate() < nascimento.getDate())
-  ) {
-    idade--;
-  }
-  return idade;
-}
-
-function prescrever() {
-  window.location.replace("/prescreverMedicamento?id=" + id);
 }
 
 iniciar();

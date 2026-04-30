@@ -114,12 +114,15 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/medicoDashboard",
                                 "/medicoKardexUtente",
-                                "/medicoListaUtentes")
+                                "/medicoListaUtentes",
+                                "/medicoPrescreverMedicamento",
+                                "/medicoHistoricoPrescricoes")
                         .hasRole("MEDICO")
                         .requestMatchers(
                                 "/enfermeiroDashboard",
                                 "/enfermeiroKardexUntente",
-                                "/enfermeiroListaUtentes")
+                                "/enfermeiroListaUtentes",
+                                "/enfermeiroHistoricoPrescricoes")
                         .hasRole("ENFERMEIRO")
                         .requestMatchers(
                                 "/enfermeiroChefeDashboard",

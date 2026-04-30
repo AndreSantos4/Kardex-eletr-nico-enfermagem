@@ -549,6 +549,11 @@ async function carregarUtente(id) {
   }
 }
 
+function irParaHistoricoPrescricoes() {
+    window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
+}
+
+carregarUtente(id);
 let prescricaoSelecionadaId = null;
 
 function renderizarMedicacaoAtiva(prescricoes) {

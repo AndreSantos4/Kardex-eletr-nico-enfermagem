@@ -11,6 +11,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
@@ -83,15 +84,16 @@ public class ProcessServiceImpl implements ProcessService{
     @Transactional
     public void createPrescription(Long processId, CreatePrescriptionDTO data) {
         var process = getValidProcess(processId);
+        var medic = workerService.getAutenticatedWorker();
             
         var medication = stockService.getMedication(data.idMedicamento());
         var dose = getDose(data, medication);
 
         var prescription = prescricaoMapper.fromCreate(data);
-    
+
+        prescription.setMedico(medic);
         prescription.setMedicamento(medication);
         prescription.setDose(dose);
-
         prescription.setProcesso(process);
         
         prescricaoRepository.save(prescription);
@@ -112,12 +114,26 @@ public class ProcessServiceImpl implements ProcessService{
 
         @Override
     @Transactional
+    public void suspendPrescription(Long prescriptionId) {
+        var prescription = prescricaoRepository.findById(prescriptionId)
+            .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
+        
+        prescription.setAtiva(false);
+        prescricaoRepository.save(prescription);
+    }
+
+    @Override
+    @Transactional
     public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescrição"));
 
         if(prescription.getProcesso().getAlta()){
             throw new InactiveResourceException("Processo Clinico");
+        }
+
+        if(!prescription.getAtiva()){
+            throw new InactiveResourceException("Prescricao");
         }
 
         var administration = administracaoMapper.fromCreate(data);
@@ -135,16 +151,19 @@ public class ProcessServiceImpl implements ProcessService{
         administration.setFuncionario(worker);
         administration.setTurno(shift);
 
+        subtractFromMedication(administration);
+
         administracaoRepository.save(administration);
     }
 
+    @Transactional(readOnly = true)
     private void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
         var prescription = lastAdministracaoMedicacao.getPrescricao();
         var now = LocalDateTime.now();
         var interval = prescription.getFrequencia().getIntervaloMinHoras();
 
         if(newAdministration.getData().isBefore(lastAdministracaoMedicacao.getData().plusHours(interval))){
-            throw new KardexException("Administracao nao registad, nao passou o intervalo minimo entre prescricoes");
+            throw new KardexException("Administracao nao registada, nao passou o intervalo minimo entre prescricoes");
         }
 
         if(prescription.getSos()){
@@ -157,7 +176,7 @@ public class ProcessServiceImpl implements ProcessService{
                 newAdministration.setAdministrado(false);
                 return;
             }
-        } 
+        }
         
         switch (prescription.getFrequencia().getPeriodo()) {
             case Periodo.DIARIO:
@@ -183,6 +202,23 @@ public class ProcessServiceImpl implements ProcessService{
                 }
         }
     }
+
+    private void subtractFromMedication(AdministracaoMedicacao administration){
+        var prescription = administration.getPrescricao();
+        var medication = prescription.getMedicamento();
+
+        if(medication.getQuantidade().compareTo(prescription.getDose().getDose()) == -1){
+            throw new KardexException("A dose excede a quantidade de medicamento em stock");
+        }
+
+        medication.setQuantidade(medication.getQuantidade().subtract(prescription.getDose().getDose()));
+    }
+    
+    @Override
+	public List<PrescricaoDTO> getPrescriptionHistory(Long processId) {
+		var prescriptions = prescricaoRepository.findByProcessoId(processId);
+		return prescricaoMapper.toDTOList(prescriptions);
+	}
 
     @Override
     @Transactional
