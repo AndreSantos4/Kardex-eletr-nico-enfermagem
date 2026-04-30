@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.DosagemDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 
 public record PrescricaoDTO(
     @JsonProperty("id") Long id,
     @JsonProperty("medicamento") MedicamentoDTO medicamento,
+    @JsonProperty("medico") FuncionarioDTO medico,
     @JsonProperty("sos") Boolean sos,
     @JsonProperty("motivo") String motivo,
     @JsonProperty("ativa") Boolean ativa,
