@@ -46,6 +46,12 @@ public class ProcessController {
         return ResponseEntity.ok(ApiResponse.ok("Historico de prescricoes obtidas com sucesso", prescriptions));
     }
 
+    @PatchMapping("/prescriptions/{prescriptionId}/suspend")
+    public ResponseEntity<ApiResponse<?>> suspendPrescription(@PathVariable("prescriptionId") Long prescriptionId){
+        service.suspendPrescription(prescriptionId);
+        return ResponseEntity.ok(ApiResponse.ok("Prescricao suspendida com sucesso"));
+    }
+
     @GetMapping("/beds")
     public ResponseEntity<ApiResponse<List<CamaDTO>>> getAllBeds(@RequestParam(name = "o", defaultValue = "false") boolean occupied){
         var beds = service.getAllBeds(occupied);
