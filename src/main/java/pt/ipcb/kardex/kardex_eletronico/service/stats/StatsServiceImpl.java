@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.stats;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.user.UserService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 
 @Service    
@@ -28,12 +30,12 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional(readOnly = true)
     public KardexCountsDTO getCounts(HttpServletRequest request) {
-        var worker = workerService.getAutenticatedWorker();
-        var workerRole = worker.getDados().getRole();
+        var user = (Utilizador) SecurityContextHolder.getContext()
+            .getAuthentication().getPrincipal();
 
         var patientsCount = patientService.getHospitalizedPatientsCount();
 
-        switch (workerRole) {
+        switch (user.getRole()) {
             case Role.ENFERMEIRO_CHEFE:
                 var activeNurses = workerService.getActiveNursesCount();
                 var acceptedPatientsToday = recordService.getAcceptedPatientsCountToday();
