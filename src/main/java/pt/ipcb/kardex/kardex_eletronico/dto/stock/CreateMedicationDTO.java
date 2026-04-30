@@ -1,5 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.stock;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ClasseFarmacologica;
@@ -14,7 +16,7 @@ public record CreateMedicationDTO(
     @JsonProperty("classeFarmacologica") ClasseFarmacologica classeFarmacologica,
     @JsonProperty("dosagens") CreateDosagemDTO[] dosagens,
     @JsonProperty("dosagemMaxDiaria") CreateDosagemDTO dosagemMaxDiaria, 
-    @JsonProperty("quantidade") Long quantidade,
+    @JsonProperty("quantidade") BigDecimal quantidade,
     @JsonProperty("unidadeMedida") UnidadeMedida unidadeMedida,
     @JsonProperty("viaAdministracao") ViaAdministracao viaAdministracao,
     @JsonProperty("altoRisco") boolean altoRisco
