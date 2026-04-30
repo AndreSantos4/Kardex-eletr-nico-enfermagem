@@ -53,18 +53,24 @@
             <!--Page Header-->
             <div class="page-header">
                 <div class="page-header-left">
-                    <h4>Home</h4>
-                    <p id="current-datetime"></p>
+                    <h4 id="page-title">Kardex</h4>
+                    <p id="page-subtitle" class="page-header-subtitle"></p>
                 </div>
                 <div class="page-header-right">
                     <button class="page-header-button" onclick="daralta()">DAR ALTA</button>
                     <button class="page-header-button" onclick="mostrarNotas()">NOTAS</button>
                     <button class="page-header-button" onclick="mostrarPlano()">PLANO</button>
                     <button class="page-header-button" onclick="mostrarLista()">LISTA</button>
-                    <button class="page-header-button" onclick="mostrarHistorico()">HISTÓRICO</button>
+                    <div class="dropdown-historico">
+                        <button class="page-header-button" id="btn-historico" onclick="toggleHistoricoMenu(event)">HISTÓRICO &#9662;</button>
+                        <div class="historico-menu" id="historico-menu">
+                            <button onclick="irParaHistoricoClinico()">Histórico Clínico</button>
+                            <button onclick="irParaHistoricoIntervencoes()">Histórico de Intervenções</button>
+                            <button onclick="irParaHistoricoPrescricoes()">Histórico de Prescrições</button>
+                        </div>
+                    </div>
                     <button class="page-header-button" onclick="prescrever()">PRESCREVER</button>
                 </div>
-
             </div>
 
             <!--Info do Utente-->
