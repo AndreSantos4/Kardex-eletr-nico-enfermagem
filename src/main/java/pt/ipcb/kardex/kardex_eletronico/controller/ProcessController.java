@@ -58,4 +58,5 @@ public class ProcessController {
         service.dischargePatient(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Alta clinica registada", null));
     }
+
 }

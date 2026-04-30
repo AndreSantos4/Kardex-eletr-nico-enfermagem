@@ -64,6 +64,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroListaUtentes.html");
     }
 
+    @GetMapping("/enfermeiroHistoricoPrescricoes")
+    public ModelAndView enfermeiroHistoricoPrescricoes(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroHistoricoPrescricoes.html?id=" + id);
+    }
+
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")
@@ -89,12 +94,17 @@ public class ResourcesForwarding {
     }
 
     @GetMapping("/medicoKardexUtente")
-    public ModelAndView medicoKardexUtente() {
-        return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html");
+    public ModelAndView medicoKardexUtente(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html?id=" + id);
     }
 
-    @GetMapping("/prescreverMedicamento")
+    @GetMapping("/medicoPrescreverMedicamento")
     public ModelAndView medicoPrescreverMedicamento(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/medico/medicoPrescreverMedicamento.html?id=" + id);
+    }
+
+    @GetMapping("/medicoHistoricoPrescricoes")
+    public ModelAndView medicoHistoricoPrescricoes(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoHistoricoPrescricoes.html?id=" + id);
     }
 }
