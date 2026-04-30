@@ -6,6 +6,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
@@ -19,6 +20,8 @@ public interface ProcessService {
     void createPrescription(Long processId, CreatePrescriptionDTO data);
 
     void administrateMedication(Long prescriptionId, CreateAdministrationDTO data);
+
+    List<PrescricaoDTO> getPrescriptionHistory(Long processId);
 
     void editActiveProcess(Utente patient, UpdatePacientFileDTO data);
 
