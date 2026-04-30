@@ -45,7 +45,6 @@ public class PatientController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<UtenteDTO>>> getAllPatitents(@RequestParam(name = "f", defaultValue = "ALL") PatientState filter, 
         @RequestParam("s") Optional<String> search){
-
         var patients = service.getAllPatients(filter, search);
         return ResponseEntity.ok(ApiResponse.ok("Utentes obtidos com sucesso", patients));
     }
