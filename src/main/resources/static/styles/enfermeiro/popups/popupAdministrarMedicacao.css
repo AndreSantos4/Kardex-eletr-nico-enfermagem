@@ -1,0 +1,285 @@
+.pop-up,
+.pop-up *,
+.pop-up *::before,
+.pop-up *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --popup-bg: #1a5f7a;
+    --header-bg: #154e66;
+    --input-bg: #ffffff;
+    --label-color: #e0f0f8;
+    --placeholder-color: #9bb8c5;
+    --text-color: #1a3a4a;
+    --btn-bg: #2a7fa0;
+    --btn-hover: #236d8c;
+    --radius: 6px;
+    --sans: "IBM Plex Sans", sans-serif;
+}
+
+.pop-up-administrar-medicacao {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.pop-up {
+    background: var(--popup-bg);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    width: 950px;
+    max-width: 95vw;
+    overflow: hidden;
+    font-family: var(--sans);
+}
+
+.pop-up-header {
+    background: var(--header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pop-up-header h3 {
+    color: var(--input-bg);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.pop-up-header a.cross {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    text-decoration: none;
+}
+
+.pop-up-header a.cross:hover {
+    background: hsl(0, 0%, 88%);
+}
+
+.pop-up-header a.cross svg {
+    width: 14px;
+    height: 14px;
+}
+
+.pop-up-main {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ===== 5 Certos ===== */
+.cinco-certos {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.cinco-certos > div {
+    background-color: #ffffff;
+    flex: 1;
+    height: 78px;
+    border-radius: 10px;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px;
+}
+
+.cinco-certos > div p {
+    margin: 2px 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.cinco-certos > div p:first-child {
+    font-weight: 700;
+}
+
+/* ===== Recusa checkbox ===== */
+.recusa-row {
+    margin-top: 4px;
+}
+
+.recusa-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.recusa-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-radius: 3px;
+    background: transparent;
+    cursor: pointer;
+    margin: 0;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.recusa-label input[type="checkbox"]:checked {
+    background: #ffffff;
+}
+
+.recusa-label input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--popup-bg);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* ===== Form ===== */
+.pop-up label {
+    display: block;
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+.form-row {
+    display: flex;
+    gap: 14px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group--data {
+    flex: 0 0 32%;
+}
+
+.form-group--observacoes {
+    flex: 1;
+}
+
+.pop-up input[type="text"],
+.pop-up input[type="datetime-local"],
+.pop-up input[type="date"] {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.pop-up input::placeholder {
+    color: var(--placeholder-color);
+    font-weight: 400;
+}
+
+.pop-up input:focus {
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+.pop-up input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+/* ===== Warning box ===== */
+.pop-up-administrar-medicacao .warning-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    padding: 12px 18px;
+    background: transparent;
+}
+
+.pop-up-administrar-medicacao .warning-text {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    flex: 1;
+}
+
+.pop-up-administrar-medicacao .warning-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    color: #ffffff;
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+/* ===== Buttons ===== */
+.pop-up-administrar-medicacao .buttons-bottom {
+    display: flex;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.pop-up-administrar-medicacao .buttons-bottom button {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.pop-up-administrar-medicacao .buttons-bottom button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.pop-up-administrar-medicacao .buttons-bottom button:active {
+    transform: scale(0.98);
+}
