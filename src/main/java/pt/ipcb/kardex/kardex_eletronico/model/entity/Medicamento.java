@@ -10,6 +10,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FormaFarmaceutica;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ViaAdministracao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +49,7 @@ public class Medicamento {
     public Dosagem dosagemMaxDiaria;
     
     @Column(name = "quantidade", nullable = false)
-    public Long quantidade = 0l;
+    public BigDecimal quantidade;
     
     @Column(name = "unidadeMedida", nullable = false)
     @Enumerated(EnumType.STRING)
