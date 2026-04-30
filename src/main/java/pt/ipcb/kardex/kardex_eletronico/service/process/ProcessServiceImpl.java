@@ -112,7 +112,7 @@ public class ProcessServiceImpl implements ProcessService{
         return dose.getFirst();
 	}
 
-    @Override
+        @Override
     @Transactional
     public void suspendPrescription(Long prescriptionId) {
         var prescription = prescricaoRepository.findById(prescriptionId)
