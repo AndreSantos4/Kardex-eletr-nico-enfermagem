@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,12 @@ public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{
     long countByPrescricaoInLastDays(
         @Param("prescricaoId") Long prescricaoId,
         @Param("desde") LocalDateTime desde);
+
+    @Query("SELECT p FROM Prescricao p " +
+       "LEFT JOIN FETCH p.medicamento " +
+       "LEFT JOIN FETCH p.dose " +
+       "LEFT JOIN FETCH p.frequencia " +
+       "LEFT JOIN FETCH p.medico " +
+       "WHERE p.processo.id = :processId")
+    List<Prescricao> findByProcessoId(@Param("processId") Long processId);
 }
