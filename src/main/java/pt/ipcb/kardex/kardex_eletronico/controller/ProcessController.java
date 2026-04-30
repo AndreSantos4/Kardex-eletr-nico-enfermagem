@@ -36,9 +36,14 @@ public class ProcessController {
 
     @PostMapping("/prescriptions/{prescriptionId}/administrations")
     public ResponseEntity<ApiResponse<?>> administrateMedication(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody CreateAdministrationDTO data){
-
         service.administrateMedication(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Administracao efetuada com sucesso", null));
+    }
+
+    @GetMapping("/{processId}/prescriptions")
+    public ResponseEntity<ApiResponse<?>> getPrescriptionHistory(@PathVariable("processId") Long processId) {
+        var prescriptions = service.getPrescriptionHistory(processId);
+        return ResponseEntity.ok(ApiResponse.ok("Historico de prescricoes obtidas com sucesso", prescriptions));
     }
 
     @GetMapping("/beds")
