@@ -114,12 +114,26 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
     @Transactional
+    public void suspendPrescription(Long prescriptionId) {
+        var prescription = prescricaoRepository.findById(prescriptionId)
+            .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
+        
+        prescription.setAtiva(false);
+        prescricaoRepository.save(prescription);
+    }
+
+    @Override
+    @Transactional
     public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescrição"));
 
         if(prescription.getProcesso().getAlta()){
             throw new InactiveResourceException("Processo Clinico");
+        }
+
+        if(!prescription.getAtiva()){
+            throw new InactiveResourceException("Prescricao");
         }
 
         var administration = administracaoMapper.fromCreate(data);
