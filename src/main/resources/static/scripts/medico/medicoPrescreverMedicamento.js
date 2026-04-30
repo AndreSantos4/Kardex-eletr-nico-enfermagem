@@ -120,22 +120,77 @@ function atualizarDosesEVia() {
     atualizarVerificacao(medicamento);
 }
 
+function textosSemelhantes(a, b) {
+    if (!a || !b) return false;
+    const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    const na = norm(a), nb = norm(b);
+    return na.includes(nb) || nb.includes(na);
+}
+
+function pacienteTemAlergia(medicamento) {
+    const alergiasEls = document.querySelectorAll("#alergias .alerta");
+    const alergias = Array.from(alergiasEls).map(el => el.textContent.trim());
+    if (alergias.length === 0) return null;
+
+    for (const alergia of alergias) {
+        if (textosSemelhantes(medicamento.nome, alergia)) return alergia;
+        if (medicamento.principioAtivo && textosSemelhantes(medicamento.principioAtivo, alergia)) return alergia;
+        if (medicamento.alergiasIncompativeis?.length > 0) {
+            for (const ai of medicamento.alergiasIncompativeis) {
+                if (textosSemelhantes(ai.nome || ai, alergia)) return alergia;
+            }
+        }
+    }
+    return null;
+}
+
+function mostrarModalAlergia(medicamento, alergiaDetectada, onConfirmar) {
+    const modal = document.getElementById("modal-alergia");
+    const texto = document.getElementById("modal-alergia-texto");
+    const check = document.getElementById("modal-alergia-check");
+    const btnConfirmar = document.getElementById("modal-alergia-confirmar");
+    const btnCancelar = document.getElementById("modal-alergia-cancelar");
+
+    texto.innerHTML = `
+        O paciente tem alergia registada a <strong>"${alergiaDetectada}"</strong>.<br><br>
+        O medicamento selecionado — <strong>${medicamento.nome}</strong> 
+        (princípio ativo: <strong>${medicamento.principioAtivo || "não especificado"}</strong>) — 
+        pode ser incompatível com esta alergia.
+    `;
+
+    check.checked = false;
+    btnConfirmar.disabled = true;
+
+    check.onchange = () => { btnConfirmar.disabled = !check.checked; };
+
+    modal.style.display = "flex";
+
+    btnCancelar.onclick = () => { modal.style.display = "none"; };
+
+    btnConfirmar.onclick = () => {
+        modal.style.display = "none";
+        onConfirmar();
+    };
+}
+
 function atualizarVerificacao(medicamento) {
     const verificacaoBody = document.getElementById("verificacao-body");
-    const alergiasContainer = document.getElementById("alergias");
-    const alergiasText = alergiasContainer.innerText || "";
     let html = "";
 
-    if (alergiasText.includes(medicamento.nome)) {
-        html += `<div class="warn-alergia">ALERTA: O paciente é alérgico a ${medicamento.nome}</div>`;
+    const alergiaDetectada = pacienteTemAlergia(medicamento);
+
+    if (alergiaDetectada) {
+        html += `
+            <div class="warn-alergia" style="background:#fff0f0; border:2px solid #c0392b; border-radius:6px; padding:10px; margin-bottom:8px; color:#c0392b; font-weight:bold;">
+                ALERTA: Alergia registada a "<strong>${alergiaDetectada}</strong>" — incompatível com <strong>${medicamento.nome}</strong>. Será pedida dupla confirmação.
+            </div>`;
     } else {
-        html += `<div class="ok-alergia">✓ Sem alergias incompatíveis registadas</div>`;
+        html += `<div class="ok-alergia">Sem alergias incompatíveis registadas</div>`;
     }
 
     if (medicamento.altoRisco) {
-        html += `<div class="warn-dose">ALERTA: Este medicamento é considerado de alto risco</div>`;
+        html += `<div class="warn-dose">Este medicamento é considerado de alto risco</div>`;
     }
-
     if (medicamento.dosagemMaxDiaria) {
         html += `<div class="warn-dose">Dose máxima diária: ${medicamento.dosagemMaxDiaria.dose} ${medicamento.dosagemMaxDiaria.unidadeMedida}</div>`;
     }
@@ -258,14 +313,23 @@ async function enviarPrescricao() {
     const dados = validarFormulario();
     if (!dados) return;
 
+    const medicamento = medicamentosCache.find(m => m.id == dados.medicamento);
+    const alergiaDetectada = medicamento ? pacienteTemAlergia(medicamento) : null;
+
+    if (alergiaDetectada) {
+        mostrarModalAlergia(medicamento, alergiaDetectada, () => submeterPrescricao(dados));
+    } else {
+        submeterPrescricao(dados);
+    }
+}
+
+async function submeterPrescricao(dados) {
     try {
         const frequencia = frequenciaMap[dados.frequencia];
         if (!frequencia) {
             mostrarNotificacao({ titulo: "Erro", mensagem: "Frequência inválida", tipo: "erro" });
             return;
         }
-
-        const intervaloMinHoras = frequencia.intervaloMinHoras;
 
         const body = {
             idMedicamento: parseInt(dados.medicamento),
@@ -278,7 +342,7 @@ async function enviarPrescricao() {
             frequencia: {
                 frequencia: frequencia.frequencia,
                 periodo: frequencia.periodo,
-                intervaloMinHoras
+                intervaloMinHoras: frequencia.intervaloMinHoras
             }
         };
 
