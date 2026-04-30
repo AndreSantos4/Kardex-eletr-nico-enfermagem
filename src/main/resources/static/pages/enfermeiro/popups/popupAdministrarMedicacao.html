@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupAdministrarMedicacao.css">
+
+<div class="pop-up-administrar-medicacao">
+    <div class="pop-up">
+        <div class="pop-up-header">
+            <div class="title">
+                <h3>Registar Medicação</h3>
+            </div>
+            <div class="icon">
+                <a href="" class="cross" onclick="
+            fecharPopUp();
+            return false;
+          ">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)"
+                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="pop-up-main">
+            <div class="cinco-certos">
+                <div class="utente">
+                    <p>1 - Utente</p>
+                    <p id="nome-utenet">Manuel</p>
+                </div>
+                <div class="medicamento">
+                    <p>2 - Medicamento</p>
+                    <p id="medicamento">Risperidona</p>
+                </div>
+                <div class="dose">
+                    <p>3 - Dose</p>
+                    <p id="dose">2mg</p>
+                </div>
+                <div class="via">
+                    <p>4 - Via</p>
+                    <p id="via">Oral</p>
+                </div>
+                <div class="hora">
+                    <p>5 - Hora</p>
+                    <p id="hora-de-toma">20:00</p>
+                </div>
+            </div>
+            <div class="recusa-row">
+                <label class="recusa-label">
+                    <input type="checkbox" name="recusa-medicacao" id="recusa-medicacao">
+                    <span>Registar Recusa ou Impossibilidade de Administração</span>
+                </label>
+            </div>
+            <div class="form-row">
+                <div class="form-group form-group--data">
+                    <label for="data-hora">DATA/HORA *</label>
+                    <input type="datetime-local" id="data-hora" name="data-hora" required>
+                </div>
+                <div class="form-group form-group--observacoes">
+                    <label for="observacoes">OBSERVAÇÕES *</label>
+                    <input type="text" id="observacoes" name="observacoes" placeholder="Estado do utente, notas ....">
+                </div>
+            </div>
+            <div class="warning-box">
+                <span class="warning-icon">&#9888;</span>
+                <span class="warning-text">Atraso de 22 min. Tolerância: 30 min. Dentro do limite aceitável.</span>
+            </div>
+            <div class="buttons-bottom">
+                <button type="button" class="btn-cancelar" onclick="fecharPopUp()">Cancelar</button>
+                <button type="button" class="btn-registar" onclick="registarMedicacao()">Registar</button>
+            </div>
+        </div>
+    </div>
+</div>
