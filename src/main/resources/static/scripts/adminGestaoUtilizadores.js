@@ -9,17 +9,10 @@ const mes = String(hoje.getMonth() + 1).padStart(2, "0");
 const dia = String(hoje.getDate()).padStart(2, "0");
 const dataMax = `${ano}-${mes}-${dia}`;
 
-const OPCOES_ITEMS_POR_PAGINA = [5, 10, 20, 30, 50];
-let itemsPorPagina = 10;
+const ITEMS_POR_PAGINA = 10;
 let todosUtilizadores = [];
 let utilizadoresFiltrados = [];
 let paginaAtual = 0;
-
-function ordenarPorMecanografico(lista) {
-  return [...lista].sort(
-    (a, b) => Number(a.numeroMecanografico) - Number(b.numeroMecanografico),
-  );
-}
 
 async function carregarUtilizadores(filtro = "") {
   try {
@@ -34,7 +27,7 @@ async function carregarUtilizadores(filtro = "") {
     if (!resp.ok) throw new Error("Erro ao carregar utilizadores");
 
     const json = await resp.json();
-    todosUtilizadores = ordenarPorMecanografico(json.data ?? []);
+    todosUtilizadores = json.data;
     utilizadoresFiltrados = todosUtilizadores;
     paginaAtual = 0;
 
@@ -70,8 +63,8 @@ function renderizarTabela() {
   const tbody = document.querySelector(".users-table tbody");
   tbody.innerHTML = "";
 
-  const inicio = paginaAtual * itemsPorPagina;
-  const pagina = utilizadoresFiltrados.slice(inicio, inicio + itemsPorPagina);
+  const inicio = paginaAtual * ITEMS_POR_PAGINA;
+  const pagina = utilizadoresFiltrados.slice(inicio, inicio + ITEMS_POR_PAGINA);
 
   if (pagina.length === 0) {
     tbody.innerHTML = `<tr><td colspan="7" style="text-align:center">Sem resultados</td></tr>`;
@@ -110,40 +103,14 @@ function renderizarTabela() {
 function renderizarPaginacao() {
   document.querySelector(".paginacao")?.remove();
 
-  const totalPaginas = Math.max(
-    1,
-    Math.ceil(utilizadoresFiltrados.length / itemsPorPagina),
+  const totalPaginas = Math.ceil(
+    utilizadoresFiltrados.length / ITEMS_POR_PAGINA,
   );
+  if (totalPaginas <= 1) return;
 
   const div = document.createElement("div");
   div.className = "paginacao";
 
-  const seletor = document.createElement("div");
-  seletor.className = "paginacao-tamanho";
-  const label = document.createElement("label");
-  label.htmlFor = "items-por-pagina";
-  label.textContent = "Utilizadores por página:";
-  const select = document.createElement("select");
-  select.id = "items-por-pagina";
-  OPCOES_ITEMS_POR_PAGINA.forEach((n) => {
-    const opt = document.createElement("option");
-    opt.value = String(n);
-    opt.textContent = String(n);
-    if (n === itemsPorPagina) opt.selected = true;
-    select.appendChild(opt);
-  });
-  select.addEventListener("change", (e) => {
-    itemsPorPagina = parseInt(e.target.value, 10);
-    paginaAtual = 0;
-    renderizarTabela();
-    renderizarPaginacao();
-  });
-  seletor.appendChild(label);
-  seletor.appendChild(select);
-  div.appendChild(seletor);
-
-  const paginas = document.createElement("div");
-  paginas.className = "paginacao-paginas";
   for (let i = 0; i < totalPaginas; i++) {
     const btn = document.createElement("button");
     btn.textContent = i + 1;
@@ -153,9 +120,8 @@ function renderizarPaginacao() {
       renderizarTabela();
       renderizarPaginacao();
     };
-    paginas.appendChild(btn);
+    div.appendChild(btn);
   }
-  div.appendChild(paginas);
 
   document.querySelector(".table-panel").after(div);
 }

@@ -7,13 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record CreatePrescriptionDTO(
     @JsonProperty("idMedicamento") Long idMedicamento,
-    @JsonProperty("sos") boolean sos,
-    @JsonProperty("motivo") String motivo,
-    @JsonProperty("dataInicio") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataInicio,
-    @JsonProperty("dataFim") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataFim,
-    @JsonProperty("idDose") Long idDose,
-    @JsonProperty("altoRisco") boolean altoRisco,
-    @JsonProperty("frequencia") FrequenciaDTO frequencia
+    @JsonProperty("inicio") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataInicio,
+    @JsonProperty("dose") int dose,
+    @JsonProperty("duracaoDias") int duracaoDias
 ) {
 
 }

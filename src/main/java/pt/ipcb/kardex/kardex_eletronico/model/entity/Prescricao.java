@@ -25,18 +25,14 @@ public class Prescricao {
     @ManyToOne(fetch = FetchType.EAGER)
     public Medicamento medicamento;
 
-    @JoinColumn(name = "id_processo", nullable = false)
+    @JoinColumn(name = "id_processo")
     @ManyToOne(fetch = FetchType.LAZY)
     private ProcessoClinico processo;
-
-    @JoinColumn(name = "id_medico", nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Funcionario medico;
     
     @Column(name = "e_sos", nullable = false)
     public Boolean sos  = false;
     
-    @Column(name = "motivo", nullable = false)
+    @Column(name = "motivo")
     public String motivo = "";
     
     @Column(name = "esta_ativa", nullable = false)
@@ -45,19 +41,11 @@ public class Prescricao {
     @Column(name = "data_inicio", nullable = false)
     public LocalDate dataInicio;
     
-    @Column(name = "data_fim", nullable = false)
-    public LocalDate dataFim;
+    @Column(name = "dose", nullable = false)
+    public Integer dose;
     
-    @JoinColumn(name = "id_dose", nullable = true)
-    @ManyToOne(fetch = FetchType.EAGER)
-    public Dosagem dose;
-    
-    @Column(name = "alto_risco", nullable = false)
-    public boolean altoRisco = false;
-    
-    @JoinColumn(name = "id_frequencia", nullable = false)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Frequencia frequencia;
+    @Column(name = "duracao_dias", nullable = false)
+    public Integer duracaoDias;
     
     @OneToMany(mappedBy = "prescricao", cascade = CascadeType.ALL)
     public List<AdministracaoMedicacao> administracoes = new ArrayList<>();

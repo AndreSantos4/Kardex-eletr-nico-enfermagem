@@ -10,7 +10,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 
 @Mapper(componentModel = "spring")
 public interface AdministracaoMapper {
-    AdministracaoDTO toDTO(AdministracaoMedicacao administracao);
+    AdministracaoDTO toDTO(AdministracaoMedicacao prescricao);
 
     AdministracaoMedicacao toEntity(AdministracaoDTO dto);
 

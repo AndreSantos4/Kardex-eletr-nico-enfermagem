@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,10 +42,10 @@ public class ProcessoClinico {
     public Funcionario medicoResponsavel;
     
     @Column(name = "data_entrada", nullable = false)
-    public LocalDateTime dataEntrada = LocalDateTime.now();
+    public LocalDate dataEntrada = LocalDate.now();
     
     @Column(name = "data_saida")
-    public LocalDateTime dataSaida;
+    public LocalDate dataSaida;
     
     @Column(name = "alta")
     public Boolean alta = false;
@@ -53,11 +53,16 @@ public class ProcessoClinico {
     @Column(name = "notas_alta")
     public String notasAlta;
     
-    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "processo_clinico_prescricao",
+            joinColumns = @JoinColumn(name = "id_processo_clinico"),
+            inverseJoinColumns = @JoinColumn(name = "id_prescricao")
+    )
+    @ManyToMany(fetch = FetchType.LAZY)
     public Set<Prescricao> prescricoes = new HashSet<>();
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
-    public Set<SinalVital> sinaisVitais = new HashSet<>();
+    public List<SinalVital> sinaisVitais = new ArrayList<>();
     
     @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL)
     public List<Exame> exames = new ArrayList<>();
