@@ -496,4 +496,8 @@ async function carregarUtente(id) {
   }
 }
 
+function irParaHistoricoPrescricoes() {
+    window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
+}
+
 carregarUtente(id);

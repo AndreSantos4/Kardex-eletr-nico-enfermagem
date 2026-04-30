@@ -1,19 +1,25 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.stock;
 
-import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
+import java.math.BigDecimal;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ClasseFarmacologica;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FormaFarmaceutica;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ViaAdministracao;
 
 public record CreateMedicationDTO(
     @JsonProperty("nome") String nome,
     @JsonProperty("principioAtivo") String principioAtivo,
-    @JsonProperty("formaFarmaceutica") String formaFarmaceutica,
-    @JsonProperty("quantidade") Long quantidade,
-    @JsonProperty("unidadeMedida") UnidadeMedida unidade,
-    @JsonProperty("dataValidade") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataValidade
+    @JsonProperty("formaFarmaceutica") FormaFarmaceutica formaFarmaceutica,
+    @JsonProperty("classeFarmacologica") ClasseFarmacologica classeFarmacologica,
+    @JsonProperty("dosagens") CreateDosagemDTO[] dosagens,
+    @JsonProperty("dosagemMaxDiaria") CreateDosagemDTO dosagemMaxDiaria, 
+    @JsonProperty("quantidade") BigDecimal quantidade,
+    @JsonProperty("unidadeMedida") UnidadeMedida unidadeMedida,
+    @JsonProperty("viaAdministracao") ViaAdministracao viaAdministracao,
+    @JsonProperty("altoRisco") boolean altoRisco
 ) {
 
 }

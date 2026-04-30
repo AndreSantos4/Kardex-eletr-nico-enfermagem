@@ -20,6 +20,8 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/login/recuperarPassword.html?t=" + token);
     }
 
+    /* ADMIN */
+
     @GetMapping("/adminDashboard")
     public ModelAndView adminDashboard() {
         return new ModelAndView("forward:/pages/admin/adminDashboard.html");
@@ -40,6 +42,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/admin/perfilColaborador.html");
     }
 
+    @GetMapping("/adminMedicamentos")
+    public ModelAndView adminMedicamentos() {
+        return new ModelAndView("forward:/pages/admin/adminMedicamentos.html");
+    }
+
     /* ENFERMEIRO */
 
     @GetMapping("/enfermeiroKardexUtente")
@@ -57,11 +64,21 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroListaUtentes.html");
     }
 
+    @GetMapping("/enfermeiroHistoricoPrescricoes")
+    public ModelAndView enfermeiroHistoricoPrescricoes(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroHistoricoPrescricoes.html?id=" + id);
+    }
+
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")
     public ModelAndView enfermeiroChefeDashboard() {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeDashboard.html");
+    }
+
+    @GetMapping("/enfermeiroChefeListaUtentes")
+    public ModelAndView enfermeiroChefeListaUtentes() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeListaUtentes.html");
     }
 
     /* MÉDICO */
@@ -77,7 +94,17 @@ public class ResourcesForwarding {
     }
 
     @GetMapping("/medicoKardexUtente")
-    public ModelAndView medicoKardexUtente() {
-        return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html");
+    public ModelAndView medicoKardexUtente(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoKardexUtente.html?id=" + id);
+    }
+
+    @GetMapping("/medicoPrescreverMedicamento")
+    public ModelAndView medicoPrescreverMedicamento(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoPrescreverMedicamento.html?id=" + id);
+    }
+
+    @GetMapping("/medicoHistoricoPrescricoes")
+    public ModelAndView medicoHistoricoPrescricoes(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoHistoricoPrescricoes.html?id=" + id);
     }
 }

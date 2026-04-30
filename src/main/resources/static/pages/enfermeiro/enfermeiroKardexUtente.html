@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroKardexUtente.css">
     <link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
+    <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
     <title>Enfermeiro Kardex Utente</title>
 </head>
 
@@ -112,7 +113,7 @@
                         <button class="btn-action" onclick="location.href='enfermeiroListaUtentes'">LISTA</button>
                         <button class="btn-action">HIST. CLÍNICO</button>
                         <button class="btn-action" onclick="abrirPopUpEditarFichaUtente()">EDITAR</button>
-                        <button class="btn-action">HIST. PRESCRIÇÕES</button>
+                        <button class="btn-action" onclick="irParaHistoricoPrescricoes()">HIST. PRESCRIÇÕES</button>
                     </div>
                 </div>
                 <div class="utente-info-card">
@@ -223,6 +224,8 @@
     <div id="popup-container"></div>
     <script src="../../scripts/logout.js"></script>
     <script src="../../scripts/enfermeiro/enfermeiroKardexUtente.js"></script>
+    <div id="notificacoes-container"></div>
+    <script src="../../scripts/notificacao.js"></script>
 </body>
 
 </html>

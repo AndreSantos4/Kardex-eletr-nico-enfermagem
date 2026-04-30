@@ -1,0 +1,223 @@
+:root {
+    --med-popup-bg: #1f5b78;
+    --med-popup-header-bg: #154a64;
+    --med-input-bg: #ffffff;
+    --med-input-text: #6b7d86;
+    --med-label-color: #d8e8f0;
+    --med-placeholder: #aab8c2;
+    --med-close-bg: #d63b2c;
+    --med-close-bg-hover: #b8301f;
+    --med-radius: 8px;
+}
+
+.pop-up-adicionar-medicamento {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 100;
+}
+
+.pop-up-adicionar-medicamento .pop-up {
+    background: var(--med-popup-bg);
+    border-radius: var(--med-radius);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    width: 720px;
+    max-width: 95vw;
+    overflow: hidden;
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+.pop-up-adicionar-medicamento .pop-up-header {
+    background: var(--med-popup-header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+}
+
+.pop-up-adicionar-medicamento .pop-up-header h3 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.pop-up-adicionar-medicamento .pop-up-header a.cross {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--med-close-bg);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.pop-up-adicionar-medicamento .pop-up-header a.cross:hover {
+    background: var(--med-close-bg-hover);
+}
+
+.pop-up-adicionar-medicamento .pop-up-header a.cross svg {
+    width: 14px;
+    height: 14px;
+}
+
+.pop-up-adicionar-medicamento .pop-up-main {
+    padding: 20px 22px 22px;
+}
+
+.pop-up-adicionar-medicamento form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.pop-up-adicionar-medicamento label {
+    display: block;
+    color: var(--med-label-color);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+.pop-up-adicionar-medicamento input[type="text"],
+.pop-up-adicionar-medicamento select {
+    width: 100%;
+    background: var(--med-input-bg);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--med-radius);
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: var(--med-input-text);
+    outline: none;
+    appearance: none;
+    font-family: inherit;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.pop-up-adicionar-medicamento input[type="text"]::placeholder {
+    color: var(--med-placeholder);
+}
+
+.pop-up-adicionar-medicamento input[type="text"]:focus,
+.pop-up-adicionar-medicamento select:focus {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+.pop-up-adicionar-medicamento select {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='14' viewBox='0 0 10 14'><path fill='%231f5b78' d='M5 0L0 5h10L5 0zM5 14l5-5H0l5 5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+}
+
+.pop-up-adicionar-medicamento .form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.pop-up-adicionar-medicamento .form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.pop-up-adicionar-medicamento .form-group-full {
+    flex: 1 1 100%;
+}
+
+.pop-up-adicionar-medicamento .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    margin: 4px 0 0;
+    cursor: pointer;
+}
+
+.pop-up-adicionar-medicamento .checkbox-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: #ffffff;
+    cursor: pointer;
+}
+
+.pop-up-adicionar-medicamento .info-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: 1px solid #ffffff;
+    border-radius: 30px;
+    padding: 10px 16px 10px 10px;
+    margin-top: 4px;
+}
+
+.pop-up-adicionar-medicamento .info-icon {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--med-popup-bg);
+    font-family: "Times New Roman", serif;
+    font-style: italic;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pop-up-adicionar-medicamento .info-box p {
+    color: #ffffff;
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.pop-up-adicionar-medicamento .buttons {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.pop-up-adicionar-medicamento .buttons input {
+    flex: 1;
+    padding: 11px;
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid #ffffff;
+    border-radius: var(--med-radius);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+        background 0.2s,
+        color 0.2s,
+        transform 0.1s;
+}
+
+.pop-up-adicionar-medicamento .buttons input:hover {
+    background: #ffffff;
+    color: var(--med-popup-bg);
+}
+
+.pop-up-adicionar-medicamento .buttons input:active {
+    transform: scale(0.98);
+}

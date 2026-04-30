@@ -1,0 +1,35 @@
+<!-- ============================================================
+  NOTIFICAÇÃO TOAST — fragmento incluído nas páginas principais
+
+  COMO INCLUIR NUMA PÁGINA:
+    Adicionar antes do </body>:
+      <div id="notificacoes-container"></div>
+      <link rel="stylesheet" href="/styles/popups/notificacao.css" />
+      <script src="/scripts/notificacao.js"></script>
+
+  COMO USAR (chamar via JavaScript):
+    mostrarNotificacao({
+      titulo:   "Operação concluída",       // obrigatório — linha de destaque
+      mensagem: "O registo foi guardado.",  // obrigatório — detalhe
+      tipo:     "sucesso",                  // "sucesso" | "erro" | "aviso" | "info"
+      duracao:  5000                        // ms até fechar; 0 = não fecha automaticamente
+    });
+
+  EXEMPLOS PRONTOS PARA ESTE PROJETO:
+    // Utilizador criado
+    mostrarNotificacao({ titulo: "Utilizador criado", mensagem: "O colaborador foi adicionado ao sistema.", tipo: "sucesso" });
+
+    // Erro de ligação
+    mostrarNotificacao({ titulo: "Erro de ligação", mensagem: "Não foi possível contactar o servidor.", tipo: "erro" });
+
+    // Prescrição guardada
+    mostrarNotificacao({ titulo: "Prescrição guardada", mensagem: "O medicamento foi prescrito com sucesso.", tipo: "sucesso" });
+
+    // Sessão expirada
+    mostrarNotificacao({ titulo: "Sessão expirada", mensagem: "Por favor, faça login novamente.", tipo: "aviso" });
+
+    // Sinais vitais registados
+    mostrarNotificacao({ titulo: "Sinais vitais registados", mensagem: "Os dados foram guardados no kardex.", tipo: "sucesso" });
+============================================================ -->
+
+<div id="notificacoes-container"></div>
