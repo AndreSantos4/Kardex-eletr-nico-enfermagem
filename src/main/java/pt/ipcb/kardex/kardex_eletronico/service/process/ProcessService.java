@@ -3,7 +3,6 @@ package pt.ipcb.kardex.kardex_eletronico.service.process;
 import java.time.LocalDate;
 import java.util.List;
 
-import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
@@ -14,6 +13,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 public interface ProcessService {
 
