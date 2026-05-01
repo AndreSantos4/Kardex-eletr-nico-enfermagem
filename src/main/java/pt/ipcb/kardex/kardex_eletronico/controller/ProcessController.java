@@ -54,7 +54,7 @@ public class ProcessController {
         if (from != null && to != null && to.isBefore(from)) {
             return ResponseEntity.badRequest()
                 .body(ApiResponse.error("O intervalo de datas é inválido"));
-}
+        }
         var prescriptions = service.getPrescriptionHistory(processId, state, from, to);
         return ResponseEntity.ok(ApiResponse.ok("Historico de prescricoes obtidas com sucesso", prescriptions));
     }
