@@ -549,7 +549,7 @@ async function carregarUtente(id) {
   }
 }
 function irParaHistoricoPrescricoes() {
-    window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
+  window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
 }
 
 let prescricaoSelecionadaId = null;
@@ -590,7 +590,7 @@ function renderizarMedicacaoAtiva(prescricoes) {
         <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
         <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
       </div>
-      <button class="btn-panel" style="white-space:nowrap"
+      <button class="btn-panel" style="color:var(--surface)"
         onclick="abrirPopUpAdministrarMedicacao(${p.id}, '${nomeMed}', '${doseVal}', '${via}')">
         ADMINISTRAR
       </button>
