@@ -1,7 +1,9 @@
 package pt.ipcb.kardex.kardex_eletronico.service.process;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
@@ -21,7 +23,7 @@ public interface ProcessService {
 
     void administrateMedication(Long prescriptionId, CreateAdministrationDTO data);
 
-    List<PrescricaoDTO> getPrescriptionHistory(Long processId);
+    List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to);
 
     void editActiveProcess(Utente patient, UpdatePacientFileDTO data);
 
