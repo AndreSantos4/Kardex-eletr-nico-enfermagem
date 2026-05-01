@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 
 @Slf4j

@@ -11,9 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Prescricao;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 @Repository
 public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{

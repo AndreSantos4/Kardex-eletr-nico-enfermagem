@@ -5,10 +5,10 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.DosagemDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 public record PrescricaoDTO(
     @JsonProperty("id") Long id,
