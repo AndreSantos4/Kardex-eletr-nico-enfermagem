@@ -1,14 +1,17 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Prescricao;
 
@@ -33,6 +36,19 @@ public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{
        "LEFT JOIN FETCH p.dose " +
        "LEFT JOIN FETCH p.frequencia " +
        "LEFT JOIN FETCH p.medico " +
-       "WHERE p.processo.id = :processId")
-    List<Prescricao> findByProcessoId(@Param("processId") Long processId);
+       "WHERE p.processo.id = :processId " +
+       "AND (:state IS NULL OR p.estado = :state) " +
+       "AND (:from IS NULL OR p.dataInicio >= :from) " +
+       "AND (:to IS NULL OR p.dataInicio <= :to) " +
+       "ORDER BY p.dataInicio DESC")
+    List<Prescricao> findByProcessoIdFiltered(
+        @Param("processId") Long processId,
+        @Param("state") PrescriptionState state,
+        @Param("from") LocalDate from,
+        @Param("to") LocalDate to
+    );
+
+    @Modifying
+    @Query("UPDATE Prescricao p SET p.estado = :estado WHERE p.dataFim < :cutoff")
+    int updateExpiredPrescriptions(@Param("cutoff") LocalDate cutoff, @Param("estado") PrescriptionState estado);
 }
