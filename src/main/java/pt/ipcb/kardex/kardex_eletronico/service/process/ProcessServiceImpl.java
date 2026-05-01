@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.process;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
@@ -118,7 +120,7 @@ public class ProcessServiceImpl implements ProcessService{
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
         
-        prescription.setAtiva(false);
+        prescription.setEstado(PrescriptionState.SUSPENSA);
         prescricaoRepository.save(prescription);
     }
 
@@ -132,7 +134,7 @@ public class ProcessServiceImpl implements ProcessService{
             throw new InactiveResourceException("Processo Clinico");
         }
 
-        if(!prescription.getAtiva()){
+        if(!prescription.getEstado().equals(PrescriptionState.ATIVA)){
             throw new InactiveResourceException("Prescricao");
         }
 
@@ -215,10 +217,10 @@ public class ProcessServiceImpl implements ProcessService{
     }
     
     @Override
-	public List<PrescricaoDTO> getPrescriptionHistory(Long processId) {
-		var prescriptions = prescricaoRepository.findByProcessoId(processId);
-		return prescricaoMapper.toDTOList(prescriptions);
-	}
+    public List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to) {
+        var prescriptions = prescricaoRepository.findByProcessoIdFiltered(processId, state, from, to);
+        return prescricaoMapper.toDTOList(prescriptions);
+    }
 
     @Override
     @Transactional
