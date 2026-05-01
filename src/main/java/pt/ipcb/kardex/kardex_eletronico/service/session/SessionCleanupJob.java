@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.session;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,12 +18,14 @@ public class SessionCleanupJob {
 
     private static final int CLEANING_RATE_MILISECONDS = 5 * 60 * 1000;
 
+    private final Clock clock;
+
     private final SessaoRepository repository;
 
     @Scheduled(fixedRate = CLEANING_RATE_MILISECONDS)
     @Transactional
     public void cleanExpiredSessions() {
-        var cutoff = LocalDateTime.now().minusHours(8);
+        var cutoff = LocalDateTime.now(clock).minusHours(8);
         repository.deleteAllByInicioBefore(cutoff);
         log.info("Sessões expiradas removidas antes de: " + cutoff);
     }
