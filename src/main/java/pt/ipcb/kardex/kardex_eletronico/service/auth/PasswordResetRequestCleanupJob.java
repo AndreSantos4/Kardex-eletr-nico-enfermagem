@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.auth;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,12 +19,14 @@ public class PasswordResetRequestCleanupJob {
     private static final int CLEANING_RATE_MILISECONDS = 5 * 60 * 1000;
     private static final int EXPIRATION_TIME_MINUTES = 15;
 
+    private final Clock clock;
+
     private final PasswordResetRequestRepository repository;
 
     @Scheduled(fixedRate = CLEANING_RATE_MILISECONDS)
     @Transactional
     public void cleanExpiredSessions() {
-        var cutoff = LocalDateTime.now().minusMinutes(EXPIRATION_TIME_MINUTES);
+        var cutoff = LocalDateTime.now(clock).minusMinutes(EXPIRATION_TIME_MINUTES);
         repository.deleteAllByPedidoEmBefore(cutoff);
         log.info("Pedidos de redefinição de senha expiradas removidas antes de: " + cutoff);
     }
