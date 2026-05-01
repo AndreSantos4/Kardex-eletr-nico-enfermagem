@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pt.ipcb.kardex.kardex_eletronico.repository.SessaoRepository;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SessionCleanupJob {
@@ -20,8 +22,8 @@ public class SessionCleanupJob {
     @Scheduled(fixedRate = CLEANING_RATE_MILISECONDS)
     @Transactional
     public void cleanExpiredSessions() {
-        LocalDateTime cutoff = LocalDateTime.now().minusHours(8);
+        var cutoff = LocalDateTime.now().minusHours(8);
         repository.deleteAllByInicioBefore(cutoff);
-        System.out.println(">>> Sessões expiradas removidas antes de: " + cutoff);
+        log.info("Sessões expiradas removidas antes de: " + cutoff);
     }
 }
