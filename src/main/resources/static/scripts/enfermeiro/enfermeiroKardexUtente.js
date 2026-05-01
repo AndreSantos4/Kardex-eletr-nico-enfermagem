@@ -6,6 +6,8 @@ let utenteData = null;
 let processoData = null;
 let medicoData = null;
 let caseData = null;
+const TOLERANCIA_ATRASO_MIN = 30;
+let _popupAltoRisco = false;
 
 async function carregarPopUp(caminho) {
   const container = document.getElementById("popup-container");
@@ -495,7 +497,7 @@ async function carregarUtente(id) {
       dataEntrada: processo.dataEntrada,
       diagnosticoPrincipal: processo.diagnosticoPrincipal,
       sinaisVitais: processo.sinaisVitais ?? [],
-      prescricoes: processo.prescricoes ?? [], // <-- ADICIONAR
+      prescricoes: processo.prescricoes ?? [],
     };
 
     medicoData = {
@@ -619,34 +621,137 @@ async function abrirPopUpAdministrarMedicacao(
   nomeMed,
   dose,
   via,
+  altoRisco = false,
+  horariosPrevistos = [],
 ) {
   prescricaoSelecionadaId = prescricaoId ?? null;
+  _popupAltoRisco = altoRisco;
 
   await carregarPopUp(
     "../../pages/enfermeiro/popups/popupAdministrarMedicacao.html",
   );
 
-  // Preencher os "5 certos"
   document.getElementById("nome-utenet").textContent = utenteData?.nome ?? "—";
   document.getElementById("medicamento").textContent = nomeMed ?? "—";
   document.getElementById("dose").textContent = dose ?? "—";
   document.getElementById("via").textContent = via ?? "—";
 
-  // Hora atual formatada HH:MM
   const agora = new Date();
   document.getElementById("hora-de-toma").textContent =
     agora.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
 
-  // Preencher datetime-local com hora atual
   const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000)
     .toISOString()
     .slice(0, 16);
   document.getElementById("data-hora").value = local;
   document.getElementById("observacoes").value = "";
+
   const cbRecusa = document.getElementById("recusa-medicacao");
   if (cbRecusa) cbRecusa.checked = false;
 
+  const warningBox = document.getElementById("warning-box");
+  const warningText = document.getElementById("warning-text");
+  const avisos = [];
+
+  const atrasoMin = calcularAtrasoMinutos(horariosPrevistos);
+  if (atrasoMin > 0) {
+    const tolerancia = TOLERANCIA_ATRASO_MIN;
+    if (atrasoMin > tolerancia) {
+      avisos.push(
+        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Fora do limite aceitável — documente o motivo nas observações.`,
+      );
+    } else {
+      avisos.push(
+        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Dentro do limite aceitável.`,
+      );
+    }
+  }
+
+  if (avisos.length > 0) {
+    warningText.innerHTML = avisos.join("<br>");
+    warningBox.style.display = "flex";
+  } else {
+    warningBox.style.display = "none";
+  }
+
+  const secaoAltoRisco = document.getElementById("alto-risco-verificacao");
+  const cbConfirmar = document.getElementById("confirmar-alto-risco");
+  if (secaoAltoRisco) {
+    secaoAltoRisco.style.display = altoRisco ? "block" : "none";
+  }
+  if (cbConfirmar) cbConfirmar.checked = false;
+
+  atualizarBotaoRegistar();
+
   abrirPopUp(".pop-up-administrar-medicacao");
+}
+
+function renderizarMedicacaoAtiva(prescricoes) {
+  const body = document.getElementById("medicacao-body");
+  body.innerHTML = "";
+
+  const ativas = prescricoes.filter((p) => p.ativa);
+
+  if (ativas.length === 0) {
+    body.innerHTML =
+      "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
+    return;
+  }
+
+  ativas.forEach((p) => {
+    const nomeMed = p.medicamento?.nome ?? "Medicamento não especificado";
+    const doseVal = p.dose
+      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
+      : "—";
+    const via = p.medicamento?.viaAdministracao ?? "—";
+    const freq = p.frequencia
+      ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
+      : "—";
+    const fim = p.fim ?? "—";
+
+    const altoRisco =
+      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+    const horariosPrevistos = p.horariosPrevistos ?? [];
+
+    const row = document.createElement("div");
+    row.className = "med-row";
+    row.style.cssText = `
+      display:flex; justify-content:space-between; align-items:center;
+      padding: 8px 10px; border-bottom: 1px solid var(--border);
+      font-size: 13px; gap: 8px;
+    `;
+
+    const badgeAltoRisco = altoRisco
+      ? `<span style="
+          display:inline-block; margin-left:6px;
+          background:rgb(220,49,26); color:#fff;
+          font-size:10px; font-weight:700; letter-spacing:.5px;
+          padding:1px 5px; border-radius:3px; vertical-align:middle;
+        ">ALTO RISCO</span>`
+      : "";
+
+    row.innerHTML = `
+      <div style="flex:1">
+        <div style="font-weight:600;color:var(--surface)">
+          ${nomeMed}${badgeAltoRisco}
+        </div>
+        <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
+        <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
+      </div>
+      <button class="btn-administrar"
+        onclick="abrirPopUpAdministrarMedicacao(
+          ${p.id},
+          '${nomeMed}',
+          '${doseVal}',
+          '${via}',
+          ${altoRisco},
+          ${JSON.stringify(horariosPrevistos)}
+        )">
+        ADMINISTRAR
+      </button>
+    `;
+    body.appendChild(row);
+  });
 }
 
 async function registarMedicacao() {
@@ -717,6 +822,43 @@ async function registarMedicacao() {
       mensagem: errorData.error || "Erro ao registar administração.",
       tipo: "erro",
     });
+  }
+}
+
+function calcularAtrasoMinutos(horariosPrevistos) {
+  if (!horariosPrevistos?.length) return 0;
+  const agora = new Date();
+  const agoraMin = agora.getHours() * 60 + agora.getMinutes();
+
+  let maiorAtraso = 0;
+  for (const h of horariosPrevistos) {
+    const [hh, mm] = h.split(":").map(Number);
+    const prevMin = hh * 60 + mm;
+
+    if (prevMin <= agoraMin) {
+      const diff = agoraMin - prevMin;
+      if (diff > maiorAtraso) maiorAtraso = diff;
+    }
+  }
+  return maiorAtraso;
+}
+
+function atualizarBotaoRegistar() {
+  const btn = document.getElementById("btn-registar");
+  if (!btn) return;
+
+  if (_popupAltoRisco) {
+    const confirmado =
+      document.getElementById("confirmar-alto-risco")?.checked ?? false;
+    const recusa =
+      document.getElementById("recusa-medicacao")?.checked ?? false;
+    btn.disabled = !confirmado && !recusa;
+    btn.style.opacity = !confirmado && !recusa ? "0.45" : "1";
+    btn.style.cursor = !confirmado && !recusa ? "not-allowed" : "pointer";
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
   }
 }
 
