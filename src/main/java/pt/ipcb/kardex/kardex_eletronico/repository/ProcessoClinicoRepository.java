@@ -24,7 +24,8 @@ public interface ProcessoClinicoRepository extends JpaRepository<ProcessoClinico
     @Query("SELECT p FROM ProcessoClinico p " +
        "JOIN FETCH p.utente u " +
        "LEFT JOIN FETCH p.sinaisVitais " +
-       "LEFT JOIN FETCH p.prescricoes " +
+       "LEFT JOIN FETCH p.prescricoes pr " +
+       "LEFT JOIN FETCH pr.medicamento " +
        "WHERE u.id = :patientId AND p.alta = false")
     Optional<ProcessoClinico> findKardexProcess(@Param("patientId") Long patientId);
 }

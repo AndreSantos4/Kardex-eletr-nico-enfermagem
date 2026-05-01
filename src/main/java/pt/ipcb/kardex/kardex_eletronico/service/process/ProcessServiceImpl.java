@@ -299,6 +299,7 @@ public class ProcessServiceImpl implements ProcessService{
 	}
 
     @Override
+    @Transactional(readOnly = true)
     public ProcessoClinicoDTO getKardexProcess(Utente patient) {
         var process = repository.findKardexProcess(patient.getId()).orElse(null);
         return mapper.toDTO(process);
