@@ -592,7 +592,7 @@ function renderizarMedicacaoAtiva(prescricoes) {
         <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
         <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
       </div>
-      <button class="btn-panel" style="color:var(--surface)"
+      <button class="btn-administrar"
         onclick="abrirPopUpAdministrarMedicacao(${p.id}, '${nomeMed}', '${doseVal}', '${via}')">
         ADMINISTRAR
       </button>
@@ -651,13 +651,21 @@ async function abrirPopUpAdministrarMedicacao(
 
 async function registarMedicacao() {
   if (!prescricaoSelecionadaId) {
-    mostrarNotificacao("Prescrição não identificada.", "erro");
+    mostrarNotificacao({
+      titulo: "Erro",
+      mensagem: "Prescrição não identificada.",
+      tipo: "erro",
+    });
     return;
   }
 
   const dataHoraRaw = document.getElementById("data-hora").value;
   if (!dataHoraRaw) {
-    mostrarNotificacao("Preenche a data e hora.", "aviso");
+    mostrarNotificacao({
+      titulo: "Formulário incompleto",
+      mensagem: "Data e hora não especificados.",
+      tipo: "aviso",
+    });
     return;
   }
 
@@ -695,14 +703,20 @@ async function registarMedicacao() {
       throw new Error((await resp.text()) || "Erro ao registar administração");
 
     fecharPopUp(".pop-up-administrar-medicacao");
-    mostrarNotificacao(
-      recusa
+    mostrarNotificacao({
+      titulo: "Administração",
+      mensagem: recusa
         ? "Recusa registada com sucesso."
         : "Medicação administrada com sucesso.",
-      "sucesso",
-    );
+      tipo: "sucesso",
+    });
   } catch (err) {
-    mostrarNotificacao(`Erro: ${err.message}`, "erro");
+    const errorData = JSON.parse(err.message);
+    mostrarNotificacao({
+      titulo: "Erro",
+      mensagem: errorData.error || "Erro ao registar administração.",
+      tipo: "erro",
+    });
   }
 }
 
