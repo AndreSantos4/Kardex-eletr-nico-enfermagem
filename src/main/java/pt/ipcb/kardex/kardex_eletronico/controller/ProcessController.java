@@ -1,7 +1,10 @@
 package pt.ipcb.kardex.kardex_eletronico.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
@@ -41,8 +45,17 @@ public class ProcessController {
     }
 
     @GetMapping("/{processId}/prescriptions")
-    public ResponseEntity<ApiResponse<?>> getPrescriptionHistory(@PathVariable("processId") Long processId) {
-        var prescriptions = service.getPrescriptionHistory(processId);
+    public ResponseEntity<ApiResponse<?>> getPrescriptionHistory(
+        @PathVariable("processId") Long processId, 
+        @RequestParam(value = "s", required = false) PrescriptionState state,
+        @RequestParam(value = "f", required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate from,
+        @RequestParam(value = "t", required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate to) {
+
+        if (from != null && to != null && to.isBefore(from)) {
+            return ResponseEntity.badRequest()
+                .body(ApiResponse.error("O intervalo de datas é inválido"));
+}
+        var prescriptions = service.getPrescriptionHistory(processId, state, from, to);
         return ResponseEntity.ok(ApiResponse.ok("Historico de prescricoes obtidas com sucesso", prescriptions));
     }
 
