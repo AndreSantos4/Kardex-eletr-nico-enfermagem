@@ -19,28 +19,30 @@
             <div class="cinco-certos">
                 <div class="utente">
                     <p>1 - Utente</p>
-                    <p id="nome-utenet">Manuel</p>
+                    <p id="nome-utenet"></p>
                 </div>
                 <div class="medicamento">
                     <p>2 - Medicamento</p>
-                    <p id="medicamento">Risperidona</p>
+                    <p id="medicamento"></p>
                 </div>
                 <div class="dose">
                     <p>3 - Dose</p>
-                    <p id="dose">2mg</p>
+                    <p id="dose"></p>
                 </div>
                 <div class="via">
                     <p>4 - Via</p>
-                    <p id="via">Oral</p>
+                    <p id="via"></p>
                 </div>
                 <div class="hora">
                     <p>5 - Hora</p>
-                    <p id="hora-de-toma">20:00</p>
+                    <p id="hora-de-toma"></p>
                 </div>
             </div>
+
             <div class="recusa-row">
                 <label class="recusa-label">
-                    <input type="checkbox" name="recusa-medicacao" id="recusa-medicacao">
+                    <input type="checkbox" name="recusa-medicacao" id="recusa-medicacao"
+                        onchange="atualizarBotaoRegistar()">
                     <span>Registar Recusa ou Impossibilidade de Administração</span>
                 </label>
             </div>
@@ -54,14 +56,34 @@
                     <input type="text" id="observacoes" name="observacoes" placeholder="Estado do utente, notas ....">
                 </div>
             </div>
-            <div class="warning-box">
+
+            <div class="warning-box" id="warning-box" style="display:none">
                 <span class="warning-icon">&#9888;</span>
-                <span class="warning-text">Atraso de 22 min. Tolerância: 30 min. Dentro do limite aceitável.</span>
+                <span class="warning-text" id="warning-text"></span>
             </div>
+
+            <div class="alto-risco-verificacao" id="alto-risco-verificacao" style="display:none">
+                <div class="alto-risco-header">
+                    <span class="warning-icon" style="color: #DC311A;">&#9888;</span>
+                    <strong>Medicamento de Alto Risco</strong>
+                </div>
+                <p class="alto-risco-descricao">
+                    Este medicamento requer dupla verificação antes da administração.
+                    Confirme que verificou o medicamento, a dose e o utente com um segundo profissional ou segundo
+                    protocolo.
+                </p>
+                <label class="alto-risco-confirm-label">
+                    <input type="checkbox" id="confirmar-alto-risco" onchange="atualizarBotaoRegistar()">
+                    <span style="color: black;">Confirmo que estou ciente do risco e verifiquei todos os parâmetros de
+                        segurança</span>
+                </label>
+            </div>
+
             <div class="buttons-bottom">
                 <button type="button" class="btn-cancelar"
                     onclick="fecharPopUp('.pop-up-administrar-medicacao')">Cancelar</button>
-                <button type="button" class="btn-registar" onclick="registarMedicacao()">Registar</button>
+                <button type="button" class="btn-registar" id="btn-registar"
+                    onclick="registarMedicacao()">Registar</button>
             </div>
         </div>
     </div>
