@@ -87,6 +87,14 @@ public class SecurityConfiguration {
                         .hasAnyRole("ENFERMEIRO", "ENFERMEIRO_CHEFE")
                         .requestMatchers(HttpMethod.GET, "/api/sessions")
                         .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/processes/processId/prescriptions")
+                        .hasAnyRole("MEDICO", "ENFERMEIRO_CHEFE", "ENFERMEIRO")
+                        .requestMatchers(HttpMethod.POST, "/api/processes/prescription/prescriptionId/administrations")
+                        .hasAnyRole("ENFERMEIRO_CHEFE", "ENFERMEIRO")
+                        .requestMatchers(HttpMethod.POST, "/api/processes/processId/prescriptions")
+                        .hasRole("MEDICO")
+                        .requestMatchers("/api/stock/medications")
+                        .hasRole("ADMIN")
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/sessions/{sessionId}")
