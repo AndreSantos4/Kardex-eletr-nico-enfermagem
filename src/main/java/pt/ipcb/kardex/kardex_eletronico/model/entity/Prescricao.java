@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ public class Prescricao {
     @Column(name = "motivo", nullable = false)
     public String motivo = "";
     
-    @Column(name = "esta_ativa", nullable = false)
-    public Boolean ativa = true;
+    @Column(name = "estado", nullable = false)
+    public PrescriptionState estado = PrescriptionState.ATIVA;
     
     @Column(name = "data_inicio", nullable = false)
     public LocalDate dataInicio;

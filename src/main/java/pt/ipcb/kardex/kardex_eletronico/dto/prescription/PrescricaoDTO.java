@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.DosagemDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 public record PrescricaoDTO(
     @JsonProperty("id") Long id,
@@ -15,7 +16,7 @@ public record PrescricaoDTO(
     @JsonProperty("medico") FuncionarioDTO medico,
     @JsonProperty("sos") Boolean sos,
     @JsonProperty("motivo") String motivo,
-    @JsonProperty("ativa") Boolean ativa,
+    @JsonProperty("estado") PrescriptionState estado,
     @JsonProperty("inicio") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataInicio,
     @JsonProperty("fim") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataFim,
     @JsonProperty("dose") DosagemDTO dose,
