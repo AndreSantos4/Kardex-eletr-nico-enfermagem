@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pt.ipcb.kardex.kardex_eletronico.controller.filter.PrescriptionState;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
