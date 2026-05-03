@@ -560,7 +560,11 @@ function renderizarMedicacaoAtiva(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
 
-  const ativas = prescricoes.filter((p) => p.ativa);
+  console.log(prescricoes);
+
+  const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
+
+  console.log(ativas);
 
   if (ativas.length === 0) {
     body.innerHTML =
@@ -579,6 +583,10 @@ function renderizarMedicacaoAtiva(prescricoes) {
       : "—";
     const fim = p.fim ?? "—";
 
+    const altoRisco =
+      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+    const horariosPrevistos = p.horariosPrevistos ?? [];
+
     const row = document.createElement("div");
     row.className = "med-row";
     row.style.cssText = `
@@ -586,14 +594,33 @@ function renderizarMedicacaoAtiva(prescricoes) {
       padding: 8px 10px; border-bottom: 1px solid var(--border);
       font-size: 13px; gap: 8px;
     `;
+
+    const badgeAltoRisco = altoRisco
+      ? `<span style="
+          display:inline-block; margin-left:6px;
+          background:rgb(220,49,26); color:#fff;
+          font-size:10px; font-weight:700; letter-spacing:.5px;
+          padding:1px 5px; border-radius:3px; vertical-align:middle;
+        ">ALTO RISCO</span>`
+      : "";
+
     row.innerHTML = `
       <div style="flex:1">
-        <div style="font-weight:600;color:var(--surface)">${nomeMed}</div>
+        <div style="font-weight:600;color:var(--surface)">
+          ${nomeMed}${badgeAltoRisco}
+        </div>
         <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
         <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
       </div>
       <button class="btn-administrar"
-        onclick="abrirPopUpAdministrarMedicacao(${p.id}, '${nomeMed}', '${doseVal}', '${via}')">
+        onclick="abrirPopUpAdministrarMedicacao(
+          ${p.id},
+          '${nomeMed}',
+          '${doseVal}',
+          '${via}',
+          ${altoRisco},
+          ${JSON.stringify(horariosPrevistos)}
+        )">
         ADMINISTRAR
       </button>
     `;
@@ -682,74 +709,6 @@ async function abrirPopUpAdministrarMedicacao(
   atualizarBotaoRegistar();
 
   abrirPopUp(".pop-up-administrar-medicacao");
-}
-
-function renderizarMedicacaoAtiva(prescricoes) {
-  const body = document.getElementById("medicacao-body");
-  body.innerHTML = "";
-
-  const ativas = prescricoes.filter((p) => p.ativa);
-
-  if (ativas.length === 0) {
-    body.innerHTML =
-      "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
-    return;
-  }
-
-  ativas.forEach((p) => {
-    const nomeMed = p.medicamento?.nome ?? "Medicamento não especificado";
-    const doseVal = p.dose
-      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
-      : "—";
-    const via = p.medicamento?.viaAdministracao ?? "—";
-    const freq = p.frequencia
-      ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
-      : "—";
-    const fim = p.fim ?? "—";
-
-    const altoRisco =
-      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
-    const horariosPrevistos = p.horariosPrevistos ?? [];
-
-    const row = document.createElement("div");
-    row.className = "med-row";
-    row.style.cssText = `
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 8px 10px; border-bottom: 1px solid var(--border);
-      font-size: 13px; gap: 8px;
-    `;
-
-    const badgeAltoRisco = altoRisco
-      ? `<span style="
-          display:inline-block; margin-left:6px;
-          background:rgb(220,49,26); color:#fff;
-          font-size:10px; font-weight:700; letter-spacing:.5px;
-          padding:1px 5px; border-radius:3px; vertical-align:middle;
-        ">ALTO RISCO</span>`
-      : "";
-
-    row.innerHTML = `
-      <div style="flex:1">
-        <div style="font-weight:600;color:var(--surface)">
-          ${nomeMed}${badgeAltoRisco}
-        </div>
-        <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
-        <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
-      </div>
-      <button class="btn-administrar"
-        onclick="abrirPopUpAdministrarMedicacao(
-          ${p.id},
-          '${nomeMed}',
-          '${doseVal}',
-          '${via}',
-          ${altoRisco},
-          ${JSON.stringify(horariosPrevistos)}
-        )">
-        ADMINISTRAR
-      </button>
-    `;
-    body.appendChild(row);
-  });
 }
 
 async function registarMedicacao() {
