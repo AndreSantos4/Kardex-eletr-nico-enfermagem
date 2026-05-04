@@ -92,7 +92,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/processes/prescription/prescriptionId/administrations")
                         .hasAnyRole("ENFERMEIRO_CHEFE", "ENFERMEIRO")
                         .requestMatchers(HttpMethod.POST, "/api/processes/processId/prescriptions")
-                        .hasAnyRole("MEDICO", "ENFERMEIRO")
+                        .hasAnyRole("MEDICO")
                         .requestMatchers(HttpMethod.GET, "/api/stock/medications")
                         .hasAnyRole("ADMIN", "MEDICO")
                         .requestMatchers("/api/stock/medications")
