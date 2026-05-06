@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import jakarta.transaction.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Prescricao;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
@@ -49,6 +50,19 @@ public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{
     );
 
     @Modifying
+    @Transactional
     @Query("UPDATE Prescricao p SET p.estado = :estado WHERE p.dataFim < :cutoff")
-    int updateExpiredPrescriptions(@Param("cutoff") LocalDate cutoff, @Param("estado") PrescriptionState estado);
+    int updateExpiredPrescriptions(
+        @Param("cutoff") LocalDate cutoff, 
+        @Param("estado") PrescriptionState estado
+    );
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("UPDATE Prescricao p SET p.estado = :novoEstado WHERE p.estado = :estadoAtual AND p.dataRetorno <= :cutoff")
+    int updateSuspendedPrescriptions(
+        @Param("cutoff") LocalDate cutoff,
+        @Param("estadoAtual") PrescriptionState estadoAtual,
+        @Param("novoEstado") PrescriptionState novoEstado
+    );
 }
