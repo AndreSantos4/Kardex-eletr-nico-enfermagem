@@ -13,6 +13,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
@@ -116,11 +117,20 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
     @Transactional
-    public void suspendPrescription(Long prescriptionId) {
+    public void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
         
-        prescription.setEstado(PrescriptionState.SUSPENSA);
+        if(data.definitiva()){
+            prescription.setEstado(PrescriptionState.SUSPENSA_DEFINITIVA);
+        } else {
+            prescription.setEstado(PrescriptionState.SUSPENSA_TEMPORARIA);
+            if(data.dataRetorno() == null){
+                throw new KardexException("Para suspensoes temporarias, e necessario especificar a data de retorno");
+            }
+            prescription.setDataRetorno(data.dataRetorno());
+        }
+        
         prescricaoRepository.save(prescription);
     }
 
