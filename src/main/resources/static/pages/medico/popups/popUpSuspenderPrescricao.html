@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="../../../styles/medico/popups/popupSuspenderPrescricao.css">
+
+<!-- Popup Suspender Prescrição -->
+<div class="popup-overlay" id="popup-suspender">
+	<div class="popup-box-suspender">
+		<div class="popup-header-suspender">
+			<span>Suspender Prescrição</span>
+			<button class="popup-close-suspender" onclick="fecharPopupSuspender()">&#10005;</button>
+		</div>
+		<div class="popup-content-suspender">
+			<div class="popup-prescricao-card" id="popup-prescricao-card">
+				<div class="prescricao-nome">
+					<span class="prescricao-medicamento">Risperidona 2mg</span> - Oral - 2x/dia - Dr. Ana Rodrigues
+				</div>
+				<div class="prescricao-detalhe">Prescrita 05/03/2026 - Ativa há 2 dias</div>
+			</div>
+			<form id="form-suspender" onsubmit="submeterSuspensao(event)">
+				<div class="popup-row-2cols">
+					<div class="popup-field-suspender">
+						<label class="popup-label">TIPO DE SUSPENSÃO *</label>
+						<select id="tipo-suspensao" class="popup-select" onchange="toggleDataRetoma(this.value)">
+							<option value="TEMPORARIA">Temporária (definir data retoma)</option>
+							<option value="DEFINITIVA">Definitiva</option>
+						</select>
+					</div>
+					<div class="popup-field-suspender" id="campo-data-retoma">
+						<label class="popup-label">DATA RETOMA (SE TEMPORÁRIA) *</label>
+						<input type="date" id="data-retoma" class="popup-input" />
+					</div>
+				</div>
+				<div class="popup-field-suspender">
+					<label class="popup-label">MOTIVO CLÍNICO *</label>
+					<select id="motivo-clinico" class="popup-select">
+						<option value="RECUSA_SISTEMATICA">Recusa sistemática do utente</option>
+						<option value="EFEITOS_ADVERSOS">Efeitos adversos</option>
+						<option value="INTERACAO_MEDICAMENTOSA">Interação medicamentosa</option>
+						<option value="REMISSAO_CLINICA">Remissão clínica</option>
+						<option value="OUTRO">Outro</option>
+					</select>
+				</div>
+				<div class="popup-field-suspender">
+					<label class="popup-label">OBSERVAÇÕES *</label>
+					<textarea id="observacoes-suspensao" class="popup-textarea" placeholder="Justificação clínica detalhada..." rows="4"></textarea>
+				</div>
+				<div class="popup-info-note">
+					<div class="info-icon">i</div>
+					<span>Suspensão registada como imutável. Enfermeiro notificado. Stock reservado libertado.</span>
+				</div>
+				<div class="popup-actions-suspender">
+					<button type="button" class="btn-cancelar-suspender" onclick="fecharPopupSuspender()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-suspender">Suspender prescrição</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
