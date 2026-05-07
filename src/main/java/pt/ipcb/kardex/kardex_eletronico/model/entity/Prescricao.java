@@ -43,9 +43,10 @@ public class Prescricao {
     @Column(name = "estado", nullable = false)
     public PrescriptionState estado = PrescriptionState.ATIVA;
 
-    @Column(name = "data_retorno")
-    public LocalDate dataRetorno;
-    
+    @JoinColumn(name = "id_suspensao")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    public SuspensaoClinica suspensao;
+
     @Column(name = "data_inicio", nullable = false)
     public LocalDate dataInicio;
     
