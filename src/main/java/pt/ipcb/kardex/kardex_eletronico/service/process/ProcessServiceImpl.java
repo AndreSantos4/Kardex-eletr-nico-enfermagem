@@ -26,6 +26,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.SuspensaoClinica;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
@@ -120,6 +121,8 @@ public class ProcessServiceImpl implements ProcessService{
     public void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
+
+        var suspensao = new SuspensaoClinica(null, data.dataRetorno(), data.motivo(), data.observacoes());
         
         if(data.definitiva()){
             prescription.setEstado(PrescriptionState.SUSPENSA_DEFINITIVA);
@@ -128,9 +131,9 @@ public class ProcessServiceImpl implements ProcessService{
             if(data.dataRetorno() == null){
                 throw new KardexException("Para suspensoes temporarias, e necessario especificar a data de retorno");
             }
-            prescription.setDataRetorno(data.dataRetorno());
         }
         
+        prescription.setSuspensao(suspensao);
         prescricaoRepository.save(prescription);
     }
 
