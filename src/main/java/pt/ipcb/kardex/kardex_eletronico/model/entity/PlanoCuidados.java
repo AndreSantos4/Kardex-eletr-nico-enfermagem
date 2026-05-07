@@ -21,7 +21,7 @@ public class PlanoCuidados {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
-    @JoinColumn(name = "id_processo_clinico")
+    @JoinColumn(name = "id_processo_clinico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public ProcessoClinico processoClinico;
 
