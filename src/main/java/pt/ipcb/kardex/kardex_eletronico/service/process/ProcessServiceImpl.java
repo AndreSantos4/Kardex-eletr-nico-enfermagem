@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
@@ -24,12 +25,14 @@ import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.PlanoCuidados;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.PlanoCuidadosMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
@@ -56,6 +59,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final CamaRepository camaRepository;
     private final RecordService recordService;
     private final StockService stockService;
+    private final PlanoCuidadosMapper planoCuidadosMapper;
 
     @Override
     @Transactional
@@ -306,4 +310,23 @@ public class ProcessServiceImpl implements ProcessService{
         var process = repository.findKardexProcess(patient.getId()).orElse(null);
         return mapper.toDTO(process);
     }
+
+	@Override
+	@Transactional
+	public void createCarePlan(Long processId, CreateCarePlanDTO data) {
+		var process = getValidProcess(processId);
+		if(!process.getPlanoCuidados().isEmpty()){
+		    throw new ConflictEntitiesException("O processo ja possui um plano de cuidados ativo");
+		}
+
+		var worker = workerService.getAutenticatedWorker();
+
+		var plan = planoCuidadosMapper.toEntity(data);
+        plan.getDiagnosticos().forEach(d -> d.setPlanoCuidados(plan));
+		plan.setProcessoClinico(process);
+		plan.setAutor(worker);
+
+		process.getPlanoCuidados().add(plan);
+		repository.save(process);
+	}
 }
