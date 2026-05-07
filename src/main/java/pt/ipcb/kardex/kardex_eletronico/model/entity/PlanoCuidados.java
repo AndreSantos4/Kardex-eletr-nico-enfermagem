@@ -21,22 +21,25 @@ public class PlanoCuidados {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     
-    @JoinColumn(name = "id_processo_clinico", nullable = false)
+    @JoinColumn(name = "id_processo_clinico")
     @ManyToOne(fetch = FetchType.LAZY)
     public ProcessoClinico processoClinico;
+
+    @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
+    public List<DiagnosticoEnfermagem> diagnosticos = new ArrayList<>();
     
     @Column(name = "versao", nullable = false)
-    public Integer versao;
+    public Integer versao = 1;
     
     @Column(name = "data_criacao", nullable = false)
-    public LocalDate dataCriacao;
+    public LocalDate dataCriacao = LocalDate.now();
     
     @JoinColumn(name = "id_autor", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario autor;
     
     @Column(name = "esta_ativo", nullable = false)
-    public Boolean ativo;
+    public Boolean ativo = true;
     
     @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
     public List<Atividade> atividades = new ArrayList<>();
