@@ -11,6 +11,180 @@ let processId = null;
 
 let debounceTimer = null;
 
+// ─── POPUP SUSPENDER ────────────────────────────────────────────────────────
+
+let prescricaoSelecionadaParaSuspender = null;
+
+function injetarPopupSuspender() {
+  const container = document.getElementById("popup-container");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="popup-overlay" id="popup-suspender" style="display: none;">
+      <div class="popup-box-suspender">
+        <div class="popup-header-suspender">
+          <span>Suspender Prescrição</span>
+          <button class="popup-close-suspender" onclick="fecharPopupSuspender()">&#10005;</button>
+        </div>
+        <div class="popup-content-suspender">
+          <div class="popup-prescricao-card" id="popup-prescricao-card">
+            <div class="prescricao-nome">
+              <span class="prescricao-medicamento">—</span>
+            </div>
+            <div class="prescricao-detalhe">—</div>
+          </div>
+          <form id="form-suspender" onsubmit="submeterSuspensao(event)">
+            <div class="popup-row-2cols">
+              <div class="popup-field-suspender">
+                <label class="popup-label">TIPO DE SUSPENSÃO *</label>
+                <select id="tipo-suspensao" class="popup-select" onchange="toggleDataRetoma(this.value)">
+                  <option value="TEMPORARIA">Temporária (definir data retoma)</option>
+                  <option value="DEFINITIVA">Definitiva</option>
+                </select>
+              </div>
+              <div class="popup-field-suspender" id="campo-data-retoma">
+                <label class="popup-label">DATA RETOMA (SE TEMPORÁRIA) *</label>
+                <input type="date" id="data-retoma" class="popup-input" />
+              </div>
+            </div>
+            <div class="popup-field-suspender">
+              <label class="popup-label">MOTIVO CLÍNICO *</label>
+              <select id="motivo-clinico" class="popup-select">
+                <option value="RECUSA_SISTEMATICA_UTENTE">Recusa sistemática do utente</option>
+                <option value="REACAO_ADVERSO">Reação adversa</option>
+                <option value="INTERACAO_MEDICAMENTO">Interação medicamentosa</option>
+                <option value="FALTA_EFICACIA">Falta de eficácia</option>
+                <option value="REMISSAO_CLINICA">Remissão clínica</option>
+                <option value="SUBSTITUICAO">Substituição</option>
+                <option value="ERRO">Erro</option>
+                <option value="OUTRO">Outro</option>
+              </select>
+            </div>
+            <div class="popup-field-suspender">
+              <label class="popup-label">OBSERVAÇÕES *</label>
+              <textarea id="observacoes-suspensao" class="popup-textarea" placeholder="Justificação clínica detalhada..." rows="4"></textarea>
+            </div>
+            <div class="popup-info-note">
+              <div class="info-icon">i</div>
+              <span>Suspensão registada como imutável. Enfermeiro notificado. Stock reservado libertado.</span>
+            </div>
+            <div class="popup-actions-suspender">
+              <button type="button" class="btn-cancelar-suspender" onclick="fecharPopupSuspender()">CANCELAR</button>
+              <button type="submit" class="btn-confirmar-suspender">Suspender prescrição</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function abrirPopupSuspender(prescricao) {
+  prescricaoSelecionadaParaSuspender = prescricao;
+
+  const doseValor = obterValorDose(prescricao.dose);
+  const unidade = obterUnidadeMedida(prescricao.dose, prescricao.medicamento);
+  const via = prescricao.medicamento?.viaAdministracao ?? "—";
+  const freq = prescricao.frequencia
+    ? `${prescricao.frequencia.frequencia}x/${prescricao.frequencia.periodo?.toLowerCase() ?? ""}`
+    : "—";
+  const medico = prescricao.medico ? `Dr(a). ${prescricao.medico.nome}` : null;
+
+  const partes = [via, freq, medico].filter(Boolean).join(" - ");
+
+  document.getElementById("popup-prescricao-card").innerHTML = `
+    <div class="prescricao-nome">
+      <span class="prescricao-medicamento">${prescricao.medicamento?.nome ?? "—"} ${doseValor}${unidade}</span>
+      ${partes ? ` - ${partes}` : ""}
+    </div>
+    <div class="prescricao-detalhe">Prescrita ${formatarData(prescricao.inicio)} · ${prescricao.motivo ?? "—"}</div>
+  `;
+
+  // Reset form
+  document.getElementById("tipo-suspensao").value = "TEMPORARIA";
+  document.getElementById("data-retoma").value = "";
+  document.getElementById("motivo-clinico").value = "RECUSA_SISTEMATICA_UTENTE";
+  document.getElementById("observacoes-suspensao").value = "";
+  document.getElementById("campo-data-retoma").style.display = "";
+
+  document.getElementById("popup-suspender").style.display = "flex";
+}
+
+function fecharPopupSuspender() {
+  document.getElementById("popup-suspender").style.display = "none";
+  prescricaoSelecionadaParaSuspender = null;
+}
+
+function toggleDataRetoma(valor) {
+  const campo = document.getElementById("campo-data-retoma");
+  campo.style.display = valor === "DEFINITIVA" ? "none" : "";
+}
+
+async function submeterSuspensao(event) {
+  event.preventDefault();
+
+  if (!prescricaoSelecionadaParaSuspender) return;
+
+  const tipo = document.getElementById("tipo-suspensao").value;
+  const definitiva = tipo === "DEFINITIVA";
+  const dataRetoma = document.getElementById("data-retoma").value;
+
+  if (!definitiva && !dataRetoma) {
+    mostrarNotificacao({ titulo: "Campo obrigatório", mensagem: "Por favor, indique a data de retoma.", tipo: "aviso" });
+    return;
+  }
+
+  // Converter data de yyyy-mm-dd para dd/mm/yyyy
+  let dataRetornoFormatada = null;
+  if (!definitiva && dataRetoma) {
+    const [ano, mes, dia] = dataRetoma.split("-");
+    dataRetornoFormatada = `${dia}/${mes}/${ano}`;
+  }
+
+  const motivo = document.getElementById("motivo-clinico").value;
+  const observacoes = document.getElementById("observacoes-suspensao").value.trim();
+
+  const body = {
+    definitiva,
+    dataRetorno: dataRetornoFormatada,
+    motivo,
+    observacoes,
+  };
+
+  const btnConfirmar = document.querySelector(".btn-confirmar-suspender");
+  if (btnConfirmar) btnConfirmar.disabled = true;
+
+  try {
+    const resp = await fetch(
+      `/api/processes/prescriptions/${prescricaoSelecionadaParaSuspender.id}/suspend`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+    fecharPopupSuspender();
+    mostrarNotificacao({ titulo: "Prescrição suspensa", mensagem: "A prescrição foi suspensa com sucesso.", tipo: "sucesso" });
+    await recarregarPrescricoes();
+  } catch (err) {
+    console.error("[Suspender] Erro:", err);
+    mostrarNotificacao({ titulo: "Erro ao suspender", mensagem: "Não foi possível suspender a prescrição. Tente novamente.", tipo: "erro" });
+  } finally {
+    if (btnConfirmar) btnConfirmar.disabled = false;
+  }
+}
+
+async function suspenderPrescricao(prescricaoId) {
+  const prescricao = todasPrescricoes.find((p) => p.id == prescricaoId);
+  if (!prescricao) return;
+  abrirPopupSuspender(prescricao);
+}
+
+// ─── UTILITÁRIOS ────────────────────────────────────────────────────────────
+
 const UNIDADES_MAP = {
   MILIGRAMAS: "mg",
   GRAMAS: "g",
@@ -108,6 +282,8 @@ function obterUnidadeMedida(dose, medicamento) {
   );
 }
 
+// ─── RENDERIZAÇÃO ────────────────────────────────────────────────────────────
+
 function renderizarTabela() {
   const tbody = document.getElementById("historico-tbody");
   tbody.innerHTML = "";
@@ -121,11 +297,10 @@ function renderizarTabela() {
   }
 
   pagina.forEach((p) => {
-    console.log("Renderizando prescrição:", p);
     const ativa = p.estado === "ATIVA";
     const estadoBadge = ativa
       ? `<span class="badge badge-ativa">Ativa</span>`
-      : p.estado === "SUSPENSA"
+      : p.estado === "SUSPENSA" || p.estado === "SUSPENSA_TEMPORARIA" || p.estado === "SUSPENSA_DEFINITIVA"
         ? `<span class="badge badge-inativa">Suspensa</span>`
         : `<span class="badge badge-inativa">Terminada</span>`;
 
@@ -149,17 +324,17 @@ function renderizarTabela() {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-            <td><strong>${p.medicamento?.nome ?? "—"}</strong></td>
-            <td>${doseValor} ${unidade}</td>
-            <td>${via}</td>
-            <td>${dataInicio}</td>
-            <td>${dataFim}</td>
-            <td>${duracaoDias !== null ? duracaoDias + " dias" : "—"}</td>
-            <td>${p.motivo || "—"}</td>
-            <td>${sosBadge}</td>
-            <td>${estadoBadge}</td>
-            <td>${acaoCell}</td>
-        `;
+      <td><strong>${p.medicamento?.nome ?? "—"}</strong></td>
+      <td>${doseValor} ${unidade}</td>
+      <td>${via}</td>
+      <td>${dataInicio}</td>
+      <td>${dataFim}</td>
+      <td>${duracaoDias !== null ? duracaoDias + " dias" : "—"}</td>
+      <td>${p.motivo || "—"}</td>
+      <td>${sosBadge}</td>
+      <td>${estadoBadge}</td>
+      <td>${acaoCell}</td>
+    `;
     tbody.appendChild(tr);
   });
 
@@ -242,9 +417,7 @@ async function recarregarPrescricoes() {
   await carregarPrescricoes(processId, estado === "todos" ? null : estado);
 }
 
-async function suspenderPrescricao(prescricaoId) {
-  // TODO: Implementar chamada à API para suspender prescrição
-}
+// ─── DADOS ───────────────────────────────────────────────────────────────────
 
 async function carregarPaciente() {
   try {
@@ -331,6 +504,8 @@ async function carregarPrescricoes(procId, estadoFiltro = null) {
   }
 }
 
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("nome-medico").textContent =
     sessionStorage.getItem("nomeUtilizador") ?? "—";
@@ -339,6 +514,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (turnoEl) {
     turnoEl.textContent = sessionStorage.getItem("turno") ?? "—";
   }
+
+  // Injetar popup no container
+  injetarPopupSuspender();
 
   if (!patientId) {
     document.getElementById("historico-tbody").innerHTML =

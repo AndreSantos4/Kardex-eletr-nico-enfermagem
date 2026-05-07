@@ -20,6 +20,7 @@ import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
@@ -60,8 +61,8 @@ public class ProcessController {
     }
 
     @PatchMapping("/prescriptions/{prescriptionId}/suspend")
-    public ResponseEntity<ApiResponse<?>> suspendPrescription(@PathVariable("prescriptionId") Long prescriptionId){
-        service.suspendPrescription(prescriptionId);
+    public ResponseEntity<ApiResponse<?>> suspendPrescription(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody SuspendPrescriptionDTO data){
+        service.suspendPrescription(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Prescricao suspendida com sucesso"));
     }
 
