@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
@@ -25,7 +26,6 @@ import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.PlanoCuidados;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
@@ -37,6 +37,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.PlanoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
@@ -60,6 +61,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final RecordService recordService;
     private final StockService stockService;
     private final PlanoCuidadosMapper planoCuidadosMapper;
+    private final PlanoRepository planoRepository;
 
     @Override
     @Transactional
@@ -329,4 +331,12 @@ public class ProcessServiceImpl implements ProcessService{
 		process.getPlanoCuidados().add(plan);
 		repository.save(process);
 	}
+
+    @Override
+    public PlanoCuidadosDTO getCarePlan(Long processId) {
+        var process = getValidProcess(processId);
+        var plan = planoRepository.findTopByProcessoClinicoOrderByVersaoDesc(process);
+
+        return planoCuidadosMapper.toDto(plan);
+    }
 }

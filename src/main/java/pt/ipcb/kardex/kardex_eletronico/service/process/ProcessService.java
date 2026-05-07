@@ -6,6 +6,7 @@ import java.util.List;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
@@ -41,4 +42,6 @@ public interface ProcessService {
     public void suspendPrescription(Long prescriptionId);
 
     public void createCarePlan(Long processId, CreateCarePlanDTO data);
+
+    public PlanoCuidadosDTO getCarePlan(Long processId);
 }
