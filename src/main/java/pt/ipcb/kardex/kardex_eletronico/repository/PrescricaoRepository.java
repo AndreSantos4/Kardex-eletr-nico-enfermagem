@@ -59,7 +59,7 @@ public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query("UPDATE Prescricao p SET p.estado = :novoEstado WHERE p.estado = :estadoAtual AND p.dataRetorno <= :cutoff")
+    @Query("UPDATE Prescricao p SET p.estado = :novoEstado, p.suspensao = null WHERE p.estado = :estadoAtual AND p.suspensao.dataRetorno <= :cutoff")
     int updateSuspendedPrescriptions(
         @Param("cutoff") LocalDate cutoff,
         @Param("estadoAtual") PrescriptionState estadoAtual,
