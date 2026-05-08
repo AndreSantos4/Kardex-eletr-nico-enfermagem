@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,21 +24,24 @@ public class Turno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(name = "nome", nullable = false)
-    public String nome;
+    @Column(name = "tipo", nullable = false)
+    public TipoTurno tipo;
     
     @Column(name = "inicio", nullable = false)
     public LocalDateTime inicio;
 
     @Column(name = "fim", nullable = false)
     public LocalDateTime fim;
-    
-    @ManyToMany(mappedBy = "turnos")
-    public Set<Funcionario> funcionariosAlocados = new HashSet<>();
 
-    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL)
+    @Column(name = "observacoes", nullable = false)
+    public String observacoes;
+    
+    @ManyToMany(mappedBy = "turnos", fetch = FetchType.LAZY)
+    public Set<Funcionario> enfermeiros = new HashSet<>();
+
+    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<AdministracaoMedicacao> administracoes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<IncidenteClinico> incidentes = new ArrayList<>();
 }
