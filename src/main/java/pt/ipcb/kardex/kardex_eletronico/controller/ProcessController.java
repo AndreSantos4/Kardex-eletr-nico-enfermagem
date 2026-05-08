@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.ContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateCateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
@@ -77,10 +83,45 @@ public class ProcessController {
         return ResponseEntity.ok(ApiResponse.ok("Sinais vitais registados com sucesso"));
     }
 
+    @PostMapping("/{processId}/cateteres")
+    public ResponseEntity<ApiResponse<?>> registerCateter(@PathVariable("processId") Long processId, @RequestBody CreateCateterDTO data){
+        service.registerCateter(processId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Cateter registado com sucesso", null));
+    }
+
+    @GetMapping("/{processId}/cateteres")
+    public ResponseEntity<ApiResponse<List<CateterDTO>>> getAllCateteres(@PathVariable("processId") Long processId){
+        var cateteres = service.getAllCateteres(processId);
+        return ResponseEntity.ok(ApiResponse.ok("Cateteres obtidos com sucesso", cateteres));
+    }
+
     @PatchMapping("/{processId}/discharge")
     public ResponseEntity<ApiResponse<?>> dischargePatient(@PathVariable("processId") Long processId, @RequestBody DischargePatientDTO data){
         service.dischargePatient(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Alta clinica registada", null));
     }
 
+    @PostMapping("/{processId}/incidents")
+    public ResponseEntity<ApiResponse<?>> registerIncident(@PathVariable("processId") Long processId, @RequestBody CreateIncidenteDTO data){
+        service.registerIncident(processId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Incidente registado com sucesso", null));
+    }
+
+    @GetMapping("/{processId}/incidents")
+    public ResponseEntity<ApiResponse<List<IncidenteDTO>>> getAllIncidents(@PathVariable("processId") Long processId){
+        var cateteres = service.getAllIncidents(processId);
+        return ResponseEntity.ok(ApiResponse.ok("Incidentes obtidos com sucesso", cateteres));
+    }
+
+    @PostMapping("/{processId}/containments")
+    public ResponseEntity<ApiResponse<?>> registerContainments(@PathVariable("processId") Long processId, @RequestBody CreateContencaoDTO data){
+        service.registerContainment(processId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Contencao registado com sucesso", null));
+    }
+
+    @GetMapping("/{processId}/containments")
+    public ResponseEntity<ApiResponse<List<ContencaoDTO>>> getAllContainments(@PathVariable("processId") Long processId){
+        var cateteres = service.getAllCointainments(processId);
+        return ResponseEntity.ok(ApiResponse.ok("Contencoes obtidos com sucesso", cateteres));
+    }
 }
