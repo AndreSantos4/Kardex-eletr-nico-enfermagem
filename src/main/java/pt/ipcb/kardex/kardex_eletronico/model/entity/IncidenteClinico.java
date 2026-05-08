@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.GravidadeIncidente;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoCateter;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,10 @@ public class IncidenteClinico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @JoinColumn(name = "id_processo", nullable = false)
+    @ManyToOne
+    public ProcessoClinico processoClinico;
+
     @JoinColumn(name = "id_funcionario", nullable = false)
     @ManyToOne
     public Funcionario funcionario;
@@ -27,6 +32,10 @@ public class IncidenteClinico {
     @JoinColumn(name = "id_turno", nullable = false)
     @ManyToOne
     public Turno turno;
+
+    @Column(name = "tipo", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public TipoCateter tipo;
     
     @Column(name = "descricao", nullable = false)
     public String descricao;
@@ -34,9 +43,6 @@ public class IncidenteClinico {
     @Column(name = "gravidade_incidente", nullable = false)
     public GravidadeIncidente gravidade;
     
-    @Column(name = "medidas_tomadas")
-    public String medidasTomadas;
-    
     @Column(name = "data", nullable = false)
-    public LocalDateTime data = LocalDateTime.now();
+    public LocalDateTime data;
 }
