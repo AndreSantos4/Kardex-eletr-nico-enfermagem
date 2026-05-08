@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateIncidentDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.IncidenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
@@ -32,7 +32,7 @@ public class ShiftServiceImpl implements ShiftService{
 
     @Override
     @Transactional
-    public void createIncident(CreateIncidentDTO data){
+    public void createIncident(CreateIncidenteDTO data){
         var worker = workerService.getAutenticatedWorker();
         var shift = workerService.getCurrentShift(worker.getId());
 
