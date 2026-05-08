@@ -39,6 +39,7 @@ public class StockServiceImpl implements StockService{
             var newMed = medicamentoMapper.fromCreate(data);
             List<Dosagem> dosagens = new ArrayList<>(newMed.getDosagens());
             Dosagem maxDose = newMed.getDosagemMaxDiaria();
+            newMed.setQuantidadeInicial(data.quantidade());
             newMed.setDosagens(new ArrayList<>());
             newMed.setDosagemMaxDiaria(null);
             newMed.getDosagens().forEach(d -> d.setMedicamento(newMed));
@@ -83,6 +84,7 @@ public class StockServiceImpl implements StockService{
         medication.setViaAdministracao(data.viaAdministracao());
         medication.setUnidadeMedida(data.unidadeMedida());
         medication.setQuantidade(data.quantidade());
+        medication.setQuantidadeInicial(data.quantidade());
         medication.setAltoRisco(data.altoRisco());
     
         medication.getDosagens().clear();
