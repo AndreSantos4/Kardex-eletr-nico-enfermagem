@@ -47,9 +47,12 @@ public class Medicamento {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_dosagem_max")
     public Dosagem dosagemMaxDiaria;
-    
+
     @Column(name = "quantidade", nullable = false)
     public BigDecimal quantidade;
+    
+    @Column(name = "quantidade_inicial", nullable = false)
+    public BigDecimal quantidadeInicial;
     
     @Column(name = "unidadeMedida", nullable = false)
     @Enumerated(EnumType.STRING)
