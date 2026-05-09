@@ -153,13 +153,13 @@ public class ProcessServiceImpl implements ProcessService{
         administration.setFuncionario(worker);
         administration.setTurno(shift);
 
-        subtractFromMedication(administration);
+        stockService.subtractFromStock(prescription.getMedicamento(), prescription.getDose().getDose());
 
         administracaoRepository.save(administration);
     }
 
     @Transactional(readOnly = true)
-    private void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
+    protected void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
         var prescription = lastAdministracaoMedicacao.getPrescricao();
         var now = LocalDateTime.now();
         var interval = prescription.getFrequencia().getIntervaloMinHoras();
@@ -203,17 +203,6 @@ public class ProcessServiceImpl implements ProcessService{
                     throw new KardexException("Administracoes anuais excedidas");
                 }
         }
-    }
-
-    private void subtractFromMedication(AdministracaoMedicacao administration){
-        var prescription = administration.getPrescricao();
-        var medication = prescription.getMedicamento();
-
-        if(medication.getQuantidade().compareTo(prescription.getDose().getDose()) == -1){
-            throw new KardexException("A dose excede a quantidade de medicamento em stock");
-        }
-
-        medication.setQuantidade(medication.getQuantidade().subtract(prescription.getDose().getDose()));
     }
     
     @Override
