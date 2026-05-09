@@ -136,10 +136,6 @@ public class StockServiceImpl implements StockService{
             throw new InactiveResourceException("Medicamento");
         }
 
-        if (!data.validade().isAfter(LocalDate.now(clock))) {
-            throw new KardexException("A data de validade deve ser superior a data atual");
-        }
-
         if (data.quantidade().compareTo(BigDecimal.ZERO) <= 0) {
             throw new KardexException("A quantidade deve ser superior a zero");
         }
@@ -147,7 +143,6 @@ public class StockServiceImpl implements StockService{
         var batch = new LoteMedicamento();
         batch.setMedicamento(medication);
         batch.setQuantidade(data.quantidade());
-        batch.setValidade(data.validade());
 
         medication.getLotes().add(batch);
 
