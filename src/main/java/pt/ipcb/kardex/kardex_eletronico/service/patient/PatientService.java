@@ -17,11 +17,8 @@ public interface PatientService {
     void createPatient(CreatePatientFileDTO data);
     long getHospitalizedPatientsCount();
     void editPatientFile(Long id, UpdatePacientFileDTO data);
-
-    @Transactional(readOnly = true)
     Utente getValidPatient(Long id);
-
-    List<UtenteDTO> getAllPatients(PatientState filter2, Optional<String> filter);
+    List<UtenteDTO> getAllPatients(PatientState filter2, Optional<String> search);
     List<AlergiaDTO> getAllAlergies();
     PatientKardexDTO getPatientKardex(Long patientId);
 }

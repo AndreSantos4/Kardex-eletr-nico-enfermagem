@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
-import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
