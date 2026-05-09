@@ -62,7 +62,7 @@
                 <div class="sidebar-section-label">Cuidados</div>
                 <ul>
                     <li class="sidebar-item active">
-                        <a href="#planos">
+                        <a onclick="abrirPaginaPlano()">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                                 <path
                                     d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM136 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0z" />
@@ -100,123 +100,84 @@
                 </ul>
             </nav>
         </aside>
+
         <main class="main-content">
             <div class="page-content">
+
+                <!-- HEADER DO UTENTE -->
                 <div class="utente-header">
                     <div class="utente-header-title" id="header-title">
-                        <h3>Plano de Cuidados — Manuel Ferreira</h3>
-                        <p>Proc. 0214 - Turno 14h–20h</p>
+                        <h3 id="header-nome-utente">A carregar...</h3>
+                        <p id="header-proc-turno"></p>
                     </div>
-                    
                     <div class="action-buttons">
-                        <button class="btn-action">Kardex</button>
-                        <button class="btn-action">Nova Intervenção</button>
-                        
+                        <button class="btn-action" onclick="irParaKardex()">Kardex</button>
+                        <button class="btn-action" onclick="abrirNovaIntervencao()">Nova Intervenção</button>
                     </div>
                 </div>
-                <div class="panel-body" id="medicacao-body">
-                        <h3>Estado do plano</h3>
-                        <h5>Versão 3 - Criado 05/03 por Enf. Carlos S. - Última revisão: 07/03 14:00 por Enf. Ana R. - Válido</h5>
+
+                <!-- ESTADO DO PLANO -->
+                <div class="panel-body" id="estado-plano-body">
+                    <h3>Estado do plano</h3>
+                    <h5 id="estado-plano-texto">A carregar...</h5>
                 </div>
-               
+
+                <!-- DIAGNÓSTICOS E OBJETIVOS -->
                 <div class="main-grid">
                     <div class="panel">
                         <div class="panel-header">
                             <span class="panel-title">Diagnósticos de Enfermagem</span>
                         </div>
-                        <div class="panel-body">
-                            <h4>Risco de agressividade r/c doença psiquiátrica</h4>
-                            <p>Prioridade: Alta - Ativo desde 05/03</p>
-                            <br>
-                            <h4>Défice de autocuidado m/p desorganização do pensamento</h4>
-                            <p>Prioridade: Média - Ativo desde 06/03</p>
-                            <br>
-                            <h4>Risco de fuga r/c ausência de crítica para a doença</h4>
-                            <p>Prioridade: Alta - Ativo desde 05/03</p>
+                        <div class="panel-body" id="diagnosticos-body">
+                            <p class="loading-text">A carregar diagnósticos...</p>
                         </div>
                     </div>
+
                     <div class="panel">
                         <div class="panel-header">
                             <span class="panel-title">Objetivos Terapêuticos</span>
                         </div>
-                        <div class="panel-body" id="plano-cuidados-body">
-                            <h4>Manter segurança do utente e equipa durante o internamento</h4>
-                            <br>
-                            <h4>Adesão terapêutica ≥ 80% nas próximas 48h</h4>
-                            <br>
-                            <h4>Redução da agitação - escala PANSS ≤ 30 em 72h</h4>
+                        <div class="panel-body" id="objetivos-body">
+                            <p class="loading-text">A carregar objetivos...</p>
                         </div>
-                    </div>            
+                    </div>
                 </div>
+
+                <!-- INTERVENÇÕES -->
                 <div class="panel">
                     <div class="panel-header">
                         <span class="panel-title">Intervenções - Turno Atual</span>
                     </div>
-                    <div class="panel-body" id="medicacao-body">
+                    <div class="panel-body" id="intervencoes-body">
                         <table>
-                            <tr>
-                                <th>Intervenção</th>
-                                <th>Frequência</th>
-                                <th>Horário</th>
-                                <th>Executada por</th>
-                                <th>Hora registo</th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <td>Monitorização de sinais vitais</td>
-                                <td>4x/dia</td>
-                                <td>06:00 - 12:00 - 18:00 - 24:00</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Avaliação do nível de dor (escala 0-10)</td>
-                                <td>3x/dia</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-
-                            </tr>
-                            <tr>
-                                <td>Supervisão contínua do utente (risco fuga/automutilação)</td>
-                                <td>Contínua</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><button>Registar</button></td>
-
-                            </tr>
-
-                            <tr>
-                                <td>Glicémia capilar pré-jantar</td>
-                                <td>1x/dia</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><button>Registar</button></td>
-
-                            </tr>
-                            <tr>
-                                <td>Observação e registo cateter venoso periférico</td>
-                                <td>2x/dia</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><button>Registar</button></td>
-
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Intervenção</th>
+                                    <th>Frequência</th>
+                                    <th>Horário</th>
+                                    <th>Executada por</th>
+                                    <th>Hora registo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="intervencoes-tbody">
+                                <tr>
+                                    <td colspan="6" class="loading-text">A carregar intervenções...</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>
+
     <div id="popup-container"></div>
     <script src="../../scripts/logout.js"></script>
     <div id="notificacoes-container"></div>
     <script src="../../scripts/notificacao.js"></script>
+    <script src="../../scripts/enfermeiro/enfermeiroPlanoCuidados.js"></script>
 </body>
 
 </html>
