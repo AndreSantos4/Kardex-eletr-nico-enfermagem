@@ -39,9 +39,12 @@ public class Turno {
     @ManyToMany(mappedBy = "turnos", fetch = FetchType.LAZY)
     public Set<Funcionario> enfermeiros = new HashSet<>();
 
-    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<AtribuicaoUtente> atribuicoes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<AdministracaoMedicacao> administracoes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "turno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<IncidenteClinico> incidentes = new ArrayList<>();
 }
