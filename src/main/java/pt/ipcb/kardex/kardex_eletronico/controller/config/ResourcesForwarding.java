@@ -69,11 +69,6 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroHistoricoPrescricoes.html?id=" + id);
     }
 
-    @GetMapping("/enfermeiroPlanoCuidados")
-    public ModelAndView enfermeiroPlanoCuidados(@RequestParam("id") Long id) {
-        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPlanoCuidados.html?id=" + id);
-    }
-
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")

@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
@@ -86,15 +84,4 @@ public class ProcessController {
         return ResponseEntity.ok(ApiResponse.ok("Alta clinica registada", null));
     }
 
-    @PostMapping("/{processId}/plan")
-    public ResponseEntity<ApiResponse<?>> createCarePlan(@PathVariable("processId") Long processId, @RequestBody CreateCarePlanDTO data){
-        service.createCarePlan(processId, data);
-        return ResponseEntity.ok(ApiResponse.ok("Plano de cuidados criado com sucesso", null));
-    }
-
-    @GetMapping("/{processId}/plan")
-    public ResponseEntity<ApiResponse<PlanoCuidadosDTO>> getCarePlan(@PathVariable("processId") Long processId){
-        var plan = service.getCarePlan(processId);
-        return ResponseEntity.ok(ApiResponse.ok("Plano de cuidados obtido com sucesso", plan));
-    }
 }

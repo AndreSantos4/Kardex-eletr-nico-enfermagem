@@ -24,22 +24,19 @@ public class PlanoCuidados {
     @JoinColumn(name = "id_processo_clinico", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public ProcessoClinico processoClinico;
-
-    @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
-    public List<DiagnosticoEnfermagem> diagnosticos = new ArrayList<>();
     
     @Column(name = "versao", nullable = false)
-    public Integer versao = 1;
+    public Integer versao;
     
     @Column(name = "data_criacao", nullable = false)
-    public LocalDate dataCriacao = LocalDate.now();
+    public LocalDate dataCriacao;
     
     @JoinColumn(name = "id_autor", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario autor;
     
     @Column(name = "esta_ativo", nullable = false)
-    public Boolean ativo = true;
+    public Boolean ativo;
     
     @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
     public List<Atividade> atividades = new ArrayList<>();

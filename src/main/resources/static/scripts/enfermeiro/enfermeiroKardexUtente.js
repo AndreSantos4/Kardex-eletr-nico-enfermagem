@@ -1,10 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-function abrirPaginaPlano() {
-  window.location.href = `enfermeiroPlanoCuidados?id=${id}`;
-}
-
 let processoId = null;
 let utenteData = null;
 let processoData = null;
@@ -343,6 +339,8 @@ async function editarUtente(event) {
   const camaValor = document.getElementById("edit-cama").value;
   const camaId = camaValor && camaValor !== "—" ? camaValor : null;
 
+  console.log(camaId);
+
   const body = {
     nome: document.getElementById("edit-name").value.trim(),
     dataNascimento,
@@ -598,7 +596,11 @@ function renderizarMedicacaoAtiva(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
 
+  console.log(prescricoes);
+
   const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
+
+  console.log(ativas);
 
   if (ativas.length === 0) {
     body.innerHTML =
@@ -1118,135 +1120,6 @@ function atualizarBotaoRegistar() {
     btn.disabled = false;
     btn.style.opacity = "1";
     btn.style.cursor = "pointer";
-  }
-}
-
-function adicionarLinhaDiagnostico(
-  container,
-  diagnostico = "",
-  prioridade = "MEDIA",
-) {
-  const item = document.createElement("div");
-  item.className = "alergia-item";
-  item.innerHTML = `
-    <input type="text" placeholder="Risco de queda r/c instabilidade da marcha" />
-    <select>
-      <option value="ALTA">Alta</option>
-      <option value="MEDIA">Média</option>
-      <option value="BAIXA">Baixa</option>
-    </select>
-    <button type="button" class="btn-remover-alergia">−</button>
-  `;
-  item.querySelector("input").value = diagnostico;
-  item.querySelector("select").value = prioridade;
-  item.querySelector(".btn-remover-alergia").addEventListener("click", () => {
-    const linhas = container.querySelectorAll(".alergia-item");
-    if (linhas.length > 1) {
-      item.remove();
-    } else {
-      item.querySelector("input").value = "";
-      item.querySelector("select").value = "MEDIA";
-    }
-  });
-  container.appendChild(item);
-  container.scrollTop = container.scrollHeight;
-}
-
-async function abrirPopUpCriarPlano() {
-  await carregarPopUp(
-    "../../pages/enfermeiro/popups/popupCriarPlanoCuidados.html",
-  );
-
-  const box = document.getElementById("diagnosticos-box");
-  box.innerHTML = "";
-  adicionarLinhaDiagnostico(box);
-
-  document.getElementById("btn-adicionar-diagnostico").onclick = () => {
-    const linhas = box.querySelectorAll(".alergia-item");
-    const ultimo = linhas[linhas.length - 1];
-    if (ultimo && !ultimo.querySelector("input").value.trim()) {
-      const input = ultimo.querySelector("input");
-      input.focus();
-      input.style.borderColor = "rgb(220, 49, 26)";
-      input.placeholder = "Preenche este campo primeiro";
-      setTimeout(() => {
-        input.style.borderColor = "";
-        input.placeholder = "Risco de queda r/c instabilidade da marcha";
-      }, 2000);
-      return;
-    }
-    adicionarLinhaDiagnostico(box);
-  };
-
-  abrirPopUp(".pop-up-criar-plano-cuidados");
-}
-
-async function criarPlanoCuidados(event) {
-  event.preventDefault();
-
-  if (!processoId) {
-    mostrarNotificacao({
-      titulo: "Erro",
-      mensagem: "Processo não identificado. Tente recarregar a página.",
-      tipo: "erro",
-    });
-    return;
-  }
-
-  const diagnosticos = Array.from(
-    document
-      .getElementById("diagnosticos-box")
-      .querySelectorAll(".alergia-item"),
-  )
-    .map((item) => ({
-      diagnostico: item.querySelector("input").value.trim(),
-      prioridade: item.querySelector("select").value,
-    }))
-    .filter((d) => d.diagnostico);
-
-  if (diagnosticos.length === 0) {
-    mostrarNotificacao({
-      titulo: "Formulário incompleto",
-      mensagem: "Adiciona pelo menos um diagnóstico de enfermagem.",
-      tipo: "aviso",
-    });
-    return;
-  }
-
-  try {
-    const resp = await fetch(
-      `http://localhost:8080/api/processes/${processoId}/plan`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ diagnosticos }),
-      },
-    );
-
-    if (!resp.ok)
-      throw new Error((await resp.text()) || "Erro ao criar plano de cuidados");
-
-    fecharPopUp(".pop-up-criar-plano-cuidados");
-    mostrarNotificacao({
-      titulo: "Plano criado",
-      mensagem: "Plano de cuidados criado com sucesso.",
-      tipo: "sucesso",
-    });
-  } catch (err) {
-    let mensagem = err.message;
-    try {
-      const parsed = JSON.parse(err.message);
-      mensagem = parsed.error || mensagem;
-    } catch (_) {}
-    console.log(mensagem);
-    mostrarNotificacao({
-      titulo: "Erro",
-      mensagem: mensagem || "Erro ao criar plano de cuidados.",
-      tipo: "erro",
-    });
   }
 }
 

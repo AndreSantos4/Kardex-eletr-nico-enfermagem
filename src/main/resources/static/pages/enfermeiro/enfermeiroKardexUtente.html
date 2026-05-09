@@ -62,7 +62,7 @@
                 <div class="sidebar-section-label">Cuidados</div>
                 <ul>
                     <li class="sidebar-item">
-                        <a onclick="abrirPaginaPlano()">
+                        <a href="#planos">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                                 <path
                                     d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM136 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0z" />
@@ -109,7 +109,7 @@
                         <button class="btn-action">NOTAS CLÍNICAS</button>
                         <button class="btn-action">HIST. INTERNAMENTOS</button>
                         <button class="btn-action">CATETER</button>
-                        <button class="btn-action" onclick="abrirPopUpCriarPlano()">CRIAR PLANO</button>
+                        <button class="btn-action">PLANO</button>
                         <button class="btn-action" onclick="location.href='enfermeiroListaUtentes'">LISTA</button>
                         <button class="btn-action">HIST. CLÍNICO</button>
                         <button class="btn-action" onclick="abrirPopUpEditarFichaUtente()">EDITAR</button>
@@ -171,7 +171,7 @@
                     <div class="panel">
                         <div class="panel-header">
                             <span class="panel-title">Plano de Cuidados Hoje</span>
-                            <button class="btn-panel" onclick="abrirPaginaPlano()">VER COMPLETO</button>
+                            <button class="btn-panel">VER COMPLETO</button>
                         </div>
                         <div class="panel-body" id="plano-cuidados-body">
                         </div>
@@ -181,7 +181,7 @@
                             <span class="panel-title">Medicação Ativa</span>
                         </div>
                         <div class="panel-body" id="medicacao-body">
-                        </div>
+                        </div> 
                     </div>
                     <div class="panel">
                         <div class="panel-header">
