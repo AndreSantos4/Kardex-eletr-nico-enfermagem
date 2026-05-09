@@ -12,6 +12,8 @@ let medicoData = null;
 let caseData = null;
 const TOLERANCIA_ATRASO_MIN = 30;
 let _popupAltoRisco = false;
+const TOLERANCIA_ATRASO_MIN = 30;
+let _popupAltoRisco = false;
 
 async function carregarPopUp(caminho) {
   const container = document.getElementById("popup-container");
@@ -434,7 +436,20 @@ async function registarSinaisVitais(event) {
         body: JSON.stringify(body),
       },
     );
+    const resp = await fetch(
+      `http://localhost:8080/api/processes/${processoId}/vitals`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(body),
+      },
+    );
 
+    if (!resp.ok)
+      throw new Error((await resp.text()) || "Erro ao registar sinais vitais");
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar sinais vitais");
 
@@ -475,8 +490,12 @@ async function carregarUtente(id) {
 
     if (!dados)
       throw new Error("Estrutura da resposta inesperada: dados ausentes");
+    if (!dados)
+      throw new Error("Estrutura da resposta inesperada: dados ausentes");
 
     const processo = dados.processo;
+    if (!processo)
+      throw new Error("Estrutura da resposta inesperada: processo ausente");
     if (!processo)
       throw new Error("Estrutura da resposta inesperada: processo ausente");
 
@@ -500,6 +519,7 @@ async function carregarUtente(id) {
       diagnosticoPrincipal: processo.diagnosticoPrincipal,
       sinaisVitais: processo.sinaisVitais ?? [],
       prescricoes: processo.prescricoes ?? [],
+      prescricoes: processo.prescricoes ?? [],
     };
 
     medicoData = {
@@ -515,7 +535,12 @@ async function carregarUtente(id) {
     const dias = Math.floor(
       (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
     );
+    const dias = Math.floor(
+      (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
+    );
 
+    document.getElementById("header-title").textContent =
+      `Kardex - ${utenteData.nome}`;
     document.getElementById("header-title").textContent =
       `Kardex - ${utenteData.nome}`;
     document.getElementById("header-sub").textContent =
@@ -523,12 +548,18 @@ async function carregarUtente(id) {
     document.getElementById("utente-nome").textContent = utenteData.nome;
     document.getElementById("sexo-idade").textContent =
       `${utenteData.sexo} · ${utenteData.dataNascimento}`;
+    document.getElementById("sexo-idade").textContent =
+      `${utenteData.sexo} · ${utenteData.dataNascimento}`;
     document.getElementById("admissao").textContent = processoData.dataEntrada;
     document.getElementById("medico").textContent = medicoData.nome;
     document.getElementById("proc-nasc").textContent =
       `${processoData.id} · Nasc. ${utenteData.dataNascimento}`;
+    document.getElementById("proc-nasc").textContent =
+      `${processoData.id} · Nasc. ${utenteData.dataNascimento}`;
     document.getElementById("cama").textContent = caseData.cama;
     document.getElementById("estado").textContent = `Internado · Dia ${dias}`;
+    document.getElementById("diagnostico").textContent =
+      processoData.diagnosticoPrincipal;
     document.getElementById("diagnostico").textContent =
       processoData.diagnosticoPrincipal;
 
@@ -536,6 +567,8 @@ async function carregarUtente(id) {
       const t = r.replace("RISCO_", "").toLowerCase();
       return t.charAt(0).toUpperCase() + t.slice(1);
     });
+    document.getElementById("riscos").textContent =
+      `Riscos: ${riscos.join(" | ")}`;
     document.getElementById("riscos").textContent =
       `Riscos: ${riscos.join(" | ")}`;
 
@@ -546,6 +579,7 @@ async function carregarUtente(id) {
     const svs = processoData.sinaisVitais;
     if (svs?.length > 0) atualizarSinaisVitaisUI(svs[svs.length - 1]);
 
+    renderizarMedicacaoAtiva(processoData.prescricoes);
     renderizarMedicacaoAtiva(processoData.prescricoes);
   } catch (err) {
     console.error("Erro em carregarUtente:", err);
@@ -565,6 +599,274 @@ function renderizarMedicacaoAtiva(prescricoes) {
   body.innerHTML = "";
 
   const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
+
+  if (ativas.length === 0) {
+    body.innerHTML =
+      "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
+    return;
+  }
+
+  ativas.forEach((p) => {
+    const nomeMed = p.medicamento?.nome ?? "Medicamento não especificado";
+    const doseVal = p.dose
+      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
+      : "—";
+    const via = p.medicamento?.viaAdministracao ?? "—";
+    const freq = p.frequencia
+      ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
+      : "—";
+    const fim = p.fim ?? "—";
+
+    const altoRisco =
+      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+    const horariosPrevistos = p.horariosPrevistos ?? [];
+
+    const row = document.createElement("div");
+    row.className = "med-row";
+    row.style.cssText = `
+      display:flex; justify-content:space-between; align-items:center;
+      padding: 8px 10px; border-bottom: 1px solid var(--border);
+      font-size: 13px; gap: 8px;
+    `;
+
+    const badgeAltoRisco = altoRisco
+      ? `<span style="
+          display:inline-block; margin-left:6px;
+          background:rgb(220,49,26); color:#fff;
+          font-size:10px; font-weight:700; letter-spacing:.5px;
+          padding:1px 5px; border-radius:3px; vertical-align:middle;
+        ">ALTO RISCO</span>`
+      : "";
+
+    row.innerHTML = `
+      <div style="flex:1">
+        <div style="font-weight:600;color:var(--surface)">
+          ${nomeMed}${badgeAltoRisco}
+        </div>
+        <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
+        <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
+      </div>
+      <button class="btn-administrar"
+        onclick="abrirPopUpAdministrarMedicacao(
+          ${p.id},
+          '${nomeMed}',
+          '${doseVal}',
+          '${via}',
+          ${altoRisco},
+          ${JSON.stringify(horariosPrevistos)}
+        )">
+        ADMINISTRAR
+      </button>
+    `;
+    body.appendChild(row);
+  });
+}
+
+function formatarUnidade(u) {
+  if (!u) return "";
+  const map = {
+    MILIGRAMAS: "mg",
+    GRAMAS: "g",
+    MICROGRAMAS: "mcg",
+    MILILITROS: "ml",
+    UNIDADES: "U",
+    COMPRIMIDOS: "cp",
+  };
+  return map[u] ?? u.toLowerCase();
+}
+
+async function abrirPopUpAdministrarMedicacao(
+  prescricaoId,
+  nomeMed,
+  dose,
+  via,
+  altoRisco = false,
+  horariosPrevistos = [],
+) {
+  prescricaoSelecionadaId = prescricaoId ?? null;
+  _popupAltoRisco = altoRisco;
+
+  await carregarPopUp(
+    "../../pages/enfermeiro/popups/popupAdministrarMedicacao.html",
+  );
+
+  document.getElementById("nome-utenet").textContent = utenteData?.nome ?? "—";
+  document.getElementById("medicamento").textContent = nomeMed ?? "—";
+  document.getElementById("dose").textContent = dose ?? "—";
+  document.getElementById("via").textContent = via ?? "—";
+
+  const agora = new Date();
+  document.getElementById("hora-de-toma").textContent =
+    agora.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
+
+  const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+  document.getElementById("data-hora").value = local;
+  document.getElementById("observacoes").value = "";
+
+  const cbRecusa = document.getElementById("recusa-medicacao");
+  if (cbRecusa) cbRecusa.checked = false;
+
+  const warningBox = document.getElementById("warning-box");
+  const warningText = document.getElementById("warning-text");
+  const avisos = [];
+
+  const atrasoMin = calcularAtrasoMinutos(horariosPrevistos);
+  if (atrasoMin > 0) {
+    const tolerancia = TOLERANCIA_ATRASO_MIN;
+    if (atrasoMin > tolerancia) {
+      avisos.push(
+        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Fora do limite aceitável — documente o motivo nas observações.`,
+      );
+    } else {
+      avisos.push(
+        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Dentro do limite aceitável.`,
+      );
+    }
+  }
+
+  if (avisos.length > 0) {
+    warningText.innerHTML = avisos.join("<br>");
+    warningBox.style.display = "flex";
+  } else {
+    warningBox.style.display = "none";
+  }
+
+  const secaoAltoRisco = document.getElementById("alto-risco-verificacao");
+  const cbConfirmar = document.getElementById("confirmar-alto-risco");
+  if (secaoAltoRisco) {
+    secaoAltoRisco.style.display = altoRisco ? "block" : "none";
+  }
+  if (cbConfirmar) cbConfirmar.checked = false;
+
+  atualizarBotaoRegistar();
+
+  abrirPopUp(".pop-up-administrar-medicacao");
+}
+
+async function registarMedicacao() {
+  if (!prescricaoSelecionadaId) {
+    mostrarNotificacao({
+      titulo: "Erro",
+      mensagem: "Prescrição não identificada.",
+      tipo: "erro",
+    });
+    return;
+  }
+
+  const dataHoraRaw = document.getElementById("data-hora").value;
+  if (!dataHoraRaw) {
+    mostrarNotificacao({
+      titulo: "Formulário incompleto",
+      mensagem: "Data e hora não especificados.",
+      tipo: "aviso",
+    });
+    return;
+  }
+
+  const observacoes = document.getElementById("observacoes").value.trim();
+  const recusa = document.getElementById("recusa-medicacao")?.checked ?? false;
+
+  const [dataParte, horaParte] = dataHoraRaw.split("T");
+  const [ano, mes, dia] = dataParte.split("-");
+  const dataFormatada = `${dia}/${mes}/${ano}:${horaParte}:00`;
+
+  const body = {
+    foi_administrado: !recusa,
+    observacoes:
+      observacoes ||
+      (recusa
+        ? "Recusa/impossibilidade de administração"
+        : "Administrado sem intercorrências"),
+    data: dataFormatada,
+  };
+
+  try {
+    const resp = await fetch(
+      `http://localhost:8080/api/processes/prescriptions/${prescricaoSelecionadaId}/administrations`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(body),
+      },
+    );
+
+    if (!resp.ok)
+      throw new Error((await resp.text()) || "Erro ao registar administração");
+
+    fecharPopUp(".pop-up-administrar-medicacao");
+    mostrarNotificacao({
+      titulo: "Administração",
+      mensagem: recusa
+        ? "Recusa registada com sucesso."
+        : "Medicação administrada com sucesso.",
+      tipo: "sucesso",
+    });
+  } catch (err) {
+    const errorData = JSON.parse(err.message);
+    mostrarNotificacao({
+      titulo: "Erro",
+      mensagem: errorData.error || "Erro ao registar administração.",
+      tipo: "erro",
+    });
+  }
+}
+
+function calcularAtrasoMinutos(horariosPrevistos) {
+  if (!horariosPrevistos?.length) return 0;
+  const agora = new Date();
+  const agoraMin = agora.getHours() * 60 + agora.getMinutes();
+
+  let maiorAtraso = 0;
+  for (const h of horariosPrevistos) {
+    const [hh, mm] = h.split(":").map(Number);
+    const prevMin = hh * 60 + mm;
+
+    if (prevMin <= agoraMin) {
+      const diff = agoraMin - prevMin;
+      if (diff > maiorAtraso) maiorAtraso = diff;
+    }
+  }
+  return maiorAtraso;
+}
+
+function atualizarBotaoRegistar() {
+  const btn = document.getElementById("btn-registar");
+  if (!btn) return;
+
+  if (_popupAltoRisco) {
+    const confirmado =
+      document.getElementById("confirmar-alto-risco")?.checked ?? false;
+    const recusa =
+      document.getElementById("recusa-medicacao")?.checked ?? false;
+    btn.disabled = !confirmado && !recusa;
+    btn.style.opacity = !confirmado && !recusa ? "0.45" : "1";
+    btn.style.cursor = !confirmado && !recusa ? "not-allowed" : "pointer";
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+  }
+}
+function irParaHistoricoPrescricoes() {
+  window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
+}
+
+let prescricaoSelecionadaId = null;
+
+function renderizarMedicacaoAtiva(prescricoes) {
+  const body = document.getElementById("medicacao-body");
+  body.innerHTML = "";
+
+  console.log(prescricoes);
+
+  const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
+
+  console.log(ativas);
 
   if (ativas.length === 0) {
     body.innerHTML =

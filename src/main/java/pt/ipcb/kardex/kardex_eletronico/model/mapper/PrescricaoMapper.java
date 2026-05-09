@@ -9,7 +9,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Prescricao;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { MedicamentoMapper.class, FuncionarioMapper.class })
 public interface PrescricaoMapper {
     PrescricaoDTO toDTO(Prescricao prescricao);
 
