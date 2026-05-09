@@ -165,7 +165,7 @@ public class ProcessServiceImpl implements ProcessService{
     }
 
     @Transactional(readOnly = true)
-    private void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
+    protected void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
         var prescription = lastAdministracaoMedicacao.getPrescricao();
         var now = LocalDateTime.now();
         var interval = prescription.getFrequencia().getIntervaloMinHoras();
