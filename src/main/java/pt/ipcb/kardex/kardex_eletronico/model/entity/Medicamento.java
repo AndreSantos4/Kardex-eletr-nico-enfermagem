@@ -47,9 +47,14 @@ public class Medicamento {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "id_dosagem_max")
     public Dosagem dosagemMaxDiaria;
-    
-    @Column(name = "quantidade", nullable = false)
-    public BigDecimal quantidade;
+
+    @JoinTable(
+            name = "medicamento_lote",
+            joinColumns = @JoinColumn(name = "id_medicamento"),
+            inverseJoinColumns = @JoinColumn(name = "id_lote")
+    )
+    @ManyToMany(fetch = FetchType.LAZY)
+    public List<LoteMedicamento> lotes = new ArrayList<>();
     
     @Column(name = "unidadeMedida", nullable = false)
     @Enumerated(EnumType.STRING)
