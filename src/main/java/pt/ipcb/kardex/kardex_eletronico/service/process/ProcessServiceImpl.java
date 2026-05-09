@@ -23,11 +23,7 @@ import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
@@ -147,9 +143,7 @@ public class ProcessServiceImpl implements ProcessService{
         var administration = administracaoMapper.fromCreate(data);
         if(administration.getAdministrado()){
             var lastAdministration = prescricaoRepository.findMostRecentByPrescricao(prescriptionId);
-            if(lastAdministration.isPresent()){
-                validateAdministrationInterval(administration, lastAdministration.get());
-            }
+            lastAdministration.ifPresent(administracaoMedicacao -> validateAdministrationInterval(administration, administracaoMedicacao));
         }
 
         var worker = workerService.getAutenticatedWorker();
@@ -318,12 +312,15 @@ public class ProcessServiceImpl implements ProcessService{
 	public void createCarePlan(Long processId, CreateCarePlanDTO data) {
 		var process = getValidProcess(processId);
 		if(!process.getPlanoCuidados().isEmpty()){
-		    throw new ConflictEntitiesException("O processo ja possui um plano de cuidados ativo");
+		    for (PlanoCuidados plan : process.getPlanoCuidados()) {
+                plan.setAtivo(false);
+            }
 		}
 
 		var worker = workerService.getAutenticatedWorker();
 
 		var plan = planoCuidadosMapper.toEntity(data);
+        plan.setVersao(process.getPlanoCuidados().size() + 1);
         plan.getDiagnosticos().forEach(d -> d.setPlanoCuidados(plan));
 		plan.setProcessoClinico(process);
 		plan.setAutor(worker);
