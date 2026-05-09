@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
+import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
@@ -176,5 +178,16 @@ public class WorkerServiceImpl implements WorkerService {
     public Funcionario getWorker(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> EntityNotFoundException.forId(id, "Funcionario"));
+    }
+
+    @Override
+    public boolean isAvailable(Funcionario worker, LocalDateTime start, LocalDateTime end) {
+        for (Turno shift : worker.getTurnos()) {
+            if (shift.getInicio().isBefore(end) && shift.getFim().isAfter(start)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
