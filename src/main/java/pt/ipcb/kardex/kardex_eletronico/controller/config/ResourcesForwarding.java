@@ -81,6 +81,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeListaUtentes.html");
     }
 
+    @GetMapping("/enfermeiroChefeGerirTurnos")
+    public ModelAndView enfermeiroChefeGerirTurnos() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeGerirTurnos.html");
+    }
+
     /* MÉDICO */
 
     @GetMapping("/medicoDashboard")
