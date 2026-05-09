@@ -22,6 +22,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
@@ -101,7 +102,7 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Transactional
-    private Alergia verifyAlergy(CreateAlergyDTO data){
+    protected Alergia verifyAlergy(CreateAlergyDTO data){
         var alergy = alergiaRepository.findByNome(data.nome());
 
         if(alergy.isPresent()){
@@ -111,6 +112,19 @@ public class PatientServiceImpl implements PatientService{
         var newAlergy = mapper.fromCreateAlergy(data);
 
         return alergiaRepository.save(newAlergy);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Utente getValidPatient(Long id){
+        var patient = repository.findById(id)
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Utente"));
+
+        if(patient.getEstado() == EstadoUtente.INTERNADO){
+            return patient;
+        }
+
+        throw new InactiveResourceException("Utente se encontra inacessivel");
     }
 
     @Override

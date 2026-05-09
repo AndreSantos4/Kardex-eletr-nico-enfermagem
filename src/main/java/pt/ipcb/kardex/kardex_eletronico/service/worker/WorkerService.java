@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.worker;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
@@ -35,4 +36,8 @@ public interface WorkerService {
     List<FuncionarioDTO> getAllMedics();
 
     long getActiveNursesCount();
+
+    Funcionario getWorker(Long id);
+
+    boolean isAvailable(Funcionario worker, LocalDateTime start, LocalDateTime end);
 }
