@@ -121,7 +121,7 @@ async function carregarMedicacaoAtiva(processId) {
     const resp = await fetch(`/api/processes/${processId}/prescriptions`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const json = await resp.json();
-    const prescricoes = (json.data ?? []).filter((p) => p.ativa);
+    const prescricoes = (json.data ?? []).filter((p) => p.estado == "ATIVA");
 
     if (prescricoes.length === 0) {
       medicacaoContainer.innerHTML =

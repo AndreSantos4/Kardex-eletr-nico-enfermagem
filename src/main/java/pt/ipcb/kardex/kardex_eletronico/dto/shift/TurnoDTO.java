@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 
 public record TurnoDTO(
     @JsonProperty("id") Long id,
