@@ -8,6 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.ContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateCateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
@@ -35,6 +41,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.ParametrosMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PlanoCuidadosMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
@@ -63,6 +70,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final CamaRepository camaRepository;
     private final RecordService recordService;
     private final StockService stockService;
+    private final ParametrosMapper parametrosMapper;
     private final PlanoCuidadosMapper planoCuidadosMapper;
     private final PlanoRepository planoRepository;
 
@@ -233,6 +241,14 @@ public class ProcessServiceImpl implements ProcessService{
 
         medication.setQuantidade(medication.getQuantidade().subtract(prescription.getDose().getDose()));
     }
+
+    private void subtractFromMedication(Dosagem dose, Medicamento medication){
+        if(medication.getQuantidade().compareTo(dose.getDose()) == -1){
+            throw new KardexException("A dose excede a quantidade de medicamento em stock");
+        }
+
+        medication.setQuantidade(medication.getQuantidade().subtract(dose.getDose()));
+    }
     
     @Override
     public List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to) {
@@ -325,6 +341,77 @@ public class ProcessServiceImpl implements ProcessService{
         return mapper.toDTO(process);
     }
 
+    @Override
+    @Transactional
+    public void registerCateter(Long processId, CreateCateterDTO data) {
+        var process = getValidProcess(processId);
+        var worker = workerService.getAutenticatedWorker();
+
+        var cateter = parametrosMapper.fromCreateCateterDto(data);
+        cateter.setFuncionario(worker);
+        cateter.setProcessoClinico(process);
+
+        process.cateteres.add(cateter);
+        repository.save(process);
+    }
+
+    @Override
+    public List<CateterDTO> getAllCateteres(Long processId) {
+        var process = getValidProcess(processId);
+        
+        var cateteres = process.getCateteres();
+        return parametrosMapper.toCateterDtoList(cateteres);
+    }
+
+    @Override
+    public void registerIncident(Long processId, CreateIncidenteDTO data) {
+        var process = getValidProcess(processId);
+        var worker = workerService.getAutenticatedWorker();
+        var shift = workerService.getCurrentShift(worker.getId());
+
+        var incident = parametrosMapper.fromCreateIncidentDto(data);
+        incident.setProcessoClinico(process);
+        incident.setFuncionario(worker);
+        incident.setTurno(shift);
+        
+        process.getIncidentes().add(incident);
+        repository.save(process);
+    }
+
+    @Override
+    public List<IncidenteDTO> getAllIncidents(Long processId) {
+        var process = getValidProcess(processId);
+        
+        var incidents = process.getIncidentes();
+        return parametrosMapper.toIncidentDtoList(incidents);
+    }
+
+    @Override
+    public void registerContainment(Long processId, CreateContencaoDTO data) {
+        var process = getValidProcess(processId);
+        var worker = workerService.getAutenticatedWorker();
+        var medication = stockService.getMedication(data.idMedicamento());
+        var dose = medication.getDosagens().stream().filter(d -> d.id == data.idDose()).findFirst()
+            .orElseThrow(() -> new KardexException("Este medicamento nao possui esta dose disponivel"));
+
+        subtractFromMedication(dose, medication);
+
+        var containment = parametrosMapper.fromCreateContainmentDto(data);
+        containment.setProcessoClinico(process);
+        containment.setMedico(worker);
+        containment.setDose(dose);
+        containment.setMedicamento(medication);
+        
+        process.getContencoes().add(containment);
+        repository.save(process);
+    }
+
+    @Override
+    public List<ContencaoDTO> getAllCointainments(Long processId) {
+        var process = getValidProcess(processId);
+
+        var containments = process.getContencoes();
+        return parametrosMapper.toContainmentDtoList(containments);
 	@Override
 	@Transactional
 	public void createCarePlan(Long processId, CreateCarePlanDTO data) {

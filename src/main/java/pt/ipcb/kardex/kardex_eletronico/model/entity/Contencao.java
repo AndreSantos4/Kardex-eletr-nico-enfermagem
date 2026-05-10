@@ -3,7 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,12 +31,13 @@ public class Contencao {
     @Column(name = "justificacao", nullable = false)
     public String justificacao;
     
-    @Column(name = "dose", nullable = false)
-    public Long dose;
+    @JoinColumn(name = "id_dose", nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    public Dosagem dose;
     
     @Column(name = "duracao", nullable = false)
-    public Integer duracao;
+    public String duracao;
     
     @Column(name = "data", nullable = false)
-    public LocalDate data;
+    public LocalDateTime data;
 }
