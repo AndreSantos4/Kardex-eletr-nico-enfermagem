@@ -123,9 +123,11 @@ public class ProcessController {
     }
 
     @GetMapping("/{processId}/containments")
-    public ResponseEntity<ApiResponse<List<ContencaoDTO>>> getAllContainments(@PathVariable("processId") Long processId){
+    public ResponseEntity<ApiResponse<List<ContencaoDTO>>> getAllContainments(@PathVariable("processId") Long processId) {
         var cateteres = service.getAllCointainments(processId);
         return ResponseEntity.ok(ApiResponse.ok("Contencoes obtidos com sucesso", cateteres));
+    }
+
     @PostMapping("/{processId}/plan")
     public ResponseEntity<ApiResponse<?>> createCarePlan(@PathVariable("processId") Long processId, @RequestBody CreateCarePlanDTO data){
         service.createCarePlan(processId, data);
