@@ -60,7 +60,7 @@ public class WorkerServiceImpl implements WorkerService {
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
         worker.turnos.add(shift);
-        shift.funcionariosAlocados.add(worker);
+        shift.getEnfermeiros().add(worker);
 
         repository.save(worker);
     }
@@ -74,7 +74,7 @@ public class WorkerServiceImpl implements WorkerService {
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
         worker.turnos.remove(shift);
-        shift.funcionariosAlocados.remove(worker);
+        shift.getEnfermeiros().remove(worker);
 
         repository.save(worker);
     }
@@ -120,7 +120,7 @@ public class WorkerServiceImpl implements WorkerService {
 
         return shifts.stream()
                 .map(shift -> new ShiftSummaryDTO(
-                        shift.nome(),
+                        shift.tipo(),
                         adminCounts.getOrDefault(shift.id(), 0),
                         incidentCounts.getOrDefault(shift.id(), 0),
                         shift.inicio().toLocalDate()))
@@ -170,5 +170,22 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public long getActiveNursesCount() {
         return repository.countByDadosRoleAndDadosAtivo(Role.ENFERMEIRO, true);
+    }
+
+    @Override
+    public Funcionario getWorker(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Funcionario"));
+    }
+
+    @Override
+    public boolean isAvailable(Funcionario worker, LocalDateTime start, LocalDateTime end) {
+        for (Turno shift : worker.getTurnos()) {
+            if (shift.getInicio().isBefore(end) && shift.getFim().isAfter(start)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -48,8 +48,13 @@ public class Medicamento {
     @JoinColumn(name = "id_dosagem_max")
     public Dosagem dosagemMaxDiaria;
 
-    @Column(name = "quantidade", nullable = false)
-    public BigDecimal quantidade;
+    @JoinTable(
+            name = "medicamento_lote",
+            joinColumns = @JoinColumn(name = "id_medicamento"),
+            inverseJoinColumns = @JoinColumn(name = "id_lote")
+    )
+    @ManyToMany(fetch = FetchType.LAZY)
+    public List<LoteMedicamento> lotes = new ArrayList<>();
     
     @Column(name = "quantidade_inicial", nullable = false)
     public BigDecimal quantidadeInicial;

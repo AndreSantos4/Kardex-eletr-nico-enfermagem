@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarContencaoQuimica.css">
+
+<!-- Popup Registar Contenção Química -->
+<div class="popup-contencao-overlay" id="popup-registar-contencao" style="display: none;">
+	<div class="popup-contencao-box">
+		<div class="popup-contencao-header">
+			<span>Registar Contenção Química</span>
+			<button class="popup-contencao-close" onclick="fecharPopupRegistarContencao()">&#10005;</button>
+		</div>
+		<div class="popup-contencao-content">
+			<form id="form-registar-contencao" onsubmit="submeterRegistarContencao(event)">
+				<div class="popup-contencao-row-2cols">
+					<div class="popup-contencao-field">
+						<label class="popup-contencao-label">MEDICAMENTO *</label>
+						<select id="medicamento-contencao" class="popup-contencao-select">
+							<option value="HALOPERIDOL_5">Haloperidol 5mg IM</option>
+							<option value="HALOPERIDOL_10">Haloperidol 10mg IM</option>
+							<option value="LORAZEPAM_1">Lorazepam 1mg IM</option>
+							<option value="LORAZEPAM_2">Lorazepam 2mg IM</option>
+							<option value="DIAZEPAM_5">Diazepam 5mg IM</option>
+							<option value="DIAZEPAM_10">Diazepam 10mg IM</option>
+							<option value="OLANZAPINA_5">Olanzapina 5mg IM</option>
+							<option value="OLANZAPINA_10">Olanzapina 10mg IM</option>
+							<option value="MIDAZOLAM_5">Midazolam 5mg IM</option>
+						</select>
+					</div>
+					<div class="popup-contencao-field">
+						<label class="popup-contencao-label">VIA *</label>
+						<select id="via-contencao" class="popup-contencao-select">
+							<option value="IM">IM</option>
+							<option value="IV">IV</option>
+							<option value="SC">SC</option>
+							<option value="ORAL">Oral</option>
+						</select>
+					</div>
+				</div>
+				<div class="popup-contencao-row-2cols">
+					<div class="popup-contencao-field">
+						<label class="popup-contencao-label">DURAÇÃO ESTIMADA *</label>
+						<input type="text" id="duracao-contencao" class="popup-contencao-input" placeholder="Ex: 2-4h" />
+					</div>
+					<div class="popup-contencao-field">
+						<label class="popup-contencao-label">DOSE ADMINISTRADA *</label>
+						<input type="text" id="dose-contencao" class="popup-contencao-input" placeholder="Ex: 5mg" />
+					</div>
+				</div>
+				<div class="popup-contencao-field">
+					<label class="popup-contencao-label">DATA/HORA *</label>
+					<input type="datetime-local" id="data-hora-contencao" class="popup-contencao-input" />
+				</div>
+				<div class="popup-contencao-field">
+					<label class="popup-contencao-label">JUSTIFICAÇÃO CLÍNICA *</label>
+					<textarea id="justificacao-contencao" class="popup-contencao-textarea" placeholder="Descreva o comportamento que justificou a contenção química, medidas alternativas tentadas e resposta do utente..." rows="4"></textarea>
+				</div>
+				<div class="popup-contencao-info-note">
+					<div class="popup-contencao-info-icon">i</div>
+					<div class="popup-contencao-info-text">
+						<strong>Registo crítico e imutável - contexto psiquiátrico</strong>
+						<span>Requer autorização médica e justificação clínica detalhada.</span>
+						<span>Registo permanente no processo clínico.</span>
+					</div>
+				</div>
+				<div class="popup-contencao-actions">
+					<button type="button" class="btn-cancelar-contencao" onclick="fecharPopupRegistarContencao()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-contencao">REGISTAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
