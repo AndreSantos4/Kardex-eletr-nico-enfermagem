@@ -16,7 +16,7 @@ public record MedicamentoDTO(
     @JsonProperty("classeFarmacologica") ClasseFarmacologica classeFarmacologica,
     @JsonProperty("dosagens") DosagemDTO[] dosagens,
     @JsonProperty("dosagemMaxDiaria") DosagemDTO dosagemMaxDiaria, 
-    @JsonProperty("quantidade") Long quantidade,
+    @JsonProperty("lotes") List<LoteMedicamentoDTO> lotes,
     @JsonProperty("unidadeMedida") UnidadeMedida unidadeMedida,
     @JsonProperty("altoRisco") boolean altoRisco,
     @JsonProperty("active") boolean active,
