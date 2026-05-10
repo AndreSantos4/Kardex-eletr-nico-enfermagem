@@ -412,6 +412,8 @@ public class ProcessServiceImpl implements ProcessService{
 
         var containments = process.getContencoes();
         return parametrosMapper.toContainmentDtoList(containments);
+    }
+
 	@Override
 	@Transactional
 	public void createCarePlan(Long processId, CreateCarePlanDTO data) {
