@@ -35,7 +35,7 @@ function irParaKardex() {
 }
 
 function irParaHistorico() {
-    window.location.href = "medicoListaUtentes";
+    window.location.href = "medicoHistoricoPrescricoes?id=" + id;
 }
 
 function getIntervaloEmHoras() {
@@ -237,7 +237,7 @@ function carregarPrescricoes(dados) {
             medicacaoAtivaContainer.innerHTML = "<p>Sem prescrições ativas</p>";
             return;
         }
-        const prescricoesAtivas = prescricoes.filter(p => p.ativa === true);
+        const prescricoesAtivas = prescricoes.filter(p => p.estado === "ATIVA");
         if (prescricoesAtivas.length === 0) {
             medicacaoAtivaContainer.innerHTML = "<p>Sem prescrições ativas</p>";
             return;

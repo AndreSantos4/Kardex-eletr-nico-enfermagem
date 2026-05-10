@@ -15,6 +15,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
@@ -23,6 +24,12 @@ import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.SuspensaoClinica;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
@@ -116,13 +123,24 @@ public class ProcessServiceImpl implements ProcessService{
         return dose.getFirst();
 	}
 
-        @Override
+    @Override
     @Transactional
-    public void suspendPrescription(Long prescriptionId) {
+    public void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data) {
         var prescription = prescricaoRepository.findById(prescriptionId)
             .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
+
+        var suspensao = new SuspensaoClinica(null, data.dataRetorno(), data.motivo(), data.observacoes());
         
-        prescription.setEstado(PrescriptionState.SUSPENSA);
+        if(data.definitiva()){
+            prescription.setEstado(PrescriptionState.SUSPENSA_DEFINITIVA);
+        } else {
+            prescription.setEstado(PrescriptionState.SUSPENSA_TEMPORARIA);
+            if(data.dataRetorno() == null){
+                throw new KardexException("Para suspensoes temporarias, e necessario especificar a data de retorno");
+            }
+        }
+        
+        prescription.setSuspensao(suspensao);
         prescricaoRepository.save(prescription);
     }
 
