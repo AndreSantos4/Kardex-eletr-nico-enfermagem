@@ -56,9 +56,6 @@ public class Medicamento {
     @ManyToMany(fetch = FetchType.LAZY)
     public List<LoteMedicamento> lotes = new ArrayList<>();
     
-    @Column(name = "quantidade_inicial", nullable = false)
-    public BigDecimal quantidadeInicial;
-    
     @Column(name = "unidadeMedida", nullable = false)
     @Enumerated(EnumType.STRING)
     public UnidadeMedida unidadeMedida;
