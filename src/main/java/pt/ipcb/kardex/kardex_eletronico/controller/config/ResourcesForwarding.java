@@ -69,6 +69,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroHistoricoPrescricoes.html?id=" + id);
     }
 
+    @GetMapping("/enfermeiroPlanoCuidados")
+    public ModelAndView enfermeiroPlanoCuidados(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPlanoCuidados.html?id=" + id);
+    }
+
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")
@@ -79,6 +84,11 @@ public class ResourcesForwarding {
     @GetMapping("/enfermeiroChefeListaUtentes")
     public ModelAndView enfermeiroChefeListaUtentes() {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeListaUtentes.html");
+    }
+
+    @GetMapping("/enfermeiroChefeGerirTurnos")
+    public ModelAndView enfermeiroChefeGerirTurnos() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeGerirTurnos.html");
     }
 
     /* MÉDICO */

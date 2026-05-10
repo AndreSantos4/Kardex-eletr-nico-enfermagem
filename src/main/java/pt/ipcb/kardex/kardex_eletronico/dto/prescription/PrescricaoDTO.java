@@ -17,6 +17,7 @@ public record PrescricaoDTO(
     @JsonProperty("sos") Boolean sos,
     @JsonProperty("motivo") String motivo,
     @JsonProperty("estado") PrescriptionState estado,
+    @JsonProperty("dataRetorno") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataRetorno,
     @JsonProperty("inicio") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataInicio,
     @JsonProperty("fim") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataFim,
     @JsonProperty("dose") DosagemDTO dose,
