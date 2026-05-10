@@ -12,6 +12,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateInterventionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
@@ -21,18 +22,14 @@ import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.PlanoCuidados;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 public interface ProcessService {
 
-    public ProcessoClinicoDTO createProcess(Utente patient, CreateProcessDTO data);
-
-    void createPrescription(Long processId, CreatePrescriptionDTO data);
-
-    void administrateMedication(Long prescriptionId, CreateAdministrationDTO data);
-
-    List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to);
+    ProcessoClinicoDTO createProcess(Utente patient, CreateProcessDTO data);
 
     void editActiveProcess(Utente patient, UpdatePacientFileDTO data);
 
@@ -40,27 +37,11 @@ public interface ProcessService {
 
     List<CamaDTO> getAllBeds(boolean occupied);
 
-    public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns);
+    void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns);
 
-    public void dischargePatient(Long processId, DischargePatientDTO data);
+    void dischargePatient(Long processId, DischargePatientDTO data);
 
-    public ProcessoClinicoDTO getKardexProcess(Utente patient);
+    ProcessoClinicoDTO getKardexProcess(Utente patient);
 
-    public void registerCateter(Long processId, CreateCateterDTO data);
-
-    public List<CateterDTO> getAllCateteres(Long processId);
-
-    public void registerIncident(Long processId, CreateIncidenteDTO data);
-
-    public List<IncidenteDTO> getAllIncidents(Long processId);
-
-    public void registerContainment(Long processId, CreateContencaoDTO data);
-
-    public List<ContencaoDTO> getAllCointainments(Long processId);
-  
-    public void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data);
-
-    public void createCarePlan(Long processId, CreateCarePlanDTO data);
-
-    public PlanoCuidadosDTO getCarePlan(Long processId);
+    ProcessoClinico getValidProcess(Long processId);
 }

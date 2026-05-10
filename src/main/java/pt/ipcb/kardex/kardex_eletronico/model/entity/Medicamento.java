@@ -48,13 +48,8 @@ public class Medicamento {
     @JoinColumn(name = "id_dosagem_max")
     public Dosagem dosagemMaxDiaria;
 
-    @JoinTable(
-            name = "medicamento_lote",
-            joinColumns = @JoinColumn(name = "id_medicamento"),
-            inverseJoinColumns = @JoinColumn(name = "id_lote")
-    )
-    @ManyToMany(fetch = FetchType.LAZY)
-    public List<LoteMedicamento> lotes = new ArrayList<>();
+    @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LoteMedicamento> lotes = new ArrayList<>();
     
     @Column(name = "unidadeMedida", nullable = false)
     @Enumerated(EnumType.STRING)

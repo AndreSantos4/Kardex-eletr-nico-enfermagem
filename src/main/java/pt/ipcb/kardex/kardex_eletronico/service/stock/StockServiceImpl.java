@@ -145,8 +145,6 @@ public class StockServiceImpl implements StockService{
         batch.setQuantidade(data.quantidade());
 
         medication.getLotes().add(batch);
-
-        medicamentoRepository.save(medication);
     }
 
     @Override
