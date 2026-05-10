@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarContencaoQuimica.css">
 
-<!-- Popup Registar Contenção Química -->
-<div class="popup-contencao-overlay" id="popup-registar-contencao" style="display: none;">
+<div class="popup-contencao-overlay" style="display: none;">
 	<div class="popup-contencao-box">
 		<div class="popup-contencao-header">
 			<span>Registar Contenção Química</span>
@@ -37,7 +36,8 @@
 				<div class="popup-contencao-row-2cols">
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">DURAÇÃO ESTIMADA *</label>
-						<input type="text" id="duracao-contencao" class="popup-contencao-input" placeholder="Ex: 2-4h" />
+						<input type="text" id="duracao-contencao" class="popup-contencao-input"
+							placeholder="Ex: 2-4h" />
 					</div>
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">DOSE ADMINISTRADA *</label>
@@ -50,7 +50,9 @@
 				</div>
 				<div class="popup-contencao-field">
 					<label class="popup-contencao-label">JUSTIFICAÇÃO CLÍNICA *</label>
-					<textarea id="justificacao-contencao" class="popup-contencao-textarea" placeholder="Descreva o comportamento que justificou a contenção química, medidas alternativas tentadas e resposta do utente..." rows="4"></textarea>
+					<textarea id="justificacao-contencao" class="popup-contencao-textarea"
+						placeholder="Descreva o comportamento que justificou a contenção química, medidas alternativas tentadas e resposta do utente..."
+						rows="4"></textarea>
 				</div>
 				<div class="popup-contencao-info-note">
 					<div class="popup-contencao-info-icon">i</div>
@@ -61,7 +63,8 @@
 					</div>
 				</div>
 				<div class="popup-contencao-actions">
-					<button type="button" class="btn-cancelar-contencao" onclick="fecharPopupRegistarContencao()">CANCELAR</button>
+					<button type="button" class="btn-cancelar-contencao"
+						onclick="fecharPopupRegistarContencao()">CANCELAR</button>
 					<button type="submit" class="btn-confirmar-contencao">REGISTAR</button>
 				</div>
 			</form>
