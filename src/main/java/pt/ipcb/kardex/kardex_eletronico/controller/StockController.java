@@ -57,6 +57,7 @@ public class StockController {
         return ResponseEntity.ok(ApiResponse.ok("Medicamento ativado com sucesso", null));
     }
 
+    @PostMapping("/medications/{medicationId}/batches")
     public ResponseEntity<ApiResponse<?>> recordStockChange(@PathVariable Long medicationId, @RequestBody StockChangeDTO data){
         service.recordStockChange(medicationId, data);
         return ResponseEntity.ok(ApiResponse.ok("Entrada de stock registada com sucesso", null));
