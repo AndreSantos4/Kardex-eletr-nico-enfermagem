@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
@@ -28,14 +30,17 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.SuspensaoClinica;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.PlanoCuidadosMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.PlanoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
@@ -58,6 +63,8 @@ public class ProcessServiceImpl implements ProcessService{
     private final CamaRepository camaRepository;
     private final RecordService recordService;
     private final StockService stockService;
+    private final PlanoCuidadosMapper planoCuidadosMapper;
+    private final PlanoRepository planoRepository;
 
     @Override
     @Transactional
@@ -154,9 +161,7 @@ public class ProcessServiceImpl implements ProcessService{
         var administration = administracaoMapper.fromCreate(data);
         if(administration.getAdministrado()){
             var lastAdministration = prescricaoRepository.findMostRecentByPrescricao(prescriptionId);
-            if(lastAdministration.isPresent()){
-                validateAdministrationInterval(administration, lastAdministration.get());
-            }
+            lastAdministration.ifPresent(administracaoMedicacao -> validateAdministrationInterval(administration, administracaoMedicacao));
         }
 
         var worker = workerService.getAutenticatedWorker();
@@ -172,7 +177,7 @@ public class ProcessServiceImpl implements ProcessService{
     }
 
     @Transactional(readOnly = true)
-    private void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
+    protected void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
         var prescription = lastAdministracaoMedicacao.getPrescricao();
         var now = LocalDateTime.now();
         var interval = prescription.getFrequencia().getIntervaloMinHoras();
@@ -318,5 +323,35 @@ public class ProcessServiceImpl implements ProcessService{
     public ProcessoClinicoDTO getKardexProcess(Utente patient) {
         var process = repository.findKardexProcess(patient.getId()).orElse(null);
         return mapper.toDTO(process);
+    }
+
+	@Override
+	@Transactional
+	public void createCarePlan(Long processId, CreateCarePlanDTO data) {
+		var process = getValidProcess(processId);
+		if(!process.getPlanoCuidados().isEmpty()){
+		    for (PlanoCuidados plan : process.getPlanoCuidados()) {
+                plan.setAtivo(false);
+            }
+		}
+
+		var worker = workerService.getAutenticatedWorker();
+
+		var plan = planoCuidadosMapper.toEntity(data);
+        plan.setVersao(process.getPlanoCuidados().size() + 1);
+        plan.getDiagnosticos().forEach(d -> d.setPlanoCuidados(plan));
+		plan.setProcessoClinico(process);
+		plan.setAutor(worker);
+
+		process.getPlanoCuidados().add(plan);
+		repository.save(process);
+	}
+
+    @Override
+    public PlanoCuidadosDTO getCarePlan(Long processId) {
+        var process = getValidProcess(processId);
+        var plan = planoRepository.findTopByProcessoClinicoOrderByVersaoDesc(process);
+
+        return planoCuidadosMapper.toDto(plan);
     }
 }
