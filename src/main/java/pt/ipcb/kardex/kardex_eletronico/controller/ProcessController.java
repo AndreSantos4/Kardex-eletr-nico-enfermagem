@@ -24,8 +24,11 @@ import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateContencaoD
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
@@ -66,8 +69,8 @@ public class ProcessController {
     }
 
     @PatchMapping("/prescriptions/{prescriptionId}/suspend")
-    public ResponseEntity<ApiResponse<?>> suspendPrescription(@PathVariable("prescriptionId") Long prescriptionId){
-        service.suspendPrescription(prescriptionId);
+    public ResponseEntity<ApiResponse<?>> suspendPrescription(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody SuspendPrescriptionDTO data){
+        service.suspendPrescription(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Prescricao suspendida com sucesso"));
     }
 
@@ -123,5 +126,15 @@ public class ProcessController {
     public ResponseEntity<ApiResponse<List<ContencaoDTO>>> getAllContainments(@PathVariable("processId") Long processId){
         var cateteres = service.getAllCointainments(processId);
         return ResponseEntity.ok(ApiResponse.ok("Contencoes obtidos com sucesso", cateteres));
+    @PostMapping("/{processId}/plan")
+    public ResponseEntity<ApiResponse<?>> createCarePlan(@PathVariable("processId") Long processId, @RequestBody CreateCarePlanDTO data){
+        service.createCarePlan(processId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Plano de cuidados criado com sucesso", null));
+    }
+
+    @GetMapping("/{processId}/plan")
+    public ResponseEntity<ApiResponse<PlanoCuidadosDTO>> getCarePlan(@PathVariable("processId") Long processId){
+        var plan = service.getCarePlan(processId);
+        return ResponseEntity.ok(ApiResponse.ok("Plano de cuidados obtido com sucesso", plan));
     }
 }
