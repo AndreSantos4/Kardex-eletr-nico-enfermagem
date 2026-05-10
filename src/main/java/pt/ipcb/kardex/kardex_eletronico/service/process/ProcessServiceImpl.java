@@ -375,7 +375,7 @@ public class ProcessServiceImpl implements ProcessService{
         var dose = medication.getDosagens().stream().filter(d -> d.id == data.idDose()).findFirst()
             .orElseThrow(() -> new KardexException("Este medicamento nao possui esta dose disponivel"));
 
-        subtractFromMedication(dose, medication);
+        stockService.subtractFromStock(medication, dose.getDose());
 
         var containment = parametrosMapper.fromCreateContainmentDto(data);
         containment.setProcessoClinico(process);
