@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "Inter", "IBM Plex Sans", sans-serif;
+    --font-display: "Manrope", "Inter", sans-serif;
+}
+
+.popup-intervencao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-intervencao-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-intervencao-header {
+    background: var(--bg-dark);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-intervencao-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 700;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.popup-intervencao-close:hover {
+    background: #e74c3c;
+}
+
+.popup-intervencao-content {
+    padding: 22px 24px 24px;
+}
+
+.popup-intervencao-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.popup-intervencao-row-2cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.popup-intervencao-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-intervencao-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-intervencao-select,
+.popup-intervencao-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 999px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px 18px;
+    width: 100%;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.popup-intervencao-select:focus,
+.popup-intervencao-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-intervencao-input::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+}
+
+.popup-intervencao-select option {
+    color: var(--bg-dark);
+    background: var(--white);
+}
+
+.popup-intervencao-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 14px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 18px;
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.popup-intervencao-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-intervencao-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+}
+
+.popup-intervencao-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-cancelar-intervencao,
+.btn-confirmar-intervencao {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 11px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-intervencao:hover,
+.btn-confirmar-intervencao:hover {
+    background: var(--white);
+    color: var(--primary);
+}
