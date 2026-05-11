@@ -1,8 +1,7 @@
 <link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarIncidenteClinico.css">
 
-<!-- Popup Registar Incidente Clínico -->
-<div class="popup-incidente-overlay" id="popup-registar-incidente" >
-	<div class="popup-incidente-box" style="display: none;">
+<div class="popup-incidente-overlay" style="display: none;">
+	<div class="popup-incidente-box">
 		<div class="popup-incidente-header">
 			<span>Registar Incidente Clínico</span>
 			<button class="popup-incidente-close" onclick="fecharPopupRegistarIncidente()">&#10005;</button>
@@ -39,14 +38,16 @@
 				</div>
 				<div class="popup-incidente-field">
 					<label class="popup-incidente-label">DESCRIÇÃO *</label>
-					<textarea id="descricao-incidente" class="popup-incidente-textarea" placeholder="Utente com agitação psicomotora. Administrado Lorazepam 1mg SOS. Resolveu em 15min." rows="4"></textarea>
+					<textarea id="descricao-incidente" class="popup-incidente-textarea"
+						placeholder="Descreva o incidente de forma objetiva e cronológica." rows="4"></textarea>
 				</div>
 				<div class="popup-incidente-info-note">
 					<div class="popup-incidente-info-icon">i</div>
 					<span>Registo imutável após confirmação.</span>
 				</div>
 				<div class="popup-incidente-actions">
-					<button type="button" class="btn-cancelar-incidente" onclick="fecharPopupRegistarIncidente()">CANCELAR</button>
+					<button type="button" class="btn-cancelar-incidente"
+						onclick="fecharPopupRegistarIncidente()">CANCELAR</button>
 					<button type="submit" class="btn-confirmar-incidente">REGISTAR</button>
 				</div>
 			</form>
