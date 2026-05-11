@@ -11,37 +11,39 @@
 				<div class="popup-contencao-row-2cols">
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">MEDICAMENTO *</label>
-						<select id="medicamento-contencao" class="popup-contencao-select">
-							<option value="HALOPERIDOL_5">Haloperidol 5mg IM</option>
-							<option value="HALOPERIDOL_10">Haloperidol 10mg IM</option>
-							<option value="LORAZEPAM_1">Lorazepam 1mg IM</option>
-							<option value="LORAZEPAM_2">Lorazepam 2mg IM</option>
-							<option value="DIAZEPAM_5">Diazepam 5mg IM</option>
-							<option value="DIAZEPAM_10">Diazepam 10mg IM</option>
-							<option value="OLANZAPINA_5">Olanzapina 5mg IM</option>
-							<option value="OLANZAPINA_10">Olanzapina 10mg IM</option>
-							<option value="MIDAZOLAM_5">Midazolam 5mg IM</option>
+						<select id="medicamento-contencao" class="popup-contencao-select"
+							onchange="atualizarDosagemContencao()">
+							<option value="" disabled selected>A carregar...</option>
 						</select>
 					</div>
 					<div class="popup-contencao-field">
-						<label class="popup-contencao-label">VIA *</label>
-						<select id="via-contencao" class="popup-contencao-select">
-							<option value="IM">IM</option>
-							<option value="IV">IV</option>
-							<option value="SC">SC</option>
-							<option value="ORAL">Oral</option>
+						<label class="popup-contencao-label">DOSAGEM *</label>
+						<select id="dosagem-contencao" class="popup-contencao-select">
+							<option value="" disabled selected>Selecione o medicamento</option>
 						</select>
 					</div>
 				</div>
 				<div class="popup-contencao-row-2cols">
 					<div class="popup-contencao-field">
+						<label class="popup-contencao-label">VIA *</label>
+						<select id="via-contencao" class="popup-contencao-select">
+							<option value="ORAL">Oral</option>
+							<option value="NASAL">Nasal</option>
+							<option value="OCULAR">Ocular</option>
+							<option value="AURICULAR">Auricular</option>
+							<option value="RETAL">Retal</option>
+							<option value="SUBLINGUAL">Sublingual</option>
+							<option value="CUTANEA">Cutânea</option>
+							<option value="SUBCUTANEA">Subcutânea</option>
+							<option value="INTRAVENOSA">Intravenosa</option>
+							<option value="INTRAMUSCULAR">Intramuscular</option>
+							<option value="INTRADERMICA">Intradérmica</option>
+						</select>
+					</div>
+					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">DURAÇÃO ESTIMADA *</label>
 						<input type="text" id="duracao-contencao" class="popup-contencao-input"
 							placeholder="Ex: 2-4h" />
-					</div>
-					<div class="popup-contencao-field">
-						<label class="popup-contencao-label">DOSE ADMINISTRADA *</label>
-						<input type="text" id="dose-contencao" class="popup-contencao-input" placeholder="Ex: 5mg" />
 					</div>
 				</div>
 				<div class="popup-contencao-field">
