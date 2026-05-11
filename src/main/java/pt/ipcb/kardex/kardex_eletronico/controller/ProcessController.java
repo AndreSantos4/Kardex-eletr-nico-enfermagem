@@ -27,6 +27,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateInterventionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.RegisterInterventionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
@@ -151,5 +152,11 @@ public class ProcessController {
     public ResponseEntity<ApiResponse<?>> addIntervention(@PathVariable Long processId, @RequestBody CreateInterventionDTO data){
         planService.addIntervention(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Intervencao adicionada com sucesso", null));
+    }
+
+    @PostMapping("/interventions/{interventionId}")
+    public ResponseEntity<ApiResponse<?>> registerIntervention(@PathVariable Long interventionId, @RequestBody RegisterInterventionDTO data){
+        planService.registerIntervention(interventionId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Intervencao registada com sucesso", null));
     }
 }
