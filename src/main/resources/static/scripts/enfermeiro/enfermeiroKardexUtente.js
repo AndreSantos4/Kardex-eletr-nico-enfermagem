@@ -1,6 +1,10 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
+function abrirPaginaPlano() {
+  window.location.href = `enfermeiroPlanoCuidados?id=${id}`;
+}
+
 let processoId = null;
 let utenteData = null;
 let processoData = null;
@@ -8,8 +12,7 @@ let medicoData = null;
 let caseData = null;
 const TOLERANCIA_ATRASO_MIN = 30;
 let _popupAltoRisco = false;
-const TOLERANCIA_ATRASO_MIN = 30;
-let _popupAltoRisco = false;
+let prescricaoSelecionadaId = null;
 
 async function carregarPopUp(caminho) {
   const container = document.getElementById("popup-container");
@@ -151,10 +154,10 @@ async function carregarMedicosNoSelect(selectId) {
 async function carregarCamasNoSelect(selectId) {
   try {
     const res = await fetch(
-      "http://localhost:8080/api/processes/beds?o=false",
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      },
+        "http://localhost:8080/api/processes/beds?o=false",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
     );
     const data = await res.json();
     if (!data.success) {
@@ -176,22 +179,22 @@ async function carregarCamasNoSelect(selectId) {
 
 async function abrirPopUpEditarFichaUtente() {
   await carregarPopUp(
-    "../../pages/enfermeiro/popups/popupEditarFichaUtente.html",
+      "../../pages/enfermeiro/popups/popupEditarFichaUtente.html",
   );
 
   document.getElementById("edit-name").value = utenteData.nome ?? "";
   document.getElementById("edit-sexo").value = utenteData.sexo ?? "";
   document.getElementById("edit-n-identificacao").value =
-    utenteData.numeroCC ?? "";
+      utenteData.numeroCC ?? "";
   document.getElementById("edit-n-sns").value = utenteData.numeroSNS ?? "";
   document.getElementById("edit-contacto").value = utenteData.contacto ?? "";
   document.getElementById("edit-contacto-emg").value =
-    utenteData.contactoEmergencia ?? "";
+      utenteData.contactoEmergencia ?? "";
 
   if (utenteData.dataNascimento) {
     const [dia, mes, ano] = utenteData.dataNascimento.split("/");
     document.getElementById("edit-data-nascimento").value =
-      `${ano}-${mes}-${dia}`;
+        `${ano}-${mes}-${dia}`;
   }
 
   criarSearchableSelect("edit-medico-responsavel", [], "Pesquisar médico...");
@@ -199,16 +202,16 @@ async function abrirPopUpEditarFichaUtente() {
 
   await carregarMedicosNoSelect("edit-medico-responsavel");
   definirValorSearchableSelect(
-    "edit-medico-responsavel",
-    String(medicoData.id ?? ""),
-    abreviarNome(medicoData.nome ?? ""),
+      "edit-medico-responsavel",
+      String(medicoData.id ?? ""),
+      abreviarNome(medicoData.nome ?? ""),
   );
 
   await carregarCamasEdicao();
   definirValorSearchableSelect(
-    "edit-cama",
-    caseData.cama !== "—" ? String(caseData.cama) : "",
-    caseData.cama !== "—" ? `Cama ${caseData.cama}` : "Sem cama",
+      "edit-cama",
+      caseData.cama !== "—" ? String(caseData.cama) : "",
+      caseData.cama !== "—" ? `Cama ${caseData.cama}` : "Sem cama",
   );
 
   document.querySelectorAll("input[name='edit-flags']").forEach((cb) => {
@@ -219,7 +222,7 @@ async function abrirPopUpEditarFichaUtente() {
   alergiaBox.innerHTML = "";
 
   const alergias =
-    utenteData.alergias?.length > 0 ? utenteData.alergias : [{ nome: "" }];
+      utenteData.alergias?.length > 0 ? utenteData.alergias : [{ nome: "" }];
   alergias.forEach((a) => {
     const valor = typeof a === "string" ? a : (a.nome ?? "");
     adicionarLinhaAlergiaEditar(alergiaBox, valor);
@@ -267,8 +270,8 @@ async function carregarCamasEdicao() {
 
     const camaActualId = caseData.cama !== "—" ? String(caseData.cama) : null;
     const camaActual = camaActualId
-      ? ocupadas.find((c) => String(c.id) === camaActualId)
-      : null;
+        ? ocupadas.find((c) => String(c.id) === camaActualId)
+        : null;
     const todas = [...livres];
     if (camaActual && !todas.find((c) => String(c.id) === camaActualId)) {
       todas.push(camaActual);
@@ -321,25 +324,23 @@ async function editarUtente(event) {
   const dataNascimento = `${dia}/${mes}/${ano}`;
 
   const alergias = Array.from(
-    document
-      .getElementById("edit-alergias-box")
-      .querySelectorAll('input[type="text"]'),
+      document
+          .getElementById("edit-alergias-box")
+          .querySelectorAll('input[type="text"]'),
   )
-    .map((i) => i.value.trim())
-    .filter(Boolean)
-    .map((nome) => ({ nome }));
+      .map((i) => i.value.trim())
+      .filter(Boolean)
+      .map((nome) => ({ nome }));
 
   const todasFlags = Array.from(
-    document.querySelectorAll("input[name='edit-flags']"),
+      document.querySelectorAll("input[name='edit-flags']"),
   );
   const flagsRisco = todasFlags
-    .filter((cb) => cb.checked)
-    .map((cb) => cb.value);
+      .filter((cb) => cb.checked)
+      .map((cb) => cb.value);
 
   const camaValor = document.getElementById("edit-cama").value;
   const camaId = camaValor && camaValor !== "—" ? camaValor : null;
-
-  console.log(camaId);
 
   const body = {
     nome: document.getElementById("edit-name").value.trim(),
@@ -349,10 +350,10 @@ async function editarUtente(event) {
     numeroSNS: parseInt(document.getElementById("edit-n-sns").value),
     contacto: parseInt(document.getElementById("edit-contacto").value),
     contactoEmergencia: parseInt(
-      document.getElementById("edit-contacto-emg").value,
+        document.getElementById("edit-contacto-emg").value,
     ),
     medicoId: parseInt(
-      document.getElementById("edit-medico-responsavel").value,
+        document.getElementById("edit-medico-responsavel").value,
     ),
     camaId,
     alergias,
@@ -381,12 +382,12 @@ async function editarUtente(event) {
 
 async function abrirPopUpSinaisVitais() {
   await carregarPopUp(
-    "../../pages/enfermeiro/popups/popupRegistarSinaisVitais.html",
+      "../../pages/enfermeiro/popups/popupRegistarSinaisVitais.html",
   );
   const agora = new Date();
   const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16);
+      .toISOString()
+      .slice(0, 16);
   document.getElementById("data-hora").value = local;
   abrirPopUp(".pop-up-sinaisVitais");
 }
@@ -406,13 +407,13 @@ async function registarSinaisVitais(event) {
 
   const body = {
     tensaoArteriaSistolica: parseInt(
-      document.getElementById("pa-sistolica").value,
+        document.getElementById("pa-sistolica").value,
     ),
     tensaoArteriaDistolica: parseInt(
-      document.getElementById("pa-diastolica").value,
+        document.getElementById("pa-diastolica").value,
     ),
     frequenciaCardiaca: parseInt(
-      document.getElementById("freq-cardiaca").value,
+        document.getElementById("freq-cardiaca").value,
     ),
     temperatura: parseInt(document.getElementById("temperatura").value),
     spo2: parseInt(document.getElementById("spo2").value),
@@ -424,30 +425,17 @@ async function registarSinaisVitais(event) {
 
   try {
     const resp = await fetch(
-      `http://localhost:8080/api/processes/${processoId}/vitals`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        `http://localhost:8080/api/processes/${processoId}/vitals`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      },
-    );
-    const resp = await fetch(
-      `http://localhost:8080/api/processes/${processoId}/vitals`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(body),
-      },
     );
 
-    if (!resp.ok)
-      throw new Error((await resp.text()) || "Erro ao registar sinais vitais");
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar sinais vitais");
 
@@ -460,16 +448,16 @@ async function registarSinaisVitais(event) {
 
 function atualizarSinaisVitaisUI(sv) {
   document.getElementById("sv-tensao").innerHTML =
-    `${sv.tensaoArteriaSistolica}/${sv.tensaoArteriaDistolica}<br><small style="font-size:11px">mmHg</small>`;
+      `${sv.tensaoArteriaSistolica}/${sv.tensaoArteriaDistolica}<br><small style="font-size:11px">mmHg</small>`;
   document.getElementById("sv-freq-card").innerHTML =
-    `${sv.frequenciaCardiaca}<br><small style="font-size:11px">bpm</small>`;
+      `${sv.frequenciaCardiaca}<br><small style="font-size:11px">bpm</small>`;
   document.getElementById("sv-temperatura").innerHTML =
-    `${sv.temperatura}<br><small style="font-size:11px">°C</small>`;
+      `${sv.temperatura}<br><small style="font-size:11px">°C</small>`;
   document.getElementById("sv-spo2").innerHTML =
-    `${sv.spo2}<br><small style="font-size:11px">%</small>`;
+      `${sv.spo2}<br><small style="font-size:11px">%</small>`;
   document.getElementById("sv-dor").textContent = sv.dor;
   document.getElementById("sv-glicemia").innerHTML =
-    `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
+      `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
 }
 
 async function carregarUtente(id) {
@@ -488,12 +476,8 @@ async function carregarUtente(id) {
 
     if (!dados)
       throw new Error("Estrutura da resposta inesperada: dados ausentes");
-    if (!dados)
-      throw new Error("Estrutura da resposta inesperada: dados ausentes");
 
     const processo = dados.processo;
-    if (!processo)
-      throw new Error("Estrutura da resposta inesperada: processo ausente");
     if (!processo)
       throw new Error("Estrutura da resposta inesperada: processo ausente");
 
@@ -517,7 +501,6 @@ async function carregarUtente(id) {
       diagnosticoPrincipal: processo.diagnosticoPrincipal,
       sinaisVitais: processo.sinaisVitais ?? [],
       prescricoes: processo.prescricoes ?? [],
-      prescricoes: processo.prescricoes ?? [],
     };
 
     medicoData = {
@@ -531,53 +514,39 @@ async function carregarUtente(id) {
 
     const [dia, mes, ano] = processo.dataEntrada.split("/");
     const dias = Math.floor(
-      (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
-    );
-    const dias = Math.floor(
-      (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
+        (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
     );
 
     document.getElementById("header-title").textContent =
-      `Kardex - ${utenteData.nome}`;
-    document.getElementById("header-title").textContent =
-      `Kardex - ${utenteData.nome}`;
+        `Kardex - ${utenteData.nome}`;
     document.getElementById("header-sub").textContent =
-      `Proc. ${processoData.id} · Cama ${caseData.cama} · ${processoData.diagnosticoPrincipal} · ${dias} dia(s) Internado`;
+        `Proc. ${processoData.id} · Cama ${caseData.cama} · ${processoData.diagnosticoPrincipal} · ${dias} dia(s) Internado`;
     document.getElementById("utente-nome").textContent = utenteData.nome;
     document.getElementById("sexo-idade").textContent =
-      `${utenteData.sexo} · ${utenteData.dataNascimento}`;
-    document.getElementById("sexo-idade").textContent =
-      `${utenteData.sexo} · ${utenteData.dataNascimento}`;
+        `${utenteData.sexo} · ${utenteData.dataNascimento}`;
     document.getElementById("admissao").textContent = processoData.dataEntrada;
     document.getElementById("medico").textContent = medicoData.nome;
     document.getElementById("proc-nasc").textContent =
-      `${processoData.id} · Nasc. ${utenteData.dataNascimento}`;
-    document.getElementById("proc-nasc").textContent =
-      `${processoData.id} · Nasc. ${utenteData.dataNascimento}`;
+        `${processoData.id} · Nasc. ${utenteData.dataNascimento}`;
     document.getElementById("cama").textContent = caseData.cama;
     document.getElementById("estado").textContent = `Internado · Dia ${dias}`;
     document.getElementById("diagnostico").textContent =
-      processoData.diagnosticoPrincipal;
-    document.getElementById("diagnostico").textContent =
-      processoData.diagnosticoPrincipal;
+        processoData.diagnosticoPrincipal;
 
     const riscos = utenteData.flags.map((r) => {
       const t = r.replace("RISCO_", "").toLowerCase();
       return t.charAt(0).toUpperCase() + t.slice(1);
     });
     document.getElementById("riscos").textContent =
-      `Riscos: ${riscos.join(" | ")}`;
-    document.getElementById("riscos").textContent =
-      `Riscos: ${riscos.join(" | ")}`;
+        `Riscos: ${riscos.join(" | ")}`;
 
     document.getElementById("alergias-list").innerHTML = utenteData.alergias
-      .map((a) => `<div>${typeof a === "string" ? a : a.nome}</div>`)
-      .join("");
+        .map((a) => `<div>${typeof a === "string" ? a : a.nome}</div>`)
+        .join("");
 
     const svs = processoData.sinaisVitais;
     if (svs?.length > 0) atualizarSinaisVitaisUI(svs[svs.length - 1]);
 
-    renderizarMedicacaoAtiva(processoData.prescricoes);
     renderizarMedicacaoAtiva(processoData.prescricoes);
   } catch (err) {
     console.error("Erro em carregarUtente:", err);
@@ -589,38 +558,31 @@ function irParaHistoricoPrescricoes() {
   window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
 }
 
-carregarUtente(id);
-let prescricaoSelecionadaId = null;
-
 function renderizarMedicacaoAtiva(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
 
-  console.log(prescricoes);
-
   const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
-
-  console.log(ativas);
 
   if (ativas.length === 0) {
     body.innerHTML =
-      "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
+        "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
     return;
   }
 
   ativas.forEach((p) => {
     const nomeMed = p.medicamento?.nome ?? "Medicamento não especificado";
     const doseVal = p.dose
-      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
-      : "—";
+        ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
+        : "—";
     const via = p.medicamento?.viaAdministracao ?? "—";
     const freq = p.frequencia
-      ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
-      : "—";
+        ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
+        : "—";
     const fim = p.fim ?? "—";
 
     const altoRisco =
-      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+        (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
     const horariosPrevistos = p.horariosPrevistos ?? [];
 
     const row = document.createElement("div");
@@ -632,13 +594,13 @@ function renderizarMedicacaoAtiva(prescricoes) {
     `;
 
     const badgeAltoRisco = altoRisco
-      ? `<span style="
+        ? `<span style="
           display:inline-block; margin-left:6px;
           background:rgb(220,49,26); color:#fff;
           font-size:10px; font-weight:700; letter-spacing:.5px;
           padding:1px 5px; border-radius:3px; vertical-align:middle;
         ">ALTO RISCO</span>`
-      : "";
+        : "";
 
     row.innerHTML = `
       <div style="flex:1">
@@ -678,18 +640,18 @@ function formatarUnidade(u) {
 }
 
 async function abrirPopUpAdministrarMedicacao(
-  prescricaoId,
-  nomeMed,
-  dose,
-  via,
-  altoRisco = false,
-  horariosPrevistos = [],
+    prescricaoId,
+    nomeMed,
+    dose,
+    via,
+    altoRisco = false,
+    horariosPrevistos = [],
 ) {
   prescricaoSelecionadaId = prescricaoId ?? null;
   _popupAltoRisco = altoRisco;
 
   await carregarPopUp(
-    "../../pages/enfermeiro/popups/popupAdministrarMedicacao.html",
+      "../../pages/enfermeiro/popups/popupAdministrarMedicacao.html",
   );
 
   document.getElementById("nome-utenet").textContent = utenteData?.nome ?? "—";
@@ -699,11 +661,11 @@ async function abrirPopUpAdministrarMedicacao(
 
   const agora = new Date();
   document.getElementById("hora-de-toma").textContent =
-    agora.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
+      agora.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
 
   const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16);
+      .toISOString()
+      .slice(0, 16);
   document.getElementById("data-hora").value = local;
   document.getElementById("observacoes").value = "";
 
@@ -719,11 +681,11 @@ async function abrirPopUpAdministrarMedicacao(
     const tolerancia = TOLERANCIA_ATRASO_MIN;
     if (atrasoMin > tolerancia) {
       avisos.push(
-        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Fora do limite aceitável — documente o motivo nas observações.`,
+          `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Fora do limite aceitável — documente o motivo nas observações.`,
       );
     } else {
       avisos.push(
-        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Dentro do limite aceitável.`,
+          `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Dentro do limite aceitável.`,
       );
     }
   }
@@ -777,24 +739,24 @@ async function registarMedicacao() {
   const body = {
     foi_administrado: !recusa,
     observacoes:
-      observacoes ||
-      (recusa
-        ? "Recusa/impossibilidade de administração"
-        : "Administrado sem intercorrências"),
+        observacoes ||
+        (recusa
+            ? "Recusa/impossibilidade de administração"
+            : "Administrado sem intercorrências"),
     data: dataFormatada,
   };
 
   try {
     const resp = await fetch(
-      `http://localhost:8080/api/processes/prescriptions/${prescricaoSelecionadaId}/administrations`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        `http://localhost:8080/api/processes/prescriptions/${prescricaoSelecionadaId}/administrations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      },
     );
 
     if (!resp.ok)
@@ -804,15 +766,18 @@ async function registarMedicacao() {
     mostrarNotificacao({
       titulo: "Administração",
       mensagem: recusa
-        ? "Recusa registada com sucesso."
-        : "Medicação administrada com sucesso.",
+          ? "Recusa registada com sucesso."
+          : "Medicação administrada com sucesso.",
       tipo: "sucesso",
     });
   } catch (err) {
-    const errorData = JSON.parse(err.message);
+    let mensagem = err.message;
+    try {
+      mensagem = JSON.parse(err.message).error ?? mensagem;
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
-      mensagem: errorData.error || "Erro ao registar administração.",
+      mensagem: mensagem || "Erro ao registar administração.",
       tipo: "erro",
     });
   }
@@ -842,9 +807,9 @@ function atualizarBotaoRegistar() {
 
   if (_popupAltoRisco) {
     const confirmado =
-      document.getElementById("confirmar-alto-risco")?.checked ?? false;
+        document.getElementById("confirmar-alto-risco")?.checked ?? false;
     const recusa =
-      document.getElementById("recusa-medicacao")?.checked ?? false;
+        document.getElementById("recusa-medicacao")?.checked ?? false;
     btn.disabled = !confirmado && !recusa;
     btn.style.opacity = !confirmado && !recusa ? "0.45" : "1";
     btn.style.cursor = !confirmado && !recusa ? "not-allowed" : "pointer";
@@ -854,272 +819,131 @@ function atualizarBotaoRegistar() {
     btn.style.cursor = "pointer";
   }
 }
-function irParaHistoricoPrescricoes() {
-  window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
-}
 
-let prescricaoSelecionadaId = null;
-
-function renderizarMedicacaoAtiva(prescricoes) {
-  const body = document.getElementById("medicacao-body");
-  body.innerHTML = "";
-
-  console.log(prescricoes);
-
-  const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
-
-  console.log(ativas);
-
-  if (ativas.length === 0) {
-    body.innerHTML =
-      "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
-    return;
-  }
-
-  ativas.forEach((p) => {
-    const nomeMed = p.medicamento?.nome ?? "Medicamento não especificado";
-    const doseVal = p.dose
-      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
-      : "—";
-    const via = p.medicamento?.viaAdministracao ?? "—";
-    const freq = p.frequencia
-      ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
-      : "—";
-    const fim = p.fim ?? "—";
-
-    const altoRisco =
-      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
-    const horariosPrevistos = p.horariosPrevistos ?? [];
-
-    const row = document.createElement("div");
-    row.className = "med-row";
-    row.style.cssText = `
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 8px 10px; border-bottom: 1px solid var(--border);
-      font-size: 13px; gap: 8px;
-    `;
-
-    const badgeAltoRisco = altoRisco
-      ? `<span style="
-          display:inline-block; margin-left:6px;
-          background:rgb(220,49,26); color:#fff;
-          font-size:10px; font-weight:700; letter-spacing:.5px;
-          padding:1px 5px; border-radius:3px; vertical-align:middle;
-        ">ALTO RISCO</span>`
-      : "";
-
-    row.innerHTML = `
-      <div style="flex:1">
-        <div style="font-weight:600;color:var(--surface)">
-          ${nomeMed}${badgeAltoRisco}
-        </div>
-        <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
-        <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
-      </div>
-      <button class="btn-administrar"
-        onclick="abrirPopUpAdministrarMedicacao(
-          ${p.id},
-          '${nomeMed}',
-          '${doseVal}',
-          '${via}',
-          ${altoRisco},
-          ${JSON.stringify(horariosPrevistos)}
-        )">
-        ADMINISTRAR
-      </button>
-    `;
-    body.appendChild(row);
-  });
-}
-
-function formatarUnidade(u) {
-  if (!u) return "";
-  const map = {
-    MILIGRAMAS: "mg",
-    GRAMAS: "g",
-    MICROGRAMAS: "mcg",
-    MILILITROS: "ml",
-    UNIDADES: "U",
-    COMPRIMIDOS: "cp",
-  };
-  return map[u] ?? u.toLowerCase();
-}
-
-async function abrirPopUpAdministrarMedicacao(
-  prescricaoId,
-  nomeMed,
-  dose,
-  via,
-  altoRisco = false,
-  horariosPrevistos = [],
+function adicionarLinhaDiagnostico(
+    container,
+    diagnostico = "",
+    prioridade = "MEDIA",
 ) {
-  prescricaoSelecionadaId = prescricaoId ?? null;
-  _popupAltoRisco = altoRisco;
+  const item = document.createElement("div");
+  item.className = "alergia-item";
+  item.innerHTML = `
+    <input type="text" placeholder="Risco de queda r/c instabilidade da marcha" />
+    <select>
+      <option value="ALTA">Alta</option>
+      <option value="MEDIA">Média</option>
+      <option value="BAIXA">Baixa</option>
+    </select>
+    <button type="button" class="btn-remover-alergia">−</button>
+  `;
+  item.querySelector("input").value = diagnostico;
+  item.querySelector("select").value = prioridade;
+  item.querySelector(".btn-remover-alergia").addEventListener("click", () => {
+    const linhas = container.querySelectorAll(".alergia-item");
+    if (linhas.length > 1) {
+      item.remove();
+    } else {
+      item.querySelector("input").value = "";
+      item.querySelector("select").value = "MEDIA";
+    }
+  });
+  container.appendChild(item);
+  container.scrollTop = container.scrollHeight;
+}
 
+async function abrirPopUpCriarPlano() {
   await carregarPopUp(
-    "../../pages/enfermeiro/popups/popupAdministrarMedicacao.html",
+      "../../pages/enfermeiro/popups/popupCriarPlanoCuidados.html",
   );
 
-  document.getElementById("nome-utenet").textContent = utenteData?.nome ?? "—";
-  document.getElementById("medicamento").textContent = nomeMed ?? "—";
-  document.getElementById("dose").textContent = dose ?? "—";
-  document.getElementById("via").textContent = via ?? "—";
+  const box = document.getElementById("diagnosticos-box");
+  box.innerHTML = "";
+  adicionarLinhaDiagnostico(box);
 
-  const agora = new Date();
-  document.getElementById("hora-de-toma").textContent =
-    agora.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
-
-  const local = new Date(agora.getTime() - agora.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16);
-  document.getElementById("data-hora").value = local;
-  document.getElementById("observacoes").value = "";
-
-  const cbRecusa = document.getElementById("recusa-medicacao");
-  if (cbRecusa) cbRecusa.checked = false;
-
-  const warningBox = document.getElementById("warning-box");
-  const warningText = document.getElementById("warning-text");
-  const avisos = [];
-
-  const atrasoMin = calcularAtrasoMinutos(horariosPrevistos);
-  if (atrasoMin > 0) {
-    const tolerancia = TOLERANCIA_ATRASO_MIN;
-    if (atrasoMin > tolerancia) {
-      avisos.push(
-        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Fora do limite aceitável — documente o motivo nas observações.`,
-      );
-    } else {
-      avisos.push(
-        `Atraso de ${atrasoMin} min. Tolerância: ${tolerancia} min. Dentro do limite aceitável.`,
-      );
+  document.getElementById("btn-adicionar-diagnostico").onclick = () => {
+    const linhas = box.querySelectorAll(".alergia-item");
+    const ultimo = linhas[linhas.length - 1];
+    if (ultimo && !ultimo.querySelector("input").value.trim()) {
+      const input = ultimo.querySelector("input");
+      input.focus();
+      input.style.borderColor = "rgb(220, 49, 26)";
+      input.placeholder = "Preenche este campo primeiro";
+      setTimeout(() => {
+        input.style.borderColor = "";
+        input.placeholder = "Risco de queda r/c instabilidade da marcha";
+      }, 2000);
+      return;
     }
-  }
+    adicionarLinhaDiagnostico(box);
+  };
 
-  if (avisos.length > 0) {
-    warningText.innerHTML = avisos.join("<br>");
-    warningBox.style.display = "flex";
-  } else {
-    warningBox.style.display = "none";
-  }
-
-  const secaoAltoRisco = document.getElementById("alto-risco-verificacao");
-  const cbConfirmar = document.getElementById("confirmar-alto-risco");
-  if (secaoAltoRisco) {
-    secaoAltoRisco.style.display = altoRisco ? "block" : "none";
-  }
-  if (cbConfirmar) cbConfirmar.checked = false;
-
-  atualizarBotaoRegistar();
-
-  abrirPopUp(".pop-up-administrar-medicacao");
+  abrirPopUp(".pop-up-criar-plano-cuidados");
 }
 
-async function registarMedicacao() {
-  if (!prescricaoSelecionadaId) {
+async function criarPlanoCuidados(event) {
+  event.preventDefault();
+
+  if (!processoId) {
     mostrarNotificacao({
       titulo: "Erro",
-      mensagem: "Prescrição não identificada.",
+      mensagem: "Processo não identificado. Tente recarregar a página.",
       tipo: "erro",
     });
     return;
   }
 
-  const dataHoraRaw = document.getElementById("data-hora").value;
-  if (!dataHoraRaw) {
+  const diagnosticos = Array.from(
+      document
+          .getElementById("diagnosticos-box")
+          .querySelectorAll(".alergia-item"),
+  )
+      .map((item) => ({
+        diagnostico: item.querySelector("input").value.trim(),
+        prioridade: item.querySelector("select").value,
+      }))
+      .filter((d) => d.diagnostico);
+
+  if (diagnosticos.length === 0) {
     mostrarNotificacao({
       titulo: "Formulário incompleto",
-      mensagem: "Data e hora não especificados.",
+      mensagem: "Adiciona pelo menos um diagnóstico de enfermagem.",
       tipo: "aviso",
     });
     return;
   }
 
-  const observacoes = document.getElementById("observacoes").value.trim();
-  const recusa = document.getElementById("recusa-medicacao")?.checked ?? false;
-
-  const [dataParte, horaParte] = dataHoraRaw.split("T");
-  const [ano, mes, dia] = dataParte.split("-");
-  const dataFormatada = `${dia}/${mes}/${ano}:${horaParte}:00`;
-
-  const body = {
-    foi_administrado: !recusa,
-    observacoes:
-      observacoes ||
-      (recusa
-        ? "Recusa/impossibilidade de administração"
-        : "Administrado sem intercorrências"),
-    data: dataFormatada,
-  };
-
   try {
     const resp = await fetch(
-      `http://localhost:8080/api/processes/prescriptions/${prescricaoSelecionadaId}/administrations`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        `http://localhost:8080/api/processes/${processoId}/plan`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ diagnosticos }),
         },
-        body: JSON.stringify(body),
-      },
     );
 
     if (!resp.ok)
-      throw new Error((await resp.text()) || "Erro ao registar administração");
+      throw new Error((await resp.text()) || "Erro ao criar plano de cuidados");
 
-    fecharPopUp(".pop-up-administrar-medicacao");
+    fecharPopUp(".pop-up-criar-plano-cuidados");
     mostrarNotificacao({
-      titulo: "Administração",
-      mensagem: recusa
-        ? "Recusa registada com sucesso."
-        : "Medicação administrada com sucesso.",
+      titulo: "Plano criado",
+      mensagem: "Plano de cuidados criado com sucesso.",
       tipo: "sucesso",
     });
   } catch (err) {
-    const errorData = JSON.parse(err.message);
+    let mensagem = err.message;
+    try {
+      mensagem = JSON.parse(err.message).error ?? mensagem;
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
-      mensagem: errorData.error || "Erro ao registar administração.",
+      mensagem: mensagem || "Erro ao criar plano de cuidados.",
       tipo: "erro",
     });
-  }
-}
-
-function calcularAtrasoMinutos(horariosPrevistos) {
-  if (!horariosPrevistos?.length) return 0;
-  const agora = new Date();
-  const agoraMin = agora.getHours() * 60 + agora.getMinutes();
-
-  let maiorAtraso = 0;
-  for (const h of horariosPrevistos) {
-    const [hh, mm] = h.split(":").map(Number);
-    const prevMin = hh * 60 + mm;
-
-    if (prevMin <= agoraMin) {
-      const diff = agoraMin - prevMin;
-      if (diff > maiorAtraso) maiorAtraso = diff;
-    }
-  }
-  return maiorAtraso;
-}
-
-function atualizarBotaoRegistar() {
-  const btn = document.getElementById("btn-registar");
-  if (!btn) return;
-
-  if (_popupAltoRisco) {
-    const confirmado =
-      document.getElementById("confirmar-alto-risco")?.checked ?? false;
-    const recusa =
-      document.getElementById("recusa-medicacao")?.checked ?? false;
-    btn.disabled = !confirmado && !recusa;
-    btn.style.opacity = !confirmado && !recusa ? "0.45" : "1";
-    btn.style.cursor = !confirmado && !recusa ? "not-allowed" : "pointer";
-  } else {
-    btn.disabled = false;
-    btn.style.opacity = "1";
-    btn.style.cursor = "pointer";
   }
 }
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.CreateMedicationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.stock.StockChangeDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;;
 
@@ -54,5 +55,11 @@ public class StockController {
     public ResponseEntity<ApiResponse<?>> activateMedication(@PathVariable("medicationId") Long medicationId){
         service.activateMedication(medicationId);
         return ResponseEntity.ok(ApiResponse.ok("Medicamento ativado com sucesso", null));
+    }
+
+    @PostMapping("/medications/{medicationId}/batches")
+    public ResponseEntity<ApiResponse<?>> recordStockChange(@PathVariable Long medicationId, @RequestBody StockChangeDTO data){
+        service.recordStockChange(medicationId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Entrada de stock registada com sucesso", null));
     }
 }

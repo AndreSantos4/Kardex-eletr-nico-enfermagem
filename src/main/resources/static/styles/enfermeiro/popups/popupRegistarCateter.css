@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "Inter", "IBM Plex Sans", sans-serif;
+    --font-display: "Manrope", "Inter", sans-serif;
+}
+
+.popup-cateter-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-cateter-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 720px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-cateter-header {
+    background: var(--bg-dark);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-cateter-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 700;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.popup-cateter-close:hover {
+    background: #e74c3c;
+}
+
+.popup-cateter-content {
+    padding: 22px 24px 24px;
+}
+
+.popup-cateter-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.popup-cateter-row-2cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.popup-cateter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-cateter-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-cateter-select,
+.popup-cateter-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 999px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px 18px;
+    width: 100%;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.popup-cateter-select:focus,
+.popup-cateter-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-cateter-input::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+}
+
+.popup-cateter-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 14px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 18px;
+    width: 100%;
+    min-height: 60px;
+    resize: vertical;
+}
+
+.popup-cateter-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-cateter-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+}
+
+.popup-cateter-info-note {
+    background: rgba(168, 212, 230, 0.18);
+    border: 1px solid rgba(168, 212, 230, 0.35);
+    border-radius: 999px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--white);
+}
+
+.popup-cateter-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-dark);
+    color: var(--white);
+    font-family: serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.popup-cateter-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-cancelar-cateter,
+.btn-confirmar-cateter {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 11px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-cateter:hover,
+.btn-confirmar-cateter:hover {
+    background: var(--white);
+    color: var(--primary);
+}

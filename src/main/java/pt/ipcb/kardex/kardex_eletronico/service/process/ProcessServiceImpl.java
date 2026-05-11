@@ -8,8 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.ContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateCateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateInterventionDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
@@ -28,14 +37,14 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.SuspensaoClinica;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.*;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.PlanoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
@@ -45,19 +54,12 @@ import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 @Service
 @RequiredArgsConstructor
 public class ProcessServiceImpl implements ProcessService{
-    private final int TOLERANCIA_ADMINISTRACAO_SOS_MINUTOS = 10;
-    private final int TOLERANCIA_ADMINISTRACAO_MINUTOS = 30;
 
     private final ProcessoClinicoRepository repository;
     private final ProcessoMapper mapper;
-    private final PrescricaoMapper prescricaoMapper;
-    private final PrescricaoRepository prescricaoRepository;
-    private final AdministracaoRepository administracaoRepository;
-    private final AdministracaoMapper administracaoMapper;
     private final WorkerService workerService;
     private final CamaRepository camaRepository;
     private final RecordService recordService;
-    private final StockService stockService;
 
     @Override
     @Transactional
@@ -82,157 +84,6 @@ public class ProcessServiceImpl implements ProcessService{
         bed.setOcupada(true);
 
         return mapper.toDTO(repository.save(process));
-    }
-
-    @Override
-    @Transactional
-    public void createPrescription(Long processId, CreatePrescriptionDTO data) {
-        var process = getValidProcess(processId);
-        var medic = workerService.getAutenticatedWorker();
-            
-        var medication = stockService.getMedication(data.idMedicamento());
-        var dose = getDose(data, medication);
-
-        var prescription = prescricaoMapper.fromCreate(data);
-
-        prescription.setMedico(medic);
-        prescription.setMedicamento(medication);
-        prescription.setDose(dose);
-        prescription.setProcesso(process);
-        
-        prescricaoRepository.save(prescription);
-    }
-
-	private Dosagem getDose(CreatePrescriptionDTO data, Medicamento medication) {
-		var dose = medication.getDosagens()
-            .stream()
-            .filter(d -> d.getId().equals(data.idDose()))
-            .toList();
-        
-        if(dose.isEmpty()) {
-            throw new KardexException("Este medicamento nao possui esta dose");
-        }
-        
-        return dose.getFirst();
-	}
-
-    @Override
-    @Transactional
-    public void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data) {
-        var prescription = prescricaoRepository.findById(prescriptionId)
-            .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescricao"));
-
-        var suspensao = new SuspensaoClinica(null, data.dataRetorno(), data.motivo(), data.observacoes());
-        
-        if(data.definitiva()){
-            prescription.setEstado(PrescriptionState.SUSPENSA_DEFINITIVA);
-        } else {
-            prescription.setEstado(PrescriptionState.SUSPENSA_TEMPORARIA);
-            if(data.dataRetorno() == null){
-                throw new KardexException("Para suspensoes temporarias, e necessario especificar a data de retorno");
-            }
-        }
-        
-        prescription.setSuspensao(suspensao);
-        prescricaoRepository.save(prescription);
-    }
-
-    @Override
-    @Transactional
-    public void administrateMedication(Long prescriptionId, CreateAdministrationDTO data) {
-        var prescription = prescricaoRepository.findById(prescriptionId)
-            .orElseThrow(() -> EntityNotFoundException.forId(prescriptionId, "Prescrição"));
-
-        if(prescription.getProcesso().getAlta()){
-            throw new InactiveResourceException("Processo Clinico");
-        }
-
-        if(!prescription.getEstado().equals(PrescriptionState.ATIVA)){
-            throw new InactiveResourceException("Prescricao");
-        }
-
-        var administration = administracaoMapper.fromCreate(data);
-        if(administration.getAdministrado()){
-            var lastAdministration = prescricaoRepository.findMostRecentByPrescricao(prescriptionId);
-            if(lastAdministration.isPresent()){
-                validateAdministrationInterval(administration, lastAdministration.get());
-            }
-        }
-
-        var worker = workerService.getAutenticatedWorker();
-        var shift = workerService.getCurrentShift(worker.getId());
-
-        administration.setPrescricao(prescription);
-        administration.setFuncionario(worker);
-        administration.setTurno(shift);
-
-        subtractFromMedication(administration);
-
-        administracaoRepository.save(administration);
-    }
-
-    @Transactional(readOnly = true)
-    private void validateAdministrationInterval(AdministracaoMedicacao newAdministration, AdministracaoMedicacao lastAdministracaoMedicacao){
-        var prescription = lastAdministracaoMedicacao.getPrescricao();
-        var now = LocalDateTime.now();
-        var interval = prescription.getFrequencia().getIntervaloMinHoras();
-
-        if(newAdministration.getData().isBefore(lastAdministracaoMedicacao.getData().plusHours(interval))){
-            throw new KardexException("Administracao nao registada, nao passou o intervalo minimo entre prescricoes");
-        }
-
-        if(prescription.getSos()){
-            if(newAdministration.getData().isBefore(lastAdministracaoMedicacao.getData().plusHours(interval + TOLERANCIA_ADMINISTRACAO_SOS_MINUTOS / 60))){
-                newAdministration.setAdministrado(false);
-                return;
-            }
-        } else {
-            if(newAdministration.getData().isBefore(lastAdministracaoMedicacao.getData().plusHours(interval + TOLERANCIA_ADMINISTRACAO_MINUTOS / 60))){
-                newAdministration.setAdministrado(false);
-                return;
-            }
-        }
-        
-        switch (prescription.getFrequencia().getPeriodo()) {
-            case Periodo.DIARIO:
-                var administrationInLastDay = prescricaoRepository.countByPrescricaoInLastDays(prescription.getId(), now.minusDays(1));
-                if(administrationInLastDay >= prescription.getFrequencia().frequencia){
-                    throw new KardexException("Administracoes diarias excedidas");
-                }
-                break;
-            case Periodo.SEMANAL:
-                var administrationInLastWeek = prescricaoRepository.countByPrescricaoInLastDays(prescription.getId(), now.minusDays(7));
-                if(administrationInLastWeek >= prescription.getFrequencia().frequencia){
-                    throw new KardexException("Administracoes semanais excedidas");
-                }
-            case Periodo.MENSAL: 
-                var administrationInLastMonth = prescricaoRepository.countByPrescricaoInLastDays(prescription.getId(), now.minusDays(28));
-                if(administrationInLastMonth >= prescription.getFrequencia().frequencia){
-                    throw new KardexException("Administracoes mensais excedidas");
-                }
-            case Periodo.ANUAL:
-                var administrationInLastYear = prescricaoRepository.countByPrescricaoInLastDays(prescription.getId(), now.minusDays(365));
-                if(administrationInLastYear >= prescription.getFrequencia().frequencia){
-                    throw new KardexException("Administracoes anuais excedidas");
-                }
-        }
-    }
-
-    private void subtractFromMedication(AdministracaoMedicacao administration){
-        var prescription = administration.getPrescricao();
-        var medication = prescription.getMedicamento();
-
-        if(medication.getQuantidade().compareTo(prescription.getDose().getDose()) == -1){
-            throw new KardexException("A dose excede a quantidade de medicamento em stock");
-        }
-
-        medication.setQuantidade(medication.getQuantidade().subtract(prescription.getDose().getDose()));
-    }
-    
-    @Override
-    public List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to) {
-        var prescriptions = prescricaoRepository.findByProcessoIdFiltered(processId, state, from, to);
-        return prescricaoMapper.toDTOList(prescriptions);
     }
 
     @Override
@@ -302,8 +153,9 @@ public class ProcessServiceImpl implements ProcessService{
         
         recordService.recordPatientDischarge(mapper.toDTO(process));
     }
-    
-   	private ProcessoClinico getValidProcess(Long processId) {
+
+    @Override
+   	public ProcessoClinico getValidProcess(Long processId) {
 		var process = repository.findById(processId)
                .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
    
