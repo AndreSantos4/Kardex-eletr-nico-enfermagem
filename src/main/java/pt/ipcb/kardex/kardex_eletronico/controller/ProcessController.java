@@ -25,6 +25,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteD
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateInterventionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
@@ -32,24 +33,30 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
+import pt.ipcb.kardex.kardex_eletronico.service.process.parameters.ParametersService;
+import pt.ipcb.kardex.kardex_eletronico.service.process.plan.PlanService;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
+import pt.ipcb.kardex.kardex_eletronico.service.process.prescription.PrescriptionService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/processes")
 public class ProcessController {
 
-    private final ProcessService service;   
+    private final ProcessService processService;
+    private final PlanService planService;
+    private final ParametersService  parametersService;
+    private final PrescriptionService prescriptionService;
 
     @PostMapping("/{processId}/prescriptions")
     public ResponseEntity<ApiResponse<?>> createPrescription(@PathVariable("processId") Long processId, @RequestBody CreatePrescriptionDTO data){
-        service.createPrescription(processId, data);
+        prescriptionService.createPrescription(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Prescrição criada com sucesso", null));
     }
 
     @PostMapping("/prescriptions/{prescriptionId}/administrations")
     public ResponseEntity<ApiResponse<?>> administrateMedication(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody CreateAdministrationDTO data){
-        service.administrateMedication(prescriptionId, data);
+        prescriptionService.administrateMedication(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Administracao efetuada com sucesso", null));
     }
 
@@ -64,79 +71,85 @@ public class ProcessController {
             return ResponseEntity.badRequest()
                 .body(ApiResponse.error("O intervalo de datas é inválido"));
         }
-        var prescriptions = service.getPrescriptionHistory(processId, state, from, to);
+        var prescriptions = prescriptionService.getPrescriptionHistory(processId, state, from, to);
         return ResponseEntity.ok(ApiResponse.ok("Historico de prescricoes obtidas com sucesso", prescriptions));
     }
 
     @PatchMapping("/prescriptions/{prescriptionId}/suspend")
     public ResponseEntity<ApiResponse<?>> suspendPrescription(@PathVariable("prescriptionId") Long prescriptionId, @RequestBody SuspendPrescriptionDTO data){
-        service.suspendPrescription(prescriptionId, data);
+        prescriptionService.suspendPrescription(prescriptionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Prescricao suspendida com sucesso"));
     }
 
     @GetMapping("/beds")
     public ResponseEntity<ApiResponse<List<CamaDTO>>> getAllBeds(@RequestParam(name = "o", defaultValue = "false") boolean occupied){
-        var beds = service.getAllBeds(occupied);
+        var beds = processService.getAllBeds(occupied);
         return ResponseEntity.ok(ApiResponse.ok("Camas obtidas com sucesso", beds));
     }
 
     @PostMapping("/{processId}/vitals")
     public ResponseEntity<ApiResponse<?>> registerVitalSigns(@PathVariable("processId") Long processId, @RequestBody RegisterVitalSignsDTO vitalSigns){
-        service.registerVitalSigns(processId, vitalSigns);
+        processService.registerVitalSigns(processId, vitalSigns);
         return ResponseEntity.ok(ApiResponse.ok("Sinais vitais registados com sucesso"));
     }
 
     @PostMapping("/{processId}/cateteres")
     public ResponseEntity<ApiResponse<?>> registerCateter(@PathVariable("processId") Long processId, @RequestBody CreateCateterDTO data){
-        service.registerCateter(processId, data);
+        parametersService.registerCateter(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Cateter registado com sucesso", null));
     }
 
     @GetMapping("/{processId}/cateteres")
     public ResponseEntity<ApiResponse<List<CateterDTO>>> getAllCateteres(@PathVariable("processId") Long processId){
-        var cateteres = service.getAllCateteres(processId);
+        var cateteres = parametersService.getAllCateteres(processId);
         return ResponseEntity.ok(ApiResponse.ok("Cateteres obtidos com sucesso", cateteres));
     }
 
     @PatchMapping("/{processId}/discharge")
     public ResponseEntity<ApiResponse<?>> dischargePatient(@PathVariable("processId") Long processId, @RequestBody DischargePatientDTO data){
-        service.dischargePatient(processId, data);
+        processService.dischargePatient(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Alta clinica registada", null));
     }
 
     @PostMapping("/{processId}/incidents")
     public ResponseEntity<ApiResponse<?>> registerIncident(@PathVariable("processId") Long processId, @RequestBody CreateIncidenteDTO data){
-        service.registerIncident(processId, data);
+        parametersService.registerIncident(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Incidente registado com sucesso", null));
     }
 
     @GetMapping("/{processId}/incidents")
     public ResponseEntity<ApiResponse<List<IncidenteDTO>>> getAllIncidents(@PathVariable("processId") Long processId){
-        var cateteres = service.getAllIncidents(processId);
+        var cateteres = parametersService.getAllIncidents(processId);
         return ResponseEntity.ok(ApiResponse.ok("Incidentes obtidos com sucesso", cateteres));
     }
 
     @PostMapping("/{processId}/containments")
     public ResponseEntity<ApiResponse<?>> registerContainments(@PathVariable("processId") Long processId, @RequestBody CreateContencaoDTO data){
-        service.registerContainment(processId, data);
+        parametersService.registerContainment(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Contencao registado com sucesso", null));
     }
 
     @GetMapping("/{processId}/containments")
     public ResponseEntity<ApiResponse<List<ContencaoDTO>>> getAllContainments(@PathVariable("processId") Long processId) {
-        var cateteres = service.getAllCointainments(processId);
+        var cateteres = parametersService.getAllCointainments(processId);
         return ResponseEntity.ok(ApiResponse.ok("Contencoes obtidos com sucesso", cateteres));
     }
 
     @PostMapping("/{processId}/plan")
     public ResponseEntity<ApiResponse<?>> createCarePlan(@PathVariable("processId") Long processId, @RequestBody CreateCarePlanDTO data){
-        service.createCarePlan(processId, data);
+        planService.createCarePlan(processId, data);
         return ResponseEntity.ok(ApiResponse.ok("Plano de cuidados criado com sucesso", null));
     }
 
     @GetMapping("/{processId}/plan")
-    public ResponseEntity<ApiResponse<PlanoCuidadosDTO>> getCarePlan(@PathVariable("processId") Long processId){
-        var plan = service.getCarePlan(processId);
+    public ResponseEntity<ApiResponse<PlanoCuidadosDTO>> getCarePlan(@PathVariable Long processId){
+        var plan = planService.getCarePlan(processId);
         return ResponseEntity.ok(ApiResponse.ok("Plano de cuidados obtido com sucesso", plan));
+    }
+
+    @PostMapping("/{processId}/plan/interventions")
+    public ResponseEntity<ApiResponse<?>> addIntervention(@PathVariable Long processId, @RequestBody CreateInterventionDTO data){
+        planService.addIntervention(processId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Intervencao adicionada com sucesso", null));
     }
 }

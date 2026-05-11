@@ -1,8 +1,10 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,4 +26,12 @@ public interface MedicamentoRepository extends JpaRepository<Medicamento, Long>{
 			FormaFarmaceutica formaFarmaceutica, 
 			ViaAdministracao viaAdministracao
 	);
+
+	@Modifying
+	@Query("DELETE FROM LoteMedicamento l WHERE l.validade < :data")
+	void deleteExpiredBatches(@Param("data") LocalDate data);
+
+	@Modifying
+	@Query("DELETE FROM LoteMedicamento l WHERE l.quantidade <= 0")
+	void deleteEmptyBatches();
 }

@@ -1,5 +1,8 @@
 package pt.ipcb.kardex.kardex_eletronico.service.stock;
 
+import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.CreateMedicationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.stock.StockChangeDTO;
+import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.LoteMedicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.MedicamentoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
@@ -20,6 +26,7 @@ import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 @Service
 @RequiredArgsConstructor
 public class StockServiceImpl implements StockService{
+    private final Clock clock;
 
     private final MedicamentoRepository medicamentoRepository;
     private final MedicamentoMapper medicamentoMapper;
@@ -67,8 +74,7 @@ public class StockServiceImpl implements StockService{
 	@Override
 	@Transactional
 	public void editMedication(Long medicationId, CreateMedicationDTO data) {
-    	var medication = medicamentoRepository.findById(medicationId)
-            .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
+    	var medication = getMedication(medicationId);
             
         if(!medication.isActive()){
             throw new InactiveResourceException("Medicamento");
@@ -82,7 +88,6 @@ public class StockServiceImpl implements StockService{
         medication.setClasseFarmacologica(data.classeFarmacologica());
         medication.setViaAdministracao(data.viaAdministracao());
         medication.setUnidadeMedida(data.unidadeMedida());
-        medication.setQuantidade(data.quantidade());
         medication.setAltoRisco(data.altoRisco());
     
         medication.getDosagens().clear();
@@ -100,8 +105,7 @@ public class StockServiceImpl implements StockService{
 	@Override
 	@Transactional
 	public void deactivateMedication(Long medicationId) {
-	    var medication = medicamentoRepository.findById(medicationId)
-            .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
+	    var medication = getMedication(medicationId);
             
         medication.setActive(false);
 
@@ -110,8 +114,7 @@ public class StockServiceImpl implements StockService{
 
 	@Override
 	public void activateMedication(Long medicationId) {
-	var medication = medicamentoRepository.findById(medicationId)
-            .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
+	    var medication = getMedication(medicationId);
             
         medication.setActive(true);
 
@@ -123,4 +126,44 @@ public class StockServiceImpl implements StockService{
 		return medicamentoRepository.findById(medicationId)
 		    .orElseThrow(() -> EntityNotFoundException.forId(medicationId, "Medicamento"));
 	}
+
+    @Override
+    @Transactional
+    public void recordStockChange(Long medicationId, StockChangeDTO data) {
+        var medication = getMedication(medicationId);
+
+        if(!medication.isActive()){
+            throw new InactiveResourceException("Medicamento");
+        }
+
+        if (data.quantidade().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new KardexException("A quantidade deve ser superior a zero");
+        }
+
+        var batch = new LoteMedicamento();
+        batch.setMedicamento(medication);
+        batch.setQuantidade(data.quantidade());
+
+        medication.getLotes().add(batch);
+    }
+
+    @Override
+    public void subtractFromStock(Medicamento medication, BigDecimal quantidade) {
+        for (LoteMedicamento lote : medication.getLotes()) {
+            if (quantidade.compareTo(BigDecimal.ZERO) <= 0) break;
+            if (lote.getValidade().isBefore(LocalDate.now(clock))) continue;
+
+            if (quantidade.compareTo(lote.getQuantidade()) >= 0) {
+                quantidade = quantidade.subtract(lote.getQuantidade());
+                lote.setQuantidade(BigDecimal.ZERO);
+            } else {
+                lote.setQuantidade(lote.getQuantidade().subtract(quantidade));
+                quantidade = BigDecimal.ZERO;
+            }
+        }
+
+        if (quantidade.compareTo(BigDecimal.ZERO) > 0) {
+            throw new KardexException("Stock insuficiente para o medicamento: " + medication.getNome());
+        }
+    }
 }
