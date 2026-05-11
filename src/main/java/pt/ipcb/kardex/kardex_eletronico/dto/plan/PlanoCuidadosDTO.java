@@ -10,6 +10,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 public record PlanoCuidadosDTO(
     @JsonProperty("id") Long id,
     @JsonProperty("diagnosticos") List<NursingDiagnosticDTO> diagnosticos,
+    @JsonProperty("intervencoes") List<IntervencaoDTO> intervencoes,
     @JsonProperty("versao") int versao,
     @JsonProperty("dataCriacao") LocalDate dataCriacao,
     @JsonProperty("autor") FuncionarioDTO autor,
