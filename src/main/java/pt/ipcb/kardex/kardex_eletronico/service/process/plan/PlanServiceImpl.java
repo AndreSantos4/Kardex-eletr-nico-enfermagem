@@ -6,8 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateInterventionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.RegisterInterventionDTO;
+import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
+import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.PlanoCuidados;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PlanoCuidadosMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.IntervencaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PlanoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
@@ -21,6 +25,7 @@ public class PlanServiceImpl implements PlanService {
 
     private final PlanoCuidadosMapper planoMapper;
     private final PlanoRepository planoRepository;
+    private final IntervencaoRepository intervencaoRepository;
 
     @Override
     public PlanoCuidados getCarePlanEntity(Long processId) {
@@ -63,5 +68,28 @@ public class PlanServiceImpl implements PlanService {
         intervention.setFuncionario(worker);
 
         plan.getIntervencoes().add(intervention);
+    }
+
+    @Override
+    @Transactional
+    public void registerIntervention(Long interventionId, RegisterInterventionDTO data) {
+        var intervencao = intervencaoRepository.findById(interventionId)
+                .orElseThrow(() -> EntityNotFoundException.forId(interventionId, "Intervencao"));
+
+        if(intervencao.dataExecucao != null) {
+            throw new KardexException("Intervencao ja foi executada");
+        }
+
+        if(data.data() == null){
+            throw new KardexException("Data de execucao deve ser especificada");
+        }
+
+        intervencao.setDataExecucao(data.data());
+
+        if(data.observacoes() == null){
+            throw new KardexException("Observacoes de execucao deve  ser especificada");
+        }
+
+        intervencao.setObservacoesExecucao(data.observacoes());
     }
 }
