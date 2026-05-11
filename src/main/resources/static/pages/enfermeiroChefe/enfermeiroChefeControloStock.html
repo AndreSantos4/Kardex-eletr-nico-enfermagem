@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="../../styles/sideBar.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/mainContent.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/enfermeiroChefe/enfermeiroChefeControloStock.css" />
+    <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
 </head>
 
 <body>
@@ -89,28 +90,26 @@
             <div class="page-header">
                 <div class="page-header-left">
                     <h4>Controlo de Stock</h4>
-                    <p>07/03/2026 - 16:42 - Turno da Tarde</p>
-                    <p id="current-datetime-panel"></p>
+                    <p id="header-data-hora"></p>
                 </div>
                 <div class="page-header-right">
-                    <button>Entrada</button>
+                    <button id="btn-entrada">Entrada</button>
                 </div>
             </div>
-            <div class="page-header">
+
+            <div class="page-header" id="secao-stock-critico" style="display: none;">
                 <div class="page-header-left">
                     <h4>Stock Crítico - Pedido à farmácia necessário</h4>
-                    <p></p>
-                    <p id="current-datetime-panel"></p>
+                    <!-- TODO: renderizar lista de medicamentos críticos aqui quando a API devolver campo minimo -->
+                    <div id="lista-stock-critico"></div>
                 </div>
             </div>
+
             <div class="page-header">
                 <div class="page-header-left">
                     <h4>Inventario</h4>
-                    <p id="current-datetime-panel"></p>
                 </div>
                 <div class="page-header-right">
-                   
-
                     <select name="filtro" id="filtro">
                         <option value="todos">Todos</option>
                     </select>
@@ -128,25 +127,21 @@
                                 <th>Mínimo</th>
                                 <th>Estado</th>
                                 <th>Validade</th>
-                                <th></th>                              
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <td>Haloperidol 5mg</td>
-                            <td>3</td>
-                            <td>c</td>
-                            <td>10</td>
-                            <td>Crítico</td>
-                            <td>05/03/2026</td>
-                            <td><button>Repor</button></td>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="popup-container"></div>
     <script src="../../scripts/logout.js"></script>
+    <div id="notificacoes-container"></div>
+    <script src="../../scripts/notificacao.js"></script>
+    <script src="../../scripts/enfermeiroChefe/enfermeiroChefeControloStock.js"></script>
 </body>
 
 </html>
