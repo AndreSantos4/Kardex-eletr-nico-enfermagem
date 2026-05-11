@@ -12,16 +12,7 @@
 				<div class="popup-stock-field">
 					<label class="popup-stock-label">MEDICAMENTO *</label>
 					<select id="medicamento-stock" class="popup-stock-select">
-						<option value="HALOPERIDOL_5">Haloperidol 5mg</option>
-						<option value="HALOPERIDOL_10">Haloperidol 10mg</option>
-						<option value="LORAZEPAM_1">Lorazepam 1mg</option>
-						<option value="LORAZEPAM_2">Lorazepam 2mg</option>
-						<option value="DIAZEPAM_5">Diazepam 5mg</option>
-						<option value="OLANZAPINA_5">Olanzapina 5mg</option>
-						<option value="OLANZAPINA_10">Olanzapina 10mg</option>
-						<option value="MIDAZOLAM_5">Midazolam 5mg</option>
-						<option value="RISPERIDONA_2">Risperidona 2mg</option>
-						<option value="RISPERIDONA_4">Risperidona 4mg</option>
+						<option value="" disabled selected>A carregar medicamentos...</option>
 					</select>
 				</div>
 				<div class="popup-stock-field">
@@ -29,7 +20,8 @@
 					<input type="number" id="quantidade-stock" class="popup-stock-input" placeholder="50" min="1" />
 				</div>
 				<div class="popup-stock-actions">
-					<button type="button" class="btn-cancelar-stock" onclick="fecharPopupRegistarStock()">CANCELAR</button>
+					<button type="button" class="btn-cancelar-stock"
+						onclick="fecharPopupRegistarStock()">CANCELAR</button>
 					<button type="submit" class="btn-confirmar-stock">REGISTAR ENTRADA</button>
 				</div>
 			</form>
