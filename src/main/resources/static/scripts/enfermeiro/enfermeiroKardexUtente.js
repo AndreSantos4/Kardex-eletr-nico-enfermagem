@@ -10,6 +10,7 @@ let medicoData = null;
 let caseData = null;
 let _popupAltoRisco = false;
 let prescricaoSelecionadaId = null;
+let _medicamentosContencao = [];
 
 function abreviarNome(nomeCompleto) {
   const partes = nomeCompleto.trim().split(/\s+/);
@@ -34,7 +35,13 @@ function formatarUnidade(u) {
 function formatarDataHora(raw) {
   const [dataParte, horaParte] = raw.split("T");
   const [ano, mes, dia] = dataParte.split("-");
-  return `${dia}/${mes}/${ano}:${horaParte}:00`;
+  return `${dia}/${mes}/${ano}:${horaParte}`;
+}
+
+function formatarDataHora2(raw) {
+  const [dataParte, horaParte] = raw.split("T");
+  const [ano, mes, dia] = dataParte.split("-");
+  return `${dia}/${mes}/${ano}:${horaParte}`;
 }
 
 function formatarDataHoraExibir(raw) {
@@ -360,7 +367,7 @@ async function carregarUtente(id) {
     const svs = processoData.sinaisVitais;
     if (svs?.length > 0) atualizarSinaisVitaisUI(svs[svs.length - 1]);
 
-    renderizarMedicacaoAtiva(processoData.prescricoes);
+    await renderizarMedicacaoAtivaComContencoes(processoData.prescricoes);
     await Promise.all([carregarOcorrencias(), carregarExamesECateteres()]);
   } catch (err) {
     console.error("Erro em carregarUtente:", err);
@@ -588,12 +595,25 @@ function atualizarSinaisVitaisUI(sv) {
     `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
 }
 
-function renderizarMedicacaoAtiva(prescricoes) {
+async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
 
-  const ativas = prescricoes.filter((p) => p.estado == "ATIVA");
-  if (ativas.length === 0) {
+  const ativas = (prescricoes ?? []).filter((p) => p.estado === "ATIVA");
+
+  let contencoes = [];
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/processes/${processoId}/containments`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
+    );
+    const json = await res.json();
+    contencoes = json.success ? (json.data ?? []) : [];
+  } catch (err) {
+    console.error("Erro ao carregar contenções:", err);
+  }
+
+  if (ativas.length === 0 && contencoes.length === 0) {
     body.innerHTML =
       "<p style='color:var(--surface);font-size:13px'>Sem medicação ativa.</p>";
     return;
@@ -609,8 +629,7 @@ function renderizarMedicacaoAtiva(prescricoes) {
       ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
       : "—";
     const fim = p.fim ?? "—";
-    const altoRisco =
-      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+    const altoRisco = (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
     const horariosPrevistos = p.horariosPrevistos ?? [];
 
     const badgeAltoRisco = altoRisco
@@ -631,6 +650,35 @@ function renderizarMedicacaoAtiva(prescricoes) {
         onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})">
         ADMINISTRAR
       </button>
+    `;
+    body.appendChild(row);
+  });
+
+  contencoes.forEach((c) => {
+    const nomeMed = c.medicamento?.nome ?? "Contenção Química";
+    const via = c.medicamento?.viaAdministracao ?? "—";
+
+    const dose = c.dose;
+    const doseNum = parseFloat(dose?.dose ?? 0);
+    const doseVal = dose
+      ? `${doseNum % 1 === 0 ? doseNum : doseNum.toFixed(3).replace(/\.?0+$/, "")} ${formatarUnidade(dose.unidadeMedida)}`
+      : "—";
+
+    const hora = (c.data ?? "").split(":").slice(1, 3).join(":");
+
+    const row = document.createElement("div");
+    row.className = "med-row";
+    row.style.cssText =
+      "display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px;gap:8px;";
+    row.innerHTML = `
+      <div style="flex:1">
+        <div style="font-weight:600;color:var(--surface)">
+          ${nomeMed}
+          <span style="display:inline-block;margin-left:6px;background:rgb(120,40,160);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;padding:1px 5px;border-radius:3px;vertical-align:middle;">CONTENÇÃO</span>
+        </div>
+        <div style="color:var(--surface);margin-top:2px">${doseVal} · Via: ${via} · Duração: ${c.duracao ?? "—"}</div>
+        <div style="color:var(--surface);font-size:11px">${c.justificao ?? c.justificacao ?? "—"}${hora ? ` · Às ${hora}` : ""}</div>
+      </div>
     `;
     body.appendChild(row);
   });
@@ -749,7 +797,7 @@ async function registarMedicacao() {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) {}
+    } catch (_) { }
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar administração.",
@@ -888,7 +936,7 @@ async function criarPlanoCuidados(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) {}
+    } catch (_) { }
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao criar plano de cuidados.",
@@ -902,7 +950,63 @@ async function abrirPopUpContencaoQuimica() {
     "../../pages/enfermeiro/popups/popupRegistarContencaoQuimica.html",
   );
   document.getElementById("data-hora-contencao").value = agora();
+  await carregarMedicamentosContencao();
   abrirPopUp(".popup-contencao-overlay");
+}
+
+async function carregarMedicamentosContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+
+  selectMed.innerHTML = '<option value="" disabled selected>A carregar...</option>';
+  selectDose.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+
+  try {
+    const res = await fetch("http://localhost:8080/api/stock/medications", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message ?? "Erro ao carregar medicamentos");
+
+    _medicamentosContencao = data.data ?? [];
+
+    selectMed.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+    _medicamentosContencao.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.nome;
+      selectMed.appendChild(opt);
+    });
+  } catch (err) {
+    selectMed.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
+    console.error("Erro ao carregar medicamentos:", err);
+  }
+}
+
+function atualizarDosagemContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+  const selectVia = document.getElementById("via-contencao");
+
+  const idSelecionado = parseInt(selectMed.value);
+  const med = _medicamentosContencao.find((m) => m.id === idSelecionado);
+
+  if (selectVia && med?.viaAdministracao) {
+    const optionExiste = Array.from(selectVia.options).some(
+      (o) => o.value === med.viaAdministracao,
+    );
+    if (optionExiste) selectVia.value = med.viaAdministracao;
+  }
+
+  selectDose.innerHTML = '<option value="" disabled selected>Selecione a dosagem</option>';
+  if (med?.dosagens?.length) {
+    med.dosagens.forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d.id;
+      opt.textContent = `${d.dose % 1 === 0 ? d.dose : d.dose.toFixed(3).replace(/\.?0+$/, "")} ${formatarUnidade(d.unidadeMedida)}`;
+      selectDose.appendChild(opt);
+    });
+  }
 }
 
 function fecharPopupRegistarContencao() {
@@ -914,23 +1018,13 @@ function fecharPopupRegistarContencao() {
 async function submeterRegistarContencao(event) {
   event.preventDefault();
 
-  const medicamento = document.getElementById("medicamento-contencao").value;
-  const via = document.getElementById("via-contencao").value;
+  const idMedicamento = document.getElementById("medicamento-contencao").value;
+  const idDose = document.getElementById("dosagem-contencao").value;
   const duracao = document.getElementById("duracao-contencao").value.trim();
-  const dose = document.getElementById("dose-contencao").value.trim();
   const dataHoraRaw = document.getElementById("data-hora-contencao").value;
-  const justificacao = document
-    .getElementById("justificacao-contencao")
-    .value.trim();
+  const justificacao = document.getElementById("justificacao-contencao").value.trim();
 
-  if (
-    !medicamento ||
-    !via ||
-    !duracao ||
-    !dose ||
-    !dataHoraRaw ||
-    !justificacao
-  ) {
+  if (!idMedicamento || !idDose || !duracao || !dataHoraRaw || !justificacao) {
     mostrarNotificacao({
       titulo: "Formulário incompleto",
       mensagem: "Preenche todos os campos obrigatórios.",
@@ -940,19 +1034,16 @@ async function submeterRegistarContencao(event) {
   }
 
   const body = {
-    medicamento,
-    via,
-    duracaoEstimada: duracao,
-    dose,
+    idMedicamento: parseInt(idMedicamento),
+    idDose: parseInt(idDose),
+    duracao,
     data: formatarDataHora(dataHoraRaw),
-    justificacaoClinica: justificacao,
-    processoId,
+    justificacao,
   };
 
   try {
-    // TODO: confirmar endpoint com equipa de backend
     const resp = await fetch(
-      `http://localhost:8080/api/processes/${processoId}/chemical-restraints`,
+      `http://localhost:8080/api/processes/${processoId}/containments`,
       {
         method: "POST",
         headers: {
@@ -964,20 +1055,18 @@ async function submeterRegistarContencao(event) {
     );
 
     if (!resp.ok)
-      throw new Error(
-        (await resp.text()) || "Erro ao registar contenção química",
-      );
+      throw new Error((await resp.text()) || "Erro ao registar contenção química");
+
     fecharPopupRegistarContencao();
     mostrarNotificacao({
       titulo: "Contenção registada",
       mensagem: "Contenção química registada com sucesso.",
       tipo: "sucesso",
     });
+    await renderizarMedicacaoAtivaComContencoes(processoData.prescricoes);
   } catch (err) {
     let mensagem = err.message;
-    try {
-      mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) {}
+    try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) { }
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar contenção química.",
@@ -1021,12 +1110,10 @@ async function submeterRegistarIncidente(event) {
     tipo,
     gravidade,
     descricao,
-    data: formatarDataHora(dataHoraRaw),
-    processoId,
+    data: formatarDataHora2(dataHoraRaw),
   };
 
   try {
-    // TODO: confirmar endpoint com equipa de backend
     const resp = await fetch(
       `http://localhost:8080/api/processes/${processoId}/incidents`,
       {
@@ -1041,6 +1128,9 @@ async function submeterRegistarIncidente(event) {
 
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar incidente");
+
+    console.log(resp);
+
     fecharPopupRegistarIncidente();
     mostrarNotificacao({
       titulo: "Incidente registado",
@@ -1052,7 +1142,7 @@ async function submeterRegistarIncidente(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) {}
+    } catch (_) { }
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar incidente.",
@@ -1084,7 +1174,6 @@ async function carregarOcorrencias() {
   };
 
   try {
-    // TODO: confirmar endpoint com equipa de backend
     const resp = await fetch(
       `http://localhost:8080/api/processes/${processoId}/incidents`,
       {
@@ -1095,12 +1184,7 @@ async function carregarOcorrencias() {
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
     const json = await resp.json();
-    const hoje = new Date().toDateString();
-    const ocorrencias = (json.data ?? []).filter((o) => {
-      const [diaMes] = (o.data ?? "").split(":");
-      const [dia, mes, ano] = diaMes.split("/");
-      return new Date(ano, mes - 1, dia).toDateString() === hoje;
-    });
+    const ocorrencias = json.data ?? [];
 
     if (ocorrencias.length === 0) {
       body.innerHTML =
@@ -1206,7 +1290,7 @@ async function submeterRegistarCateter(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) {}
+    } catch (_) { }
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar cateter.",
@@ -1228,7 +1312,7 @@ async function carregarExamesECateteres() {
     DUPLO_J: "Cateter duplo J",
     URINARIO: "Cateter urinário",
     NASAL: "Cateter nasal",
-  }; 
+  };
 
   try {
     const resp = await fetch(
