@@ -43,21 +43,21 @@ public class StockServiceImpl implements StockService{
             )
             .ifPresent(m -> { throw new ConflictEntitiesException("Este medicamento ja se encontra registado"); });
         
-            var newMed = medicamentoMapper.fromCreate(data);
-            List<Dosagem> dosagens = new ArrayList<>(newMed.getDosagens());
-            Dosagem maxDose = newMed.getDosagemMaxDiaria();
-            newMed.setDosagens(new ArrayList<>());
-            newMed.setDosagemMaxDiaria(null);
-            newMed.getDosagens().forEach(d -> d.setMedicamento(newMed));
-            var saved = medicamentoRepository.save(newMed);
+        var newMed = medicamentoMapper.fromCreate(data);
+        List<Dosagem> dosagens = new ArrayList<>(newMed.getDosagens());
+        Dosagem maxDose = newMed.getDosagemMaxDiaria();
+        newMed.setDosagens(new ArrayList<>());
+        newMed.setDosagemMaxDiaria(null);
+        newMed.getDosagens().forEach(d -> d.setMedicamento(newMed));
+        var saved = medicamentoRepository.save(newMed);
             
-            dosagens.forEach(d -> {
-                d.setMedicamento(saved);
-                saved.getDosagens().add(d);
-            });
-            saved.setDosagemMaxDiaria(maxDose);
+        dosagens.forEach(d -> {
+            d.setMedicamento(saved);
+            saved.getDosagens().add(d);
+        });
+        saved.setDosagemMaxDiaria(maxDose);
 
-            medicamentoRepository.save(newMed);
+        medicamentoRepository.save(newMed);
     }
 
     @Override
@@ -67,8 +67,10 @@ public class StockServiceImpl implements StockService{
     }
 
 	@Override
+    @Transactional(readOnly = true)
 	public List<MedicamentoDTO> getAllMedications() {
-		return medicamentoMapper.toDTOList(medicamentoRepository.findAll());
+        var medications =  medicamentoRepository.findAll();
+		return medicamentoMapper.toDTOList(medications);
 	}
 
 	@Override
