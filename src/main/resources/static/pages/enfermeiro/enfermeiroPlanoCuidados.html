@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroKardexUtente.css">
+    <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroPlanoCuidado.css">
     <link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
     <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
-    <title>Enfermeiro Kardex Utente</title>
+    <title>Enfermeiro Plano de Cuidado</title>
 </head>
 
 <body>
 
     <div class="topbar">
-        <span class="topbar-page">Enfermeiro Home</span>
+        <span class="topbar-page">Enfermeiro Plano de Cuidado</span>
         <div class="topbar-right">
             <span class="topbar-user"> <span id="nome-enf"></span> | Turno: <span id="turno"></span></span>
             <button class="btn-sair" onclick="logout()">SAIR</button>
@@ -35,7 +35,7 @@
                             Home
                         </a>
                     </li>
-                    <li class="sidebar-item active">
+                    <li class="sidebar-item">
                         <a href="enfermeiroListaUtentes">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                                 <path
@@ -61,13 +61,22 @@
 
                 <div class="sidebar-section-label">Cuidados</div>
                 <ul>
-                    <li class="sidebar-item">
+                    <li class="sidebar-item active">
                         <a onclick="abrirPaginaPlano()">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                                 <path
                                     d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM136 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0z" />
                             </svg>
                             Planos de Cuidados
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#cateteres">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                                <path
+                                    d="M32 48C32 21.5 53.5 0 80 0l48 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0 0 128c0 53 43 96 96 96s96-43 96-96l0-128-32 0c-17.7 0-32-14.3-32-32S238.3 0 256 0l48 0c26.5 0 48 21.5 48 48l0 144c0 77.4-55 142-128 156.8l0 19.2c0 61.9 50.1 112 112 112s112-50.1 112-112l0-85.5c-37.3-13.2-64-48.7-64-90.5 0-53 43-96 96-96s96 43 96 96c0 41.8-26.7 77.4-64 90.5l0 85.5c0 97.2-78.8 176-176 176S160 465.2 160 368l0-19.2C87 334 32 269.4 32 192L32 48zM480 224a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+                            </svg>
+                            Cateteres
                         </a>
                     </li>
                     <li class="sidebar-item">
@@ -80,7 +89,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a onclick="abrirPopUpContencaoQuimica()">
+                        <a href="#contencao">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                 <path
                                     d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z" />
@@ -91,131 +100,84 @@
                 </ul>
             </nav>
         </aside>
+
         <main class="main-content">
             <div class="page-content">
+
+                <!-- HEADER DO UTENTE -->
                 <div class="utente-header">
-                    <div class="utente-header-title" id="header-title"></div>
-                    <div class="utente-header-sub" id="header-sub"></div>
+                    <div class="utente-header-title" id="header-title">
+                        <h3 id="header-nome-utente">A carregar...</h3>
+                        <p id="header-proc-turno"></p>
+                    </div>
                     <div class="action-buttons">
-                        <button class="btn-action">NOTAS CLÍNICAS</button>
-                        <button class="btn-action">HIST. INTERNAMENTOS</button>
-                        <button class="btn-action" onclick="abrirPopUpRegistarCateter()">CATETER</button>
-                        <button class="btn-action" onclick="abrirPopUpCriarPlano()">CRIAR PLANO</button>
-                        <button class="btn-action" onclick="location.href='enfermeiroListaUtentes'">LISTA</button>
-                        <button class="btn-action">HIST. CLÍNICO</button>
-                        <button class="btn-action" onclick="abrirPopUpEditarFichaUtente()">EDITAR</button>
-                        <button class="btn-action" onclick="irParaHistoricoPrescricoes()">HIST. PRESCRIÇÕES</button>
+                        <button class="btn-action" onclick="irParaKardex()">Kardex</button>
+                        <button class="btn-action" onclick="abrirNovaIntervencao()">Nova Intervenção</button>
                     </div>
                 </div>
-                <div class="utente-info-card">
-                    <div class="utente-info-grid">
-                        <div class="utente-nome" id="utente-nome"></div>
-                        <div class="info-field">Sexo/Idade: <span id="sexo-idade"></span></div>
-                        <div class="info-field">Admissão: <span id="admissao"></span></div>
-                        <div class="info-field">Médico: <span id="medico"></span></div>
-                        <div class="info-field">Proc: <span id="proc-nasc"></span></div>
-                        <div class="info-field">Cama: <span id="cama"></span></div>
-                        <div class="info-field">Estado: <span id="estado"></span></div>
-                        <div class="info-field">Diagnóstico: <span id="diagnostico"></span></div>
-                        <div class="info-riscos" id="riscos"></div>
-                    </div>
+
+                <!-- ESTADO DO PLANO -->
+                <div class="panel-body" id="estado-plano-body">
+                    <h3>Estado do plano</h3>
+                    <h5 id="estado-plano-texto">A carregar...</h5>
                 </div>
-                <div class="alergias-card">
-                    <div class="alergias-title">Alergias — Atenção antes de qualquer medicação</div>
-                    <div class="alergias-list" id="alergias-list"></div>
-                </div>
+
+                <!-- DIAGNÓSTICOS E OBJETIVOS -->
                 <div class="main-grid">
                     <div class="panel">
                         <div class="panel-header">
-                            <span class="panel-title">Sinais Vitais</span>
-                            <button class="btn-panel" onclick="abrirPopUpSinaisVitais()">REGISTAR SINAIS VITAIS</button>
+                            <span class="panel-title">Diagnósticos de Enfermagem</span>
                         </div>
-                        <div class="panel-body">
-                            <div class="sv-grid">
-                                <div class="sv-item">
-                                    <div class="sv-value" id="sv-tensao"></div>
-                                    <div class="sv-label">Tensão Art.</div>
-                                </div>
-                                <div class="sv-item">
-                                    <div class="sv-value" id="sv-freq-card"></div>
-                                    <div class="sv-label">Freq. Card.</div>
-                                </div>
-                                <div class="sv-item">
-                                    <div class="sv-value" id="sv-temperatura"></div>
-                                    <div class="sv-label">Temperatura</div>
-                                </div>
-                                <div class="sv-item">
-                                    <div class="sv-value" id="sv-spo2"></div>
-                                    <div class="sv-label">SpO2</div>
-                                </div>
-                                <div class="sv-item">
-                                    <div class="sv-value" id="sv-dor"></div>
-                                    <div class="sv-label">Dor</div>
-                                </div>
-                                <div class="sv-item">
-                                    <div class="sv-value" id="sv-glicemia"></div>
-                                    <div class="sv-label">Glicémia</div>
-                                </div>
-                            </div>
+                        <div class="panel-body" id="diagnosticos-body">
+                            <p class="loading-text">A carregar diagnósticos...</p>
                         </div>
                     </div>
+
                     <div class="panel">
                         <div class="panel-header">
-                            <span class="panel-title">Plano de Cuidados Hoje</span>
-                            <button class="btn-panel" onclick="abrirPaginaPlano()">VER COMPLETO</button>
+                            <span class="panel-title">Objetivos Terapêuticos</span>
                         </div>
-                        <div class="panel-body" id="plano-cuidados-body">
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-header">
-                            <span class="panel-title">Medicação Ativa</span>
-                        </div>
-                        <div class="panel-body" id="medicacao-body">
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-header">
-                            <span class="panel-title">Exames e Cateteres</span>
-                        </div>
-                        <div class="panel-body" id="exames-body">
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-header">
-                            <span class="panel-title">Ocorrências de Hoje</span>
-                            <button class="btn-panel" onclick="abrirPopUpRegistarIncidente()">REGISTAR</button>
-                        </div>
-                        <div class="panel-body" id="ocorrencias-body">
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-header">
-                            <span class="panel-title">Últimos Registos Clínicos</span>
-                        </div>
-                        <div class="panel-body">
-                            <table class="registos-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tipo</th>
-                                        <th>Valor</th>
-                                        <th>Hora</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="registos-tbody">
-                                </tbody>
-                            </table>
+                        <div class="panel-body" id="objetivos-body">
+                            <p class="loading-text">A carregar objetivos...</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- INTERVENÇÕES -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Intervenções - Turno Atual</span>
+                    </div>
+                    <div class="panel-body" id="intervencoes-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Intervenção</th>
+                                    <th>Frequência</th>
+                                    <th>Horário</th>
+                                    <th>Executada por</th>
+                                    <th>Hora registo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="intervencoes-tbody">
+                                <tr>
+                                    <td colspan="6" class="loading-text">A carregar intervenções...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
+
     <div id="popup-container"></div>
     <script src="../../scripts/logout.js"></script>
-    <script src="../../scripts/enfermeiro/enfermeiroKardexUtente.js"></script>
     <div id="notificacoes-container"></div>
     <script src="../../scripts/notificacao.js"></script>
+    <script src="../../scripts/enfermeiro/enfermeiroPlanoCuidados.js"></script>
 </body>
 
 </html>

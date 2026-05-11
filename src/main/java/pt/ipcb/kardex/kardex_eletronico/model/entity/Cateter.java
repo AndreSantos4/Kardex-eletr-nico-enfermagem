@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pt.ipcb.kardex.kardex_eletronico.model.enumerated.CalibreCateter;
-import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoCateter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoCateter;
 
 import java.time.LocalDateTime;
 
@@ -29,9 +28,12 @@ public class Cateter {
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
     
-    @Column(name = "calibre_cateter", nullable = false)
+    @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
-    public CalibreCateter calibre;
+    public TipoCateter tipo;
+
+    @Column(name = "calibre", nullable = false)
+    public String calibre;
     
     @Column(name = "data_insercao", nullable = false)
     public LocalDateTime dataInsercao;
@@ -41,9 +43,6 @@ public class Cateter {
     
     @Column(name = "local_insercao", nullable = false)
     public String localInsercao;
-    
-    @Column(name = "estado_cateter", nullable = false)
-    public EstadoCateter estado;
     
     @Column(name = "observacoes")
     public String observacoes;

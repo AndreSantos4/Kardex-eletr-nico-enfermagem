@@ -3,8 +3,16 @@ package pt.ipcb.kardex.kardex_eletronico.service.process;
 import java.time.LocalDate;
 import java.util.List;
 
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.ContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateCateterDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateContencaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.CreateCarePlanDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.plan.PlanoCuidadosDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
@@ -38,5 +46,21 @@ public interface ProcessService {
 
     public ProcessoClinicoDTO getKardexProcess(Utente patient);
 
+    public void registerCateter(Long processId, CreateCateterDTO data);
+
+    public List<CateterDTO> getAllCateteres(Long processId);
+
+    public void registerIncident(Long processId, CreateIncidenteDTO data);
+
+    public List<IncidenteDTO> getAllIncidents(Long processId);
+
+    public void registerContainment(Long processId, CreateContencaoDTO data);
+
+    public List<ContencaoDTO> getAllCointainments(Long processId);
+  
     public void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data);
+
+    public void createCarePlan(Long processId, CreateCarePlanDTO data);
+
+    public PlanoCuidadosDTO getCarePlan(Long processId);
 }
