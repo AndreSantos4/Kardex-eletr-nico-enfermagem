@@ -55,6 +55,12 @@ public class Intervencao {
     @Column(name = "data", nullable = false)
     public LocalDateTime data;
 
+    @Column(name = "data_execucao")
+    public LocalDateTime dataExecucao;
+
+    @Column(name = "observacoes_execucao")
+    public String observacoesExecucao;
+
     @Column(name = "objetivo")
     public String objetivo;
 }
