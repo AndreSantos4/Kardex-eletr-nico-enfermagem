@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.worker;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -162,9 +163,16 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FuncionarioDTO> getAllMedics() {
-        var teste = repository.findByDadosRole(Role.MEDICO);
-        return mapper.toDTOList(teste);
+    public List<FuncionarioDTO> getAllWorkers(Role role) {
+        List<Funcionario> workers = new ArrayList<>();
+
+        if(role == null){
+            workers = repository.findAllByDadosAtivo(true);
+        } else {
+            workers = repository.findByDadosRoleAndDadosAtivo(role, true);
+        }
+
+        return mapper.toDTOList(workers);
     }
 
     @Override
@@ -188,4 +196,5 @@ public class WorkerServiceImpl implements WorkerService {
 
         return true;
     }
+
 }

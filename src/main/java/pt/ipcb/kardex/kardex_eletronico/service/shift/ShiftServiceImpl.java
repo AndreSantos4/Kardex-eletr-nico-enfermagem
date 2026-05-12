@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.AssignNursesDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
@@ -141,6 +143,16 @@ public class ShiftServiceImpl implements ShiftService{
                 throw new KardexException("O funcionario associado nao e um enfermeiro");
             }
 
+            if(!shift.getEnfermeiros().contains(worker)){
+                throw new KardexException("Nao pode ser designado um funcionario que nao foi alocado ao turno");
+            }
+
+            if(shift.getAtribuicoes()
+                    .stream()
+                    .anyMatch(a2 -> a2.getEnfermeiro().equals(worker) && a2.getUtente().equals(patient))){
+                throw new ConflictEntitiesException("Desiganacoes duplicadas");
+            }
+
             var assignment = new AtribuicaoUtente(null, worker, patient, shift);
             shift.getAtribuicoes().add(assignment);
         });
@@ -155,5 +167,11 @@ public class ShiftServiceImpl implements ShiftService{
         }
 
         return shift;
+    }
+
+    @Override
+    public List<TurnoDTO> getAllShifts() {
+        var shifts = repository.findAll();
+        return mapper.toDTOList(shifts);
     }
 }

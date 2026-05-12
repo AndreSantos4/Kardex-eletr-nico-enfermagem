@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -31,6 +32,9 @@ public class Funcionario {
     )
     @ManyToMany(fetch = FetchType.LAZY)
     public Set<Turno> turnos = new HashSet<>();
+
+    @OneToMany(mappedBy = "enfermeiro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public List<AtribuicaoUtente> atribuicoes;
 
     public Funcionario(Utilizador user){
         id = null;
