@@ -143,6 +143,16 @@ public class ShiftServiceImpl implements ShiftService{
                 throw new KardexException("O funcionario associado nao e um enfermeiro");
             }
 
+            if(!shift.getEnfermeiros().contains(worker)){
+                throw new KardexException("Nao pode ser designado um funcionario que nao foi alocado ao turno");
+            }
+
+            if(shift.getAtribuicoes()
+                    .stream()
+                    .anyMatch(a2 -> a2.getEnfermeiro().equals(worker) && a2.getUtente().equals(patient))){
+                throw new ConflictEntitiesException("Desiganacoes duplicadas");
+            }
+
             var assignment = new AtribuicaoUtente(null, worker, patient, shift);
             shift.getAtribuicoes().add(assignment);
         });
