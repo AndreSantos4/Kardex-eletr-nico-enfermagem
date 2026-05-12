@@ -162,8 +162,8 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FuncionarioDTO> getAllMedics() {
-        var teste = repository.findByDadosRole(Role.MEDICO);
+    public List<FuncionarioDTO> getAllWorkers(Role role) {
+        var teste = repository.findByDadosRole(role);
         return mapper.toDTOList(teste);
     }
 
@@ -188,4 +188,5 @@ public class WorkerServiceImpl implements WorkerService {
 
         return true;
     }
+
 }
