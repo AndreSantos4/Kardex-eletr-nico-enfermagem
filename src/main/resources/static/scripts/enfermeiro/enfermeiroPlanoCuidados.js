@@ -1,13 +1,30 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-// Estado global
 let _processoId = null;
 let _nomeUtente = "";
 let _nomeEnfermeiro = "";
 let _intervencaoSelecionadaId = null;
 
-// ---------- Navegação ----------
+const LABELS_INTERVENCAO = {
+  VIGILANCIA_CONTINUA: "Vigilância Contínua",
+  ADMINISTRACAO_MEDICACAO: "Administração de Medicação",
+  AVALIACAO_SINAIS_VITAIS: "Avaliação de Sinais Vitais",
+  CUIDADOS_HIGIENE: "Cuidados de Higiene",
+  OUTRO: "Outro",
+};
+
+const LABELS_FREQUENCIA = {
+  CONTINUA: "Contínua",
+  UMA_VEZ: "Uma vez",
+  DUAS_VEZES: "Duas vezes",
+  TRES_VEZES: "Três vezes",
+  SOS: "SOS",
+};
+
+function labelOuOriginal(mapa, valor) {
+  return mapa[valor] ?? valor;
+}
 
 function abrirPaginaPlano() {
   window.location.href = `enfermeiroPlanoCuidados?id=${id}`;
@@ -16,8 +33,6 @@ function abrirPaginaPlano() {
 function irParaKardex() {
   window.location.href = `enfermeiroKardexUtente?id=${id}`;
 }
-
-// ---------- Fetchers base ----------
 
 async function fetchUtente() {
   const res = await fetch(`http://localhost:8080/api/patients/${id}`);
@@ -34,8 +49,6 @@ async function fetchPlano(processoId) {
   return json.data ?? null;
 }
 
-// ---------- Enfermeiro ----------
-
 async function carregarEnfermeiro() {
   const res = await fetch(`http://localhost:8080/api/users/me`);
   if (!res.ok) return;
@@ -44,8 +57,6 @@ async function carregarEnfermeiro() {
   document.getElementById("nome-enf").textContent = _nomeEnfermeiro;
   document.getElementById("turno").textContent = "TODO";
 }
-
-// ---------- Render ----------
 
 function mostrarSemPlano(nomeUtente, processoId) {
   document.getElementById("header-nome-utente").textContent = `Plano de Cuidados — ${nomeUtente}`;
@@ -100,11 +111,23 @@ function renderObjetivos(objetivos) {
     .join("<br>");
 }
 
+function formatarDataExecucaoParaDisplay(dataISO) {
+  if (!dataISO) return "";
+  const d = new Date(dataISO);
+  if (isNaN(d)) return dataISO;
+  const dia = String(d.getDate()).padStart(2, "0");
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const ano = d.getFullYear();
+  const horas = String(d.getHours()).padStart(2, "0");
+  const mins = String(d.getMinutes()).padStart(2, "0");
+  return `${dia}/${mes}/${ano} ${horas}:${mins}`;
+}
+
 function renderIntervencoes(intervencoes) {
   const tbody = document.getElementById("intervencoes-tbody");
 
   if (!intervencoes?.length) {
-    tbody.innerHTML = '<tr><td colspan="7">Sem intervenções para este turno.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6">Sem intervenções para este turno.</td></tr>';
     return;
   }
 
@@ -112,12 +135,11 @@ function renderIntervencoes(intervencoes) {
     .map(
       (i) => `
       <tr>
-        <td>${i.intervencao ?? ""}</td>
-        <td>${i.frequencia ?? ""}</td>
+        <td>${labelOuOriginal(LABELS_INTERVENCAO, i.intervencao)}</td>
+        <td>${labelOuOriginal(LABELS_FREQUENCIA, i.frequencia)}</td>
         <td>${i.horarioPrevisto ?? ""}</td>
-        <td>${i.diagnostico ?? ""}</td>
-        <td>${i.data ?? ""}</td>
-        <td>${i.objetivo ?? ""}</td>
+        <td>${i.funcionarioExecutou?.dados?.nome ?? ""}</td>
+        <td>${i.dataExecucao ? formatarDataExecucaoParaDisplay(i.dataExecucao) : ""}</td>
         <td>
           ${i.dataExecucao === null
           ? `<button class="btn-registar-estilo" onclick="abrirPopupRegistarIntervencao(${i.id})">REGISTAR</button>`
@@ -129,8 +151,6 @@ function renderIntervencoes(intervencoes) {
     )
     .join("");
 }
-
-// ---------- Popup: Nova Intervenção ----------
 
 function abrirNovaIntervencao() {
   const agora = new Date();
@@ -190,8 +210,6 @@ async function submeterAdicionarIntervencao(event) {
   }
 }
 
-// ---------- Popup: Registar Intervenção ----------
-
 function abrirPopupRegistarIntervencao(intervencaoId) {
   _intervencaoSelecionadaId = intervencaoId;
 
@@ -246,9 +264,6 @@ async function submeterRegistarIntervencao(event) {
   }
 }
 
-// ---------- Helpers ----------
-
-// Converte "YYYY-MM-DDTHH:mm" → "DD/MM/YYYY:HH:mm:00" (com segundos — para adicionar intervenção)
 function formatarDataHoraParaAPIComSegundos(datetimeLocal) {
   if (!datetimeLocal) return "";
   const [datePart, timePart] = datetimeLocal.split("T");
@@ -256,7 +271,6 @@ function formatarDataHoraParaAPIComSegundos(datetimeLocal) {
   return `${day}/${month}/${year}:${timePart}:00`;
 }
 
-// Converte "YYYY-MM-DDTHH:mm" → "DD/MM/YYYY:HH:mm" (sem segundos — para registar execução)
 function formatarDataHoraParaAPI(datetimeLocal) {
   if (!datetimeLocal) return "";
   const [datePart, timePart] = datetimeLocal.split("T");
@@ -272,8 +286,6 @@ async function recarregarIntervencoes() {
     console.error("Erro ao recarregar intervenções:", err);
   }
 }
-
-// ---------- Popups ----------
 
 async function carregarPopups() {
   const popups = [
@@ -297,8 +309,6 @@ async function carregarPopups() {
     })
   );
 }
-
-// ---------- Inicialização ----------
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (!id) {
