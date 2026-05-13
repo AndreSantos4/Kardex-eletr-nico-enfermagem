@@ -69,6 +69,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroHistoricoPrescricoes.html?id=" + id);
     }
 
+    @GetMapping("/enfermeiroPassagemTurno")
+    public ModelAndView enfermeiroPassagemTurno() {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPassagemTurno.html");
+    }
+
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")
