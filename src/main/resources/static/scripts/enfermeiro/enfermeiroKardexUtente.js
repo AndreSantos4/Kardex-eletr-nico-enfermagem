@@ -1366,4 +1366,184 @@ async function carregarExames() {
   // TODO: endpoint em desenvolvimento — implementação comentada intencionalmente
 }
 
-carregarUtente(id);
+let _enfermeiroAtualId = null;
+
+async function obterEnfermeiroAtualId() {
+  try {
+    const resp = await fetch("http://localhost:8080/api/users/me", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    const json = await resp.json();
+    return String(json.data.id ?? "");  // ← forçar string
+  } catch (err) {
+    console.error("Erro ao obter enfermeiro atual:", err);
+    return null;
+  }
+}
+
+async function carregarPlanoDeHoje() {
+  const body = document.getElementById("plano-cuidados-body");
+  body.innerHTML = "";
+
+  const frequenciaLabel = {
+    CONTINUA: "Contínua", DIARIA: "Diária", BD: "2x/dia",
+    TID: "3x/dia", QID: "4x/dia", SOS: "SOS", SEMANAL: "Semanal",
+  };
+
+  const prioridadeConfig = {
+    CRITICA: { cor: "#c62828", texto: "CRÍTICA" },
+    ALTA: { cor: "rgb(220,49,26)", texto: "ALTA" },
+    MEDIA: { cor: "#e65100", texto: "MÉDIA" },
+    BAIXA: { cor: "#2e7d32", texto: "BAIXA" },
+  };
+
+  try {
+    const resp = await fetch(
+      `http://localhost:8080/api/processes/${processoId}/plan`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+
+    if (!resp.ok) {
+      body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Sem plano de cuidados ativo.</p>";
+      return;
+    }
+
+    const json = await resp.json();
+    const intervencoes = json.data?.intervencoes ?? [];
+
+    if (intervencoes.length === 0) {
+      body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Sem intervenções para hoje.</p>";
+      return;
+    }
+
+    const enfermeiroAtualId = await obterEnfermeiroAtualId();
+
+    intervencoes.forEach((inv) => {
+      const feita = inv.funcionarioExecutou != null;
+      console.log(String(inv.funcionarioExecutou?.dados?.id ?? ""));
+      const realizadaPorId = String(inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "");
+
+      console.log("Enfermeiro atual:", enfermeiroAtualId);
+      console.log("Executou:", inv.funcionarioExecutou);
+      console.log("realizadaPorId:", realizadaPorId);
+
+      const podeDesmarcar = feita && String(realizadaPorId) === String(enfermeiroAtualId);
+      const checkboxBloqueada = !feita || (feita && !podeDesmarcar);
+
+      const prio = prioridadeConfig[inv.prioridade] ?? { cor: "#666", texto: inv.prioridade ?? "—" };
+      const freq = frequenciaLabel[inv.frequencia] ?? inv.frequencia ?? "—";
+
+      const row = document.createElement("div");
+      row.dataset.invId = inv.id;
+      row.style.cssText = [
+        "display:flex",
+        "align-items:flex-start",
+        "justify-content:space-between",
+        "gap:12px",
+        "padding:8px 10px",
+        "border-bottom:1px solid var(--border)",
+        "font-size:13px",
+      ].join(";");
+
+      const checkboxId = `inv-check-${inv.id}`;
+      const textoRiscado = feita ? "text-decoration:line-through;opacity:0.55;" : "";
+      const tituloCb = apenasLeitura(feita, podeDesmarcar)
+        ? "Registado por outro enfermeiro"
+        : feita
+          ? "Clica para desmarcar"
+          : "Marcar como realizado deve ser feito no plano de cuidados";
+
+      row.innerHTML = `
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;color:var(--surface);${textoRiscado}">
+            ${inv.intervencao ?? "—"}
+            <span style="display:inline-block;margin-left:6px;background:${prio.cor};color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;vertical-align:middle;">${prio.texto}</span>
+          </div>
+          <div style="color:var(--surface);margin-top:3px;font-size:12px;">
+            ${freq}${inv.horarioPrevisto ? ` · ${inv.horarioPrevisto}` : ""}${inv.objetivo ? ` · Obj: ${inv.objetivo}` : ""}
+          </div>
+        </div>
+        <input
+          type="checkbox"
+          id="${checkboxId}"
+          style="margin-top:3px;width:16px;height:16px;flex-shrink:0;accent-color:#1565c0;cursor:${checkboxBloqueada ? "not-allowed" : "pointer"};"
+          ${feita ? "checked" : ""}
+          title="${tituloCb}"
+        />
+      `;
+
+      const cb = row.querySelector(`#${checkboxId}`);
+
+      if (checkboxBloqueada) {
+        cb.addEventListener("change", (e) => {
+          e.preventDefault();
+          cb.checked = feita;
+        });
+        cb.addEventListener("click", (e) => {
+          e.preventDefault();
+        });
+      } else {
+        cb.addEventListener("change", (e) => {
+          if (!e.target.checked) {
+            desmarcarIntervencao(inv.id, row, cb);
+          } else {
+            cb.checked = true;
+          }
+        });
+      }
+
+      console.log("feita:", feita, "podeDesmarcar:", podeDesmarcar, "bloqueada:", checkboxBloqueada);
+      console.log("tipos:", typeof enfermeiroAtualId, typeof realizadaPorId, enfermeiroAtualId === realizadaPorId);
+
+      body.appendChild(row);
+    });
+  } catch (err) {
+    body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Erro ao carregar plano de cuidados.</p>";
+    console.error("Erro em carregarPlanoDeHoje:", err);
+  }
+}
+
+function apenasLeitura(feita, podeDesmarcar) {
+  return feita && !podeDesmarcar;
+}
+
+async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
+  cbEl.disabled = true;
+  cbEl.style.opacity = "0.5";
+
+  try {
+    const resp = await fetch(
+      `http://localhost:8080/api/processes/interventions/${intervencaoId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (!resp.ok) throw new Error((await resp.text()) || "Erro ao desmarcar intervenção");
+
+    mostrarNotificacao({
+      titulo: "Intervenção desmarcada",
+      mensagem: "Intervenção marcada como não realizada.",
+      tipo: "sucesso",
+    });
+
+    await carregarPlanoDeHoje();
+  } catch (err) {
+    let mensagem = err.message;
+    try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) { }
+    mostrarNotificacao({
+      titulo: "Erro",
+      mensagem: mensagem || "Erro ao desmarcar intervenção.",
+      tipo: "erro",
+    });
+    cbEl.checked = true;
+    cbEl.disabled = false;
+    cbEl.style.opacity = "1";
+  }
+}
+
+carregarUtente(id).then(() => carregarPlanoDeHoje());
