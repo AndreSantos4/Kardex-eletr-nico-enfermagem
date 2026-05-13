@@ -5,6 +5,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ClasseFarmacologica;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ViaAdministracao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -19,6 +20,7 @@ public record MedicamentoDTO(
     @JsonProperty("lotes") List<LoteMedicamentoDTO> lotes,
     @JsonProperty("unidadeMedida") UnidadeMedida unidadeMedida,
     @JsonProperty("altoRisco") boolean altoRisco,
+    @JsonProperty("quantidade") BigDecimal quantidade,
     @JsonProperty("active") boolean active,
     @JsonProperty("viaAdministracao") ViaAdministracao viaAdministracao,
     @JsonProperty("alergiasIncompativeis") List<AlergiaDTO> alergiasIncompativeis

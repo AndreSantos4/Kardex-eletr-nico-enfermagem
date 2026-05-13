@@ -66,12 +66,21 @@ public class StockServiceImpl implements StockService{
         return medicamentoRepository.countUniqueMedications();
     }
 
-	@Override
+    @Override
     @Transactional(readOnly = true)
-	public List<MedicamentoDTO> getAllMedications() {
-        var medications =  medicamentoRepository.findAll();
-		return medicamentoMapper.toDTOList(medications);
-	}
+    public List<MedicamentoDTO> getAllMedications() {
+        return medicamentoRepository.findAll()
+                .stream()
+                .map(m -> {
+                    BigDecimal quantidade = m.getLotes().stream()
+                            .filter(lote -> !lote.getValidade().isBefore(LocalDate.now(clock)))
+                            .map(LoteMedicamento::getQuantidade)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    return medicamentoMapper.toDTO(m, quantidade);
+                })
+                .toList();
+    }
 
 	@Override
 	@Transactional
