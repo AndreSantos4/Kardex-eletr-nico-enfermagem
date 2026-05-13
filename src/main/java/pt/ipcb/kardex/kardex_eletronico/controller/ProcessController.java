@@ -159,4 +159,10 @@ public class ProcessController {
         planService.registerIntervention(interventionId, data);
         return ResponseEntity.ok(ApiResponse.ok("Intervencao registada com sucesso", null));
     }
+
+    @PatchMapping("/interventions/{interventionId}")
+    public ResponseEntity<ApiResponse<?>> unmarkIntervention(@PathVariable Long interventionId){
+        planService.unmarkIntervention(interventionId);
+        return ResponseEntity.ok(ApiResponse.ok("Intervencao desmarcada como executada com sucesso", null));
+    }
 }
