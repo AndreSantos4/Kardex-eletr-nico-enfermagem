@@ -2,6 +2,7 @@ package pt.ipcb.kardex.kardex_eletronico.dto.plan;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FrequenciaIntervencao;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.IntervencaoDiagnostico;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrioridadeIntervencao;
@@ -19,6 +20,7 @@ public record IntervencaoDTO(
         @JsonProperty("data") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime data,
         @JsonProperty("objetivo") String objetivo,
         @JsonProperty("dataExecucao") LocalDateTime dataExecucao,
-        @JsonProperty("observacavoesExecucao") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss")  String observacavoesExecucao
+        @JsonProperty("observacavoesExecucao") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss")  String observacavoesExecucao,
+        @JsonProperty("funcionarioExecutou") FuncionarioDTO funcionarioExecutou
 ) {
 }

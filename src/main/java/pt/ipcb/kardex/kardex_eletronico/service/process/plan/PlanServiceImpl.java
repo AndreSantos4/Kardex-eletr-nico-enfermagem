@@ -75,6 +75,7 @@ public class PlanServiceImpl implements PlanService {
     public void registerIntervention(Long interventionId, RegisterInterventionDTO data) {
         var intervencao = intervencaoRepository.findById(interventionId)
                 .orElseThrow(() -> EntityNotFoundException.forId(interventionId, "Intervencao"));
+        var worker =  workerService.getAutenticatedWorker();
 
         if(intervencao.dataExecucao != null) {
             throw new KardexException("Intervencao ja foi executada");
@@ -91,5 +92,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         intervencao.setObservacoesExecucao(data.observacoes());
+
+        intervencao.setFuncionarioExecutou(worker);
     }
 }
