@@ -17,4 +17,6 @@ public interface PlanService {
     void addIntervention(Long processId, CreateInterventionDTO data);
 
     void registerIntervention(Long interventionId, RegisterInterventionDTO data);
+
+    void unmarkIntervention(Long interventionId);
 }

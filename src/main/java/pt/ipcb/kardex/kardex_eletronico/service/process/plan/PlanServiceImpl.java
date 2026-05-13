@@ -95,4 +95,14 @@ public class PlanServiceImpl implements PlanService {
 
         intervencao.setFuncionarioExecutou(worker);
     }
+
+    @Override
+    @Transactional
+    public void unmarkIntervention(Long interventionId) {
+        var intervencao = intervencaoRepository.findById(interventionId)
+                .orElseThrow(() -> EntityNotFoundException.forId(interventionId, "Intervencao"));
+
+        intervencao.setDataExecucao(null);
+        intervencao.setObservacoesExecucao(null);
+    }
 }
