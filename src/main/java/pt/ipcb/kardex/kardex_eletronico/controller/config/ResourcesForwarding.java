@@ -72,6 +72,8 @@ public class ResourcesForwarding {
     @GetMapping("/enfermeiroPassagemTurno")
     public ModelAndView enfermeiroPassagemTurno() {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPassagemTurno.html");
+    }
+
     @GetMapping("/enfermeiroPlanoCuidados")
     public ModelAndView enfermeiroPlanoCuidados(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPlanoCuidados.html?id=" + id);
