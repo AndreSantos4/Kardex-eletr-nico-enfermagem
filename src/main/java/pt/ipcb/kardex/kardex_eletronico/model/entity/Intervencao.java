@@ -61,6 +61,10 @@ public class Intervencao {
     @Column(name = "observacoes_execucao")
     public String observacoesExecucao;
 
+    @JoinColumn(name = "id_funcionario_executou")
+    @ManyToOne(fetch = FetchType.EAGER)
+    public Funcionario funcionarioExecutou;
+
     @Column(name = "objetivo")
     public String objetivo;
 }
