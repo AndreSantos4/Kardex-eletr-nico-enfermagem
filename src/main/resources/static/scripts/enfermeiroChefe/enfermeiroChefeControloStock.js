@@ -1,7 +1,26 @@
 let _medicamentosCache = [];
 
+const STOCK_CRITICO_MINIMO = 50;
+
+function parsearData(strData) {
+    if (!strData) return null;
+    const [d, m, a] = strData.split("/");
+    return new Date(`${a}-${m}-${d}`);
+}
+
+function calcularQuantidadeValida(lotes = []) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    return lotes
+        .filter(lote => {
+            const validade = parsearData(lote.validade);
+            return !validade || validade >= hoje;
+        })
+        .reduce((acc, lote) => acc + (lote.quantidade ?? 0), 0);
+}
+
 function calcularQuantidadeTotal(lotes = []) {
-    return lotes.reduce((acc, lote) => acc + (lote.quantidade ?? 0), 0);
+    return calcularQuantidadeValida(lotes);
 }
 
 function obterValidadeMaisProxima(lotes = []) {
@@ -19,11 +38,10 @@ function obterValidadeMaisProxima(lotes = []) {
     return comValidade.length ? comValidade[0].original : "—";
 }
 
-function obterEstadoStock(quantidade, minimo) {
-    if (minimo == null) return { label: "—", classe: "desconhecido" };
+function obterEstadoStock(quantidade) {
     if (quantidade <= 0) return { label: "Esgotado", classe: "esgotado" };
-    if (quantidade <= minimo) return { label: "Crítico", classe: "critico" };
-    if (quantidade <= minimo * 1.5) return { label: "Baixo", classe: "baixo" };
+    if (quantidade <= STOCK_CRITICO_MINIMO) return { label: "Crítico", classe: "critico" };
+    if (quantidade <= STOCK_CRITICO_MINIMO * 1.5) return { label: "Baixo", classe: "baixo" };
     return { label: "Normal", classe: "normal" };
 }
 
@@ -94,9 +112,7 @@ function renderizarTabelaInventario(medicamentos) {
         const quantidade = calcularQuantidadeTotal(med.lotes);
         const validade = obterValidadeMaisProxima(med.lotes);
 
-        // TODO: campo "minimo" não existe ainda na API — ajustar quando disponível
-        const minimo = med.minimo ?? null;
-        const estado = obterEstadoStock(quantidade, minimo);
+        const estado = obterEstadoStock(quantidade);
         const disponivel = med.active ? "Sim" : "Não";
 
         const tr = document.createElement("tr");
@@ -104,7 +120,7 @@ function renderizarTabelaInventario(medicamentos) {
             <td>${med.nome}</td>
             <td>${quantidade}</td>
             <td>${disponivel}</td>
-            <td>${minimo ?? "—"}</td>
+            <td>${STOCK_CRITICO_MINIMO}</td>
             <td><span class="estado-badge estado-${estado.classe}">${estado.label}</span></td>
             <td>${validade}</td>
             <td><button onclick="abrirPopupRepor(${med.id})">Repor</button></td>
@@ -114,10 +130,12 @@ function renderizarTabelaInventario(medicamentos) {
 }
 
 function renderizarStockCritico(medicamentos) {
-    // TODO: mostrar secção quando a API devolver o campo "minimo"
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
     const criticos = medicamentos.filter(med => {
-        if (med.minimo == null) return false;
-        return calcularQuantidadeTotal(med.lotes) <= med.minimo;
+        const qtdValida = calcularQuantidadeValida(med.lotes);
+        return qtdValida <= STOCK_CRITICO_MINIMO;
     });
 
     const secao = document.getElementById("secao-stock-critico");
@@ -130,7 +148,25 @@ function renderizarStockCritico(medicamentos) {
     }
 
     secao.style.display = "";
-    lista.innerHTML = criticos.map(m => `<p>${m.nome}</p>`).join("");
+
+    lista.innerHTML = criticos.map(med => {
+        const qtdValida = calcularQuantidadeValida(med.lotes);
+        const temLotesExpirados = med.lotes.some(lote => {
+            const v = parsearData(lote.validade);
+            return v && v < hoje;
+        });
+
+        const avisoExpiracao = temLotesExpirados
+            ? `<span class="aviso-lotes-expirados"> ⚠️ lotes expirados excluídos</span>`
+            : "";
+
+        return `
+            <div class="stock-critico-item">
+                <strong>${med.nome}</strong>
+                — ${qtdValida} unidades válidas em stock
+                ${avisoExpiracao}
+            </div>`;
+    }).join("");
 }
 
 async function carregarPopupRegistarStock() {
