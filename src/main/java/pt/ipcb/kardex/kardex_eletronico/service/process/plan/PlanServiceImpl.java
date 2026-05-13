@@ -101,5 +101,6 @@ public class PlanServiceImpl implements PlanService {
 
         intervencao.setDataExecucao(null);
         intervencao.setObservacoesExecucao(null);
+        intervencao.setFuncionario(null);
     }
 }
