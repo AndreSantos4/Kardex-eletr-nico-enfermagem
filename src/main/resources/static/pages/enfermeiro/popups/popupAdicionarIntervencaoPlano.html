@@ -47,20 +47,22 @@
 					<div class="popup-intervencao-field">
 						<label class="popup-intervencao-label">FREQUÊNCIA *</label>
 						<select id="frequencia-intervencao" class="popup-intervencao-select">
-							<option value="1_DIA" selected>1x/dia</option>
-							<option value="2_DIA">2x/dia</option>
-							<option value="3_DIA">3x/dia</option>
-							<option value="4_DIA">4x/dia</option>
-							<option value="6_DIA">6x/dia</option>
-							<option value="2H">De 2 em 2 horas</option>
-							<option value="4H">De 4 em 4 horas</option>
-							<option value="CONTINUO">Contínuo</option>
+							<option value="DIA_1" selected>1x/dia</option>
+							<option value="DIA_2">2x/dia</option>
+							<option value="DIA_3">3x/dia</option>
+							<option value="DIA_4">4x/dia</option>
+							<option value="DIA_5">5x/dia</option>
+							<option value="DIA_6">6x/dia</option>
+							<option value="H_2">De 2 em 2 horas</option>
+							<option value="H_4">De 4 em 4 horas</option>
+							<option value="CONTINUA">Contínua</option>
 							<option value="SOS">SOS</option>
 						</select>
 					</div>
 					<div class="popup-intervencao-field">
 						<label class="popup-intervencao-label">HORÁRIO PREVISTO *</label>
-						<input type="text" id="horario-intervencao" class="popup-intervencao-input" placeholder="Ex: 08:00 - 20:00" />
+						<input type="text" id="horario-intervencao" class="popup-intervencao-input"
+							placeholder="Ex: 08:00 - 20:00" />
 					</div>
 				</div>
 				<div class="popup-intervencao-row-2cols">
@@ -80,10 +82,12 @@
 				</div>
 				<div class="popup-intervencao-field">
 					<label class="popup-intervencao-label">OBJETIVO / RESULTADO ESPERADO</label>
-					<textarea id="objetivo-intervencao" class="popup-intervencao-textarea" placeholder="O que se pretende atingir com esta intervenção.." rows="3"></textarea>
+					<textarea id="objetivo-intervencao" class="popup-intervencao-textarea"
+						placeholder="O que se pretende atingir com esta intervenção.." rows="3"></textarea>
 				</div>
 				<div class="popup-intervencao-actions">
-					<button type="button" class="btn-cancelar-intervencao" onclick="fecharPopupAdicionarIntervencao()">CANCELAR</button>
+					<button type="button" class="btn-cancelar-intervencao"
+						onclick="fecharPopupAdicionarIntervencao()">CANCELAR</button>
 					<button type="submit" class="btn-confirmar-intervencao">ADICIONAR AO PLANO</button>
 				</div>
 			</form>

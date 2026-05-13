@@ -17,6 +17,8 @@ public record IntervencaoDTO(
         @JsonProperty("prioridade") PrioridadeIntervencao prioridade,
         @JsonProperty("horarioPrevisto") String horarioPrevisto,
         @JsonProperty("data") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime data,
-        @JsonProperty("objetivo") String objetivo
+        @JsonProperty("objetivo") String objetivo,
+        @JsonProperty("dataExecucao") LocalDateTime dataExecucao,
+        @JsonProperty("observacavoesExecucao") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss")  String observacavoesExecucao
 ) {
 }
