@@ -1,0 +1,18 @@
+package pt.ipcb.kardex.kardex_eletronico.model.enumerated;
+
+public enum IntervencaoDiagnostico {
+    RISCO_AGRESSIVIDADE,
+    RISCO_SUICIDIO,
+    RISCO_AUTOMUTILACAO,
+    ANSIEDADE,
+    INSONIA,
+    RECUSA_ALIMENTAR,
+    RISCO_QUEDA,
+    NAO_ADESAO,
+    ISOLAMENTO_SOCIAL,
+    MONITORIZACAO_SINAIS_VITAIS,
+    AVALIACAO_NIVEL_DOR,
+    SUPERVISAO_CONTINUA_UTENTE,
+    GLICEMIA_CAPILAR_PRE_JANTAR,
+    OUTRO
+}

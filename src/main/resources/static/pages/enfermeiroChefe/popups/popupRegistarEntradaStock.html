@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="../../../styles/enfermeiroChefe/popups/popupRegistarEntradaStock.css">
+
+<!-- Popup Registar Entrada de Stock -->
+<div class="popup-stock-overlay" id="popup-registar-stock" style="display: none;">
+	<div class="popup-stock-box">
+		<div class="popup-stock-header">
+			<span>Registar Entrada de Stock</span>
+			<button class="popup-stock-close" onclick="fecharPopupRegistarStock()">&#10005;</button>
+		</div>
+		<div class="popup-stock-content">
+			<form id="form-registar-stock" onsubmit="submeterRegistarStock(event)">
+				<div class="popup-stock-field">
+					<label class="popup-stock-label">MEDICAMENTO *</label>
+					<select id="medicamento-stock" class="popup-stock-select">
+						<option value="" disabled selected>A carregar medicamentos...</option>
+					</select>
+				</div>
+				<div class="popup-stock-field">
+					<label class="popup-stock-label">QUANTIDADE *</label>
+					<input type="number" id="quantidade-stock" class="popup-stock-input" placeholder="50" min="1" />
+				</div>
+				<div class="popup-stock-actions">
+					<button type="button" class="btn-cancelar-stock"
+						onclick="fecharPopupRegistarStock()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-stock">REGISTAR ENTRADA</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

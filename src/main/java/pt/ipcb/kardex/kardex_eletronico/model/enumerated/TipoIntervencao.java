@@ -1,0 +1,16 @@
+package pt.ipcb.kardex.kardex_eletronico.model.enumerated;
+
+public enum TipoIntervencao {
+    VIGILANCIA_CONTINUA,
+    VIGILANCIA_1_1,
+    CONTENCAO_VERBAL,
+    APOIO_EMOCIONAL,
+    RELACAO_TERAPEUTICA,
+    ATIVIDADES_ESTRUTURADAS,
+    EDUCAR_MEDICACAO,
+    MONITORIZAR_VITAIS,
+    AVALIAR_HUMOR_RISCO,
+    MONITORIZAR_ALIMENTACAO,
+    HIGIENE_SONO,
+    OUTRO
+}

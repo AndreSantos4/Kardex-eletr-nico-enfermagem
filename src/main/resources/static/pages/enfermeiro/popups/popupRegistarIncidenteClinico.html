@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarIncidenteClinico.css">
+
+<div class="popup-incidente-overlay" style="display: none;">
+	<div class="popup-incidente-box">
+		<div class="popup-incidente-header">
+			<span>Registar Incidente Clínico</span>
+			<button class="popup-incidente-close" onclick="fecharPopupRegistarIncidente()">&#10005;</button>
+		</div>
+		<div class="popup-incidente-content">
+			<form id="form-registar-incidente" onsubmit="submeterRegistarIncidente(event)">
+				<div class="popup-incidente-row-2cols">
+					<div class="popup-incidente-field">
+						<label class="popup-incidente-label">TIPO *</label>
+						<select id="tipo-incidente" class="popup-incidente-select">
+							<option value="QUEDA">Queda</option>
+							<option value="ERRO_MEDICACAO">Erro de medicação</option>
+							<option value="REACAO_ADVERSA">Reação adversa</option>
+							<option value="INFECAO">Infeção nosocomial</option>
+							<option value="LESAO_PRESSAO">Lesão por pressão</option>
+							<option value="EXTRAVASAMENTO">Extravasamento</option>
+							<option value="AGITACAO">Agitação psicomotora</option>
+							<option value="OUTRO">Outro</option>
+						</select>
+					</div>
+					<div class="popup-incidente-field">
+						<label class="popup-incidente-label">DATA/HORA *</label>
+						<input type="datetime-local" id="data-hora-incidente" class="popup-incidente-input" />
+					</div>
+				</div>
+				<div class="popup-incidente-field">
+					<label class="popup-incidente-label">GRAVIDADE *</label>
+					<select id="gravidade-incidente" class="popup-incidente-select">
+						<option value="LIGEIRA">Ligeira</option>
+						<option value="MODERADA" selected>Moderada</option>
+						<option value="GRAVE">Grave</option>
+						<option value="CRITICA">Crítica</option>
+					</select>
+				</div>
+				<div class="popup-incidente-field">
+					<label class="popup-incidente-label">DESCRIÇÃO *</label>
+					<textarea id="descricao-incidente" class="popup-incidente-textarea"
+						placeholder="Descreva o incidente de forma objetiva e cronológica." rows="4"></textarea>
+				</div>
+				<div class="popup-incidente-info-note">
+					<div class="popup-incidente-info-icon">i</div>
+					<span>Registo imutável após confirmação.</span>
+				</div>
+				<div class="popup-incidente-actions">
+					<button type="button" class="btn-cancelar-incidente"
+						onclick="fecharPopupRegistarIncidente()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-incidente">REGISTAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
