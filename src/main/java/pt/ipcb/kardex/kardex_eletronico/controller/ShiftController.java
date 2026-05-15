@@ -76,4 +76,10 @@ public class ShiftController{
         service.sendBackShiftChange(shiftId);
         return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno enviada de volta para correcao com sucesso", null));
     }
+
+    @GetMapping("/{shiftId}/pending")
+    public ResponseEntity<ApiResponse<List<PendenciaDTO>>> getLastShiftPendingIssues(@PathVariable Long shiftId){
+        var pendingIssues = service.getPendingIssues(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Pendencias obtidas com sucesso", pendingIssues));
+    }
 }
