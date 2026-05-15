@@ -41,6 +41,12 @@ public class ShiftController{
         return ResponseEntity.ok(ApiResponse.ok("Enfermeiros atribuidos com sucesso", null));
     }
 
+    @GetMapping("/{shiftId}")
+    public ResponseEntity<ApiResponse<TurnoDTO>> getShift(@PathVariable Long shiftId){
+        var shift = service.getShift(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Turno obtido com sucesso", shift));
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<TurnoDTO>>> getAllShifts(){
         var shifts = service.getAllShifts();
