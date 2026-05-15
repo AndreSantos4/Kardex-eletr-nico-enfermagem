@@ -35,6 +35,9 @@ public class Turno {
 
     @Column(name = "observacoes", nullable = false)
     public String observacoes;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public PassagemTurno passagemTurno;
     
     @ManyToMany(mappedBy = "turnos", fetch = FetchType.LAZY)
     public Set<Funcionario> enfermeiros = new HashSet<>();
