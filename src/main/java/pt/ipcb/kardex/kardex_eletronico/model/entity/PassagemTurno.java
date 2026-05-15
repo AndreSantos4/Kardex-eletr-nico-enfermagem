@@ -23,7 +23,10 @@ public class PassagemTurno {
     @OneToOne(fetch = FetchType.EAGER)
     public Turno proximoTurno;
 
-    @Column(name = "observacoes", nullable = false)
+    @Column(name = "ativo", nullable = false)
+    public boolean ativo = true;
+
+    @Column(name = "observacoes")
     public String observacoes;
 
     @Column(name = "pendente", nullable = false)

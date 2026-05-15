@@ -5,12 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftChangeDTO;
-import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 
 import java.time.Clock;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -33,7 +30,7 @@ public class ShiftChangeJob {
 
         shifts.forEach(shift -> {
             try {
-                shiftService.getShiftChange(shift.getId(), new CreateShiftChangeDTO("Passagem automatica"));
+                shiftService.getShiftChange(shift.getId());
             } catch (Exception e) {
                 log.error("Erro ao processar passagem de turno para turno {}: {}", shift.getId(), e.getMessage());
             }

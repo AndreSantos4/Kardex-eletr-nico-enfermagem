@@ -12,7 +12,6 @@ import java.util.List;
 public record PassagemTurnoDTO(
         @JsonProperty("turno") LimitedTurnoDTO turno,
         @JsonProperty("proximoTurno") LimitedTurnoDTO proximoTurno,
-        @JsonProperty("dadosTurnoUtentes") List<UtentePassagemTurnoDTO> dadosTurnoUtente,
-        @JsonProperty("observacoes") String observacoes
+        @JsonProperty("dadosTurnoUtentes") List<UtentePassagemTurnoDTO> dadosTurnoUtente
 ) {
 }
