@@ -233,6 +233,14 @@ public class ShiftServiceImpl implements ShiftService{
         shiftChange.setObservacoes(data.observacoes());
     }
 
+    @Override
+    public TurnoDTO getShift(Long shiftId) {
+        var shift = repository.findById(shiftId)
+                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        return mapper.toDTO(shift);
+    }
+
     private  List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {
         List<UtentePassagemTurnoDTO> patientsChange = new ArrayList<>();
 
