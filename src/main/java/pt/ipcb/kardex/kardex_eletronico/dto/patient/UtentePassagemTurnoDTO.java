@@ -7,7 +7,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.AdministracoesDTO;
 import java.util.List;
 
 public record UtentePassagemTurnoDTO(
-        @JsonProperty("utente") UtenteDTO utente,
+        @JsonProperty("utente") LimitedUtenteDTO utente,
         @JsonProperty("sinaisMedidos") boolean sinaisMedidos,
         @JsonProperty("administracoes") AdministracoesDTO administracoes,
         @JsonProperty("incidentes") List<IncidenteDTO> incidentes
