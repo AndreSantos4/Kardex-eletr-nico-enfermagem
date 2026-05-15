@@ -129,11 +129,17 @@ public class ProcessServiceImpl implements ProcessService{
         return intervencoes;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ProcessoClinico getActiveProcess(Utente patient){
+        return repository.findByUtenteAndAltaFalse(patient)
+                .orElseThrow(() -> new EntityNotFoundException("O utente com id " + patient.getId() + " nao possui nenhum processo ativo"));
+    }
+
     @Override
     @Transactional
     public void editActiveProcess(Utente patient, UpdatePacientFileDTO data) {
-        var process = repository.findByUtenteAndAltaFalse(patient)
-            .orElseThrow(() -> new EntityNotFoundException("O utente com id " + patient.getId() + " nao possui nenhum processo ativo"));
+        var process = getActiveProcess(patient);
 
         var medic = workerService.getMedicById(data.medicoId());
 
@@ -213,5 +219,13 @@ public class ProcessServiceImpl implements ProcessService{
     public ProcessoClinicoDTO getKardexProcess(Utente patient) {
         var process = repository.findKardexProcess(patient.getId()).orElse(null);
         return mapper.toDTO(process);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean  vitalSignsInShift(Turno shift, ProcessoClinico process) {
+        return process.getSinaisVitais()
+                .stream()
+                .anyMatch(v -> v.getData().isBefore(LocalDateTime.now(clock)));
     }
 }
