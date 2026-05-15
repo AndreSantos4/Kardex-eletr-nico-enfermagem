@@ -18,5 +18,5 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
     @Query("SELECT t FROM Turno t WHERE (t.passagemTurno IS NULL OR t.passagemTurno.ativo = false) AND t.inicio < :now")
     List<Turno> findAllWithoutPassagemTurnoBeforeNow(@Param("now") LocalDateTime now);
 
-    boolean existsByProximoTurnoId(Long proximoTurnoId);
+    boolean existsByPassagemTurnoProximoTurno(Turno turno);
 }

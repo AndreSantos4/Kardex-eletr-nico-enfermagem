@@ -204,7 +204,7 @@ public class ShiftServiceImpl implements ShiftService{
 
         List<UtentePassagemTurnoDTO> patientsChange = getUtentePassagemTurnoDTOS(patients, shift);
 
-        if (repository.existsByProximoTurnoId((nextShift.getId()))) {
+        if (repository.existsByPassagemTurnoProximoTurno((nextShift))) {
             throw new KardexException("Já existe uma passagem de turno para o turno seguinte");
         }
 
