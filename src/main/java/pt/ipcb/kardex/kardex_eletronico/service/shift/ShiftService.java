@@ -16,5 +16,7 @@ public interface ShiftService {
 
     List<TurnoDTO> getAllShifts();
 
-    PassagemTurnoDTO getShiftChange(Long shiftId, CreateShiftChangeDTO data);
+    PassagemTurnoDTO getShiftChange(Long shiftId);
+
+    void executeShiftChange(Long shiftId, CreateShiftChangeDTO data);
 }

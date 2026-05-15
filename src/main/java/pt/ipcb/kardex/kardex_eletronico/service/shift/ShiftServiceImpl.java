@@ -187,12 +187,15 @@ public class ShiftServiceImpl implements ShiftService{
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public PassagemTurnoDTO getShiftChange(Long shiftId, CreateShiftChangeDTO data) {
+    @Transactional
+    public PassagemTurnoDTO getShiftChange(Long shiftId) {
         var shift = repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
-        var nextShift = repository.findFirstByInicioAfterOrderByInicioDesc(LocalDateTime.now(clock))
-                .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));
+
+        var nextShift = shift.getPassagemTurno() != null ?
+                shift.getPassagemTurno().getProximoTurno() :
+                repository.findFirstByInicioAfterOrderByInicioDesc(LocalDateTime.now(clock))
+                    .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));;
 
         var patients = shift.getAtribuicoes()
                 .stream()
@@ -204,18 +207,29 @@ public class ShiftServiceImpl implements ShiftService{
         PassagemTurno shiftChange = new PassagemTurno();
         shiftChange.setTurno(shift);
         shiftChange.setProximoTurno(nextShift);
-        shiftChange.setObservacoes(data.observacoes());
         shift.setPassagemTurno(shiftChange);
 
         return new PassagemTurnoDTO(
             mapper.toLimitedDTO(shift),
             mapper.toLimitedDTO(nextShift),
-            patientsChange,
-            data.observacoes()
+            patientsChange
         );
     }
 
-    private @NonNull List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {
+    @Override
+    @Transactional
+    public void executeShiftChange(Long shiftId, CreateShiftChangeDTO data) {
+        var shift = repository.findById(shiftId)
+                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+        var nextShift = repository.findFirstByInicioAfterOrderByInicioDesc(LocalDateTime.now(clock))
+                .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));
+
+        var shiftChange = shift.getPassagemTurno();
+        shiftChange.setAtivo(false);
+        shiftChange.setObservacoes(data.observacoes());
+    }
+
+    private  List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {
         List<UtentePassagemTurnoDTO> patientsChange = new ArrayList<>();
 
         patients.forEach(p -> {
@@ -228,12 +242,12 @@ public class ShiftServiceImpl implements ShiftService{
             var administrated    = administracaoMapper.toDTOList(administrations.stream().filter(a -> !a.getPrescricao().getSos() && a.getAdministrado()).toList());
             var notAdministrated = administracaoMapper.toDTOList(administrations.stream().filter(a -> !a.getAdministrado()).toList());
             var administratedSOS = administracaoMapper.toDTOList(administrations.stream().filter(a -> a.getPrescricao().getSos()).toList());
-            var vitalSignInhift = processService.vitalSignsInShift(shift, process);
+            var vitalSignInShift = processService.vitalSignsInShift(shift, process);
             var incidents = shift.getIncidentes().stream().filter(i -> i.getProcessoClinico().equals(process)).toList();
 
             patientsChange.add(new UtentePassagemTurnoDTO(
-                    utenteMapper.toDto(p, process),
-                    vitalSignInhift,
+                    utenteMapper.toLimitedDto(p),
+                    vitalSignInShift,
                     new AdministracoesDTO(administrated, notAdministrated, administratedSOS),
                     incidenteMapper.toDTOList(incidents)
             ));
