@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.AssignNursesDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
 import pt.ipcb.kardex.kardex_eletronico.service.shift.ShiftService;
 
 @RestController
@@ -47,5 +45,11 @@ public class ShiftController{
     public ResponseEntity<ApiResponse<List<TurnoDTO>>> getAllShifts(){
         var shifts = service.getAllShifts();
         return ResponseEntity.ok(ApiResponse.ok("Turnos obtidos com sucesso", shifts));
+    }
+
+    @GetMapping("/shiftId/change")
+    public ResponseEntity<ApiResponse<PassagemTurnoDTO>> getShiftChange(@PathVariable Long shiftId, @RequestBody CreateShiftChangeDTO data){
+        var shiftChange = service.getShiftChange(shiftId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno obtido com sucesso", null));
     }
 }
