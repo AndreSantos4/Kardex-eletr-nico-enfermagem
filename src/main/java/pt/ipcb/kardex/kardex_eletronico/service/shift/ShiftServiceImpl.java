@@ -212,7 +212,8 @@ public class ShiftServiceImpl implements ShiftService{
         return new PassagemTurnoDTO(
                 mapper.toLimitedDTO(shift),
                 mapper.toLimitedDTO(shiftChange.getProximoTurno()),
-                patientsChange
+                patientsChange,
+                shift.getPassagemTurno().getObservacoes()
         );
     }
 
