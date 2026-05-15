@@ -21,4 +21,6 @@ public interface ShiftService {
     void executeShiftChange(Long shiftId, CreateShiftChangeDTO data);
 
     TurnoDTO getShift(Long shiftId);
+
+    List<PendenciaDTO> getPendingIssues(Long shiftId);
 }
