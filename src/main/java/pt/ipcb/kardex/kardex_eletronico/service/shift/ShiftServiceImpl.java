@@ -286,9 +286,17 @@ public class ShiftServiceImpl implements ShiftService{
         }
 
         shiftChange.setAtivo(true);
-        shiftChange.setPendente(false);
+        shiftChange.setPendente(true);
         shiftChange.setObservacoes(null);
         shiftChange.setObservacoesValidacao(null);
+    }
+
+    @Override
+    public TurnoDTO getPendingShift() {
+        var worker = workerService.getAutenticatedWorker();
+        var shift = repository.findMostRecentPendingShiftByWorker(worker.getId()).orElse(null);
+
+        return mapper.toDTO(shift);
     }
 
     private  List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {

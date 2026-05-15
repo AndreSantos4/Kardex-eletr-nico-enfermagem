@@ -21,4 +21,15 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
     boolean existsByPassagemTurnoProximoTurno(Turno turno);
 
     Optional<Turno> findFirstByInicioAfterOrderByInicioAsc(LocalDateTime now);
+
+    @Query("""
+        SELECT t FROM Turno t
+        JOIN t.enfermeiros e
+        WHERE t.passagemTurno.pendente = true
+        AND e.id = :workerId
+        ORDER BY t.inicio DESC
+        LIMIT 1
+    """)
+    Optional<Turno> findMostRecentPendingShiftByWorker(@Param("workerId") Long workerId);
+
 }

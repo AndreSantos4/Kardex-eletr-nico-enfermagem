@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.shift;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface ShiftService {
     void validateShiftChange(Long shiftId, CreateShiftChangeDTO data);
 
     void sendBackShiftChange(Long shiftId);
+
+    TurnoDTO getPendingShift();
 }
