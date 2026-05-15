@@ -28,5 +28,5 @@ public class LoteMedicamento {
     public BigDecimal quantidade = BigDecimal.ZERO;
 
     @Column(name = "validade", nullable = false)
-    public LocalDate validade;
+    public LocalDate validade = LocalDate.now().plusDays(30);
 }

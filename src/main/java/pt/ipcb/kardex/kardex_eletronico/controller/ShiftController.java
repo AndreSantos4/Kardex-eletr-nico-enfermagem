@@ -1,13 +1,13 @@
 package pt.ipcb.kardex.kardex_eletronico.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.AssignNursesDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
 import pt.ipcb.kardex.kardex_eletronico.service.shift.ShiftService;
 
 @RestController
@@ -39,5 +39,47 @@ public class ShiftController{
     public ResponseEntity<ApiResponse<?>> assignNurse(@PathVariable Long shiftId, @RequestBody AssignNursesDTO data){
         service.assignNurses(shiftId, data);
         return ResponseEntity.ok(ApiResponse.ok("Enfermeiros atribuidos com sucesso", null));
+    }
+
+    @GetMapping("/{shiftId}")
+    public ResponseEntity<ApiResponse<TurnoDTO>> getShift(@PathVariable Long shiftId){
+        var shift = service.getShift(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Turno obtido com sucesso", shift));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<TurnoDTO>>> getAllShifts(){
+        var shifts = service.getAllShifts();
+        return ResponseEntity.ok(ApiResponse.ok("Turnos obtidos com sucesso", shifts));
+    }
+
+    @GetMapping("/{shiftId}/change")
+    public ResponseEntity<ApiResponse<PassagemTurnoDTO>> getShiftChange(@PathVariable Long shiftId){
+        var shiftChange = service.getShiftChange(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno obtido com sucesso", shiftChange));
+    }
+
+    @PostMapping("/{shiftId}/change")
+    public ResponseEntity<ApiResponse<PassagemTurnoDTO>> executeShiftChange(@PathVariable Long shiftId, @RequestBody CreateShiftChangeDTO data){
+        service.executeShiftChange(shiftId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno realizada com sucesso", null));
+    }
+
+    @PatchMapping("/{shiftId}/change/validate")
+    public ResponseEntity<ApiResponse<?>> validateShiftChange(@PathVariable Long shiftId, @RequestBody CreateShiftChangeDTO data){
+        service.validateShiftChange(shiftId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno validada com sucesso", null));
+    }
+
+    @PatchMapping("/{shiftId}/change/send-back")
+    public ResponseEntity<ApiResponse<?>> sendBackShiftChange(@PathVariable Long shiftId){
+        service.sendBackShiftChange(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno enviada de volta para correcao com sucesso", null));
+    }
+
+    @GetMapping("/{shiftId}/pending")
+    public ResponseEntity<ApiResponse<List<PendenciaDTO>>> getLastShiftPendingIssues(@PathVariable Long shiftId){
+        var pendingIssues = service.getPendingIssues(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Pendencias obtidas com sucesso", pendingIssues));
     }
 }

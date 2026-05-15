@@ -9,9 +9,11 @@ import org.mapstruct.Mapping;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.AlergiaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreateAlergyDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.LimitedUtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 
@@ -19,7 +21,13 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FlagRisco;
 public interface UtenteMapper {
     @Mapping(target = "id", source = "utente.id")
     @Mapping(target = "processo", source = "processoClinico")
+    UtenteDTO toDto(Utente utente, ProcessoClinico processoClinico);
+
+    @Mapping(target = "id", source = "utente.id")
+    @Mapping(target = "processo", source = "processoClinico")
     UtenteDTO toDto(Utente utente, ProcessoClinicoDTO processoClinico);
+
+    LimitedUtenteDTO toLimitedDto(Utente utente);
 
     Utente toEntity(UtenteDTO dto);
 

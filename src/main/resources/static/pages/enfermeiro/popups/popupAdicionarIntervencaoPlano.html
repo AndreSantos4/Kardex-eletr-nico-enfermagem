@@ -1,0 +1,96 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupAdicionarIntervencaoPlano.css">
+
+<!-- Popup Adicionar Intervenção ao Plano -->
+<div class="popup-intervencao-overlay" id="popup-adicionar-intervencao" style="display: none;">
+	<div class="popup-intervencao-box">
+		<div class="popup-intervencao-header">
+			<span>Adicionar Intervenção ao Plano</span>
+			<button class="popup-intervencao-close" onclick="fecharPopupAdicionarIntervencao()">&#10005;</button>
+		</div>
+		<div class="popup-intervencao-content">
+			<form id="form-adicionar-intervencao" onsubmit="submeterAdicionarIntervencao(event)">
+				<div class="popup-intervencao-field">
+					<label class="popup-intervencao-label">DIAGNÓSTICO ASSOCIADO *</label>
+					<select id="diagnostico-intervencao" class="popup-intervencao-select">
+						<option value="RISCO_AGRESSIVIDADE">Risco de agressividade r/c doença psiquiátrica</option>
+						<option value="RISCO_SUICIDIO">Risco de suicídio r/c humor depressivo</option>
+						<option value="RISCO_AUTOMUTILACAO">Risco de auto-mutilação r/c instabilidade emocional</option>
+						<option value="ANSIEDADE">Ansiedade r/c hospitalização</option>
+						<option value="INSONIA">Insónia r/c quadro psiquiátrico</option>
+						<option value="RECUSA_ALIMENTAR">Recusa alimentar r/c humor depressivo</option>
+						<option value="CONFUSAO_AGUDA">Confusão aguda r/c quadro psicótico</option>
+						<option value="RISCO_QUEDA">Risco de queda r/c medicação sedativa</option>
+						<option value="NAO_ADESAO">Não-adesão terapêutica r/c défice de insight</option>
+						<option value="ISOLAMENTO_SOCIAL">Isolamento social r/c sintomatologia negativa</option>
+						<option value="OUTRO">Outro</option>
+					</select>
+				</div>
+				<div class="popup-intervencao-field">
+					<label class="popup-intervencao-label">INTERVENÇÃO *</label>
+					<select id="tipo-intervencao" class="popup-intervencao-select">
+						<option value="" disabled selected>Descrição da intervenção de enfermagem..</option>
+						<option value="VIGILANCIA_CONTINUA">Vigilância contínua</option>
+						<option value="VIGILANCIA_1_1">Vigilância 1:1</option>
+						<option value="CONTENCAO_VERBAL">Contenção verbal</option>
+						<option value="APOIO_EMOCIONAL">Apoio emocional</option>
+						<option value="RELACAO_TERAPEUTICA">Estabelecer relação terapêutica</option>
+						<option value="ATIVIDADES_ESTRUTURADAS">Promover atividades estruturadas</option>
+						<option value="EDUCAR_MEDICACAO">Educar sobre medicação</option>
+						<option value="MONITORIZAR_VITAIS">Monitorizar sinais vitais</option>
+						<option value="AVALIAR_HUMOR_RISCO">Avaliar humor / risco</option>
+						<option value="MONITORIZAR_ALIMENTACAO">Monitorizar ingestão alimentar</option>
+						<option value="HIGIENE_SONO">Promover higiene do sono</option>
+						<option value="OUTRO">Outro</option>
+					</select>
+				</div>
+				<div class="popup-intervencao-row-2cols">
+					<div class="popup-intervencao-field">
+						<label class="popup-intervencao-label">FREQUÊNCIA *</label>
+						<select id="frequencia-intervencao" class="popup-intervencao-select">
+							<option value="DIA_1" selected>1x/dia</option>
+							<option value="DIA_2">2x/dia</option>
+							<option value="DIA_3">3x/dia</option>
+							<option value="DIA_4">4x/dia</option>
+							<option value="DIA_5">5x/dia</option>
+							<option value="DIA_6">6x/dia</option>
+							<option value="H_2">De 2 em 2 horas</option>
+							<option value="H_4">De 4 em 4 horas</option>
+							<option value="CONTINUA">Contínua</option>
+							<option value="SOS">SOS</option>
+						</select>
+					</div>
+					<div class="popup-intervencao-field">
+						<label class="popup-intervencao-label">HORÁRIO PREVISTO *</label>
+						<input type="text" id="horario-intervencao" class="popup-intervencao-input"
+							placeholder="Ex: 08:00 - 20:00" />
+					</div>
+				</div>
+				<div class="popup-intervencao-row-2cols">
+					<div class="popup-intervencao-field">
+						<label class="popup-intervencao-label">PRIORIDADE *</label>
+						<select id="prioridade-intervencao" class="popup-intervencao-select">
+							<option value="BAIXA">Baixa</option>
+							<option value="MEDIA" selected>Média</option>
+							<option value="ALTA">Alta</option>
+							<option value="CRITICA">Crítica</option>
+						</select>
+					</div>
+					<div class="popup-intervencao-field">
+						<label class="popup-intervencao-label">DATA/HORA *</label>
+						<input type="datetime-local" id="data-hora-intervencao" class="popup-intervencao-input" />
+					</div>
+				</div>
+				<div class="popup-intervencao-field">
+					<label class="popup-intervencao-label">OBJETIVO / RESULTADO ESPERADO</label>
+					<textarea id="objetivo-intervencao" class="popup-intervencao-textarea"
+						placeholder="O que se pretende atingir com esta intervenção.." rows="3"></textarea>
+				</div>
+				<div class="popup-intervencao-actions">
+					<button type="button" class="btn-cancelar-intervencao"
+						onclick="fecharPopupAdicionarIntervencao()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-intervencao">ADICIONAR AO PLANO</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

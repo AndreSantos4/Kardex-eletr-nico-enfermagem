@@ -10,6 +10,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 
 public interface WorkerService {
 
@@ -33,7 +34,7 @@ public interface WorkerService {
 
     Funcionario getMedicById(long medicoId);
     
-    List<FuncionarioDTO> getAllMedics();
+    List<FuncionarioDTO> getAllWorkers(Role role);
 
     long getActiveNursesCount();
 

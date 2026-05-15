@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarCateter.css">
 
-<!-- Popup Registar Cateter -->
-<div class="popup-cateter-overlay" id="popup-registar-cateter" style="display: none;">
+<div class="popup-cateter-overlay" style="display: none;">
 	<div class="popup-cateter-box">
 		<div class="popup-cateter-header">
 			<span>Registar Cateter</span>
@@ -13,13 +12,14 @@
 					<div class="popup-cateter-field">
 						<label class="popup-cateter-label">TIPO DE CATETER *</label>
 						<select id="tipo-cateter" class="popup-cateter-select">
-							<option value="CVP">Venoso Periférico (CVP)</option>
-							<option value="CVC">Venoso Central (CVC)</option>
-							<option value="ARTERIAL">Arterial</option>
+							<option value="VENOSO_PERIFERICO">Cateter venenoso periférico</option>
+							<option value="VENOSO_CENTRAL">Cateter venenoso centra</option>
 							<option value="PICC">PICC</option>
-							<option value="HICKMAN">Hickman</option>
-							<option value="PORT_A_CATH">Port-A-Cath</option>
-							<option value="SUBCUTANEO">Subcutâneo</option>
+							<option value="PORT_A_CATH">Port a cath</option>
+							<option value="HEMODIALISE">Cateter hemodiálise</option>
+							<option value="DUPLO_J">Cateter duplo J</option>
+							<option value="URINARIO">Cateter urinário</option>
+							<option value="NASAL">Cateter nasal</option>
 						</select>
 					</div>
 					<div class="popup-cateter-field">
@@ -37,7 +37,8 @@
 				<div class="popup-cateter-row-2cols">
 					<div class="popup-cateter-field">
 						<label class="popup-cateter-label">LOCAL DE INSERÇÃO *</label>
-						<input type="text" id="local-insercao" class="popup-cateter-input" placeholder="Ex: Antebraço esq. - veia ..." />
+						<input type="text" id="local-insercao" class="popup-cateter-input"
+							placeholder="Ex: Antebraço esq. - veia basílica" />
 					</div>
 					<div class="popup-cateter-field">
 						<label class="popup-cateter-label">DATA/HORA *</label>
@@ -50,14 +51,16 @@
 				</div>
 				<div class="popup-cateter-field">
 					<label class="popup-cateter-label">OBSERVAÇÕES</label>
-					<textarea id="observacoes-cateter" class="popup-cateter-textarea" placeholder="Estado do local de inserção, permeabilidade" rows="2"></textarea>
+					<textarea id="observacoes-cateter" class="popup-cateter-textarea"
+						placeholder="Estado do local de inserção, permeabilidade" rows="2"></textarea>
 				</div>
 				<div class="popup-cateter-info-note">
 					<div class="popup-cateter-info-icon">i</div>
-					<span>Cateter ativo há 48h. Substituição recomendada em 24-48h (protocolo 72-96h).</span>
+					<span>Substituição recomendada a cada 72-96h (protocolo institucional).</span>
 				</div>
 				<div class="popup-cateter-actions">
-					<button type="button" class="btn-cancelar-cateter" onclick="fecharPopupRegistarCateter()">CANCELAR</button>
+					<button type="button" class="btn-cancelar-cateter"
+						onclick="fecharPopupRegistarCateter()">CANCELAR</button>
 					<button type="submit" class="btn-confirmar-cateter">REGISTAR</button>
 				</div>
 			</form>

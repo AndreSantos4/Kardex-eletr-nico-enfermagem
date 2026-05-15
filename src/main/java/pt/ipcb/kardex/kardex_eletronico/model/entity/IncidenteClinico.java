@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.GravidadeIncidente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoCateter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoIncidente;
 
 import java.time.LocalDateTime;
 
@@ -35,7 +36,7 @@ public class IncidenteClinico {
 
     @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
-    public TipoCateter tipo;
+    public TipoIncidente tipo;
     
     @Column(name = "descricao", nullable = false)
     public String descricao;

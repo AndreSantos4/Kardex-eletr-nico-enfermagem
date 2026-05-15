@@ -8,6 +8,13 @@
     --sans: "IBM Plex Sans", sans-serif;
 }
 
+.popup-overlay,
+.popup-overlay *,
+.popup-overlay *::before,
+.popup-overlay *::after {
+    box-sizing: border-box;
+}
+
 .popup-overlay {
     position: fixed;
     inset: 0;
@@ -22,7 +29,7 @@
     background: var(--primary);
     border-radius: 10px;
     width: 100%;
-    max-width: 580px;
+    max-width: 640px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     overflow: hidden;
 }

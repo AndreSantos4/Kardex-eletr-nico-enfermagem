@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "Inter", "IBM Plex Sans", sans-serif;
+    --font-display: "Manrope", "Inter", sans-serif;
+}
+
+.popup-reg-intervencao-overlay,
+.popup-reg-intervencao-overlay *,
+.popup-reg-intervencao-overlay *::before,
+.popup-reg-intervencao-overlay *::after {
+    box-sizing: border-box;
+}
+
+.popup-reg-intervencao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-reg-intervencao-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-reg-intervencao-header {
+    background: var(--bg-dark);
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-reg-intervencao-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.popup-reg-intervencao-close:hover {
+    background: #e74c3c;
+}
+
+.popup-reg-intervencao-content {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.popup-reg-intervencao-info-note {
+    background: transparent;
+    border: 1.5px solid var(--white);
+    border-radius: 999px;
+    padding: 8px 16px 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--white);
+    font-size: 13px;
+}
+
+.popup-reg-intervencao-info-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--primary);
+    font-family: serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.popup-reg-intervencao-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1.35;
+}
+
+.popup-reg-intervencao-info-text strong {
+    font-weight: 700;
+}
+
+.popup-reg-intervencao-titulo {
+    font-family: var(--font-display);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.popup-reg-intervencao-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.popup-reg-intervencao-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-reg-intervencao-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-reg-intervencao-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 999px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-reg-intervencao-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-reg-intervencao-input::placeholder {
+    color: rgba(26, 63, 94, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.popup-reg-intervencao-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 22px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 20px;
+    width: 100%;
+    min-height: 56px;
+    resize: vertical;
+}
+
+.popup-reg-intervencao-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-reg-intervencao-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.popup-reg-intervencao-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.btn-cancelar-reg-intervencao,
+.btn-confirmar-reg-intervencao {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 11px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-reg-intervencao:hover,
+.btn-confirmar-reg-intervencao:hover {
+    background: var(--white);
+    color: var(--primary);
+}

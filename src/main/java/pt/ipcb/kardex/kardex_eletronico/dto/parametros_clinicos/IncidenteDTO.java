@@ -8,10 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.GravidadeIncidente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoCateter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoIncidente;
 
 public record IncidenteDTO(
     @JsonProperty("id") Long id,
-    @JsonProperty("tipo") TipoCateter tipo,
+    @JsonProperty("tipo") TipoIncidente tipo,
     @JsonProperty("descricao") String descricao,
     @JsonProperty("funcionario") FuncionarioDTO funcionario,
     @JsonProperty("gravidade") GravidadeIncidente gravidade,

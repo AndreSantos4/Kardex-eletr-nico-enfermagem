@@ -43,21 +43,21 @@ public class StockServiceImpl implements StockService{
             )
             .ifPresent(m -> { throw new ConflictEntitiesException("Este medicamento ja se encontra registado"); });
         
-            var newMed = medicamentoMapper.fromCreate(data);
-            List<Dosagem> dosagens = new ArrayList<>(newMed.getDosagens());
-            Dosagem maxDose = newMed.getDosagemMaxDiaria();
-            newMed.setDosagens(new ArrayList<>());
-            newMed.setDosagemMaxDiaria(null);
-            newMed.getDosagens().forEach(d -> d.setMedicamento(newMed));
-            var saved = medicamentoRepository.save(newMed);
+        var newMed = medicamentoMapper.fromCreate(data);
+        List<Dosagem> dosagens = new ArrayList<>(newMed.getDosagens());
+        Dosagem maxDose = newMed.getDosagemMaxDiaria();
+        newMed.setDosagens(new ArrayList<>());
+        newMed.setDosagemMaxDiaria(null);
+        newMed.getDosagens().forEach(d -> d.setMedicamento(newMed));
+        var saved = medicamentoRepository.save(newMed);
             
-            dosagens.forEach(d -> {
-                d.setMedicamento(saved);
-                saved.getDosagens().add(d);
-            });
-            saved.setDosagemMaxDiaria(maxDose);
+        dosagens.forEach(d -> {
+            d.setMedicamento(saved);
+            saved.getDosagens().add(d);
+        });
+        saved.setDosagemMaxDiaria(maxDose);
 
-            medicamentoRepository.save(newMed);
+        medicamentoRepository.save(newMed);
     }
 
     @Override
@@ -66,10 +66,21 @@ public class StockServiceImpl implements StockService{
         return medicamentoRepository.countUniqueMedications();
     }
 
-	@Override
-	public List<MedicamentoDTO> getAllMedications() {
-		return medicamentoMapper.toDTOList(medicamentoRepository.findAll());
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public List<MedicamentoDTO> getAllMedications() {
+        return medicamentoRepository.findAll()
+                .stream()
+                .map(m -> {
+                    BigDecimal quantidade = m.getLotes().stream()
+                            .filter(lote -> !lote.getValidade().isBefore(LocalDate.now(clock)))
+                            .map(LoteMedicamento::getQuantidade)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    return medicamentoMapper.toDTO(m, quantidade);
+                })
+                .toList();
+    }
 
 	@Override
 	@Transactional
@@ -145,8 +156,6 @@ public class StockServiceImpl implements StockService{
         batch.setQuantidade(data.quantidade());
 
         medication.getLotes().add(batch);
-
-        medicamentoRepository.save(medication);
     }
 
     @Override

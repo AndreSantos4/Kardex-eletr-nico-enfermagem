@@ -42,6 +42,6 @@ public class PlanoCuidados {
     public Boolean ativo = true;
     
     @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
-    public List<Atividade> atividades = new ArrayList<>();
+    public List<Intervencao> intervencoes = new ArrayList<>();
 }
 

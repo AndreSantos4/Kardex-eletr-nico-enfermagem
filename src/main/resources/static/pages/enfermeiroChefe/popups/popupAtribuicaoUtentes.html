@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="../../../styles/enfermeiroChefe/popups/popupAtribuicaoUtentes.css">
+
+<!-- Popup Atribuição de Utentes -->
+<div class="popup-atribuicao-overlay" id="popup-atribuicao-utentes" style="display: none;">
+	<div class="popup-atribuicao-box">
+		<div class="popup-atribuicao-header">
+			<span>Atribuição de Utentes — <span id="atribuicao-turno-info">Turno</span></span>
+			<button class="popup-atribuicao-close" onclick="fecharPopupAtribuicaoUtentes()">&#10005;</button>
+		</div> 
+		<div class="popup-atribuicao-content">
+			<p class="popup-atribuicao-subtitle">Arraste ou selecione o enfermeiro responsável por cada utente neste turno.</p>
+			<form id="form-atribuicao-utentes" onsubmit="submeterAtribuicaoUtentes(event)">
+				<div class="popup-atribuicao-table-wrap">
+					<table class="popup-atribuicao-table">
+						<thead>
+							<tr>
+								<th>Utente</th>
+								<th>Cama</th>
+								<th>Diagnóstico</th>
+								<th>Enfermeiro Responsável</th>
+							</tr>
+						</thead>
+						<tbody id="atribuicoes-tbody">
+							<tr>
+								<td colspan="4" class="atribuicao-empty">A carregar utentes...</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="popup-atribuicao-actions">
+					<button type="button" class="btn-cancelar-atribuicao" onclick="fecharPopupAtribuicaoUtentes()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-atribuicao">GUARDAR ATRIBUIÇÕES</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
