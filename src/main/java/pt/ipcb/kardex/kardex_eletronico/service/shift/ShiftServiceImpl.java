@@ -221,12 +221,46 @@ public class ShiftServiceImpl implements ShiftService{
     public void executeShiftChange(Long shiftId, CreateShiftChangeDTO data) {
         var shift = repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
-        var nextShift = repository.findFirstByInicioAfterOrderByInicioDesc(LocalDateTime.now(clock))
-                .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));
 
         var shiftChange = shift.getPassagemTurno();
+        if(shiftChange == null){
+            throw new KardexException("Nao existe passagem de turno para o turno");
+        }
+
         shiftChange.setAtivo(false);
         shiftChange.setObservacoes(data.observacoes());
+    }
+
+    @Override
+    @Transactional
+    public void validateShiftChange(Long shiftId, CreateShiftChangeDTO data) {
+        var shift = repository.findById(shiftId)
+                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        var shiftChange = shift.getPassagemTurno();
+        if(shiftChange == null){
+            throw new KardexException("Nao existe passagem de turno para o turno");
+        }
+
+        shiftChange.setPendente(false);
+        shiftChange.setObservacoesValidacao(data.observacoes());
+    }
+
+    @Override
+    @Transactional
+    public void sendBackShiftChange(Long shiftId) {
+        var shift = repository.findById(shiftId)
+                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        var shiftChange = shift.getPassagemTurno();
+        if(shiftChange == null){
+            throw new KardexException("Nao existe passagem de turno para o turno");
+        }
+
+        shiftChange.setAtivo(true);
+        shiftChange.setPendente(false);
+        shiftChange.setObservacoes(null);
+        shiftChange.setObservacoesValidacao(null);
     }
 
     private  List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {

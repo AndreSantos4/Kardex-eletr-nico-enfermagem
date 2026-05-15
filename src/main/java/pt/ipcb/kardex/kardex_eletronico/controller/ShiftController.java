@@ -58,4 +58,16 @@ public class ShiftController{
         service.executeShiftChange(shiftId, data);
         return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno realizada com sucesso", null));
     }
+
+    @PatchMapping("/{shiftId}/change/validate")
+    public ResponseEntity<ApiResponse<?>> validateShiftChange(@PathVariable Long shiftId, @RequestBody CreateShiftChangeDTO data){
+        service.validateShiftChange(shiftId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno validada com sucesso", null));
+    }
+
+    @PatchMapping("/{shiftId}/change/send-back")
+    public ResponseEntity<ApiResponse<?>> sendBackShiftChange(@PathVariable Long shiftId){
+        service.sendBackShiftChange(shiftId);
+        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno enviada de volta para correcao com sucesso", null));
+    }
 }

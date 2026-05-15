@@ -29,6 +29,9 @@ public class PassagemTurno {
     @Column(name = "observacoes")
     public String observacoes;
 
+    @Column(name = "observacoes_validacao")
+    public String observacoesValidacao;
+
     @Column(name = "pendente", nullable = false)
     public boolean pendente = true;
 }
