@@ -26,7 +26,7 @@ public class ShiftChangeJob {
     @Transactional
     public void executeShiftChanges() {
         var now = LocalDateTime.now(clock);
-        var shifts = repository.findAllWithoutPassagemTurnoObservacoesBeforeNow(now);
+        var shifts = repository.findAllWithoutPassagemTurnoBeforeNow(now);
 
         shifts.forEach(shift -> {
             try {

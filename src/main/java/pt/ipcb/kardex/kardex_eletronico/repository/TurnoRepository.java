@@ -15,6 +15,6 @@ import java.util.Optional;
 public interface TurnoRepository extends JpaRepository<Turno, Long>{
     Optional<Turno> findFirstByInicioAfterOrderByInicioDesc(LocalDateTime now);
 
-    @Query("SELECT t FROM Turno t WHERE (t.passagemTurno IS NULL OR t.passagemTurno.observacoes IS NULL) AND t.inicio < :now")
-    List<Turno> findAllWithoutPassagemTurnoObservacoesBeforeNow(@Param("now") LocalDateTime now);
+    @Query("SELECT t FROM Turno t WHERE (t.passagemTurno IS NULL OR t.passagemTurno.ativo = false) AND t.inicio < :now")
+    List<Turno> findAllWithoutPassagemTurnoBeforeNow(@Param("now") LocalDateTime now);
 }
