@@ -213,7 +213,8 @@ public class ShiftServiceImpl implements ShiftService{
                 mapper.toLimitedDTO(shift),
                 mapper.toLimitedDTO(shiftChange.getProximoTurno()),
                 patientsChange,
-                shift.getPassagemTurno().getObservacoes()
+                shift.getPassagemTurno().getObservacoes(),
+                shift.getPassagemTurno().isPendente()
         );
     }
 

@@ -13,6 +13,7 @@ public record PassagemTurnoDTO(
         @JsonProperty("turno") LimitedTurnoDTO turno,
         @JsonProperty("proximoTurno") LimitedTurnoDTO proximoTurno,
         @JsonProperty("dadosTurnoUtentes") List<UtentePassagemTurnoDTO> dadosTurnoUtente,
-        @JsonProperty("observacoesEnfermeiro") String observacoesEnfermeiro
+        @JsonProperty("observacoesEnfermeiro") String observacoesEnfermeiro,
+        @JsonProperty("pendente") boolean pendente
 ) {
 }
