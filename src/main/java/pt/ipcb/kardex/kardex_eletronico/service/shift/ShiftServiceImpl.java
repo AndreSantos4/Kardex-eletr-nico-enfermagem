@@ -3,27 +3,34 @@ package pt.ipcb.kardex.kardex_eletronico.service.shift;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.AssignNursesDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtentePassagemTurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.AdministracoesDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AtribuicaoUtente;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.PassagemTurno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.IncidenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
+import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
@@ -36,6 +43,10 @@ public class ShiftServiceImpl implements ShiftService{
     private final TurnoMapper mapper;
     private final WorkerService workerService;
     private final PatientService patientService;
+    private final ProcessService processService;
+    private final AdministracaoMapper administracaoMapper;
+    private final UtenteMapper utenteMapper;
+    private final IncidenteMapper incidenteMapper;
 
     @Override
     @Transactional
@@ -173,5 +184,60 @@ public class ShiftServiceImpl implements ShiftService{
     public List<TurnoDTO> getAllShifts() {
         var shifts = repository.findAll();
         return mapper.toDTOList(shifts);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PassagemTurnoDTO getShiftChange(Long shiftId, CreateShiftChangeDTO data) {
+        var shift = repository.findById(shiftId)
+                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+        var nextShift = repository.findFirstByInicioAfterOrderByInicioDesc(LocalDateTime.now(clock))
+                .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));
+
+        var patients = shift.getAtribuicoes()
+                .stream()
+                .map(AtribuicaoUtente::getUtente)
+                .toList();
+
+        List<UtentePassagemTurnoDTO> patientsChange = getUtentePassagemTurnoDTOS(patients, shift);
+
+        PassagemTurno shiftChange = new PassagemTurno();
+        shiftChange.setTurno(shift);
+        shiftChange.setProximoTurno(nextShift);
+        shiftChange.setObservacoes(data.observacoes());
+        shift.setPassagemTurno(shiftChange);
+
+        return new PassagemTurnoDTO(
+            mapper.toLimitedDTO(shift),
+            mapper.toLimitedDTO(nextShift),
+            patientsChange,
+            data.observacoes()
+        );
+    }
+
+    private @NonNull List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {
+        List<UtentePassagemTurnoDTO> patientsChange = new ArrayList<>();
+
+        patients.forEach(p -> {
+            var process = processService.getActiveProcess(p);
+            var administrations = shift.getAdministracoes()
+                    .stream()
+                    .filter(a -> a.getPrescricao().getProcesso().equals(process))
+                    .toList();
+
+            var administrated    = administracaoMapper.toDTOList(administrations.stream().filter(a -> !a.getPrescricao().getSos() && a.getAdministrado()).toList());
+            var notAdministrated = administracaoMapper.toDTOList(administrations.stream().filter(a -> !a.getAdministrado()).toList());
+            var administratedSOS = administracaoMapper.toDTOList(administrations.stream().filter(a -> a.getPrescricao().getSos()).toList());
+            var vitalSignInhift = processService.vitalSignsInShift(shift, process);
+            var incidents = shift.getIncidentes().stream().filter(i -> i.getProcessoClinico().equals(process)).toList();
+
+            patientsChange.add(new UtentePassagemTurnoDTO(
+                    utenteMapper.toDto(p, process),
+                    vitalSignInhift,
+                    new AdministracoesDTO(administrated, notAdministrated, administratedSOS),
+                    incidenteMapper.toDTOList(incidents)
+            ));
+        });
+        return patientsChange;
     }
 }

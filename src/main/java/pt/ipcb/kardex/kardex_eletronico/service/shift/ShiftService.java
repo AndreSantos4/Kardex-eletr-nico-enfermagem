@@ -1,11 +1,8 @@
 package pt.ipcb.kardex.kardex_eletronico.service.shift;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.AssignNursesDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
 
 import java.util.List;
-
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
 
 public interface ShiftService {
     
@@ -18,4 +15,6 @@ public interface ShiftService {
     void assignNurses(Long shiftId, AssignNursesDTO data);
 
     List<TurnoDTO> getAllShifts();
+
+    PassagemTurnoDTO getShiftChange(Long shiftId, CreateShiftChangeDTO data);
 }
