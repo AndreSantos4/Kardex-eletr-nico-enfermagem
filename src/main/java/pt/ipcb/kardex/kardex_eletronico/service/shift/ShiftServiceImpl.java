@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -192,31 +191,28 @@ public class ShiftServiceImpl implements ShiftService{
         var shift = repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
-        var nextShift = shift.getPassagemTurno() != null ?
-                shift.getPassagemTurno().getProximoTurno() :
-                repository.findFirstByInicioAfterOrderByInicioDesc(LocalDateTime.now(clock))
-                    .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));;
+        PassagemTurno shiftChange;
+        if (shift.getPassagemTurno() != null) {
+            shiftChange = shift.getPassagemTurno();
+        } else {
+            var nextShift = repository.findFirstByInicioAfterOrderByInicioAsc(LocalDateTime.now(clock))
+                    .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));
+            shiftChange = new PassagemTurno();
+            shiftChange.setTurno(shift);
+            shiftChange.setProximoTurno(nextShift);
+            shift.setPassagemTurno(shiftChange);
+        }
 
         var patients = shift.getAtribuicoes()
                 .stream()
                 .map(AtribuicaoUtente::getUtente)
                 .toList();
-
         List<UtentePassagemTurnoDTO> patientsChange = getUtentePassagemTurnoDTOS(patients, shift);
 
-        if (repository.existsByPassagemTurnoProximoTurno((nextShift))) {
-            throw new KardexException("Já existe uma passagem de turno para o turno seguinte");
-        }
-
-        PassagemTurno shiftChange = new PassagemTurno();
-        shiftChange.setTurno(shift);
-        shiftChange.setProximoTurno(nextShift);
-        shift.setPassagemTurno(shiftChange);
-
         return new PassagemTurnoDTO(
-            mapper.toLimitedDTO(shift),
-            mapper.toLimitedDTO(nextShift),
-            patientsChange
+                mapper.toLimitedDTO(shift),
+                mapper.toLimitedDTO(shiftChange.getProximoTurno()),
+                patientsChange
         );
     }
 

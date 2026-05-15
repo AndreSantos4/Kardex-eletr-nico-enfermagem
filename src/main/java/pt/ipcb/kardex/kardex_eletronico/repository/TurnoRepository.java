@@ -19,4 +19,6 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
     List<Turno> findAllWithoutPassagemTurnoBeforeNow(@Param("now") LocalDateTime now);
 
     boolean existsByPassagemTurnoProximoTurno(Turno turno);
+
+    Optional<Turno> findFirstByInicioAfterOrderByInicioAsc(LocalDateTime now);
 }
