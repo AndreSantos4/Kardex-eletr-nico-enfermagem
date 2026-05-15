@@ -191,6 +191,10 @@ public class ShiftServiceImpl implements ShiftService{
         var shift = repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
+        if(shift.getFim().isAfter(LocalDateTime.now(clock))){
+            throw new KardexException("O turno nao e valido para ser alterado ainda.");
+        }
+
         PassagemTurno shiftChange;
         if (shift.getPassagemTurno() != null) {
             shiftChange = shift.getPassagemTurno();
@@ -214,7 +218,8 @@ public class ShiftServiceImpl implements ShiftService{
                 mapper.toLimitedDTO(shiftChange.getProximoTurno()),
                 patientsChange,
                 shift.getPassagemTurno().getObservacoes(),
-                shift.getPassagemTurno().isPendente()
+                shift.getPassagemTurno().isPendente(),
+                shift.getPassagemTurno().isAtivo()
         );
     }
 
@@ -227,6 +232,10 @@ public class ShiftServiceImpl implements ShiftService{
         var shiftChange = shift.getPassagemTurno();
         if(shiftChange == null){
             throw new KardexException("Nao existe passagem de turno para o turno");
+        }
+
+        if(!shiftChange.isAtivo()){
+            throw new KardexException("A passagem de turno ja foi validada");
         }
 
         shiftChange.setAtivo(false);
@@ -253,6 +262,10 @@ public class ShiftServiceImpl implements ShiftService{
             throw new KardexException("Nao existe passagem de turno para o turno");
         }
 
+        if(shiftChange.isAtivo()){
+            throw new KardexException("A passagem de turno nao pode ser validade");
+        }
+
         shiftChange.setPendente(false);
         shiftChange.setObservacoesValidacao(data.observacoes());
     }
@@ -266,6 +279,10 @@ public class ShiftServiceImpl implements ShiftService{
         var shiftChange = shift.getPassagemTurno();
         if(shiftChange == null){
             throw new KardexException("Nao existe passagem de turno para o turno");
+        }
+
+        if(shiftChange.isAtivo()){
+            throw new KardexException("A passagem de turno nao pode ser validade");
         }
 
         shiftChange.setAtivo(true);
