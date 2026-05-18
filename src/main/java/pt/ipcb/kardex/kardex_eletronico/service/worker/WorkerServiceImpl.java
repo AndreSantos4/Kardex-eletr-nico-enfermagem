@@ -106,6 +106,13 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional(readOnly = true)
+    public TurnoDTO getCurrentShift() {
+        var worker = getAutenticatedWorker();
+        return turnoMapper.toDTO(getCurrentShift(worker.getId()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Turno getCurrentShift(Long id) {
         return repository.findCurrentTurno(id, LocalDateTime.now());
     }

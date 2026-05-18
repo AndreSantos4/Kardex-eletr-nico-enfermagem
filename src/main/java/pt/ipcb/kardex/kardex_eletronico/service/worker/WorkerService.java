@@ -26,6 +26,8 @@ public interface WorkerService {
 
     Funcionario getAutenticatedWorker();
 
+    TurnoDTO getCurrentShift();
+
     Turno getCurrentShift(Long id);
 
     List<ShiftSummaryDTO> getWorkerShiftsInfo(Long id);

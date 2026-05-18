@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.shift;
 
+import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
 
 import java.util.List;
@@ -27,4 +28,7 @@ public interface ShiftService {
     void validateShiftChange(Long shiftId, CreateShiftChangeDTO data);
 
     void sendBackShiftChange(Long shiftId);
+
+    @Transactional(readOnly = true)
+    TurnoDTO getPendingShift();
 }

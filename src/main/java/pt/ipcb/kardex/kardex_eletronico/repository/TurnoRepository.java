@@ -14,16 +14,14 @@ import java.util.Optional;
 
 @Repository
 public interface TurnoRepository extends JpaRepository<Turno, Long>{
-    Optional<Turno> findFirstByInicioAfterOrderByInicioDesc(LocalDateTime now);
 
-    @Query("SELECT t FROM Turno t WHERE (t.passagemTurno IS NULL OR t.passagemTurno.ativo = false) AND t.inicio < :now")
+    @Query("SELECT t FROM Turno t LEFT JOIN t.passagemTurno pt WHERE (pt IS NULL OR pt.ativo = true) AND t.fim < :now")
     List<Turno> findAllWithoutPassagemTurnoBeforeNow(@Param("now") LocalDateTime now);
 
-    boolean existsByPassagemTurnoProximoTurno(Turno turno);
+    Optional<Turno> findFirstByPassagemTurnoPendenteTrueAndEnfermeiros_IdOrderByInicioDesc(Long workerId);
 
-    Optional<Turno> findFirstByInicioAfterOrderByInicioAsc(LocalDateTime now);
+    Optional<Turno> findFirstByFimAfterOrderByInicioAsc(LocalDateTime now);
 
     @Query("SELECT p FROM PassagemTurno p WHERE p.proximoTurno.id = :turnoId")
     List<PassagemTurno> findAllByProximoTurnoId(@Param("turnoId") Long turnoId);
-
 }
