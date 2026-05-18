@@ -56,6 +56,12 @@ public class WorkerController {
         return ResponseEntity.ok(ApiResponse.ok("Funcionário removido do turno com sucesso", null));
     }
 
+    @GetMapping("/me/shift")
+    public ResponseEntity<ApiResponse<TurnoDTO>> getCurrentShift(){
+        var shift = service.getCurrentShift();
+        return ResponseEntity.ok(ApiResponse.ok("Turno obtido com sucesso", shift));
+    }
+
     @GetMapping("{workerId}/shifts")
     public ResponseEntity<ApiResponse<List<TurnoDTO>>> getWorkerShifts(@PathVariable Long workerId, @RequestParam(name = "r", defaultValue = "28") int range) {
         var shifts = service.getWorkerShifts(workerId, range);
