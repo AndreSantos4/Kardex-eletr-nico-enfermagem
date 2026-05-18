@@ -7,9 +7,6 @@ const TURNO_LABELS = {
   CUSTOM: "Personalizado",
 };
 
-let _turnoAtualId = null;
-let _proximoTurnoId = null;
-
 function labelTurno(turno) {
   if (!turno) return "—";
   if (turno.tipo === "CUSTOM") {
@@ -38,61 +35,35 @@ function turnoParaDate(dataStr) {
   return new Date(`${yyyy}-${mo}-${dd}T${hh}:${mm}:${ss}`);
 }
 
-function determinarTurnos(turnos) {
-  const agora = new Date();
+function determinarProximoTurno(turnos, turnoAtual) {
+  if (!turnoAtual) return null;
+  const fimAtual = turnoParaDate(turnoAtual.fim);
+  if (!fimAtual) return null;
 
-  const atual =
-    turnos.find((t) => {
-      const inicio = turnoParaDate(t.inicio);
-      const fim = turnoParaDate(t.fim);
-      if (!inicio || !fim) return false;
-      return agora >= inicio && agora < fim;
-    }) ?? null;
-
-  if (!atual) return { turnoAtual: null, proximoTurno: null };
-
-  const fimAtual = turnoParaDate(atual.fim);
-
-  const proximo =
+  return (
     turnos
       .filter((t) => {
+        if (t.id === turnoAtual.id) return false;
         const inicio = turnoParaDate(t.inicio);
         return inicio && inicio >= fimAtual;
       })
       .sort((a, b) => turnoParaDate(a.inicio) - turnoParaDate(b.inicio))[0] ??
-    null;
-
-  return { turnoAtual: atual, proximoTurno: proximo };
+    null
+  );
 }
 
 function svRegistadoHoje(sinaisVitais) {
   if (!sinaisVitais || sinaisVitais.length === 0) return false;
   const hoje = new Date();
-  const prefixo = `${String(hoje.getDate()).padStart(2, "0")}/${String(hoje.getMonth() + 1).padStart(2, "0")}/${hoje.getFullYear()}`;
+  const prefixo = `${String(hoje.getDate()).padStart(2, "0")}/${String(
+    hoje.getMonth() + 1
+  ).padStart(2, "0")}/${hoje.getFullYear()}`;
   return sinaisVitais.some((sv) => (sv.data ?? "").startsWith(prefixo));
 }
 
-function contarMedicacoes(prescricoes) {
-  const ativas = (prescricoes ?? []).filter((p) => p.estado === "ATIVA");
-  let total = 0;
-  let naoAdm = 0;
-  ativas.forEach((p) => {
-    total++;
-    const adm = p.administracoes ?? [];
-    const hoje = new Date().toLocaleDateString("pt-PT", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-    const temHoje = adm.some((a) => {
-      const d = a.data ?? "";
-      return (
-        d.startsWith(hoje) || d.startsWith(hoje.split("/").reverse().join("-"))
-      );
-    });
-    if (!temHoje) naoAdm++;
-  });
-  return { total, naoAdm };
+// Sinais vitais considerados medidos se existirem (conforme indicado)
+function svMedido(sinaisVitais) {
+  return sinaisVitais && sinaisVitais.length > 0;
 }
 
 function renderTopbar() {
@@ -106,12 +77,19 @@ function renderTopbar() {
 }
 
 function renderPageHeader(turnoObj, proximoTurnoObj) {
-  const labelAtual = labelTurno(turnoObj);
-  const labelProximo = labelTurno(proximoTurnoObj);
+  const labelAtual = turnoObj ? labelTurno(turnoObj) : null;
+  const labelProximo = proximoTurnoObj ? labelTurno(proximoTurnoObj) : null;
 
   const tituloEl = document.getElementById("turno-titulo");
-  if (tituloEl)
-    tituloEl.textContent = `Passagem de Turno — ${labelAtual} → ${labelProximo}`;
+  if (tituloEl) {
+    if (labelAtual && labelProximo) {
+      tituloEl.textContent = `Passagem de Turno — ${labelAtual} → ${labelProximo}`;
+    } else if (labelAtual) {
+      tituloEl.textContent = `Passagem de Turno — ${labelAtual}`;
+    } else {
+      tituloEl.textContent = `Passagem de Turno`;
+    }
+  }
 
   const dataEl = document.getElementById("turno-data");
   if (dataEl && turnoObj) {
@@ -119,12 +97,14 @@ function renderPageHeader(turnoObj, proximoTurnoObj) {
     const horaInicio = parseHora(turnoObj.inicio);
     const horaFim = parseHora(turnoObj.fim);
     dataEl.textContent = `${dataInicio} — Turno ${labelAtual} ${horaInicio}–${horaFim}`;
+  } else if (dataEl) {
+    dataEl.textContent = "";
   }
 
   const proximoHeader = document.getElementById("proximo-turno-header");
   if (proximoHeader) {
     proximoHeader.textContent = proximoTurnoObj
-      ? labelTurno(proximoTurnoObj)
+      ? `Próximo Turno — ${labelTurno(proximoTurnoObj)}`
       : "Próximo Turno";
   }
 }
@@ -163,97 +143,57 @@ function renderProximoTurno(proximoTurnoObj) {
   el.innerHTML = html;
 }
 
-function renderResumoTurno(utentes, turnoObj, dadosTurno) {
+/**
+ * Resumo do turno usando os dados reais por utente:
+ * - sinaisVitais do kardex (medidos se existirem)
+ * - incidentes e contenções já carregados
+ */
+function renderResumoTurno(utentes) {
   const el = document.getElementById("resumo-turno");
   if (!el) return;
 
-  let totalMed = 0,
-    totalNaoAdm = 0,
-    svRegistados = 0;
+  let svMedidos = 0;
+  let totalIncidentes = 0;
+  let totalContencoes = 0;
+
   utentes.forEach((u) => {
     const p = u.processo;
-    if (!p) return;
-    const { total, naoAdm } = contarMedicacoes(p.prescricoes);
-    totalMed += total;
-    totalNaoAdm += naoAdm;
-    if (svRegistadoHoje(p.sinaisVitais)) svRegistados++;
+    if (svMedido(p?.sinaisVitais)) svMedidos++;
+    totalIncidentes += (u._incidentes ?? []).length;
+    totalContencoes += (u._contencoes ?? []).length;
   });
-
-  let totalSOS = 0,
-    totalIncidentes = 0;
-  dadosTurno.forEach((d) => {
-    totalSOS += (d.administracoes?.sos ?? []).length;
-    totalIncidentes += (d.incidentes ?? []).length;
-  });
-
-  const obsText = turnoObj?.observacoes
-    ? `<p style="font-style:italic;color:#555;">"${turnoObj.observacoes}"</p>`
-    : "";
 
   el.innerHTML = `
-        ${obsText}
-        <p>${utentes.length} utente${utentes.length !== 1 ? "s" : ""} — Turno</p>
-        <p>${totalMed - totalNaoAdm} adm. · ${totalNaoAdm} não adm.</p>
-        <p>${svRegistados} sinais vitais registados</p>
-        <p>${totalIncidentes} incidente${totalIncidentes !== 1 ? "s" : ""} · ${totalSOS} SOS adm.</p>
-    `;
+    <p>${utentes.length} utente${utentes.length !== 1 ? "s" : ""} — Turno</p>
+    <p>${svMedidos} sinais vitais registados</p>
+    <p>${totalContencoes} contenção${totalContencoes !== 1 ? "ões" : ""} administrada${totalContencoes !== 1 ? "s" : ""}</p>
+    <p>${totalIncidentes} incidente${totalIncidentes !== 1 ? "s" : ""}</p>
+  `;
 }
 
-function renderPendenciasProximoTurno(utentes, dadosTurno) {
+function renderPendenciasProximoTurno(utentes) {
   const el = document.getElementById("pendencias-proximo-turno");
   if (!el) return;
-
-  const turnoMap = new Map();
-  dadosTurno.forEach((d) => {
-    if (d.utente?.id != null) turnoMap.set(Number(d.utente.id), d);
-  });
 
   const pendencias = [];
 
   utentes.forEach((u) => {
     const p = u.processo;
     const apelido = (u.nome ?? "—").split(" ").pop();
-    const uId = Number(u.id);
-    const dt = turnoMap.get(uId);
 
-    if (p) {
-      (p.prescricoes ?? [])
-        .filter((pr) => pr.estado === "ATIVA")
-        .forEach((pr) => {
-          const adm = pr.administracoes ?? [];
-          const hoje = new Date().toLocaleDateString("pt-PT", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          });
-          const temHoje = adm.some((a) => {
-            const d = a.data ?? "";
-            return (
-              d.startsWith(hoje) ||
-              d.startsWith(hoje.split("/").reverse().join("-"))
-            );
-          });
-          if (!temHoje) {
-            const nomeMed = pr.medicamento?.nome ?? "Medicamento";
-            pendencias.push(`${nomeMed} — ${apelido}`);
-          }
-        });
-    }
-
-    const svFeito = dt
-      ? dt.sinaisMedidos === true
-      : svRegistadoHoje(p?.sinaisVitais);
-    if (!svFeito) {
+    // Sinais vitais não registados
+    if (!svMedido(p?.sinaisVitais)) {
       pendencias.push(`Sinais vitais — ${apelido}`);
     }
 
-    if (dt) {
-      (dt.incidentes ?? [])
-        .filter((i) => i.estado !== "RESOLVIDO")
-        .forEach((inc) => {
-          pendencias.push(`${inc.tipo ?? "Incidente"} — ${apelido}`);
-        });
-    }
+    // Incidentes não resolvidos
+    (u._incidentes ?? [])
+      .filter((i) => i.estado !== "RESOLVIDO")
+      .forEach((inc) => {
+        const tipo = inc.tipo ?? "Incidente";
+        const grav = inc.gravidade ? ` (${inc.gravidade})` : "";
+        pendencias.push(`${tipo}${grav} — ${apelido}`);
+      });
   });
 
   if (pendencias.length === 0) {
@@ -275,61 +215,56 @@ function renderFlag(flag) {
         border-radius:4px;padding:1px 6px;font-size:11px;white-space:nowrap;margin-right:3px;">${info.label}</span>`;
 }
 
-function renderEstadoUtentes(utentes, dadosTurno) {
+function renderEstadoUtentes(utentes) {
   const tbody = document.getElementById("estado-utentes-tbody");
   if (!tbody) return;
 
   if (!utentes || utentes.length === 0) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#888;">
-            Sem utentes internados de momento.</td></tr>`;
+            Sem utentes atribuídos neste turno.</td></tr>`;
     return;
   }
-
-  const turnoMap = new Map();
-  dadosTurno.forEach((d) => {
-    if (d.utente?.id != null) turnoMap.set(Number(d.utente.id), d);
-  });
 
   tbody.innerHTML = utentes
     .map((u) => {
       const p = u.processo;
       const nome = u.nome ?? "—";
       const cama = p?.cama?.id ?? "—";
-      const uId = Number(u.id);
-      const dt = turnoMap.get(uId);
 
-      const flags = (dt?.utente?.flags ?? []).map(renderFlag).join("");
+      const flags = (u.flags ?? []).map(renderFlag).join("");
 
-      const { total, naoAdm } = contarMedicacoes(p?.prescricoes);
-      let medTexto;
-      if (total === 0) {
-        medTexto = `<span style="color:#888;">Sem medicação</span>`;
-      } else if (naoAdm === 0) {
-        medTexto = `<span style="color:#16a34a;">Nenhum em falta</span>`;
-      } else {
-        medTexto = `<span style="color:#b91c1c;">${naoAdm} não adm.</span>`;
-      }
-
-      const svFeito = dt
-        ? dt.sinaisMedidos === true
-        : svRegistadoHoje(p?.sinaisVitais);
+      // Sinais vitais: medidos se existirem
+      const svFeito = svMedido(p?.sinaisVitais);
       const svTexto = svFeito
         ? `<span style="color:#16a34a;">Realizado</span>`
         : `<span style="color:#b91c1c;">Não Realizado</span>`;
 
-      const incidentes = dt?.incidentes ?? [];
-      const nSOS = (dt?.administracoes?.sos ?? []).length;
-      let ocorrTexto = `<span style="color:#888;">—</span>`;
-      if (incidentes.length > 0 || nSOS > 0) {
-        const partes = [];
-        if (incidentes.length > 0) partes.push(`${incidentes.length} inc.`);
-        if (nSOS > 0) partes.push(`${nSOS} SOS`);
-        ocorrTexto = `<span style="color:#f59e0b;">${partes.join(" · ")}</span>`;
+      // Contenções (administrações)
+      const contencoes = u._contencoes ?? [];
+      let contTexto;
+      if (contencoes.length === 0) {
+        contTexto = `<span style="color:#888;">—</span>`;
+      } else {
+        contTexto = `<span style="color:#2563eb;">${contencoes.length} adm.</span>`;
       }
 
+      // Incidentes
+      const incidentes = u._incidentes ?? [];
+      let incTexto;
+      if (incidentes.length === 0) {
+        incTexto = `<span style="color:#888;">—</span>`;
+      } else {
+        const temCritico = incidentes.some((i) => i.gravidade === "CRITICA");
+        const cor = temCritico ? "#ef4444" : "#f59e0b";
+        incTexto = `<span style="color:${cor};">${incidentes.length} inc.</span>`;
+      }
+
+      // Pendências
       const pendLista = [];
-      if (naoAdm > 0) pendLista.push(`${naoAdm} med.`);
       if (!svFeito) pendLista.push("SV");
+      const incPorResolver = incidentes.filter((i) => i.estado !== "RESOLVIDO");
+      if (incPorResolver.length > 0) pendLista.push(`${incPorResolver.length} inc.`);
+
       const pendTexto =
         pendLista.length === 0
           ? `<span style="color:#888;">—</span>`
@@ -339,74 +274,153 @@ function renderEstadoUtentes(utentes, dadosTurno) {
         <tr>
             <td>${nome}${flags ? `<br><small>${flags}</small>` : ""}</td>
             <td>${cama}</td>
-            <td>${medTexto}</td>
+            <td>${contTexto}</td>
             <td>${svTexto}</td>
-            <td>${ocorrTexto}</td>
+            <td>${incTexto}</td>
             <td>${pendTexto}</td>
         </tr>`;
     })
     .join("");
 }
 
+function mostrarSemTurno() {
+  const mainContent = document.querySelector(".main-content");
+  if (!mainContent) return;
+
+  mainContent.innerHTML = `
+    <div style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 60vh;
+      gap: 16px;
+      color: #6b7280;
+      text-align: center;
+    ">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width:56px;height:56px;fill:#d1d5db;">
+        <path d="M470.6 118.6c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S352 19.1 352 32l0 32-160 0C86 64 0 150 0 256 0 273.7 14.3 288 32 288s32-14.3 32-32c0-70.7 57.3-128 128-128l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64zM41.4 393.4c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9S160 492.9 160 480l0-32 160 0c106 0 192-86 192-192 0-17.7-14.3-32-32-32s-32 14.3-32 32c0 70.7-57.3 128-128 128l-160 0 0-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64z"/>
+      </svg>
+      <h2 style="font-size:1.25rem;font-weight:600;color:#374151;margin:0;">Sem turno ativo</h2>
+      <p style="margin:0;font-size:0.95rem;">Não está atualmente associado a nenhum turno.<br>Contacte o enfermeiro chefe para ser atribuído a um turno.</p>
+      <a href="enfermeiroDashboard" style="
+        margin-top:8px;
+        padding:10px 24px;
+        background:#2563eb;
+        color:#fff;
+        border-radius:6px;
+        text-decoration:none;
+        font-size:0.9rem;
+        font-weight:500;
+      ">Voltar ao Dashboard</a>
+    </div>
+  `;
+}
+
+function obterAtribuicoesEnfermeiroLogado(turnoAtual) {
+  const idLogado = Number(sessionStorage.getItem("enfermeiroId"));
+  const enfermeiros = turnoAtual.IdEnfermeiros ?? [];
+
+  let enf = null;
+
+  if (idLogado) {
+    enf = enfermeiros.find(
+      (e) => Number(e.dados?.id) === idLogado || Number(e.id) === idLogado
+    );
+  }
+
+  if (!enf && enfermeiros.length === 1) {
+    enf = enfermeiros[0];
+  }
+
+  return enf?.atribuicoes ?? [];
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status} — ${url}`);
+  return res.json();
+}
+
 async function loadPassagemTurno() {
   try {
-    const [resPatients, resShifts] = await Promise.all([
-      fetch(`${API_BASE}patients?f=HOSPITALIZED`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      }),
-      fetch(`${API_BASE}shifts`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      }),
+    // 1. Turno atual do enfermeiro
+    const jsonMyShift = await fetchJson(`${API_BASE}workers/me/shift`);
+    if (!jsonMyShift.success)
+      throw new Error(jsonMyShift.message ?? "Erro ao obter turno do enfermeiro");
+
+    if (!jsonMyShift.data) {
+      mostrarSemTurno();
+      return;
+    }
+
+    const turnoAtual = jsonMyShift.data;
+
+    // 2. Utentes atribuídos ao enfermeiro logado
+    const atribuicoes = obterAtribuicoesEnfermeiroLogado(turnoAtual);
+    const idsUtentes = atribuicoes
+      .map((a) => a.utente?.id)
+      .filter((id) => id != null);
+
+    // 3. Todos os turnos (para calcular próximo turno) + dados de cada utente em paralelo
+    const [jsonShifts, ...resPatients] = await Promise.all([
+      fetchJson(`${API_BASE}shifts`),
+      ...idsUtentes.map((id) => fetchJson(`${API_BASE}patients/${id}`)),
     ]);
 
-    if (!resPatients.ok)
-      throw new Error(`Patients: HTTP ${resPatients.status}`);
-    if (!resShifts.ok) throw new Error(`Shifts: HTTP ${resShifts.status}`);
-
-    const jsonPatients = await resPatients.json();
-    const jsonShifts = await resShifts.json();
-
-    if (!jsonPatients.success)
-      throw new Error(jsonPatients.message ?? "Erro ao carregar utentes");
     if (!jsonShifts.success)
       throw new Error(jsonShifts.message ?? "Erro ao carregar turnos");
 
-    const utentes = (jsonPatients.data ?? []).filter(
-      (u) => u.processo !== null,
-    );
-    const turnos = jsonShifts.data ?? [];
-
-    const { turnoAtual, proximoTurno } = determinarTurnos(turnos);
-
-    _turnoAtualId = turnoAtual?.id ?? null;
-    _proximoTurnoId = proximoTurno?.id ?? null;
-
-    let dadosTurno = [];
-    if (_turnoAtualId) {
-      try {
-        const resChange = await fetch(
-          `${API_BASE}shifts/${_turnoAtualId}/change`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          },
-        );
-        if (resChange.ok) {
-          const jsonChange = await resChange.json();
-          if (jsonChange.success)
-            dadosTurno = jsonChange.data?.dadosTurnoUtentes ?? [];
-        }
-      } catch (changeErr) {
-        console.warn("Dados de turno indisponíveis:", changeErr.message);
+    // Resolver utentes do kardex
+    const utentes = [];
+    for (let i = 0; i < resPatients.length; i++) {
+      const json = resPatients[i];
+      if (json.success && json.data?.dados) {
+        utentes.push(json.data.dados);
+      } else {
+        console.warn(`Utente id=${idsUtentes[i]}: resposta sem dados`);
       }
     }
 
+    // 4. Para cada utente, buscar incidentes e contenções em paralelo
+    //    usando o id do processo (processo.id)
+    await Promise.all(
+      utentes.map(async (u) => {
+        const processoId = u.processo?.id;
+        if (!processoId) {
+          u._incidentes = [];
+          u._contencoes = [];
+          return;
+        }
+
+        const [jsonInc, jsonCont] = await Promise.allSettled([
+          fetchJson(`${API_BASE}processes/${processoId}/incidents`),
+          fetchJson(`${API_BASE}processes/${processoId}/containments`),
+        ]);
+
+        u._incidentes =
+          jsonInc.status === "fulfilled" && jsonInc.value.success
+            ? (jsonInc.value.data ?? [])
+            : [];
+
+        u._contencoes =
+          jsonCont.status === "fulfilled" && jsonCont.value.success
+            ? (jsonCont.value.data ?? [])
+            : [];
+      })
+    );
+
+    const todosTurnos = jsonShifts.data ?? [];
+    const proximoTurno = determinarProximoTurno(todosTurnos, turnoAtual);
+
+    // 5. Renderizar tudo
     renderPageHeader(turnoAtual, proximoTurno);
     renderProximoTurno(proximoTurno);
-    renderResumoTurno(utentes, turnoAtual, dadosTurno);
-    renderPendenciasProximoTurno(utentes, dadosTurno);
-    renderEstadoUtentes(utentes, dadosTurno);
+    renderResumoTurno(utentes);
+    renderPendenciasProximoTurno(utentes);
+    renderEstadoUtentes(utentes);
   } catch (err) {
     console.error("Erro crítico:", err);
     const tbody = document.getElementById("estado-utentes-tbody");
@@ -414,11 +428,7 @@ async function loadPassagemTurno() {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#b91c1c;">
                 Erro ao carregar dados: ${err.message}</td></tr>`;
     }
-    [
-      "resumo-turno",
-      "pendencias-proximo-turno",
-      "enfermeiros-proximo-turno",
-    ].forEach((id) => {
+    ["resumo-turno", "pendencias-proximo-turno", "enfermeiros-proximo-turno"].forEach((id) => {
       const el = document.getElementById(id);
       if (el)
         el.innerHTML = `<p style="color:#b91c1c;font-size:12px;">Erro ao carregar.</p>`;
@@ -426,78 +436,7 @@ async function loadPassagemTurno() {
   }
 }
 
-async function finalizarPassagem() {
-  const observacoes =
-    document.getElementById("observacoes-textarea")?.value?.trim() ?? "";
-
-  if (!_turnoAtualId) {
-    mostrarNotificacao({
-      titulo: "Erro",
-      mensagem: "Turno atual não identificado. Recarregue a página.",
-      tipo: "erro",
-    });
-    return;
-  }
-  if (!_proximoTurnoId) {
-    mostrarNotificacao({
-      titulo: "Erro",
-      mensagem: "Próximo turno não identificado. Recarregue a página.",
-      tipo: "erro",
-    });
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE}shifts/${_turnoAtualId}/change`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        idTrno: Number(_turnoAtualId),
-        idProximoTurno: Number(_proximoTurnoId),
-        observacoes,
-      }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => null);
-      throw new Error(err?.message ?? `HTTP ${res.status}`);
-    }
-
-    mostrarNotificacao({
-      titulo: "Passagem de Turno",
-      mensagem: "Passagem de turno efetuada com sucesso.",
-      tipo: "sucesso",
-    });
-
-    ["btn-finalizar-header", "btn-finalizar"].forEach((id) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Finalizado";
-      }
-    });
-  } catch (err) {
-    console.error("Erro ao finalizar:", err);
-    mostrarNotificacao({
-      titulo: "Erro",
-      mensagem: `Erro ao finalizar: ${err.message}`,
-      tipo: "erro",
-    });
-  }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   renderTopbar();
-  renderPageHeader(null, null);
   loadPassagemTurno();
-
-  document
-    .getElementById("btn-finalizar-header")
-    ?.addEventListener("click", finalizarPassagem);
-  document
-    .getElementById("btn-finalizar")
-    ?.addEventListener("click", finalizarPassagem);
 });
