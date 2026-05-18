@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import pt.ipcb.kardex.kardex_eletronico.model.entity.PassagemTurno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 
 import java.time.LocalDateTime;
@@ -21,4 +20,6 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
     Optional<Turno> findFirstByPassagemTurnoPendenteTrueAndEnfermeiros_IdOrderByInicioDesc(Long workerId);
 
     Optional<Turno> findFirstByFimAfterOrderByInicioAsc(LocalDateTime now);
+
+    Optional<Turno> findFirstByOrderByInicioDesc();
 }
