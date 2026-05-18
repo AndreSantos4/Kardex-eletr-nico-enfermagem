@@ -306,7 +306,7 @@ function mostrarSemTurno() {
       <a href="enfermeiroDashboard" style="
         margin-top:8px;
         padding:10px 24px;
-        background:#2563eb;
+        background:#6b7280;
         color:#fff;
         border-radius:6px;
         text-decoration:none;
