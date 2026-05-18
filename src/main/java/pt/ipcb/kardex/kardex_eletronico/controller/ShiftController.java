@@ -59,12 +59,6 @@ public class ShiftController{
         return ResponseEntity.ok(ApiResponse.ok("Turnos obtidos com sucesso", shifts));
     }
 
-    @GetMapping("/{shiftId}/change")
-    public ResponseEntity<ApiResponse<PassagemTurnoDTO>> getShiftChange(@PathVariable Long shiftId){
-        var shiftChange = service.getShiftChange(shiftId);
-        return ResponseEntity.ok(ApiResponse.ok("Mudanca de turno obtido com sucesso", shiftChange));
-    }
-
     @PostMapping("/{shiftId}/change")
     public ResponseEntity<ApiResponse<PassagemTurnoDTO>> executeShiftChange(@PathVariable Long shiftId, @RequestBody CreateShiftChangeDTO data){
         service.executeShiftChange(shiftId, data);
