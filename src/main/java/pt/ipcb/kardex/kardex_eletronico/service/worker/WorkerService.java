@@ -39,9 +39,6 @@ public interface WorkerService {
     
     List<FuncionarioDTO> getAllWorkers(Role role);
 
-    @Transactional
-    List<FuncionarioDTO> getNursesAsssignmentsFromMostRecentShift();
-
     long getActiveNursesCount();
 
     Funcionario getWorker(Long id);

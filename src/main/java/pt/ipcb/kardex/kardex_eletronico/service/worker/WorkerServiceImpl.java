@@ -1,11 +1,13 @@
 package pt.ipcb.kardex.kardex_eletronico.service.worker;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.hibernate.Hibernate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +30,13 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AtribuicaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.FuncionarioRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.shift.ShiftService;
 
 @Service
 @RequiredArgsConstructor
 public class WorkerServiceImpl implements WorkerService {
+
+    private final Clock clock;
 
     private static final int SHIFTS_INFO_RANGE_MONTHS = -28;
 
@@ -40,6 +45,7 @@ public class WorkerServiceImpl implements WorkerService {
     private final TurnoRepository shiftRepository;
     private final TurnoMapper turnoMapper;
     private final AtribuicaoRepository atribuicaoRepository;
+    private final TurnoRepository turnoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,6 +53,16 @@ public class WorkerServiceImpl implements WorkerService {
         var worker = repository.findByUserId(userId)
                 .orElseThrow(() -> EntityNotFoundException.forId(userId, "Utilizador"));
         return mapper.toDTO(worker);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TurnoDTO getCurrentShift(){
+        var workerId = getAutenticatedWorker().getId();
+        var shift = turnoRepository.findTurnoAtivoByFuncionarioId(workerId, LocalDateTime.now(clock))
+                .orElseThrow(() -> new KardexException("Este funcionario nao pertence a nenhum turno no momento"));
+
+        return turnoMapper.toDTO(shift);
     }
 
     @Override
@@ -110,13 +126,6 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional(readOnly = true)
-    public TurnoDTO getCurrentShift() {
-        var worker = getAutenticatedWorker();
-        return turnoMapper.toDTO(getCurrentShift(worker.getId()));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Turno getCurrentShift(Long id) {
         return repository.findCurrentTurno(id, LocalDateTime.now());
     }
@@ -175,7 +184,7 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     @Transactional(readOnly = true)
     public List<FuncionarioDTO> getAllWorkers(Role role) {
-        List<Funcionario> workers = new ArrayList<>();
+        List<Funcionario> workers;
 
         if(role == null){
             workers = repository.findAllByDadosAtivo(true);
@@ -184,12 +193,6 @@ public class WorkerServiceImpl implements WorkerService {
         }
 
         return mapper.toDTOList(workers);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<FuncionarioDTO> getNursesAsssignmentsFromMostRecentShift(){
-        return mapper.toDTOList(getFuncionariosComAtribuicoesDoUltimoTurno());
     }
 
     @Override
@@ -212,17 +215,5 @@ public class WorkerServiceImpl implements WorkerService {
         }
 
         return true;
-    }
-
-    private List<Funcionario> getFuncionariosComAtribuicoesDoUltimoTurno() {
-        Turno ultimoTurno = shiftRepository.findFirstByOrderByInicioDesc()
-                .orElseThrow(() -> new KardexException("Nenhum turno encontrado"));
-
-        return atribuicaoRepository
-                .findByEnfermeiroRoleAndAtivoAndTurno(Role.ENFERMEIRO, true, ultimoTurno)
-                .stream()
-                .map(AtribuicaoUtente::getEnfermeiro)
-                .distinct()
-                .toList();
     }
 }

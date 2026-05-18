@@ -73,10 +73,4 @@ public class WorkerController {
         var shiftsInfo = service.getWorkerShiftsInfo(workerId);
         return ResponseEntity.ok(ApiResponse.ok("Resumo do turnos obtidos com sucesso", shiftsInfo));
     }
-
-    @GetMapping("/nurses/assignments")
-    public ResponseEntity<ApiResponse<List<FuncionarioDTO>>> getNursesWithLastShiftAssignments(){
-        var workers = service.getNursesAsssignmentsFromMostRecentShift();
-        return ResponseEntity.ok(ApiResponse.ok("Funcionarios com atribuicoes do ultimo turno obtidos com sucesso", workers));
-    }
 }

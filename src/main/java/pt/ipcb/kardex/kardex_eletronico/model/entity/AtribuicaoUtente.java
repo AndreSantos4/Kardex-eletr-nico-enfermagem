@@ -26,6 +26,6 @@ public class AtribuicaoUtente {
     public Utente utente;
 
     @JoinColumn(name = "id_turno", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public Turno turno;
 }

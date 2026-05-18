@@ -21,5 +21,6 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
 
     Optional<Turno> findFirstByFimAfterOrderByInicioAsc(LocalDateTime now);
 
-    Optional<Turno> findFirstByOrderByInicioDesc();
+    @Query("SELECT t FROM Turno t JOIN t.enfermeiros f WHERE f.id = :id AND t.inicio <= :now AND t.fim >= :now")
+    Optional<Turno> findTurnoAtivoByFuncionarioId(@Param("id") Long id, @Param("now") LocalDateTime now);
 }
