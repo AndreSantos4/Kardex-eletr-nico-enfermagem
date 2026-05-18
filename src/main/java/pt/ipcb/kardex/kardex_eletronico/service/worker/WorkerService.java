@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.service.worker;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
@@ -37,6 +38,9 @@ public interface WorkerService {
     Funcionario getMedicById(long medicoId);
     
     List<FuncionarioDTO> getAllWorkers(Role role);
+
+    @Transactional
+    List<FuncionarioDTO> getNursesAsssignmentsFromMostRecentShift();
 
     long getActiveNursesCount();
 

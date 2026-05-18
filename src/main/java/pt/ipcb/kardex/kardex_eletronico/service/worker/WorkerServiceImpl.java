@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.AtribuicaoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
@@ -23,6 +25,7 @@ import pt.ipcb.kardex.kardex_eletronico.exception.UnwantedResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.FuncionarioMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.AtribuicaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.FuncionarioRepository;
 
@@ -36,6 +39,7 @@ public class WorkerServiceImpl implements WorkerService {
     private final FuncionarioMapper mapper;
     private final TurnoRepository shiftRepository;
     private final TurnoMapper turnoMapper;
+    private final AtribuicaoRepository atribuicaoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -182,6 +186,12 @@ public class WorkerServiceImpl implements WorkerService {
         return mapper.toDTOList(workers);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<FuncionarioDTO> getNursesAsssignmentsFromMostRecentShift(){
+        return mapper.toDTOList(getFuncionariosComAtribuicoesDoUltimoTurno());
+    }
+
     @Override
     public long getActiveNursesCount() {
         return repository.countByDadosRoleAndDadosAtivo(Role.ENFERMEIRO, true);
@@ -204,4 +214,15 @@ public class WorkerServiceImpl implements WorkerService {
         return true;
     }
 
+    private List<Funcionario> getFuncionariosComAtribuicoesDoUltimoTurno() {
+        Turno ultimoTurno = shiftRepository.findFirstByOrderByInicioDesc()
+                .orElseThrow(() -> new KardexException("Nenhum turno encontrado"));
+
+        return atribuicaoRepository
+                .findByEnfermeiroRoleAndAtivoAndTurno(Role.ENFERMEIRO, true, ultimoTurno)
+                .stream()
+                .map(AtribuicaoUtente::getEnfermeiro)
+                .distinct()
+                .toList();
+    }
 }
