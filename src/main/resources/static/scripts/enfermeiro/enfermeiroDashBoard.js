@@ -1,4 +1,12 @@
 const API_BASE = "http://localhost:8080/api/";
+const tipoMap = {
+    SINAL_VITAL: "Sinal Vital",
+    MEDICACAO: "Medicação",
+    ADMINISTRACAO_ATRASADA: "Administração Atrasada",
+    PROCEDIMENTO: "Procedimento",
+    OBSERVACAO: "Observação",
+    AVALIACAO: "Avaliação",
+};
 
 function updateClock() {
     const el = document.getElementById("current-datetime");
@@ -115,11 +123,29 @@ function renderAlertas(utentes) {
         .join("");
 }
 
-function renderStatusBar(utentes) {
-    document.getElementById("sinais-vitais-registar").textContent = "—"; // TODO
-    document.getElementById("medicacoes-pendentes").textContent = "—"; // TODO
-    document.getElementById("administracao-atrasada").textContent = "—"; // TODO
-    document.getElementById("pendencias-turno-anterior").textContent = "—"; // TODO
+function renderStatusBar(utentes, pendencias = []) {
+
+    const counts = {};
+
+    pendencias.forEach(p => {
+        const tipo = p.tipo ?? "DESCONHECIDO";
+
+        counts[tipo] = (counts[tipo] || 0) + 1;
+    });
+
+    document.getElementById("sinais-vitais-registar").textContent =
+        counts["SINAL_VITAL"] || 0;
+
+    document.getElementById("medicacoes-pendentes").textContent =
+        counts["MEDICACAO"] || 0;
+
+    document.getElementById("administracao-atrasada").textContent =
+        counts["ADMINISTRACAO_ATRASADA"] || 0;
+
+    document.getElementById("pendencias-turno-anterior").textContent =
+        pendencias.length;
+
+    console.log("Pendências agrupadas:", counts);
 }
 
 function renderTopbar() {
@@ -133,44 +159,145 @@ function renderTopbar() {
 
 async function loadDashboard() {
     try {
-        const res = await fetch(`${API_BASE}patients?f=HOSPITALIZED`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const json = await res.json();
+        const headers = {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        };
 
-        if (!json.success) {
-            throw new Error(json.message ?? "Erro desconhecido da API");
+        const utentesRes = await fetch(
+            `${API_BASE}patients?f=HOSPITALIZED`,
+            { headers }
+        );
+
+        if (!utentesRes.ok) {
+            throw new Error(`HTTP ${utentesRes.status}`);
         }
 
-        const utentes = json.data ?? [];
+        const utentesJson = await utentesRes.json();
 
-        const internados = utentes.filter(u => u.processo !== null);
+        if (!utentesJson.success) {
+            throw new Error(utentesJson.message);
+        }
+
+        const utentes = utentesJson.data ?? [];
+
+        const internados = utentes.filter(
+            u => u.processo !== null
+        );
+
+        const turnoRes = await fetch(
+            `${API_BASE}workers/me/shift`,
+            { headers }
+        );
+
+        if (!turnoRes.ok) {
+            throw new Error(`HTTP ${turnoRes.status}`);
+        }
+
+        const turnoJson = await turnoRes.json();
+
+        if (!turnoJson.success) {
+            throw new Error(turnoJson.message);
+        }
+        console.log(turnoJson);
+        const turno = turnoJson.data;
+
+        let pendencias = [];
+
+        if (turno?.id) {
+
+            const pendenciasRes = await fetch(
+                `${API_BASE}shifts/${turno.id}/pending`,
+                { headers }
+            );
+
+            console.log(pendenciasRes);
+
+            if (pendenciasRes.ok) {
+
+                const pendenciasJson = await pendenciasRes.json();
+                console.log(pendenciasJson);
+                if (pendenciasJson.success) {
+                    pendencias = pendenciasJson.data ?? [];
+                }
+            }
+        }
 
         renderTabelaUtentes(internados);
-        renderStatusBar(internados);
+
+        renderStatusBar(internados, pendencias);
+
         renderAlertas(internados);
 
+        renderPendencias(pendencias);
+
     } catch (err) {
-        console.error("[Dashboard] Erro ao carregar utentes:", err);
+
+        console.error("[Dashboard] Erro ao carregar dashboard:", err);
 
         const tbody = document.getElementById("lista-utentes-tbody");
+
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:#b91c1c;">
-                Erro ao carregar dados: ${err.message}
-            </td></tr>`;
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8"
+                        style="text-align:center;padding:20px;color:#b91c1c;">
+                        Erro ao carregar dados: ${err.message}
+                    </td>
+                </tr>
+            `;
         }
 
-        const alertasContainer = document.getElementById("alertas-container");
-        if (alertasContainer) {
-            alertasContainer.innerHTML = `<p class="alertas-empty" style="color:#b91c1c;">Erro ao carregar alertas.</p>`;
+        const pendenciasBody =
+            document.getElementById("pendencias-tbody");
+
+        if (pendenciasBody) {
+            pendenciasBody.innerHTML = `
+                <tr>
+                    <td colspan="4"
+                        style="text-align:center;padding:20px;color:#b91c1c;">
+                        Erro ao carregar pendências.
+                    </td>
+                </tr>
+            `;
         }
     }
 }
 
 function verUtente(utenteId) {
     window.location.href = `enfermeiroKardexUtente?id=${utenteId}`;
+}
+
+function renderPendencias(pendencias) {
+    const tbody = document.getElementById("pendencias-tbody");
+    if (!tbody) return;
+
+    if (!pendencias || pendencias.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center;padding:20px;color:#888;">
+                    Sem pendências do turno anterior.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = pendencias.map(p => {
+        const utente = p.utente?.nome ?? "—";
+        console.log(p);
+        const prioridade = p.tipo;
+
+
+        return `
+            <tr>
+                <td>${utente}</td>
+                <td>${tipoMap[p.tipo] ?? p.tipo}</td>
+                <td>${p.descricao ?? "—"}</td>
+                <td>${prioridade}</td>
+            </tr>
+        `;
+    }).join("");
 }
 
 document.addEventListener("DOMContentLoaded", () => {

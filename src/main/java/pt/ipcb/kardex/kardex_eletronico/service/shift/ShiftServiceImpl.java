@@ -26,6 +26,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.IncidenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.PassagemTurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
@@ -45,6 +46,7 @@ public class ShiftServiceImpl implements ShiftService{
     private final AdministracaoMapper administracaoMapper;
     private final UtenteMapper utenteMapper;
     private final IncidenteMapper incidenteMapper;
+    private final PassagemTurnoRepository passagemTurnoRepository;
 
     @Override
     @Transactional
@@ -294,7 +296,7 @@ public class ShiftServiceImpl implements ShiftService{
         repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
-        return repository.findAllByProximoTurnoId(shiftId)
+        return passagemTurnoRepository.findByProximoTurnoId(shiftId)
                 .stream()
                 .flatMap(shiftChange -> buildPendencias(shiftChange).stream())
                 .toList();
