@@ -21,7 +21,7 @@ public class PassagemTurno {
     public Turno turno;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "proximo_turno_id") // no unique = true
+    @JoinColumn(name = "proximo_turno_id")
     public Turno proximoTurno;
 
     @Column(name = "ativo", nullable = false)
