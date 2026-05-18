@@ -21,7 +21,4 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
     Optional<Turno> findFirstByPassagemTurnoPendenteTrueAndEnfermeiros_IdOrderByInicioDesc(Long workerId);
 
     Optional<Turno> findFirstByFimAfterOrderByInicioAsc(LocalDateTime now);
-
-    @Query("SELECT p FROM PassagemTurno p WHERE p.proximoTurno.id = :turnoId")
-    List<PassagemTurno> findAllByProximoTurnoId(@Param("turnoId") Long turnoId);
 }
