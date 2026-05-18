@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -178,23 +179,28 @@ public class ShiftServiceImpl implements ShiftService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TurnoDTO> getAllShifts() {
         var shifts = repository.findAll();
         return mapper.toDTOList(shifts);
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public PassagemTurnoDTO getShiftChange(Long shiftId) {
         var shift = repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        if(shift.getFim().isAfter(LocalDateTime.now(clock))){
+            throw new KardexException("O turno nao e valido para ser alterado ainda.");
+        }
 
         PassagemTurno shiftChange;
         if (shift.getPassagemTurno() != null) {
             shiftChange = shift.getPassagemTurno();
         } else {
-            var nextShift = repository.findFirstByInicioAfterOrderByInicioAsc(LocalDateTime.now(clock))
-                    .orElseThrow(() -> new KardexException("Nao existe turno para a data de hoje"));
+            var nextShift = repository.findFirstByFimAfterOrderByInicioAsc(LocalDateTime.now(clock))
+                    .orElseThrow(() -> new KardexException("Nao existe nenhum turno agendado"));
             shiftChange = new PassagemTurno();
             shiftChange.setTurno(shift);
             shiftChange.setProximoTurno(nextShift);
@@ -225,6 +231,10 @@ public class ShiftServiceImpl implements ShiftService{
             throw new KardexException("Nao existe passagem de turno para o turno");
         }
 
+        if(!shiftChange.isAtivo()){
+            throw new KardexException("A passagem de turno ja foi validada");
+        }
+
         shiftChange.setAtivo(false);
         shiftChange.setObservacoes(data.observacoes());
     }
@@ -249,6 +259,10 @@ public class ShiftServiceImpl implements ShiftService{
             throw new KardexException("Nao existe passagem de turno para o turno");
         }
 
+        if(shiftChange.isAtivo()){
+            throw new KardexException("A passagem de turno nao pode ser validade");
+        }
+
         shiftChange.setPendente(false);
         shiftChange.setObservacoesValidacao(data.observacoes());
     }
@@ -262,6 +276,10 @@ public class ShiftServiceImpl implements ShiftService{
         var shiftChange = shift.getPassagemTurno();
         if(shiftChange == null){
             throw new KardexException("Nao existe passagem de turno para o turno");
+        }
+
+        if(shiftChange.isAtivo()){
+            throw new KardexException("A passagem de turno nao pode ser validade");
         }
 
         shiftChange.setAtivo(true);
@@ -318,6 +336,15 @@ public class ShiftServiceImpl implements ShiftService{
                                 a.getPrescricao().getDose().getUnidadeMedida()
                 ))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TurnoDTO getPendingShift() {
+        var worker = workerService.getAutenticatedWorker();
+        var shift = repository.findFirstByPassagemTurnoPendenteTrueAndEnfermeiros_IdOrderByInicioDesc(worker.getId()).orElse(null);
+
+        return mapper.toDTO(shift);
     }
 
     private  List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {
