@@ -23,6 +23,12 @@ public class ShiftController{
         return ResponseEntity.ok(ApiResponse.ok("Turno criado com sucesso", null));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<TurnoDTO>> getPendingShift() {
+        var pending = service.getPendingShift();
+        return ResponseEntity.ok(ApiResponse.ok("Turno obtido com sucesso", pending));
+    }
+
     @PatchMapping("/{shiftId}")
     public ResponseEntity<ApiResponse<?>> editShift(@PathVariable Long shiftId, @RequestBody CreateShiftDTO data){
         service.editShift(shiftId, data);
