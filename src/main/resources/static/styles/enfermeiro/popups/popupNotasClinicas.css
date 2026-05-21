@@ -1,0 +1,122 @@
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --sans: "IBM Plex Sans", sans-serif;
+}
+
+.popup-notas-overlay,
+.popup-notas-overlay *,
+.popup-notas-overlay *::before,
+.popup-notas-overlay *::after {
+    box-sizing: border-box;
+}
+
+.popup-notas-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-notas-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 720px;
+    max-height: 85vh;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-notas-header {
+    background: var(--bg-dark);
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-notas-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    line-height: 1;
+}
+
+.popup-notas-close:hover {
+    background: #e74c3c;
+}
+
+.popup-notas-content {
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+}
+
+.popup-notas-section-title {
+    margin: 0;
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.popup-notas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.popup-nota-item {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 14px 18px;
+    color: var(--bg-dark);
+    line-height: 1.5;
+}
+
+.popup-nota-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bg-dark);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+}
+
+.popup-nota-texto {
+    font-size: 13px;
+    color: var(--bg-dark);
+    line-height: 1.55;
+    font-weight: 500;
+}
+
+.popup-nota-empty {
+    text-align: center;
+    padding: 28px 16px;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
