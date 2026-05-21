@@ -35,7 +35,9 @@ function formatarUnidade(u) {
 function formatarDataHora(raw) {
   const [dataParte, horaParte] = raw.split("T");
   const [ano, mes, dia] = dataParte.split("-");
-  return `${dia}/${mes}/${ano}:${horaParte}`;
+  console.log(horaParte);
+  console.log(raw);
+  return `${dia}/${mes}/${ano}:${horaParte}:00`;
 }
 
 function formatarDataHora2(raw) {
