@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarIntervencao.css">
+
+<!-- Popup Registar Intervenção -->
+<div class="popup-reg-intervencao-overlay" id="popup-registar-intervencao" style="display: none;">
+	<div class="popup-reg-intervencao-box">
+		<div class="popup-reg-intervencao-header">
+			<span>Registar Intervenção</span>
+			<button class="popup-reg-intervencao-close" onclick="fecharPopupRegistarIntervencao()">&#10005;</button>
+		</div>
+		<div class="popup-reg-intervencao-content">
+			<div class="popup-reg-intervencao-info-note">
+				<div class="popup-reg-intervencao-info-icon">i</div>
+				<div class="popup-reg-intervencao-info-text">
+					<span>Enfermeiro: <strong id="reg-intervencao-enfermeiro">—</strong></span>
+					<span>Paciente: <strong id="reg-intervencao-paciente">—</strong></span>
+				</div>
+			</div>
+			<div class="popup-reg-intervencao-titulo" id="reg-intervencao-titulo">—</div>
+			<form id="form-registar-intervencao" onsubmit="submeterRegistarIntervencao(event)">
+				<div class="popup-reg-intervencao-field">
+					<label class="popup-reg-intervencao-label">DATA E HORA *</label>
+					<input type="datetime-local" id="reg-intervencao-data-hora" class="popup-reg-intervencao-input" />
+				</div>
+				<div class="popup-reg-intervencao-field">
+					<label class="popup-reg-intervencao-label">OBSERVAÇÕES *</label>
+					<textarea id="reg-intervencao-observacoes" class="popup-reg-intervencao-textarea" placeholder="Notas sobre a intervenção..." rows="2"></textarea>
+				</div>
+				<div class="popup-reg-intervencao-actions">
+					<button type="button" class="btn-cancelar-reg-intervencao" onclick="fecharPopupRegistarIntervencao()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-reg-intervencao">REGISTAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

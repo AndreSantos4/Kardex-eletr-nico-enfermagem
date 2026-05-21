@@ -47,6 +47,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/admin/adminMedicamentos.html");
     }
 
+    @GetMapping("/adminRelatoriosIndicadores")
+    public ModelAndView adminRelatoriosIndicadores() {
+        return new ModelAndView("forward:/pages/admin/adminRelatoriosIndicadores.html");
+    }
+
     /* ENFERMEIRO */
 
     @GetMapping("/enfermeiroKardexUtente")
@@ -69,6 +74,16 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroHistoricoPrescricoes.html?id=" + id);
     }
 
+    @GetMapping("/enfermeiroPassagemTurno")
+    public ModelAndView enfermeiroPassagemTurno() {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPassagemTurno.html");
+    }
+
+    @GetMapping("/enfermeiroPlanoCuidados")
+    public ModelAndView enfermeiroPlanoCuidados(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPlanoCuidados.html?id=" + id);
+    }
+
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")
@@ -79,6 +94,21 @@ public class ResourcesForwarding {
     @GetMapping("/enfermeiroChefeListaUtentes")
     public ModelAndView enfermeiroChefeListaUtentes() {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeListaUtentes.html");
+    }
+
+    @GetMapping("/enfermeiroChefeGerirTurnos")
+    public ModelAndView enfermeiroChefeGerirTurnos() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeGerirTurnos.html");
+    }
+
+    @GetMapping("/enfermeiroChefeStock")
+    public ModelAndView enfermeiroChefeStock(){
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeControloStock.html");
+    }
+
+    @GetMapping("/enfermeiroChefeRelatoriosIndicadores")
+    public ModelAndView enfermeiroChefeRelatoriosIndicadores() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeRelatoriosIndicadores.html");
     }
 
     /* MÉDICO */

@@ -16,6 +16,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.ShiftSummaryDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.WorkerActivitySummary;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @RestController
@@ -37,9 +38,9 @@ public class WorkerController {
         return ResponseEntity.ok(ApiResponse.ok("Resumo do funcionário obtico com sucesso", summary));
     }
 
-    @GetMapping("/medics")
-    public ResponseEntity<ApiResponse<List<FuncionarioDTO>>> getAllMedics(){
-        var medics = service.getAllMedics();
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<FuncionarioDTO>>> getAllWorkers(@RequestParam(name = "r", required = false) Role role){
+        var medics = service.getAllWorkers(role);
         return ResponseEntity.ok(ApiResponse.ok("Medicos obtidos com sucesso", medics));
     } 
 
@@ -53,6 +54,12 @@ public class WorkerController {
     public ResponseEntity<ApiResponse<?>> removeFromShift(@PathVariable("workerId") Long workerId, @PathVariable("shiftId") Long shiftId){
         service.removeFromShift(workerId, shiftId);
         return ResponseEntity.ok(ApiResponse.ok("Funcionário removido do turno com sucesso", null));
+    }
+
+    @GetMapping("/me/shift")
+    public ResponseEntity<ApiResponse<TurnoDTO>> getCurrentShift(){
+        var shift = service.getCurrentShift();
+        return ResponseEntity.ok(ApiResponse.ok("Turno obtido com sucesso", shift));
     }
 
     @GetMapping("{workerId}/shifts")

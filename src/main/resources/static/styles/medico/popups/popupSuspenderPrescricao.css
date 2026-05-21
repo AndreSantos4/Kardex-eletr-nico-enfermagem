@@ -1,0 +1,262 @@
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "IBM Plex Sans", sans-serif;
+}
+
+.popup-overlay,
+.popup-overlay *,
+.popup-overlay *::before,
+.popup-overlay *::after {
+    box-sizing: border-box;
+}
+
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.popup-box-suspender {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-header-suspender {
+    background: var(--bg-dark);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-close-suspender {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 700;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.popup-close-suspender:hover {
+    background: #e74c3c;
+}
+
+.popup-content-suspender {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.popup-content-suspender form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.popup-row-2cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.popup-prescricao-card {
+    background: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--bg-dark);
+    line-height: 1.5;
+}
+
+.popup-prescricao-card .prescricao-medicamento {
+    font-weight: 700;
+    color: #8a2a3a;
+}
+
+.popup-prescricao-card .prescricao-nome {
+    font-weight: 600;
+    color: var(--bg-dark);
+    margin-bottom: 2px;
+}
+
+.popup-prescricao-card .prescricao-detalhe {
+    color: var(--bg-dark);
+    font-size: 12px;
+}
+
+.popup-field-suspender {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-select {
+    background: var(--input-bg);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 5px;
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 14px;
+    width: 100%;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.popup-select:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-select option {
+    background: var(--bg-dark);
+}
+
+.popup-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 5px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 14px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 5px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 14px;
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+}
+
+.popup-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+    font-style: italic;
+}
+
+.popup-info-note {
+    background: rgba(168, 212, 230, 0.18);
+    border: 1px solid rgba(168, 212, 230, 0.35);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--white);
+}
+
+.popup-info-note .info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-dark);
+    color: var(--white);
+    font-family: serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.popup-actions-suspender {
+    display: flex;
+    gap: 10px;
+    justify-content: stretch;
+}
+
+.btn-cancelar-suspender {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 11px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-suspender:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.btn-confirmar-suspender {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 11px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-confirmar-suspender:hover {
+    background: var(--white);
+    color: var(--primary);
+}

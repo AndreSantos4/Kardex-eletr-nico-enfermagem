@@ -25,6 +25,9 @@ public class SinalVital {
     
     @ManyToOne(fetch = FetchType.LAZY)
     public Funcionario funcionario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    public Turno turno;
     
     @Column(name = "tensao_arterial_distolica", nullable = false)
     public Integer tensaoArteriaDistolica;

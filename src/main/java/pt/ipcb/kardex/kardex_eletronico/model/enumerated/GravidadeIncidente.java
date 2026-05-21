@@ -1,10 +1,10 @@
 package pt.ipcb.kardex.kardex_eletronico.model.enumerated;
 
 public enum GravidadeIncidente {
-    BAIXA("Baixa"),
+    LIGEIRA("Baixa"),
     MODERADA("Moderada"),
-    NORMAL("Normal"),
-    ALTA("Alta");
+    GRAVE("Normal"),
+    CRITICA("Alta");
     
     public final String nome;
     

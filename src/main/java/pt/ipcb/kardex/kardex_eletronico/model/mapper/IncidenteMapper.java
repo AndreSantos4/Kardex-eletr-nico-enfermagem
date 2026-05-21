@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateIncidentDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.IncidenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateIncidenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.IncidenteClinico;
 
 @Mapper(componentModel = "spring")
@@ -14,7 +14,7 @@ public interface IncidenteMapper {
 
     IncidenteClinico toEntity(IncidenteDTO dto);
 
-    IncidenteClinico fromCreate(CreateIncidentDTO dto);
+    IncidenteClinico fromCreate(CreateIncidenteDTO dto);
 
     List<IncidenteDTO> toDTOList(List<IncidenteClinico> utilizadores);
 }

@@ -1,15 +1,20 @@
 package pt.ipcb.kardex.kardex_eletronico.service.worker;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.hibernate.Hibernate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.AtribuicaoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
@@ -22,12 +27,16 @@ import pt.ipcb.kardex.kardex_eletronico.exception.UnwantedResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.FuncionarioMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.AtribuicaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.FuncionarioRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.shift.ShiftService;
 
 @Service
 @RequiredArgsConstructor
 public class WorkerServiceImpl implements WorkerService {
+
+    private final Clock clock;
 
     private static final int SHIFTS_INFO_RANGE_MONTHS = -28;
 
@@ -35,6 +44,8 @@ public class WorkerServiceImpl implements WorkerService {
     private final FuncionarioMapper mapper;
     private final TurnoRepository shiftRepository;
     private final TurnoMapper turnoMapper;
+    private final AtribuicaoRepository atribuicaoRepository;
+    private final TurnoRepository turnoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,6 +53,16 @@ public class WorkerServiceImpl implements WorkerService {
         var worker = repository.findByUserId(userId)
                 .orElseThrow(() -> EntityNotFoundException.forId(userId, "Utilizador"));
         return mapper.toDTO(worker);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TurnoDTO getCurrentShift(){
+        var workerId = getAutenticatedWorker().getId();
+        var shift = turnoRepository.findTurnoAtivoByFuncionarioId(workerId, LocalDateTime.now(clock))
+                .orElseThrow(() -> new KardexException("Este funcionario nao pertence a nenhum turno no momento"));
+
+        return turnoMapper.toDTO(shift);
     }
 
     @Override
@@ -60,7 +81,7 @@ public class WorkerServiceImpl implements WorkerService {
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
         worker.turnos.add(shift);
-        shift.funcionariosAlocados.add(worker);
+        shift.getEnfermeiros().add(worker);
 
         repository.save(worker);
     }
@@ -74,7 +95,7 @@ public class WorkerServiceImpl implements WorkerService {
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
         worker.turnos.remove(shift);
-        shift.funcionariosAlocados.remove(worker);
+        shift.getEnfermeiros().remove(worker);
 
         repository.save(worker);
     }
@@ -120,7 +141,7 @@ public class WorkerServiceImpl implements WorkerService {
 
         return shifts.stream()
                 .map(shift -> new ShiftSummaryDTO(
-                        shift.nome(),
+                        shift.tipo(),
                         adminCounts.getOrDefault(shift.id(), 0),
                         incidentCounts.getOrDefault(shift.id(), 0),
                         shift.inicio().toLocalDate()))
@@ -162,13 +183,37 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FuncionarioDTO> getAllMedics() {
-        var teste = repository.findByDadosRole(Role.MEDICO);
-        return mapper.toDTOList(teste);
+    public List<FuncionarioDTO> getAllWorkers(Role role) {
+        List<Funcionario> workers;
+
+        if(role == null){
+            workers = repository.findAllByDadosAtivo(true);
+        } else {
+            workers = repository.findByDadosRoleAndDadosAtivo(role, true);
+        }
+
+        return mapper.toDTOList(workers);
     }
 
     @Override
     public long getActiveNursesCount() {
         return repository.countByDadosRoleAndDadosAtivo(Role.ENFERMEIRO, true);
+    }
+
+    @Override
+    public Funcionario getWorker(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> EntityNotFoundException.forId(id, "Funcionario"));
+    }
+
+    @Override
+    public boolean isAvailable(Funcionario worker, LocalDateTime start, LocalDateTime end) {
+        for (Turno shift : worker.getTurnos()) {
+            if (shift.getInicio().isBefore(end) && shift.getFim().isAfter(start)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
