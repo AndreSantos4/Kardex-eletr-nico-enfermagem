@@ -137,4 +137,9 @@ public class ResourcesForwarding {
     public ModelAndView medicoHistoricoPrescricoes(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/medico/medicoHistoricoPrescricoes.html?id=" + id);
     }
+
+    @GetMapping("/medicoNotasClinicas")
+    public ModelAndView medicoNotasClinicas(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoNotasClinicas.html?id=" + id);
+    }
 }
