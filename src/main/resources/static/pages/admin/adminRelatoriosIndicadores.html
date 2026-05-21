@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" href="../../styles/admin/adminRelatoriosIndicadores.css" />
+	<link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
+	<link rel="stylesheet" type="text/css" href="../../styles/sideBar.css" />
+	<link rel="stylesheet" type="text/css" href="../../styles/mainContent.css" />
+	<link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css" />
+	<link rel="stylesheet" type="text/css" href="../../styles/pageHeader.css" />
+	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+	<title>Relatórios e Indicadores</title>
+</head>
+
+<body>
+	<!-- Top Bar -->
+	<div class="topbar">
+		<span class="topbar-brand">Admin Relatórios e Indicadores</span>
+		<div class="topbar-right">
+			<span class="topbar-user" id="nome-admin">Administrador</span>
+			<button class="btn-sair" onclick="logout()">SAIR</button>
+		</div>
+	</div>
+
+	<div class="main-container">
+		<!-- Sidebar -->
+		<aside class="sidebar">
+			<nav>
+				<div class="sidebar-section-label">Principal</div>
+				<ul>
+					<li class="sidebar-item">
+						<a href="adminDashboard">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+								<path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1z" />
+							</svg>
+							Home
+						</a>
+					</li>
+					<li class="sidebar-item">
+						<a href="adminGestaoUtilizadores">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+								<path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160 80 80 0 1 1 0-160zM0 298.7C0 239.8 47.8 192 106.7 192l42.7 0c15.9 0 31 3.5 44.6 9.7-1.3 7.2-1.9 14.7-1.9 22.3 0 38.2 16.8 72.5 43.3 96-0.2 0-0.4 0-0.7 0L21.3 320C9.6 320 0 310.4 0 298.7zM405.3 320c-0.2 0-0.4 0-0.7 0 26.6-23.5 43.3-57.8 43.3-96 0-7.6-0.7-15-1.9-22.3 13.6-6.3 28.7-9.7 44.6-9.7l42.7 0C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3l-213.3 0zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352l117.3 0C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7l-330.7 0c-14.7 0-26.7-11.9-26.7-26.7z" />
+							</svg>
+							Utilizadores
+						</a>
+					</li>
+					<li class="sidebar-item">
+						<a href="adminMedicamentos">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+								<path d="M192 0C86 0 0 86 0 192L0 320c0 106 86 192 192 192s192-86 192-192l0-128C384 86 298 0 192 0zM64 320l256 0 0-128c0-70.7-57.3-128-128-128S64 121.3 64 192l0 128z" />
+							</svg>
+							Medicamentos
+						</a>
+					</li>
+				</ul>
+
+				<div class="sidebar-section-label">Auditoria</div>
+				<ul>
+					<li class="sidebar-item">
+						<a href="#">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+								<path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0z" />
+							</svg>
+							Logs Auditoria
+						</a>
+					</li>
+				</ul>
+
+				<div class="sidebar-section-label">Controlo</div>
+				<ul>
+					<li class="sidebar-item">
+						<a href="adminSessoesAtivas">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+								<path d="M0 96C0 60.7 28.7 32 64 32l512 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96z" />
+							</svg>
+							Sessões Ativas
+						</a>
+					</li>
+					<li class="sidebar-item">
+						<a href="#">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+								<path d="M0 96C0 78.3 14.3 64 32 64l512 0c17.7 0 32 14.3 32 32l0 32c0 17.7-14.3 32-32 32L32 160C14.3 160 0 145.7 0 128L0 96zM32 192l512 0 0 224c0 35.3-28.7 64-64 64L96 480c-35.3 0-64-28.7-64-64l0-224zm160 64c-8.8 0-16 7.2-16 16s7.2 16 16 16l192 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-192 0z" />
+							</svg>
+							Hist. Stock
+						</a>
+					</li>
+					<li class="sidebar-item active">
+						<a href="adminRelatoriosIndicadores">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+								<path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z" />
+							</svg>
+							Relatórios
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</aside>
+
+		<!-- Main Content -->
+		<main class="main-content">
+			<div class="page-header">
+				<h4>Relatórios e Indicadores</h4>
+				<button class="btn-admin">Admin.</button>
+			</div>
+
+			<!-- Filtros -->
+			<div class="filtros-card">
+				<div class="filtros-grid">
+					<div class="filtro-field">
+						<label class="filtro-label">TIPO DE RELATÓRIO</label>
+						<select id="tipo-relatorio" class="filtro-select" onchange="atualizarRelatorio()">
+							<option value="MEDICAMENTOS">Consumo de medicamento</option>
+							<option value="MATERIAL">Consumo de material clínico</option>
+							<option value="ATIVIDADE">Atividade por profissional</option>
+							<option value="ESTATISTICAS">Estatísticas clínicas</option>
+						</select>
+					</div>
+					<div class="filtro-field">
+						<label class="filtro-label">PERÍODO</label>
+						<select id="periodo-relatorio" class="filtro-select" onchange="atualizarPeriodo()">
+							<option value="MARCO_2026" selected>Março 2026</option>
+							<option value="FEVEREIRO_2026">Fevereiro 2026</option>
+							<option value="JANEIRO_2026">Janeiro 2026</option>
+							<option value="ULTIMO_TRIMESTRE">Último trimestre</option>
+							<option value="PERSONALIZADO">Personalizado</option>
+						</select>
+					</div>
+					<div class="filtro-field">
+						<label class="filtro-label">DE</label>
+						<input type="date" id="data-inicio" class="filtro-input" />
+					</div>
+					<div class="filtro-field">
+						<label class="filtro-label">ATÉ</label>
+						<input type="date" id="data-fim" class="filtro-input" />
+					</div>
+					<button class="btn-gerar-relatorio" onclick="gerarRelatorio()">GERAR<br />RELATÓRIO</button>
+				</div>
+			</div>
+
+			<!-- KPIs -->
+			<div class="kpis-grid">
+				<div class="kpi-card">
+					<span class="kpi-numero" id="kpi-administracoes">—</span>
+					<span class="kpi-label">Administrações<br />Este Mês</span>
+				</div>
+				<div class="kpi-card">
+					<span class="kpi-numero" id="kpi-nao-administracoes">—</span>
+					<span class="kpi-label">Não<br />Administrações<br />Registadas</span>
+				</div>
+				<div class="kpi-card">
+					<span class="kpi-numero" id="kpi-incidentes">—</span>
+					<span class="kpi-label">Incidentes<br />Clínicos</span>
+				</div>
+				<div class="kpi-card">
+					<span class="kpi-numero" id="kpi-adesao">—</span>
+					<span class="kpi-label">Taxa de<br />Adesão<br />Terapêutica</span>
+				</div>
+			</div>
+
+			<!-- Reports Grid 2x2 -->
+			<div class="reports-grid">
+				<div class="report-card">
+					<div class="report-card-header">
+						Top 10 Medicamentos - Consumo <span id="periodo-top-medicamentos">Março 2026</span>
+					</div>
+					<div class="report-card-body">
+						<table class="report-table">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Medicamento</th>
+									<th>Unidades</th>
+									<th>Var</th>
+								</tr>
+							</thead>
+							<tbody id="top-medicamentos-tbody">
+								<tr>
+									<td colspan="4" class="report-empty">Sem dados disponíveis.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="report-card">
+					<div class="report-card-header">
+						Atividade por Profissional — <span id="periodo-atividade">Março 2026</span>
+					</div>
+					<div class="report-card-body">
+						<table class="report-table">
+							<thead>
+								<tr>
+									<th>Enfermeiro</th>
+									<th>Adm. med.</th>
+									<th>Intervenções</th>
+									<th>Turnos</th>
+								</tr>
+							</thead>
+							<tbody id="atividade-tbody">
+								<tr>
+									<td colspan="4" class="report-empty">Sem dados disponíveis.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="report-card">
+					<div class="report-card-header">
+						Estatísticas Clínicas do Serviço
+					</div>
+					<div class="report-card-body">
+						<table class="report-table">
+							<thead>
+								<tr>
+									<th>Indicador</th>
+									<th>Valor</th>
+									<th>Referência</th>
+								</tr>
+							</thead>
+							<tbody id="estatisticas-tbody">
+								<tr>
+									<td colspan="3" class="report-empty">Sem dados disponíveis.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="report-card">
+					<div class="report-card-header">
+						Consumo de Material Clínico — <span id="periodo-material">Março 2026</span>
+					</div>
+					<div class="report-card-body">
+						<table class="report-table">
+							<thead>
+								<tr>
+									<th>Material</th>
+									<th>Qtd.</th>
+									<th>Custo est.</th>
+								</tr>
+							</thead>
+							<tbody id="material-tbody">
+								<tr>
+									<td colspan="3" class="report-empty">Sem dados disponíveis.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<script src="../../scripts/logout.js"></script>
+	<script src="../../scripts/admin/adminRelatoriosIndicadores.js"></script>
+	<div id="notificacoes-container"></div>
+	<script src="../../scripts/notificacao.js"></script>
+</body>
+
+</html>

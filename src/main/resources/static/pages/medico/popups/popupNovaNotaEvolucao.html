@@ -1,0 +1,48 @@
+<link rel="stylesheet" href="../../../styles/medico/popups/popupNovaNotaEvolucao.css">
+
+<!-- Popup Nova Nota de Evolução Clínica -->
+<div class="popup-nova-nota-overlay" id="popup-nova-nota" style="display: none;">
+	<div class="popup-nova-nota-box">
+		<div class="popup-nova-nota-header">
+			<span>Nova Nota de Evolução Clínica</span>
+			<button class="popup-nova-nota-close" onclick="fecharPopupNovaNota()">&#10005;</button>
+		</div>
+		<div class="popup-nova-nota-content">
+			<form id="form-nova-nota" onsubmit="submeterNovaNota(event)">
+				<div class="popup-field-nova-nota">
+					<label class="popup-label">JUSTIFICAÇÃO CLÍNICA *</label>
+					<textarea id="justificacao-clinica" class="popup-textarea"
+						placeholder="Registe a avaliação clínica, evolução do quadro, decisões terapêuticas..."
+						rows="5" required></textarea>
+				</div>
+
+				<div class="popup-row-2cols">
+					<div class="popup-field-nova-nota">
+						<label class="popup-label">DATA/HORA *</label>
+						<input type="datetime-local" id="data-hora-nota" class="popup-input" required />
+					</div>
+					<div class="popup-field-nova-nota">
+						<label class="popup-label">TIPO DE NOTA</label>
+						<select id="tipo-nota" class="popup-select">
+							<option value="EVOLUCAO_CLINICA" selected>Evolução clínica</option>
+							<option value="ADMISSAO">Admissão</option>
+							<option value="ALTA">Alta</option>
+							<option value="INCIDENTE">Incidente</option>
+							<option value="OUTRO">Outro</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="popup-info-note">
+					<span>A nota de evolução é imutável após publicação. Verifique o conteúdo antes de confirmar.</span>
+				</div>
+
+				<div class="popup-actions-nova-nota">
+					<button type="button" class="btn-cancelar-nova-nota"
+						onclick="fecharPopupNovaNota()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-nova-nota">Publicar Nota</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

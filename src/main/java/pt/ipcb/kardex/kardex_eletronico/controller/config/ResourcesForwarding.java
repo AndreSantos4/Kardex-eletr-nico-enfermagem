@@ -47,6 +47,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/admin/adminMedicamentos.html");
     }
 
+    @GetMapping("/adminRelatoriosIndicadores")
+    public ModelAndView adminRelatoriosIndicadores() {
+        return new ModelAndView("forward:/pages/admin/adminRelatoriosIndicadores.html");
+    }
+
     /* ENFERMEIRO */
 
     @GetMapping("/enfermeiroKardexUtente")
@@ -101,6 +106,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeControloStock.html");
     }
 
+    @GetMapping("/enfermeiroChefeRelatoriosIndicadores")
+    public ModelAndView enfermeiroChefeRelatoriosIndicadores() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeRelatoriosIndicadores.html");
+    }
+
     /* MÉDICO */
 
     @GetMapping("/medicoDashboard")
@@ -126,5 +136,10 @@ public class ResourcesForwarding {
     @GetMapping("/medicoHistoricoPrescricoes")
     public ModelAndView medicoHistoricoPrescricoes(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/medico/medicoHistoricoPrescricoes.html?id=" + id);
+    }
+
+    @GetMapping("/medicoNotasClinicas")
+    public ModelAndView medicoNotasClinicas(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoNotasClinicas.html?id=" + id);
     }
 }
