@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" href="../../styles/medico/medicoNotasClinicas.css" />
+	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+	<title>Médico - Notas Clínicas</title>
+</head>
+
+<body>
+	<!-- Top Bar -->
+	<div class="topbar">
+		<span class="topbar-page">Medico notas clínicas</span>
+		<div class="topbar-right">
+			<span class="topbar-user">
+				<span id="nome-medico">Dr. Ana Rodrigues</span> | Turno: <span id="turno">Tarde 14h-22h</span>
+			</span>
+			<button class="btn-sair" onclick="logout()">SAIR</button>
+		</div>
+	</div>
+
+	<div class="main-container">
+		<!-- Sidebar -->
+		<aside class="sidebar">
+			<nav>
+				<div class="sidebar-section-label">Principal</div>
+				<ul>
+					<li class="sidebar-item">
+						<a href="medicoDashboard">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+								<path
+									d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1z" />
+							</svg>
+							Home
+						</a>
+					</li>
+					<li class="sidebar-item">
+						<a href="medicoListaUtentes">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+								<path
+									d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
+							</svg>
+							Lista de Utentes
+						</a>
+					</li>
+					<li class="sidebar-item">
+						<a href="#" onclick="irParaPrescrever(event)">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+								<path
+									d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zM58.6 323.5L21.2 444.6c-2.5 8.2-.2 17.1 5.8 23.1s14.9 8.3 23.1 5.8l121.1-37.4c8.7-2.7 16.6-7.4 23.1-13.9L387.7 220.8 291.2 124.3 72.4 300.4c-6.5 6.5-11.2 14.4-13.9 23.1z" />
+							</svg>
+							Prescrever
+						</a>
+					</li>
+				</ul>
+
+				<div class="sidebar-section-label">Clínico</div>
+				<ul>
+					<li class="sidebar-item">
+						<a href="#">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+								<path
+									d="M0 80C0 53.5 21.5 32 48 32l32 0c26.5 0 48 21.5 48 48l0 80 192 0 0-80c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-80-192 0 0 80c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48L0 80z" />
+							</svg>
+							Exames
+						</a>
+					</li>
+					<li class="sidebar-item active">
+						<a href="#">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+								<path
+									d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z" />
+							</svg>
+							Notas de evolução
+						</a>
+					</li>
+				</ul>
+
+				<div class="sidebar-section-label">Cuidados</div>
+				<ul>
+					<li class="sidebar-item">
+						<a href="#">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+								<path
+									d="M192 0c-41.8 0-77.4 26.7-90.5 64L64 64C28.7 64 0 92.7 0 128L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64l-37.5 0C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM72 272a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm104-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-128 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zM72 368a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm88 0c0-8.8 7.2-16 16-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-128 0c-8.8 0-16-7.2-16-16z" />
+							</svg>
+							Planos de Cuidados
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</aside>
+
+		<!-- Main Content -->
+		<main class="main-content">
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="page-header-left">
+					<h4 id="page-title">Notas clínicas - <span id="utente-nome">—</span></h4>
+					<p id="page-subtitle" class="page-header-subtitle">
+						Proc. <span id="utente-processo">—</span> · Cama <span id="utente-cama">—</span> ·
+						<span id="utente-diagnostico">—</span> · <span id="utente-dias">—</span> dia(s) internado
+					</p>
+				</div>
+				<div class="page-header-right">
+					<button class="page-header-button" onclick="irParaKardex()">Kardex</button>
+					<button class="page-header-button" onclick="abrirNovaNota()">Nova Nota</button>
+					<button class="page-header-button" onclick="abrirHistInternamentos()">Hist. internamentos</button>
+				</div>
+			</div>
+
+			<!-- Notas Card -->
+			<div class="notas-card">
+				<div class="notas-card-header">
+					<h3>Notas Clínicas - <span id="header-utente-nome">—</span></h3>
+					<button class="notas-close-btn" onclick="fecharNotasClinicas()" aria-label="Fechar">×</button>
+				</div>
+
+				<div class="notas-card-body">
+					<h4 class="notas-section-title">Notas de Evolução - Internamento atual</h4>
+
+					<div class="notas-lista" id="notas-lista">
+						<div class="nota-empty">Sem notas de evolução registadas.</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<div id="popup-container"></div>
+	<script src="../../scripts/logout.js"></script>
+	<script src="../../scripts/notificacao.js"></script>
+	<script src="../../scripts/medico/medicoNotasClinicas.js"></script>
+	<div id="notificacoes-container"></div>
+</body>
+
+</html>
