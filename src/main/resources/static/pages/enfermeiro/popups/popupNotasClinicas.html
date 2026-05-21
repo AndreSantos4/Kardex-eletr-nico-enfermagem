@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupNotasClinicas.css">
+
+<!-- Popup Notas Clínicas (read-only para enfermeiro) -->
+<div class="popup-notas-overlay" style="display: none;">
+	<div class="popup-notas-box">
+		<div class="popup-notas-header">
+			<span>Notas Clínicas - <span id="popup-notas-utente">—</span></span>
+			<button class="popup-notas-close" onclick="fecharPopupNotasClinicas()">&#10005;</button>
+		</div>
+		<div class="popup-notas-content">
+			<h4 class="popup-notas-section-title">Notas de Evolução - Internamento atual</h4>
+
+			<div class="popup-notas-lista" id="popup-notas-lista">
+				<div class="popup-nota-empty">Sem notas de evolução registadas.</div>
+			</div>
+		</div>
+	</div>
+</div>
