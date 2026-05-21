@@ -1,0 +1,207 @@
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "IBM Plex Sans", sans-serif;
+}
+
+.popup-nova-nota-overlay,
+.popup-nova-nota-overlay *,
+.popup-nova-nota-overlay *::before,
+.popup-nova-nota-overlay *::after {
+    box-sizing: border-box;
+}
+
+.popup-nova-nota-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-nova-nota-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-nova-nota-header {
+    background: var(--bg-dark);
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-nova-nota-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    line-height: 1;
+}
+
+.popup-nova-nota-close:hover {
+    background: #e74c3c;
+}
+
+.popup-nova-nota-content {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.popup-nova-nota-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.popup-row-2cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.popup-field-nova-nota {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 6px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 14px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-select {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 6px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 14px;
+    width: 100%;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.popup-select:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-select option {
+    background: var(--white);
+    color: var(--bg-dark);
+}
+
+.popup-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 6px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 12px 14px;
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.popup-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.45);
+    font-style: italic;
+}
+
+.popup-info-note {
+    background: transparent;
+    border: 1.5px solid var(--white);
+    border-radius: 6px;
+    padding: 10px 16px;
+    color: var(--white);
+    font-size: 12.5px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.popup-actions-nova-nota {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-cancelar-nova-nota,
+.btn-confirmar-nova-nota {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-nova-nota:hover,
+.btn-confirmar-nova-nota:hover {
+    background: var(--white);
+    color: var(--primary);
+}
