@@ -6,17 +6,12 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.dto.exam.CreateExamDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.exam.EditExamDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CateterDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.ContencaoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CreateCateterDTO;
@@ -34,6 +29,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
+import pt.ipcb.kardex.kardex_eletronico.service.process.exam.ExamService;
 import pt.ipcb.kardex.kardex_eletronico.service.process.parameters.ParametersService;
 import pt.ipcb.kardex.kardex_eletronico.service.process.plan.PlanService;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
@@ -48,6 +44,8 @@ public class ProcessController {
     private final PlanService planService;
     private final ParametersService  parametersService;
     private final PrescriptionService prescriptionService;
+    private final ExamService service;
+    private final ExamService examService;
 
     @PostMapping("/{processId}/prescriptions")
     public ResponseEntity<ApiResponse<?>> createPrescription(@PathVariable("processId") Long processId, @RequestBody CreatePrescriptionDTO data){
@@ -164,5 +162,29 @@ public class ProcessController {
     public ResponseEntity<ApiResponse<?>> unmarkIntervention(@PathVariable Long interventionId){
         planService.unmarkIntervention(interventionId);
         return ResponseEntity.ok(ApiResponse.ok("Intervencao desmarcada como executada com sucesso", null));
+    }
+
+    @PostMapping("/{processId}/exams")
+    public ResponseEntity<ApiResponse<?>> createExam(@PathVariable Long processId, @RequestBody CreateExamDTO data){
+        examService.createExam(processId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Exame criado com sucesso", null));
+    }
+
+    @PatchMapping("/exams/{examId}")
+    public ResponseEntity<ApiResponse<?>> editExam(@PathVariable Long examId, @RequestBody EditExamDTO data){
+        examService.editExam(examId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Exame editado com sucesso", null));
+    }
+
+    @DeleteMapping("/exams/{examId}")
+    public ResponseEntity<ApiResponse<?>> deleteExam(@PathVariable Long examId){
+        examService.deleteExam(examId);
+        return ResponseEntity.ok(ApiResponse.ok("Exame eliminado com sucesso", null));
+    }
+
+    @GetMapping("/{processId}/exams")
+    public ResponseEntity<ApiResponse<?>> getExams(@PathVariable Long processId){
+        var exams = service.getAllExams(processId);
+        return ResponseEntity.ok(ApiResponse.ok("Exames obtidos com sucesso", exams));
     }
 }
