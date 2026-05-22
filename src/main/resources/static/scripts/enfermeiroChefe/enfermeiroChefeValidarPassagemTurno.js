@@ -14,6 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
      *   POST /api/shifts/handover/{id}/validate
      *   POST /api/shifts/handover/{id}/return
      */
+
+
+
+    //await _renderPendencias();
+    _renderSumario();
+
+
 });
 
 /* ---------- Validação ---------- */
@@ -62,15 +69,55 @@ function devolverParaCorrecao() {
 
 /* ---------- Render helpers (prontos para uso futuro) ---------- */
 
-function _renderSumario(dados) {
-    var body = document.getElementById("sumario-body");
-    if (!body || !dados) return;
-    body.innerHTML = (dados.linhas || [])
-        .map(function (l) { return "<p>" + _escapeHtml(l) + "</p>"; })
-        .join("");
+async function _renderSumario() {
+    const resTurno = await fetch(`http://localhost:8080/api/shifts/current`);
+    if (!resTurno.ok) throw new Error(`HTTP ${resTurno.status}`);
+    const jsonTurno = await resTurno.json();
+    if (!jsonTurno.success) throw new Error(jsonTurno.message);
+
+    const enfermeiros = jsonTurno.data.IdEnfermeiros;
+
+    const atribuicoesMap = new Map();
+
+    for (const enfermeiro of enfermeiros) {
+        for (const atribuicao of enfermeiro.atribuicoes ?? []) {
+            const chave = `${atribuicao.utente.id}_${atribuicao.turno.id}`;
+            if (!atribuicoesMap.has(chave)) {
+                atribuicoesMap.set(chave, atribuicao);
+            }
+        }
+    }
+
+    const atribuicoes = Array.from(atribuicoesMap.values());
+
+    var idTurno = jsonTurno.data.id;
+
+    document.getElementById("numUtentes").textContent = atribuicoes.length;
+
+    // UTILIZAR O GetShiftChange TODO para saber isto 
+    document.getElementById("numAdminCon").textContent = "TODO";
+    document.getElementById("numAdminNCon").textContent = "TODO";
 }
 
-function _renderPendencias(lista) {
+async function _renderPendencias() {
+    const resTurno = await fetch(`http://localhost:8080/api/shifts/current`);
+    if (!resTurno.ok) throw new Error(`HTTP ${resTurno.status}`);
+    const jsonTurno = await resTurno.json();
+    if (!jsonTurno.success) throw new Error(jsonTurno.message);
+
+    var idTurno = jsonTurno.data.id;
+
+    console.log(idTurno);
+
+    document.getElementById("turno-origem").textContent = "TESTE";
+    document.getElementById("turno-destino").textContent = "TESTE";
+    document.getElementById("enf-origem").textContent = "TESTE";
+
+    /*const res = await fetch(`http://localhost:8080/api/shifts/${idTurno}/pending`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message);*/
+
     var ul = document.getElementById("pendencias-list");
     if (!ul) return;
     if (!lista || lista.length === 0) {

@@ -146,8 +146,7 @@ function extrairHoraDeTurno(dataHoraStr) {
 function inferirTipoPorHoras(inicio, fim) {
     if (inicio === "08:00" && fim === "16:00") return "MANHA";
     if (inicio === "16:00" && fim === "00:00") return "TARDE";
-    if (inicio === "00:00" && fim === "08:00") return "NOITE";
-    return "CUSTOM";
+    return "NOITE";
 }
 
 function resolverNomeEnfermeiro(enf) {
@@ -162,7 +161,7 @@ function normalizarTurno(turnoApi) {
     const inicio = extrairHoraDeTurno(turnoApi.inicio);
     const fim = extrairHoraDeTurno(turnoApi.fim);
 
-    const tipo = (turnoApi.tipo === "CUSTOM" || !turnoApi.tipo)
+    const tipo = !turnoApi.tipo
         ? inferirTipoPorHoras(inicio, fim)
         : turnoApi.tipo;
 
@@ -631,7 +630,6 @@ async function abrirPopUpCriarTurno() {
 
     document.getElementById("form-criar-turno").reset();
     document.getElementById("ct-data").value = new Date().toISOString().split("T")[0];
-    document.getElementById("ct-horario-personalizado").style.display = "none";
     esconderErroCriar();
 
     await carregarEnfermeiros();
@@ -642,11 +640,6 @@ async function abrirPopUpCriarTurno() {
 function fecharPopUpCriarTurno() {
     const popup = document.querySelector(".pop-up-criar-turno");
     if (popup) popup.style.display = "none";
-}
-
-function onTipoTurnoChange(valor) {
-    document.getElementById("ct-horario-personalizado").style.display =
-        valor === "PERSONALIZADO" ? "block" : "none";
 }
 
 function formatarData(dataISO) {
