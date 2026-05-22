@@ -46,4 +46,12 @@ public interface TurnoRepository extends JpaRepository<Turno, Long> {
         @Param("end") LocalDateTime end,
         @Param("excludeId") Long excludeId
     );
+
+    @Query("""
+        SELECT t FROM Turno t
+        WHERE t.inicio < (SELECT pt.inicio FROM Turno pt WHERE pt.id = :currentId)
+        ORDER BY t.inicio DESC
+        LIMIT 1
+    """)
+    Optional<Turno> findPreviousShift(@Param("currentId") Long currentId);
 }

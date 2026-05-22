@@ -176,7 +176,7 @@ public class ShiftServiceImpl implements ShiftService{
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public PassagemTurnoDTO getShiftChange(Long shiftId) {
-        var shift = repository.findById(shiftId)
+        var shift = repository.findPreviousShift(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
 
         if(shift.getFim().isAfter(LocalDateTime.now(clock))){
