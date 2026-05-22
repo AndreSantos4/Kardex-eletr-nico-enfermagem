@@ -82,4 +82,10 @@ public class ShiftController{
         var pendingIssues = service.getPendingIssues(shiftId);
         return ResponseEntity.ok(ApiResponse.ok("Pendencias obtidas com sucesso", pendingIssues));
     }
+
+    @GetMapping("/current")
+    public ResponseEntity<ApiResponse<TurnoDTO>> getCurrentShift(){
+        var shift = service.getCurrentShift();
+        return ResponseEntity.ok(ApiResponse.ok("Turno atual obtido com sucesso", shift));
+    }
 }
