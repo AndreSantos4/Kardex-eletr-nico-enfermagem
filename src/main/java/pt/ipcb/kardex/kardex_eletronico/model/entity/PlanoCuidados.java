@@ -41,7 +41,7 @@ public class PlanoCuidados {
     @Column(name = "esta_ativo", nullable = false)
     public Boolean ativo = true;
     
-    @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "planoCuidados", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<Intervencao> intervencoes = new ArrayList<>();
 }
 

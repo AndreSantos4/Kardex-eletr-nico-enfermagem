@@ -35,7 +35,8 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public PlanoCuidadosDTO getCarePlan(Long processId) {
-        return planoMapper.toDTO(getCarePlanEntity(processId));
+        var plan = getCarePlanEntity(processId);
+        return planoMapper.toDTO(plan);
     }
 
     @Override
@@ -92,7 +93,6 @@ public class PlanServiceImpl implements PlanService {
         }
 
         intervencao.setObservacoesExecucao(data.observacoes());
-
         intervencao.setFuncionarioExecutou(worker);
     }
 
