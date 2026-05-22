@@ -223,9 +223,10 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Transactional(readOnly = true)
     @Override
-    public boolean  vitalSignsInShift(Turno shift, ProcessoClinico process) {
+    public boolean vitalSignsInShift(Turno shift, ProcessoClinico process) {
         return process.getSinaisVitais()
                 .stream()
-                .anyMatch(v -> v.getData().isBefore(LocalDateTime.now(clock)));
+                .anyMatch(v -> !v.getData().isBefore(shift.getInicio())
+                        && !v.getData().isAfter(shift.getFim()));
     }
 }
