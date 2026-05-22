@@ -84,9 +84,6 @@ public class ShiftServiceImpl implements ShiftService{
                     if(worker.getDados().getRole() != Role.ENFERMEIRO){
                         throw new KardexException("So podem ser alocados enfermeiros a um turno");
                     }
-                    if(!workerService.isAvailable(worker, shift.inicio, shift.fim)){
-                        throw new ConflictEntitiesException("Funcionario de id " + worker.getId() + " com turnos sobrepostos");
-                    }
 
                     worker.getTurnos().add(shift);
 
@@ -99,33 +96,22 @@ public class ShiftServiceImpl implements ShiftService{
 
     private void validateShift(CreateShiftDTO data, Turno shift) {
         switch (data.tipo()) {
-            case TipoTurno.CUSTOM:
-                if (data.horaInicio() == null || data.horaFim() == null) {
-                    throw new KardexException(
-                            "Para turnos com horario personalizado, e necessario especificar a hora de inicio e de fim"
-                    );
-                }
-                shift.setInicio(LocalDateTime.of(data.data(), data.horaInicio()));
-                if (data.horaInicio().isAfter(data.horaFim())) {
-                    shift.setFim(LocalDateTime.of(data.data().plusDays(1), data.horaFim()));
-                } else if (data.horaInicio().equals(data.horaFim())){
-                    throw new KardexException("Hora de fim e inicio nao podem ser iguais");
-                } else {
-                    shift.setFim(LocalDateTime.of(data.data(), data.horaFim()));
-                }
-                break;
             case TipoTurno.MANHA:
                 shift.setInicio(LocalDateTime.of(data.data(), LocalTime.of(8, 0)));
                 shift.setFim(LocalDateTime.of(data.data(), LocalTime.of(16, 0)));
                 break;
             case TipoTurno.TARDE:
                 shift.setInicio(LocalDateTime.of(data.data(), LocalTime.of(16, 0)));
-                shift.setFim(LocalDateTime.of(data.data().plusDays(1), LocalTime.of(0, 0)));
+                shift.setFim(LocalDateTime.of(data.data().plusDays(1), LocalTime.MIDNIGHT));
                 break;
             case TipoTurno.NOITE:
-                shift.setInicio(LocalDateTime.of(data.data(), LocalTime.of(0, 0)));
+                shift.setInicio(LocalDateTime.of(data.data(), LocalTime.MIDNIGHT));
                 shift.setFim(LocalDateTime.of(data.data(), LocalTime.of(8, 0)));
                 break;
+        }
+
+        if(repository.existsOverlap(shift.getInicio(), shift.getFim(), shift.getId() == null ? 0l : shift.getId())){
+            throw new KardexException("Ja existe um turno neste horario");
         }
     }
 
@@ -373,5 +359,13 @@ public class ShiftServiceImpl implements ShiftService{
             ));
         });
         return patientsChange;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TurnoDTO getCurrentShift(){
+        var shift = repository.findCurrentShift(LocalDateTime.now(clock))
+            .orElse(null);
+        return mapper.toDTO(shift);
     }
 }

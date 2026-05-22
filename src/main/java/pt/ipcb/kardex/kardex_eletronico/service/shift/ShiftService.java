@@ -31,4 +31,6 @@ public interface ShiftService {
 
     @Transactional(readOnly = true)
     TurnoDTO getPendingShift();
+
+    TurnoDTO getCurrentShift();
 }
