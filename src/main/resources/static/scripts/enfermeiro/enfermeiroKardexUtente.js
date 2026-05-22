@@ -35,7 +35,9 @@ function formatarUnidade(u) {
 function formatarDataHora(raw) {
   const [dataParte, horaParte] = raw.split("T");
   const [ano, mes, dia] = dataParte.split("-");
-  return `${dia}/${mes}/${ano}:${horaParte}`;
+  console.log(horaParte);
+  console.log(raw);
+  return `${dia}/${mes}/${ano}:${horaParte}:00`;
 }
 
 function formatarDataHora2(raw) {
@@ -1547,3 +1549,77 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
 }
 
 carregarUtente(id).then(() => carregarPlanoDeHoje());
+
+/* ============================================================
+ *  Popup Notas Clínicas (read-only)
+ *  Placeholder: endpoint ainda não existe no backend.
+ * ============================================================ */
+
+async function abrirPopUpNotasClinicas() {
+  await carregarPopUp(
+    "../../pages/enfermeiro/popups/popupNotasClinicas.html",
+  );
+
+  const nomeEl = document.getElementById("utente-nome");
+  const nome = nomeEl ? nomeEl.textContent.trim() : "—";
+  const popupUtente = document.getElementById("popup-notas-utente");
+  if (popupUtente) popupUtente.textContent = nome || "—";
+
+  renderizarNotasClinicas([]);
+
+  abrirPopUp(".popup-notas-overlay");
+
+  /*
+   * TODO: ligar ao backend quando o endpoint existir:
+   *   GET /api/processes/{id}/clinical-notes
+   *   .then(lista => renderizarNotasClinicas(lista));
+   */
+}
+
+function fecharPopupNotasClinicas() {
+  const popup = document.querySelector(".popup-notas-overlay");
+  if (popup) popup.style.display = "none";
+}
+
+function renderizarNotasClinicas(lista) {
+  const container = document.getElementById("popup-notas-lista");
+  if (!container) return;
+
+  if (!lista || lista.length === 0) {
+    container.innerHTML =
+      '<div class="popup-nota-empty">Sem notas de evolução registadas.</div>';
+    return;
+  }
+
+  container.innerHTML = lista
+    .map((n) => {
+      const cabecalho =
+        (n.medico || "—") +
+        " · " +
+        (n.data || "—") +
+        " · " +
+        (n.hora || "—");
+      const texto = escapeHtmlNota(n.texto || "");
+      return (
+        '<div class="popup-nota-item">' +
+        '<div class="popup-nota-header">' +
+        cabecalho +
+        "</div>" +
+        '<div class="popup-nota-texto">' +
+        texto +
+        "</div>" +
+        "</div>"
+      );
+    })
+    .join("");
+}
+
+function escapeHtmlNota(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
