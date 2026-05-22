@@ -10,7 +10,7 @@ public record CreateContencaoDTO(
     @JsonProperty("justificacao") String justificacao,
     @JsonProperty("idDose") Long idDose,
     @JsonProperty("duracao") String duracao,
-    @JsonProperty("data") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm") LocalDateTime data 
+    @JsonProperty("data") @JsonFormat(pattern = "dd/MM/yyyy:HH:mm:ss") LocalDateTime data
 ) {
 
 }
