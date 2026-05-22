@@ -75,57 +75,109 @@ async function _renderSumario() {
     const jsonTurno = await resTurno.json();
     if (!jsonTurno.success) throw new Error(jsonTurno.message);
 
-    const enfermeiros = jsonTurno.data.IdEnfermeiros;
-
-    const atribuicoesMap = new Map();
-
-    for (const enfermeiro of enfermeiros) {
-        for (const atribuicao of enfermeiro.atribuicoes ?? []) {
-            const chave = `${atribuicao.utente.id}_${atribuicao.turno.id}`;
-            if (!atribuicoesMap.has(chave)) {
-                atribuicoesMap.set(chave, atribuicao);
-            }
-        }
-    }
-
-    const atribuicoes = Array.from(atribuicoesMap.values());
-
-    var idTurno = jsonTurno.data.id;
+    const atribuicoes = jsonTurno.data.atribuicoes ?? [];
+    const idTurno = jsonTurno.data.id;
 
     document.getElementById("numUtentes").textContent = atribuicoes.length;
 
-    // UTILIZAR O GetShiftChange TODO para saber isto 
-    document.getElementById("numAdminCon").textContent = "TODO";
-    document.getElementById("numAdminNCon").textContent = "TODO";
+    const resMudanca = await fetch(`http://localhost:8080/api/shifts/${idTurno}/change`);
+    if (!resMudanca.ok) throw new Error(`HTTP ${resMudanca.status}`);
+    const jsonMudanca = await resMudanca.json();
+    if (!jsonMudanca.success) throw new Error(jsonMudanca.message);
+
+    const turnoAtual  = jsonMudanca.data.turno;
+    const proxTurno   = jsonMudanca.data.proximoTurno;
+    const dadosUtentes = jsonMudanca.data.dadosTurnoUtentes;
+
+    // Page header
+    document.getElementById("turno-origem").textContent = `Turno ${turnoAtual.tipo} (${turnoAtual.inicio.split(":")[0]})`;
+    document.getElementById("turno-destino").textContent = proxTurno
+        ? `Turno ${proxTurno.tipo} (${proxTurno.inicio.split(":")[0]})`
+        : "—";
+
+    // Enfermeiros do turno atual
+    const enfermeiros = jsonTurno.data.enfermeiros ?? [];
+    const nomesEnf = enfermeiros.map(e => e.dados.nome).join(", ");
+    document.getElementById("enf-origem").textContent = nomesEnf || "—";
+
+    // Contagens
+    let totalAdministradas = 0;
+    let totalNaoAdministradas = 0;
+    let totalIncidentes = 0;
+    let totalSOS = 0;
+
+    for (const d of dadosUtentes) {
+        totalAdministradas    += d.administracoes.administradas.length;
+        totalNaoAdministradas += d.administracoes.naoAdministradas.length;
+        totalIncidentes       += d.incidentes.length;
+        totalSOS              += d.administracoes.sos.length;
+    }
+
+    document.getElementById("numAdminCon").textContent   = totalAdministradas;
+    document.getElementById("numAdminNCon").textContent  = totalNaoAdministradas;
+    document.getElementById("numIncidentes").textContent = totalIncidentes;
+    document.getElementById("numAdminSOS").textContent   = totalSOS;
+
+    // Pendências = utentes sem sinais medidos + administrações não confirmadas
+    const pendencias = dadosUtentes.filter(d =>
+        !d.sinaisMedidos || d.administracoes.naoAdministradas.length > 0
+    );
+    document.getElementById("numPendencias").textContent = pendencias.length;
+    document.getElementById("proxTurno").textContent = proxTurno
+        ? `${proxTurno.tipo} (${proxTurno.inicio.split(":")[0]})`
+        : "—";
+
+    // Tabela de utentes
+    _renderEstadoUtentes(dadosUtentes);
 }
 
-async function _renderPendencias() {
-    const resTurno = await fetch(`http://localhost:8080/api/shifts/current`);
-    if (!resTurno.ok) throw new Error(`HTTP ${resTurno.status}`);
-    const jsonTurno = await resTurno.json();
-    if (!jsonTurno.success) throw new Error(jsonTurno.message);
+function _renderEstadoUtentes(dadosUtentes) {
+    const thead = document.querySelector(".estado-utentes-table thead");
+    const tbody = document.getElementById("estado-utentes-tbody");
 
-    var idTurno = jsonTurno.data.id;
+    thead.innerHTML = `
+        <tr>
+            <th>Utente</th>
+            <th>Medicação</th>
+            <th>Sinais Vitais</th>
+            <th>Incidentes</th>
+            <th>SOS</th>
+        </tr>`;
 
-    console.log(idTurno);
-
-    document.getElementById("turno-origem").textContent = "TESTE";
-    document.getElementById("turno-destino").textContent = "TESTE";
-    document.getElementById("enf-origem").textContent = "TESTE";
-
-    /*const res = await fetch(`http://localhost:8080/api/shifts/${idTurno}/pending`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    if (!json.success) throw new Error(json.message);*/
-
-    var ul = document.getElementById("pendencias-list");
-    if (!ul) return;
-    if (!lista || lista.length === 0) {
-        ul.innerHTML = "<li><em>Sem pendências.</em></li>";
+    if (!dadosUtentes || dadosUtentes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;font-style:italic;">Sem utentes.</td></tr>';
         return;
     }
-    ul.innerHTML = lista.map(function (p) {
-        return "<li><strong>" + _escapeHtml(p.titulo || "") + "</strong> — " + _escapeHtml(p.utente || "") + "</li>";
+
+    tbody.innerHTML = dadosUtentes.map(d => {
+        const nome   = _escapeHtml(d.utente.nome);
+        const adm    = d.administracoes.administradas.length;
+        const nAdm   = d.administracoes.naoAdministradas.length;
+        const sos    = d.administracoes.sos.length;
+        const inc    = d.incidentes.length;
+        const sv     = d.sinaisMedidos;
+
+        const medicacaoCell = nAdm > 0
+            ? `${adm} con. / <span style="color:var(--danger, #c0392b)">${nAdm} não con.</span>`
+            : `<span class="ok">&#10003;</span>`;
+
+        const svCell = sv
+            ? `<span class="ok">&#10003;</span>`
+            : `<span style="color:var(--danger, #c0392b)">Não medidos</span>`;
+
+        const incCell = inc > 0
+            ? `<span style="color:var(--danger, #c0392b)">${inc} incidente${inc > 1 ? "s" : ""}</span>`
+            : "—";
+
+        const sosCell = sos > 0 ? `${sos} SOS` : "—";
+
+        return `<tr>
+            <td>${nome}</td>
+            <td>${medicacaoCell}</td>
+            <td>${svCell}</td>
+            <td>${incCell}</td>
+            <td>${sosCell}</td>
+        </tr>`;
     }).join("");
 }
 

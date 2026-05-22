@@ -1423,6 +1423,9 @@ async function carregarPlanoDeHoje() {
     intervencoes.forEach((inv) => {
       const feita = inv.funcionarioExecutou != null;
       console.log(String(inv.funcionarioExecutou?.dados?.id ?? ""));
+
+      console.log(inv);
+
       const realizadaPorId = String(inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "");
 
       console.log("Enfermeiro atual:", enfermeiroAtualId);
