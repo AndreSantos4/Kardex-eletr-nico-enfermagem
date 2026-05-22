@@ -9,6 +9,15 @@
 }
 
 /* Top Bar */
+.topbar-user {
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: 0.04em;
+}
 
 /* Side Bar */
 .sidebar {

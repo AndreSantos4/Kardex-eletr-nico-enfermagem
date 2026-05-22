@@ -1,58 +1,61 @@
 <link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarAdminstracaoSOS.css" />
-<div class="pop-up-criar-utente">
-    <div class="pop-up">
-        <div class="pop-up-header">
-            <div class="title">
-                <h3>Registar Adminstração SOS</h3>
-            </div>
-            <div class="icon">
-                <a href="" class="cross" onclick="
-            fecharPopUp();
-            return false;
-          ">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-                        <path fill="rgb(220, 49, 26)"
-                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-        <div class="pop-up-main">
-            <div class="info-box">
-                <div class="icon">i</div>
-                <div class="content">
-                    <p><strong>Lorazepam 1mg - Oral - SOS agitação - Prescrição Dr. Mendes</strong></p>
-                    <p>Dose máx: 2mg/episódio - Intervalo mínimo: 4h - Última adm. SOS: 07/03 12:00 (4h 33m atrás)</p>
-                    <p class="status">Intervalo respeitado</p>
-                </div>
-            </div>
-            <form method="post" autocomplete="off">
-                <label for="name">CONDIÇÃO CLINICA QUE JUSTIFICA A ADMINISTRAÇÃO *</label>
-                <select name="condicoes" id="condicoes">
-                    <option value="opt1">Agitação psicomotora</option>
-                </select>
 
-                <div class="form-group">
-                    <label for="descricao">DESCRIÇÃO DA SITUAÇÃO *</label>
-                    <textarea id="observacoes" name="observacoes" placeholder="Descreve o estado do utente e o que motivou a administração SOS..."></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="medico-responsavel">DATA/HORA *</label>
-                        <input type="datetime-local"/>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="n-sns">DOSE ADMINISTRADA *</label>
-                        <input type="text" name="n-sns" placeholder="Eg: 5mg" required />
-                    </div>
-                </div>               
+<div class="popup-sos-overlay" style="display: none;">
+	<div class="popup-sos-box">
+		<div class="popup-sos-header">
+			<span>Registar Administração SOS</span>
+			<button class="popup-sos-close" onclick="fecharPopupAdministrarSOS()">&#10005;</button>
+		</div>
+		<div class="popup-sos-content">
+			<div class="popup-sos-info-card">
+				<div class="popup-sos-info-icon">i</div>
+				<div class="popup-sos-info-text">
+					<strong id="sos-prescricao-medicamento">Selecionar prescrição SOS</strong>
+					<span id="sos-prescricao-detalhe">Dose máx. e intervalo mínimo definidos pela prescrição.</span>
+				</div>
+			</div>
 
-                <div class="buttons-bottom">
-                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUp()" />
-                    <input type="submit" value="Guardar" />
-                </div>
-            </form>
-        </div>
-    </div>
+			<form id="form-administrar-sos" onsubmit="submeterAdministrarSOS(event)">
+				<div class="popup-sos-field">
+					<label class="popup-sos-label">CONDIÇÃO CLÍNICA QUE JUSTIFICA A ADMINISTRAÇÃO *</label>
+					<select id="condicao-sos" class="popup-sos-select" required>
+						<option value="AGITACAO_PSICOMOTORA">Agitação psicomotora</option>
+						<option value="ANSIEDADE">Ansiedade</option>
+						<option value="INSONIA">Insónia</option>
+						<option value="DOR">Dor</option>
+						<option value="NAUSEA">Náusea / Vómito</option>
+						<option value="OUTRO">Outro</option>
+					</select>
+				</div>
+
+				<div class="popup-sos-field">
+					<label class="popup-sos-label">DESCRIÇÃO DA SITUAÇÃO *</label>
+					<textarea id="descricao-sos" class="popup-sos-textarea"
+						placeholder="Descreve o estado do utente e o que motivou a administração SOS..."
+						rows="4" required></textarea>
+				</div>
+
+				<div class="popup-sos-row-2cols">
+					<div class="popup-sos-field">
+						<label class="popup-sos-label">DATA/HORA *</label>
+						<input type="datetime-local" id="data-hora-sos" class="popup-sos-input" required />
+					</div>
+					<div class="popup-sos-field">
+						<label class="popup-sos-label">DOSE ADMINISTRADA *</label>
+						<input type="text" id="dose-sos" class="popup-sos-input" placeholder="Ex: 5mg" required />
+					</div>
+				</div>
+
+				<div class="popup-sos-info-note">
+					<div class="popup-sos-info-note-icon">i</div>
+					<span>Registo crítico — verifique o intervalo mínimo e a dose máxima da prescrição antes de confirmar.</span>
+				</div>
+
+				<div class="popup-sos-actions">
+					<button type="button" class="btn-cancelar-sos" onclick="fecharPopupAdministrarSOS()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-sos">REGISTAR</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>

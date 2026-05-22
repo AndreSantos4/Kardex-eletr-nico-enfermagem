@@ -1623,3 +1623,58 @@ function escapeHtmlNota(s) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
+/* ============================================================
+ *  Popup Administração SOS
+ *  Placeholder: endpoint ainda não existe no backend.
+ * ============================================================ */
+
+async function abrirPopUpAdministrarSOS() {
+  await carregarPopUp(
+    "../../pages/enfermeiro/popups/popuRegistarAdminstracaoSOS.html",
+  );
+  const inputDataHora = document.getElementById("data-hora-sos");
+  if (inputDataHora) inputDataHora.value = agora();
+  abrirPopUp(".popup-sos-overlay");
+}
+
+function fecharPopupAdministrarSOS() {
+  const popup = document.querySelector(".popup-sos-overlay");
+  if (!popup) return;
+  popup.style.display = "none";
+  popup.querySelector("form")?.reset();
+}
+
+function submeterAdministrarSOS(event) {
+  if (event) event.preventDefault();
+
+  const condicao = document.getElementById("condicao-sos")?.value;
+  const descricao = document.getElementById("descricao-sos")?.value.trim();
+  const dataHora = document.getElementById("data-hora-sos")?.value;
+  const dose = document.getElementById("dose-sos")?.value.trim();
+
+  if (!condicao || !descricao || !dataHora || !dose) {
+    mostrarNotificacao({
+      titulo: "Formulário incompleto",
+      mensagem: "Preenche todos os campos obrigatórios.",
+      tipo: "aviso",
+    });
+    return;
+  }
+
+  const payload = { condicao, descricao, dataHora, dose };
+  console.log("[SOS] Registar administração:", payload);
+
+  mostrarNotificacao({
+    titulo: "Funcionalidade em desenvolvimento",
+    mensagem: "Endpoint do backend ainda não disponível.",
+    tipo: "aviso",
+  });
+  fecharPopupAdministrarSOS();
+
+  /*
+   * TODO: ligar ao backend:
+   *   POST /api/processes/{processoId}/sos-administrations
+   *   Body: payload
+   */
+}

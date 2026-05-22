@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroKardexUtente.css">
     <link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css" />
     <link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
     <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+    <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroKardexUtente.css">
     <title>Enfermeiro Kardex Utente</title>
 </head>
 
@@ -16,7 +16,7 @@
     <div class="topbar">
         <span class="topbar-page">Enfermeiro Home</span>
         <div class="topbar-right">
-            <span class="topbar-user"> <span id="nome-enf"></span> | Turno: <span id="turno"></span></span>
+            <span class="topbar-user">Enf. <span id="nome-enf"></span><span id="turno-wrapper"> | Turno: <span id="turno"></span></span></span>
             <button class="btn-sair" onclick="logout()">SAIR</button>
         </div>
     </div>
@@ -71,7 +71,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#sos">
+                        <a onclick="abrirPopUpAdministrarSOS()">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                 <path
                                     d="M208.5 32c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 140.9 122-70.4c15.3-8.8 34.9-3.6 43.7 11.7l16 27.7c8.8 15.3 3.6 34.9-11.7 43.7l-122 70.4 122 70.4c15.3 8.8 20.6 28.4 11.7 43.7l-16 27.7c-8.8 15.3-28.4 20.6-43.7 11.7l-122-70.4 0 140.9c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-140.9-122 70.4c-15.3 8.8-34.9 3.6-43.7-11.7l-16-27.7c-8.8-15.3-3.6-34.9 11.7-43.7l122-70.4-122-70.4c-15.3-8.8-20.5-28.4-11.7-43.7l16-27.7c8.8-15.3 28.4-20.5 43.7-11.7l122 70.4 0-140.9z" />
@@ -213,6 +213,7 @@
     </div>
     <div id="popup-container"></div>
     <script src="../../scripts/logout.js"></script>
+    <script src="../../scripts/enfermeiro/enfermeiroTopBar.js"></script>
     <script src="../../scripts/enfermeiro/enfermeiroKardexUtente.js"></script>
     <div id="notificacoes-container"></div>
     <script src="../../scripts/notificacao.js"></script>
