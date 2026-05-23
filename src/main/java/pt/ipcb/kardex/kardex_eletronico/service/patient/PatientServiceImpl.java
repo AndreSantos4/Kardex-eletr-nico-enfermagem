@@ -1,9 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.service.patient;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,14 +16,17 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.PatientKardexDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.LimitedProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Alergia;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoUtente;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PatientFileMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.ProcessoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AlergiaRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.UtenteRepository;
@@ -41,6 +41,7 @@ public class PatientServiceImpl implements PatientService{
     private final PatientFileMapper fileMapper;
     private final UtenteMapper mapper;
     private final ProcessService processService;
+    private final ProcessoMapper processoMapper;
     private final AlergiaRepository alergiaRepository;
     private final RecordService recordService;
 
@@ -187,5 +188,18 @@ public class PatientServiceImpl implements PatientService{
         var process = processService.getKardexProcess(patient);
 
         return new PatientKardexDTO(mapper.toDto(patient, process));
+    }
+
+    @Override
+    public List<LimitedProcessoClinicoDTO> getHistory(Long patientId) {
+        var patient = repository.findById(patientId)
+                .orElseThrow(() -> EntityNotFoundException.forId(patientId, "Utente"));
+
+        var processes = patient.getProcessosClinicos()
+                .stream()
+                .sorted(Comparator.comparing(ProcessoClinico::getDataEntrada))
+                .toList();
+
+        return processoMapper.toLimitedDTOList(processes);
     }
 }
