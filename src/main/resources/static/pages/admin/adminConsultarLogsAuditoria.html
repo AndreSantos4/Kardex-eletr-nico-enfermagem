@@ -49,7 +49,7 @@
 
                 <div class="sidebar-section-label">Auditoria</div>
                 <a href="adminConsultarLogsAuditoria" style="text-decoration: none;">
-                    <div class="sidebar-item active">
+                    <div class="sidebar-item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
                             <path
                                 d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z" />
@@ -106,20 +106,20 @@
                         <div class="search-bar">
                             <!-- Tipo Filter -->
                             <select id="filter-tipo" class="filter-select">
-                                <option value="" disabled selected hidden>Tipo</option>
                                 <option value="">Todos</option>
-                                <option value="Acesso">Acesso</option>
-                                <option value="Login">Login</option>
-                                <option value="Medicamento">Medicamento</option>
-                                <option value="Incidente">Incidente</option>
+                                <option value="AUTH">Autenticação</option>
+                                <option value="PATIENT_ACCEPTANCE">Utente admitido</option>
+                                <option value="PATIENT_DISCHARGE">Utente liberado</option>
+                                <option value="USER_CREATION">Criação de utilizador</option>
+                                <option value="PASSWORD_RESET_REQUEST">Pedido alt. password</option>
                             </select>
 
                             <!-- Data Filter -->
-                            <input type="date" id="filter-data" class="filter-input" value="2026-03-07" />
+                            <input type="date" id="filter-data" class="filter-input" />
 
                             <!-- Search Bar -->
                             <div class="search-input-wrap">
-                                <input type="text" placeholder="Utilizador, Ip" id="search-input" />
+                                <input type="text" placeholder="Utilizador, IP" id="search-input" />
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                     <path
                                         d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
@@ -127,7 +127,8 @@
                             </div>
 
                             <!-- Admin pill button -->
-                            <button class="btn-admin-pill">Admin.</button>
+                            <button class="btn-admin-pill"
+                                onclick="window.location.href = 'adminDashboard'">Home</button>
                         </div>
                     </div>
 
@@ -143,22 +144,7 @@
                                     <th>IP</th>
                                 </tr>
                             </thead>
-                            <tbody id="logs-body">
-                                <tr>
-                                    <td class="row-datetime">07/03/2026 - 17:00</td>
-                                    <td class="row-user-name">Enf. Ana R.</td>
-                                    <td class="row-type"><span class="badge-acesso">Acesso</span></td>
-                                    <td class="row-desc">Acesso ao Kardex 2026-0214</td>
-                                    <td class="row-ip">192.168.1.42</td>
-                                </tr>
-                                <tr>
-                                    <td class="row-datetime">07/03/2026 - 16:33</td>
-                                    <td class="row-user-name">----</td>
-                                    <td class="row-type"><span class="badge-login">Login</span></td>
-                                    <td class="row-desc">Tentativa de login falhada para a conta da Enfermeira Ana R.</td>
-                                    <td class="row-ip">192.168.5.12</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="logs-body"></tbody>
                         </table>
                     </div>
 
@@ -170,7 +156,7 @@
     </div>
 
     <script src="../../scripts/logout.js"></script>
-    <script src="../../scripts/adminConsultarLogsAuditoria.js"></script>
+    <script src="../../scripts/admin/adminConsultarLogsAuditoria.js"></script>
     <div id="notificacoes-container"></div>
     <script src="../../scripts/notificacao.js"></script>
 </body>
