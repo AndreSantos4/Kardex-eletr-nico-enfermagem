@@ -35,8 +35,6 @@ function formatarUnidade(u) {
 function formatarDataHora(raw) {
   const [dataParte, horaParte] = raw.split("T");
   const [ano, mes, dia] = dataParte.split("-");
-  console.log(horaParte);
-  console.log(raw);
   return `${dia}/${mes}/${ano}:${horaParte}:00`;
 }
 
@@ -631,7 +629,8 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
       ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
       : "—";
     const fim = p.fim ?? "—";
-    const altoRisco = (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+    const altoRisco =
+      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
     const horariosPrevistos = p.horariosPrevistos ?? [];
 
     const badgeAltoRisco = altoRisco
@@ -799,7 +798,7 @@ async function registarMedicacao() {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar administração.",
@@ -938,7 +937,7 @@ async function criarPlanoCuidados(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao criar plano de cuidados.",
@@ -960,19 +959,23 @@ async function carregarMedicamentosContencao() {
   const selectMed = document.getElementById("medicamento-contencao");
   const selectDose = document.getElementById("dosagem-contencao");
 
-  selectMed.innerHTML = '<option value="" disabled selected>A carregar...</option>';
-  selectDose.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+  selectMed.innerHTML =
+    '<option value="" disabled selected>A carregar...</option>';
+  selectDose.innerHTML =
+    '<option value="" disabled selected>Selecione o medicamento</option>';
 
   try {
     const res = await fetch("http://localhost:8080/api/stock/medications", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const data = await res.json();
-    if (!data.success) throw new Error(data.message ?? "Erro ao carregar medicamentos");
+    if (!data.success)
+      throw new Error(data.message ?? "Erro ao carregar medicamentos");
 
     _medicamentosContencao = data.data ?? [];
 
-    selectMed.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+    selectMed.innerHTML =
+      '<option value="" disabled selected>Selecione o medicamento</option>';
     _medicamentosContencao.forEach((m) => {
       const opt = document.createElement("option");
       opt.value = m.id;
@@ -980,7 +983,8 @@ async function carregarMedicamentosContencao() {
       selectMed.appendChild(opt);
     });
   } catch (err) {
-    selectMed.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
+    selectMed.innerHTML =
+      '<option value="" disabled selected>Erro ao carregar</option>';
     console.error("Erro ao carregar medicamentos:", err);
   }
 }
@@ -1000,7 +1004,8 @@ function atualizarDosagemContencao() {
     if (optionExiste) selectVia.value = med.viaAdministracao;
   }
 
-  selectDose.innerHTML = '<option value="" disabled selected>Selecione a dosagem</option>';
+  selectDose.innerHTML =
+    '<option value="" disabled selected>Selecione a dosagem</option>';
   if (med?.dosagens?.length) {
     med.dosagens.forEach((d) => {
       const opt = document.createElement("option");
@@ -1024,7 +1029,9 @@ async function submeterRegistarContencao(event) {
   const idDose = document.getElementById("dosagem-contencao").value;
   const duracao = document.getElementById("duracao-contencao").value.trim();
   const dataHoraRaw = document.getElementById("data-hora-contencao").value;
-  const justificacao = document.getElementById("justificacao-contencao").value.trim();
+  const justificacao = document
+    .getElementById("justificacao-contencao")
+    .value.trim();
 
   if (!idMedicamento || !idDose || !duracao || !dataHoraRaw || !justificacao) {
     mostrarNotificacao({
@@ -1057,7 +1064,9 @@ async function submeterRegistarContencao(event) {
     );
 
     if (!resp.ok)
-      throw new Error((await resp.text()) || "Erro ao registar contenção química");
+      throw new Error(
+        (await resp.text()) || "Erro ao registar contenção química",
+      );
 
     fecharPopupRegistarContencao();
     mostrarNotificacao({
@@ -1068,7 +1077,9 @@ async function submeterRegistarContencao(event) {
     await renderizarMedicacaoAtivaComContencoes(processoData.prescricoes);
   } catch (err) {
     let mensagem = err.message;
-    try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) { }
+    try {
+      mensagem = JSON.parse(err.message).error ?? mensagem;
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar contenção química.",
@@ -1131,8 +1142,6 @@ async function submeterRegistarIncidente(event) {
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar incidente");
 
-    console.log(resp);
-
     fecharPopupRegistarIncidente();
     mostrarNotificacao({
       titulo: "Incidente registado",
@@ -1144,7 +1153,7 @@ async function submeterRegistarIncidente(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar incidente.",
@@ -1292,7 +1301,7 @@ async function submeterRegistarCateter(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar cateter.",
@@ -1376,7 +1385,7 @@ async function obterEnfermeiroAtualId() {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const json = await resp.json();
-    return String(json.data.id ?? "");  // ← forçar string
+    return String(json.data.id ?? "");
   } catch (err) {
     console.error("Erro ao obter enfermeiro atual:", err);
     return null;
@@ -1388,8 +1397,13 @@ async function carregarPlanoDeHoje() {
   body.innerHTML = "";
 
   const frequenciaLabel = {
-    CONTINUA: "Contínua", DIARIA: "Diária", BD: "2x/dia",
-    TID: "3x/dia", QID: "4x/dia", SOS: "SOS", SEMANAL: "Semanal",
+    CONTINUA: "Contínua",
+    DIARIA: "Diária",
+    BD: "2x/dia",
+    TID: "3x/dia",
+    QID: "4x/dia",
+    SOS: "SOS",
+    SEMANAL: "Semanal",
   };
 
   const prioridadeConfig = {
@@ -1402,11 +1416,12 @@ async function carregarPlanoDeHoje() {
   try {
     const resp = await fetch(
       `http://localhost:8080/api/processes/${processoId}/plan`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
     );
 
     if (!resp.ok) {
-      body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Sem plano de cuidados ativo.</p>";
+      body.innerHTML =
+        "<p style='color:var(--surface);font-size:13px'>Sem plano de cuidados ativo.</p>";
       return;
     }
 
@@ -1414,7 +1429,8 @@ async function carregarPlanoDeHoje() {
     const intervencoes = json.data?.intervencoes ?? [];
 
     if (intervencoes.length === 0) {
-      body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Sem intervenções para hoje.</p>";
+      body.innerHTML =
+        "<p style='color:var(--surface);font-size:13px'>Sem intervenções para hoje.</p>";
       return;
     }
 
@@ -1422,20 +1438,17 @@ async function carregarPlanoDeHoje() {
 
     intervencoes.forEach((inv) => {
       const feita = inv.funcionarioExecutou != null;
-      console.log(String(inv.funcionarioExecutou?.dados?.id ?? ""));
-
-      console.log(inv);
-
-      const realizadaPorId = String(inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "");
-
-      console.log("Enfermeiro atual:", enfermeiroAtualId);
-      console.log("Executou:", inv.funcionarioExecutou);
-      console.log("realizadaPorId:", realizadaPorId);
-
-      const podeDesmarcar = feita && String(realizadaPorId) === String(enfermeiroAtualId);
+      const realizadaPorId = String(
+        inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "",
+      );
+      const podeDesmarcar =
+        feita && String(realizadaPorId) === String(enfermeiroAtualId);
       const checkboxBloqueada = !feita || (feita && !podeDesmarcar);
 
-      const prio = prioridadeConfig[inv.prioridade] ?? { cor: "#666", texto: inv.prioridade ?? "—" };
+      const prio = prioridadeConfig[inv.prioridade] ?? {
+        cor: "#666",
+        texto: inv.prioridade ?? "—",
+      };
       const freq = frequenciaLabel[inv.frequencia] ?? inv.frequencia ?? "—";
 
       const row = document.createElement("div");
@@ -1451,7 +1464,9 @@ async function carregarPlanoDeHoje() {
       ].join(";");
 
       const checkboxId = `inv-check-${inv.id}`;
-      const textoRiscado = feita ? "text-decoration:line-through;opacity:0.55;" : "";
+      const textoRiscado = feita
+        ? "text-decoration:line-through;opacity:0.55;"
+        : "";
       const tituloCb = apenasLeitura(feita, podeDesmarcar)
         ? "Registado por outro enfermeiro"
         : feita
@@ -1497,13 +1512,11 @@ async function carregarPlanoDeHoje() {
         });
       }
 
-      console.log("feita:", feita, "podeDesmarcar:", podeDesmarcar, "bloqueada:", checkboxBloqueada);
-      console.log("tipos:", typeof enfermeiroAtualId, typeof realizadaPorId, enfermeiroAtualId === realizadaPorId);
-
       body.appendChild(row);
     });
   } catch (err) {
-    body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Erro ao carregar plano de cuidados.</p>";
+    body.innerHTML =
+      "<p style='color:var(--surface);font-size:13px'>Erro ao carregar plano de cuidados.</p>";
     console.error("Erro em carregarPlanoDeHoje:", err);
   }
 }
@@ -1525,10 +1538,11 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      },
     );
 
-    if (!resp.ok) throw new Error((await resp.text()) || "Erro ao desmarcar intervenção");
+    if (!resp.ok)
+      throw new Error((await resp.text()) || "Erro ao desmarcar intervenção");
 
     mostrarNotificacao({
       titulo: "Intervenção desmarcada",
@@ -1539,7 +1553,9 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
     await carregarPlanoDeHoje();
   } catch (err) {
     let mensagem = err.message;
-    try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) { }
+    try {
+      mensagem = JSON.parse(err.message).error ?? mensagem;
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao desmarcar intervenção.",
@@ -1553,30 +1569,58 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
 
 carregarUtente(id).then(() => carregarPlanoDeHoje());
 
-/* ============================================================
- *  Popup Notas Clínicas (read-only)
- *  Placeholder: endpoint ainda não existe no backend.
- * ============================================================ */
-
 async function abrirPopUpNotasClinicas() {
-  await carregarPopUp(
-    "../../pages/enfermeiro/popups/popupNotasClinicas.html",
-  );
+  await carregarPopUp("../../pages/enfermeiro/popups/popupNotasClinicas.html");
 
-  const nomeEl = document.getElementById("utente-nome");
-  const nome = nomeEl ? nomeEl.textContent.trim() : "—";
   const popupUtente = document.getElementById("popup-notas-utente");
-  if (popupUtente) popupUtente.textContent = nome || "—";
+  if (popupUtente) popupUtente.textContent = utenteData?.nome || "—";
 
-  renderizarNotasClinicas([]);
+  const container = document.getElementById("popup-notas-lista");
+  if (container)
+    container.innerHTML =
+      '<div class="popup-nota-empty">A carregar notas…</div>';
 
   abrirPopUp(".popup-notas-overlay");
 
-  /*
-   * TODO: ligar ao backend quando o endpoint existir:
-   *   GET /api/processes/{id}/clinical-notes
-   *   .then(lista => renderizarNotasClinicas(lista));
-   */
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/processes/${processoId}/notes`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
+
+    if (!res.ok) {
+      mostrarNotificacao({
+        titulo: "Erro",
+        mensagem: "Erro ao carregar notas de evolução.",
+        tipo: "erro",
+      });
+      renderizarNotasClinicas([]);
+      return;
+    }
+
+    const json = await res.json();
+    if (!json.success) {
+      mostrarNotificacao({
+        titulo: "Erro",
+        mensagem: json.message || "Erro ao obter notas.",
+        tipo: "erro",
+      });
+      renderizarNotasClinicas([]);
+      return;
+    }
+
+    renderizarNotasClinicas(json.data || []);
+  } catch (err) {
+    console.error("[Notas Clínicas] Erro ao carregar notas:", err);
+    mostrarNotificacao({
+      titulo: "Erro de ligação",
+      mensagem: "Não foi possível comunicar com o servidor.",
+      tipo: "erro",
+    });
+    renderizarNotasClinicas([]);
+  }
 }
 
 function fecharPopupNotasClinicas() {
@@ -1594,27 +1638,43 @@ function renderizarNotasClinicas(lista) {
     return;
   }
 
-  container.innerHTML = lista
-    .map((n) => {
-      const cabecalho =
-        (n.medico || "—") +
-        " · " +
-        (n.data || "—") +
-        " · " +
-        (n.hora || "—");
-      const texto = escapeHtmlNota(n.texto || "");
+  const ordenadas = lista.slice().sort(function (a, b) {
+    return _parseDateBackendNota(b.data) - _parseDateBackendNota(a.data);
+  });
+
+  container.innerHTML = ordenadas
+    .map(function (n) {
+      const nomeMedico = n.medico && n.medico.dados ? n.medico.dados.nome : "—";
+      const dataHora = _formatarDataHoraNota(n.data);
       return (
         '<div class="popup-nota-item">' +
         '<div class="popup-nota-header">' +
-        cabecalho +
+        escapeHtmlNota(nomeMedico) +
+        ' <span class="popup-nota-meta">- ' +
+        escapeHtmlNota(dataHora) +
+        "</span>" +
         "</div>" +
         '<div class="popup-nota-texto">' +
-        texto +
+        escapeHtmlNota(n.justificacaoClinica || "") +
         "</div>" +
         "</div>"
       );
     })
     .join("");
+}
+
+function _parseDateBackendNota(str) {
+  if (!str) return 0;
+  const m = str.match(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2})/);
+  if (!m) return 0;
+  return new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]).getTime();
+}
+
+function _formatarDataHoraNota(str) {
+  if (!str) return "—";
+  const m = str.match(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2})/);
+  if (!m) return str;
+  return `${m[1]}/${m[2]}/${m[3]} - ${m[4]}:${m[5]}`;
 }
 
 function escapeHtmlNota(s) {
@@ -1626,11 +1686,6 @@ function escapeHtmlNota(s) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-
-/* ============================================================
- *  Popup Administração SOS
- *  Placeholder: endpoint ainda não existe no backend.
- * ============================================================ */
 
 async function abrirPopUpAdministrarSOS() {
   await carregarPopUp(
@@ -1665,9 +1720,6 @@ function submeterAdministrarSOS(event) {
     return;
   }
 
-  const payload = { condicao, descricao, dataHora, dose };
-  console.log("[SOS] Registar administração:", payload);
-
   mostrarNotificacao({
     titulo: "Funcionalidade em desenvolvimento",
     mensagem: "Endpoint do backend ainda não disponível.",
@@ -1675,9 +1727,5 @@ function submeterAdministrarSOS(event) {
   });
   fecharPopupAdministrarSOS();
 
-  /*
-   * TODO: ligar ao backend:
-   *   POST /api/processes/{processoId}/sos-administrations
-   *   Body: payload
-   */
+  // TODO: POST /api/processes/{processoId}/sos-administrations
 }
