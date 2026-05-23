@@ -38,7 +38,10 @@ async function _carregarMedico() {
 }
 
 async function _carregarPopups() {
-  var popups = ["../../pages/medico/popups/popupNovaNotaEvolucao.html"];
+  var popups = [
+    "../../pages/medico/popups/popupNovaNotaEvolucao.html",
+    "../../pages/medico/popups/popupHistoricoInternamentos.html",
+  ];
 
   for (var i = 0; i < popups.length; i++) {
     var url = popups[i];
@@ -267,14 +270,71 @@ function abrirHistInternamentos() {
     });
     return;
   }
-  // TODO: implementar página/popup de histórico de internamentos anteriores
-  //   GET /api/patients/{utenteId}/processes  (ou endpoint equivalente)
-  _avisar({
-    titulo: "Não disponível",
-    mensagem:
-      "Funcionalidade ainda não disponível — endpoint em desenvolvimento.",
-    tipo: "aviso",
-  });
+  var popup = document.querySelector(".popup-hist-internamentos-overlay");
+  if (!popup) {
+    _avisar({
+      titulo: "Erro",
+      mensagem: "Popup não disponível.",
+      tipo: "erro",
+    });
+    return;
+  }
+
+  var nomeEl = document.getElementById("utente-nome");
+  var nome = nomeEl ? nomeEl.textContent.trim() : "—";
+  _setText("popup-hist-utente", nome || "—");
+
+  _renderHistInternamentos([]);
+  popup.style.display = "flex";
+
+  /*
+   * TODO: ligar ao backend:
+   *   GET /api/patients/{_utenteId}/processes  (ou endpoint equivalente)
+   *   .then(lista => _renderHistInternamentos(lista));
+   */
+}
+
+function fecharPopupHistInternamentos() {
+  var popup = document.querySelector(".popup-hist-internamentos-overlay");
+  if (popup) popup.style.display = "none";
+}
+
+function _renderHistInternamentos(lista) {
+  var container = document.getElementById("popup-hist-lista");
+  if (!container) return;
+
+  if (!lista || lista.length === 0) {
+    container.innerHTML =
+      '<div class="text-center py-7 px-4 text-white/70 italic">Sem internamentos registados.</div>';
+    return;
+  }
+
+  container.innerHTML = lista
+    .map(function (i) {
+      var detalhes =
+        (i.periodo || "—") +
+        (i.duracao ? " (" + i.duracao + ")" : "") +
+        " · Motivo: " +
+        (i.motivo || "—") +
+        (i.medico ? " · " + i.medico : "");
+      var diagnostico = i.diagnostico
+        ? '<br/><span class="text-bg-dark/80 text-[12px]">Diagnóstico estabelecido: ' +
+          _escapeHtml(i.diagnostico) +
+          "</span>"
+        : "";
+      var ativo = i.estado === "ATIVO" || i.ativo === true;
+      var estadoLabel = ativo ? "Ativo" : (i.estado || "Alta");
+      return (
+        '<div class="bg-white rounded-full px-5 py-3 flex items-center justify-between gap-4">' +
+        '<div class="flex-1 min-w-0">' +
+        '<div class="text-bg-dark font-bold text-[14px]">' + _escapeHtml(i.titulo || "—") + "</div>" +
+        '<div class="text-bg-dark/80 text-[12px] mt-0.5">' + _escapeHtml(detalhes) + diagnostico + "</div>" +
+        "</div>" +
+        '<span class="text-primary font-bold text-[15px] shrink-0">' + _escapeHtml(estadoLabel) + "</span>" +
+        "</div>"
+      );
+    })
+    .join("");
 }
 
 function fecharNotasClinicas() {
