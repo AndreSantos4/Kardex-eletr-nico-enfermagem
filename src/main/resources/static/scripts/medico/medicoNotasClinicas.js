@@ -284,14 +284,34 @@ function abrirHistInternamentos() {
   var nome = nomeEl ? nomeEl.textContent.trim() : "—";
   _setText("popup-hist-utente", nome || "—");
 
-  _renderHistInternamentos([]);
+  _renderHistInternamentos(null); // estado de carregamento
   popup.style.display = "flex";
 
-  /*
-   * TODO: ligar ao backend:
-   *   GET /api/patients/{_utenteId}/processes  (ou endpoint equivalente)
-   *   .then(lista => _renderHistInternamentos(lista));
-   */
+  fetch("http://localhost:8080/api/patients/" + _utenteId + "/history")
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (!json.success) {
+        _avisar({
+          titulo: "Erro",
+          mensagem: json.message || "Erro ao obter histórico.",
+          tipo: "erro",
+        });
+        _renderHistInternamentos([]);
+        return;
+      }
+      _renderHistInternamentos(json.data || []);
+    })
+    .catch(function (err) {
+      console.error("[Hist. Internamentos] Erro:", err);
+      _avisar({
+        titulo: "Erro de ligação",
+        mensagem: "Não foi possível comunicar com o servidor.",
+        tipo: "erro",
+      });
+      _renderHistInternamentos([]);
+    });
 }
 
 function fecharPopupHistInternamentos() {
@@ -303,34 +323,79 @@ function _renderHistInternamentos(lista) {
   var container = document.getElementById("popup-hist-lista");
   if (!container) return;
 
+  // Estado de carregamento
+  if (lista === null) {
+    container.innerHTML =
+      '<div class="text-center py-7 px-4 text-white/70 italic">A carregar internamentos…</div>';
+    return;
+  }
+
   if (!lista || lista.length === 0) {
     container.innerHTML =
       '<div class="text-center py-7 px-4 text-white/70 italic">Sem internamentos registados.</div>';
     return;
   }
 
-  container.innerHTML = lista
+  // Ordenar: activos primeiro, depois por dataEntrada descendente
+  var ordenados = lista.slice().sort(function (a, b) {
+    if (a.alta === false && b.alta !== false) return -1;
+    if (b.alta === false && a.alta !== false) return 1;
+    var da = _parseDateBackend(a.dataEntrada);
+    var db = _parseDateBackend(b.dataEntrada);
+    if (da && db) return db - da;
+    return 0;
+  });
+
+  container.innerHTML = ordenados
     .map(function (i) {
-      var detalhes =
-        (i.periodo || "—") +
-        (i.duracao ? " (" + i.duracao + ")" : "") +
-        " · Motivo: " +
-        (i.motivo || "—") +
-        (i.medico ? " · " + i.medico : "");
-      var diagnostico = i.diagnostico
-        ? '<br/><span class="text-bg-dark/80 text-[12px]">Diagnóstico estabelecido: ' +
-          _escapeHtml(i.diagnostico) +
-          "</span>"
-        : "";
-      var ativo = i.estado === "ATIVO" || i.ativo === true;
-      var estadoLabel = ativo ? "Ativo" : (i.estado || "Alta");
+      var ativo = i.alta === false;
+      var estadoLabel = ativo ? "Ativo" : "Alta";
+      var estadoCor = ativo ? "text-green-300" : "text-white/60";
+
+      var medico =
+        i.medicoResponsavel && i.medicoResponsavel.dados
+          ? i.medicoResponsavel.dados.nome
+          : "—";
+
+      var entrada = i.dataEntrada
+        ? _formatarDataHora(i.dataEntrada).split(" - ")[0] // só a data
+        : "—";
+      var saida = i.dataSaida
+        ? _formatarDataHora(i.dataSaida).split(" - ")[0]
+        : ativo
+          ? "Em curso"
+          : "—";
+
+      var periodo = entrada + " → " + saida;
+
+      // Dias internado (só para o activo ou se ainda não teve alta)
+      var diasStr = "";
+      if (ativo && i.dataEntrada) {
+        var dias = _calcularDiasInternado(i.dataEntrada);
+        if (dias != null) diasStr = " · " + dias + " dia(s)";
+      }
+
       return (
-        '<div class="bg-white rounded-full px-5 py-3 flex items-center justify-between gap-4">' +
+        '<div class="bg-white rounded-xl px-5 py-3 flex items-center justify-between gap-4">' +
         '<div class="flex-1 min-w-0">' +
-        '<div class="text-bg-dark font-bold text-[14px]">' + _escapeHtml(i.titulo || "—") + "</div>" +
-        '<div class="text-bg-dark/80 text-[12px] mt-0.5">' + _escapeHtml(detalhes) + diagnostico + "</div>" +
+        '<div class="text-bg-dark font-bold text-[14px]">' +
+        _escapeHtml(i.diagnosticoPrincipal || "—") +
         "</div>" +
-        '<span class="text-primary font-bold text-[15px] shrink-0">' + _escapeHtml(estadoLabel) + "</span>" +
+        '<div class="text-bg-dark/70 text-[12px] mt-0.5">' +
+        _escapeHtml(periodo + diasStr) +
+        "</div>" +
+        '<div class="text-bg-dark/60 text-[12px]">' +
+        "Motivo: " +
+        _escapeHtml(i.motivoInternamento || "—") +
+        " · " +
+        _escapeHtml(medico) +
+        "</div>" +
+        "</div>" +
+        '<span class="font-bold text-[14px] shrink-0 ' +
+        estadoCor +
+        '">' +
+        _escapeHtml(estadoLabel) +
+        "</span>" +
         "</div>"
       );
     })
