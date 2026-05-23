@@ -142,4 +142,9 @@ public class ResourcesForwarding {
     public ModelAndView medicoNotasClinicas(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/medico/medicoNotasClinicas.html?id=" + id);
     }
+
+    @GetMapping("/medicoExames")
+    public ModelAndView medicoExames(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoExames.html?id=" + id);
+    }
 }
