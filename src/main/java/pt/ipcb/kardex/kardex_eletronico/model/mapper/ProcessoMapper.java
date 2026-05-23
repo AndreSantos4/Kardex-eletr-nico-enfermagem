@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.RegisterVitalSignsDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.process.LimitedProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.SinalVitalDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
@@ -21,7 +22,9 @@ public interface ProcessoMapper {
 
     ProcessoClinico fromCreate(CreateProcessDTO dto);
      
-    List<ProcessoClinicoDTO> toDTOList(List<ProcessoClinico> utilizadores);
+    List<ProcessoClinicoDTO> toDTOList(List<ProcessoClinico> data);
+
+    List<LimitedProcessoClinicoDTO> toLimitedDTOList(List<ProcessoClinico> data);
 
     SinalVital fromVitalSignRegister(RegisterVitalSignsDTO data);
 
