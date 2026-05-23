@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.RecordFilter;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.record.RegistoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.util.PaginationDTO;
@@ -33,14 +34,15 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<RegistoDTO> getRecords(PaginationDTO pagination){
+    public List<RegistoDTO> getRecords(PaginationDTO pagination, RecordFilter filter){
         Pageable pageable = PageRequest.of(
                 pagination.offset() / pagination.count(),
                 pagination.count()
         );
 
-        var records = repository.findAll(pageable).toList();
-        return mapper.toDTOList(records);
+        return mapper.toDTOList(
+                repository.findAll(RecordSpecification.withFilter(filter), pageable).toList()
+        );
     }
 
     @Override
