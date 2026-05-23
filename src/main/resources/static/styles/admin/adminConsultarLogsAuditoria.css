@@ -1,0 +1,380 @@
+/* Main body and container resets to accommodate horizontal split */
+body,
+.container,
+.content-container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.right-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background: #ffffff;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #ffffff;
+}
+
+/* Sidebar style tweaks to ensure proper background and spacing */
+.sidebar {
+    width: 210px;
+    flex-shrink: 0;
+    background: #2a6f97;
+    /* Standard dark blue */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+}
+
+
+
+.btn-sair {
+    background: transparent !important;
+    border: 2px solid var(--accent) !important;
+    color: var(--accent) !important;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 5px 18px;
+    cursor: pointer;
+    border-radius: 6px !important;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-sair:hover {
+    background: var(--accent) !important;
+    color: var(--surface) !important;
+}
+
+/* Page Header - Blue Banner */
+.page-header {
+    background: var(--panel);
+    border-radius: 4px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.page-header-left h1 {
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0;
+}
+
+#log-count {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+    font-family: var(--mono);
+}
+
+/* Pill-shaped search bar elements */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Rounded selectors & inputs inside Page Header */
+.filter-select {
+    background: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    color: var(--surface) !important;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.15s;
+}
+
+.filter-select:hover {
+    background-color: var(--bg) !important;
+}
+
+.filter-select option {
+    background: var(--surface);
+    color: var(--accent);
+}
+
+.filter-select::placeholder {
+    color: var(--muted) !important;
+}
+
+.filter-input {
+    background: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    color: var(--surface) !important;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.15s;
+}
+
+.filter-input::placeholder {
+    color: var(--muted) !important;
+}
+
+.filter-input:hover {
+    background: var(--bg) !important;
+}
+
+/* Search input styling */
+.search-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    padding: 5px 10px;
+    gap: 6px;
+    transition: background 0.15s;
+}
+
+.search-input-wrap:hover {
+    background: var(--bg) !important;
+}
+
+.search-input-wrap input {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: var(--surface) !important;
+    font-family: var(--sans);
+    font-size: 13px;
+    width: 180px;
+}
+
+.search-input-wrap input::placeholder {
+    color: var(--muted) !important;
+}
+
+.search-input-wrap svg {
+    fill: var(--muted) !important;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Admin pill button */
+.btn-admin-pill {
+    background: transparent;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 18px;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-admin-pill:hover {
+    background: var(--accent);
+    color: var(--surface);
+}
+
+/* Logs Table Styling */
+.table-panel {
+    background: #1e6b93 !important;
+    border-radius: 8px;
+    border: 2.5px solid #1e6b93 !important;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    background: #1e6b93;
+}
+
+.logs-table thead tr {
+    border-bottom: 2.5px solid rgba(255, 255, 255, 0.2) !important;
+    background: #1e6b93;
+}
+
+.logs-table th {
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #ffffff !important;
+    white-space: nowrap;
+}
+
+/* Make sure headings match table columns exactly */
+.logs-table th:nth-child(1) {
+    width: 160px;
+}
+
+.logs-table th:nth-child(2) {
+    width: 120px;
+}
+
+.logs-table th:nth-child(3) {
+    width: 90px;
+}
+
+.logs-table th:nth-child(5) {
+    width: 120px;
+    text-align: right;
+}
+
+.logs-table tbody tr {
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(30, 107, 147, 0.8) !important;
+    transition: background 0.12s;
+}
+
+.logs-table tbody tr:last-child {
+    border-bottom: none !important;
+}
+
+.logs-table tbody tr:hover {
+    background: rgba(30, 107, 147, 1) !important;
+}
+
+.logs-table td {
+    padding: 14px 18px;
+    color: #ffffff !important;
+    white-space: nowrap;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* Text Styling for Columns */
+.row-datetime {
+    font-family: var(--sans) !important;
+    font-size: 13px;
+    font-weight: 700 !important;
+}
+
+.row-user-name {
+    font-weight: 700 !important;
+}
+
+/* Override badges to render as clean, color-matching typography */
+.badge-acesso,
+.badge-login,
+.badge-medicamento,
+.badge-incidente {
+    background: transparent !important;
+    color: #ffffff !important;
+    padding: 0 !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+}
+
+.row-desc {
+    white-space: normal !important;
+    max-width: 500px;
+    word-break: break-word;
+    font-weight: 600 !important;
+    font-size: 13px;
+}
+
+.row-ip {
+    font-family: var(--sans) !important;
+    font-weight: 700 !important;
+    text-align: right;
+}
+
+/* Pagination styling to match modern, premium blue colors */
+.paginacao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 4px 4px;
+    flex-shrink: 0;
+}
+
+.paginacao-tamanho {
+    color: #1e6b93;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.paginacao-tamanho select {
+    background: #ffffff;
+    border: 2px solid #1e6b93;
+    color: #1e6b93;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+}
+
+.paginacao-tamanho select:hover {
+    background: rgba(30, 107, 147, 0.05);
+}
+
+.paginacao-paginas {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.btn-pagina {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    background: transparent;
+    border: 2px solid #1e6b93;
+    border-radius: 6px;
+    color: #1e6b93;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-pagina:hover {
+    background: rgba(30, 107, 147, 0.05);
+}
+
+.btn-pagina.ativo {
+    background: #1e6b93 !important;
+    border-color: #1e6b93 !important;
+    color: #ffffff !important;
+}
