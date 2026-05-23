@@ -22,7 +22,7 @@ public class Registo {
     public Long id;
     
     @JoinColumn(name = "id_utilizador")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public Utilizador utilizador;
     
     @Column(name = "nivel_registo", nullable = false)
@@ -41,6 +41,9 @@ public class Registo {
     
     @Column(name = "detalhes")
     public String detalhes;
+
+    @Column(name = "ip")
+    public String ip;
 
     @Column(name = "stamp")
     public LocalDateTime stamp;

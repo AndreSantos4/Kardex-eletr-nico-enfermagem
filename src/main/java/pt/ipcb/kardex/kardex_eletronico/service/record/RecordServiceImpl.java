@@ -1,31 +1,54 @@
 package pt.ipcb.kardex.kardex_eletronico.service.record;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.record.RegistoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.util.PaginationDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Registo;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.NivelRegisto;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegisto;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.RegistoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.RegistoRepository;
 
 @Service
 @RequiredArgsConstructor
 public class RecordServiceImpl implements RecordService {
 
+    private final HttpServletRequest request;
     private final RegistoRepository repository;
+    private final RegistoMapper mapper;
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<RegistoDTO> getRecords(PaginationDTO pagination){
+        Pageable pageable = PageRequest.of(
+                pagination.offset() / pagination.count(),
+                pagination.count()
+        );
+
+        var records = repository.findAll(pageable).toList();
+        return mapper.toDTOList(records);
+    }
 
     @Override
     @Transactional
     public void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess) {
         var user = (Utilizador) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
+        var ip = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         var details = newProcess ? "E o primeiro processo associado ao cliente" : "O utente ja possuia um ou mais processos a ele associado";
 
@@ -36,7 +59,8 @@ public class RecordServiceImpl implements RecordService {
             TipoRegisto.PATIENT_ACCEPTANCE, 
             "processo_clinico&utente", 
             String.format("O processo clinico numero %d foi aberto para o utente de id %d", process.id(), process.utenteId()), 
-            details, 
+            details,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
@@ -57,6 +81,7 @@ public class RecordServiceImpl implements RecordService {
             "processo_clinico&utente", 
             String.format("O processo clinico numero %d foi finalizado, e o utente de id %d foi liberado", process.id(), process.utenteId()), 
             null,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
@@ -75,6 +100,7 @@ public class RecordServiceImpl implements RecordService {
             originTable, 
             String.format("O utilizador de id %d foi registado", newUser.getId()), 
             null,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
@@ -96,6 +122,7 @@ public class RecordServiceImpl implements RecordService {
             "sessao", 
             String.format("O utilizador de id %d efetuou logout", user.getId()), 
             null,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
@@ -113,6 +140,7 @@ public class RecordServiceImpl implements RecordService {
             "sessao", 
             String.format("O utilizador de id %d efetuou login", user.getId()), 
             null,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
@@ -131,6 +159,7 @@ public class RecordServiceImpl implements RecordService {
             "tentativa_login", 
             String.format("Uma tentativa de login para o numero mecanografico %d foi efetuada pelo ip %s", numeroMecanografico, ip), 
             details,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
@@ -161,6 +190,7 @@ public class RecordServiceImpl implements RecordService {
             "tentativa_login", 
             String.format("Foi efetuado um pedido de reset de password para o utilizador de id %d", user.getId()), 
             null,
+            request.getRemoteAddr(),
             LocalDateTime.now()
         );
 
