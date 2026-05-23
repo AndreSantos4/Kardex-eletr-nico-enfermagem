@@ -25,7 +25,7 @@ public class NotaEvolucaoClinica {
     public ProcessoClinico processoClinico;
     
     @JoinColumn(name = "id_medico", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public Funcionario medico;
     
     @Column(name = "tipo_nota", nullable = false)
