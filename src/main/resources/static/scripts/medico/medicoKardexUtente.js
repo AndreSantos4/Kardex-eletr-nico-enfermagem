@@ -12,7 +12,8 @@ function calcularIdade(dataNascimentoStr) {
   if (
     hoje.getMonth() < nasc.getMonth() ||
     (hoje.getMonth() === nasc.getMonth() && hoje.getDate() < nasc.getDate())
-  ) idade--;
+  )
+    idade--;
   return idade;
 }
 
@@ -22,16 +23,25 @@ function formatarPeriodo(periodo) {
 }
 
 function formatarUnidade(unidade) {
-  const map = { MILIGRAMAS: "mg", MICROGRAMAS: "mcg", GRAMAS: "g", MILILITROS: "mL" };
-  return map[unidade] ?? (unidade ?? "");
+  const map = {
+    MILIGRAMAS: "mg",
+    MICROGRAMAS: "mcg",
+    GRAMAS: "g",
+    MILILITROS: "mL",
+  };
+  return map[unidade] ?? unidade ?? "";
 }
 
 function formatarVia(via) {
   const map = {
-    ORAL: "Oral", INTRAVENOSA: "IV", INTRAMUSCULAR: "IM",
-    SUBCUTANEA: "SC", TOPICA: "Tópica", INALATORIA: "Inalatória",
+    ORAL: "Oral",
+    INTRAVENOSA: "IV",
+    INTRAMUSCULAR: "IM",
+    SUBCUTANEA: "SC",
+    TOPICA: "Tópica",
+    INALATORIA: "Inalatória",
   };
-  return map[via] ?? (via ?? "—");
+  return map[via] ?? via ?? "—";
 }
 
 // ── Carregar utente ───────────────────────────────────────────────────────────
@@ -46,10 +56,11 @@ async function carregarUtente(id) {
     const processo = dados.processo;
 
     // Page header title + subtitle
-    document.getElementById("page-title").textContent = `Kardex - ${dados.nome}`;
+    document.getElementById("page-title").textContent =
+      `Kardex - ${dados.nome}`;
     const [dE, mE, aE] = processo.dataEntrada.split("/").map(Number);
     const diasInternado = Math.floor(
-      (Date.now() - new Date(aE, mE - 1, dE).getTime()) / 86400000
+      (Date.now() - new Date(aE, mE - 1, dE).getTime()) / 86400000,
     );
     document.getElementById("page-subtitle").textContent =
       `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "—"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
@@ -57,7 +68,9 @@ async function carregarUtente(id) {
     // Info bar
     document.getElementById("nome-utente").innerHTML = dados.nome;
     document.getElementById("sexo").innerHTML = dados.sexo;
-    document.getElementById("idade").innerHTML = calcularIdade(dados.dataNascimento);
+    document.getElementById("idade").innerHTML = calcularIdade(
+      dados.dataNascimento,
+    );
     document.getElementById("data").innerHTML = processo.dataEntrada;
     document.getElementById("hora").innerHTML = "—";
     document.getElementById("medico").innerHTML =
@@ -74,14 +87,17 @@ async function carregarUtente(id) {
       const texto = r.replace("RISCO_", "").toLowerCase();
       return texto.charAt(0).toUpperCase() + texto.slice(1);
     });
-    document.querySelector(".riscos").innerHTML = lista.length > 0
-      ? `<p style="color: white; font-weight: bolder;">Riscos:&nbsp; ${lista.join(" | ")}</p>`
-      : `<p style="color: white; font-weight: bolder;">Riscos:&nbsp; Nenhum</p>`;
+    document.querySelector(".riscos").innerHTML =
+      lista.length > 0
+        ? `<p style="color: white; font-weight: bolder;">Riscos:&nbsp; ${lista.join(" | ")}</p>`
+        : `<p style="color: white; font-weight: bolder;">Riscos:&nbsp; Nenhum</p>`;
 
     // Alergias
-    document.getElementById("alertas").innerHTML = (dados.alergias ?? [])
-      .map((a) => `<div class="alerta"><p>${a.nome}</p></div>`)
-      .join("") || "<p style='padding:5px;color:#888;'>Sem alergias registadas.</p>";
+    document.getElementById("alertas").innerHTML =
+      (dados.alergias ?? [])
+        .map((a) => `<div class="alerta"><p>${a.nome}</p></div>`)
+        .join("") ||
+      "<p style='padding:5px;color:#888;'>Sem alergias registadas.</p>";
 
     // Sinais Vitais
     const sinaisVitais = processo.sinaisVitais;
@@ -108,7 +124,6 @@ async function carregarUtente(id) {
 
     // Medicação Ativa — carregada via endpoint de prescrições
     carregarMedicacaoAtiva(processo.id);
-
   } catch (err) {
     console.error("[KardexUtente]", err);
     alert("Erro de ligação ao servidor.");
@@ -124,8 +139,7 @@ async function carregarMedicacaoAtiva(processId) {
     const prescricoes = (json.data ?? []).filter((p) => p.estado == "ATIVA");
 
     if (prescricoes.length === 0) {
-      medicacaoContainer.innerHTML =
-        `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Sem medicação ativa registada.</p>`;
+      medicacaoContainer.innerHTML = `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Sem medicação ativa registada.</p>`;
       return;
     }
 
@@ -137,12 +151,14 @@ async function carregarMedicacaoAtiva(processId) {
       const via = formatarVia(p.medicamento?.viaAdministracao);
       const motivo = p.motivo ?? "";
       const badges = [];
-      if (p.sos) badges.push(
-        `<span style="background:#b45309;color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;">SOS</span>`
-      );
+      if (p.sos)
+        badges.push(
+          `<span style="background:#b45309;color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;">SOS</span>`,
+        );
 
       const item = document.createElement("div");
-      item.style.cssText = "width:100%; border-bottom:1px solid rgba(42,111,151,0.15); padding:6px 0;";
+      item.style.cssText =
+        "width:100%; border-bottom:1px solid rgba(42,111,151,0.15); padding:6px 0;";
       item.innerHTML = `
         <div class="medicacao-left-cima">
           <p><strong>${nomeMed}</strong></p>
@@ -156,8 +172,7 @@ async function carregarMedicacaoAtiva(processId) {
     });
   } catch (err) {
     console.error("[Medicação Ativa]", err);
-    medicacaoContainer.innerHTML =
-      `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Erro ao carregar medicação.</p>`;
+    medicacaoContainer.innerHTML = `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Erro ao carregar medicação.</p>`;
   }
 }
 
@@ -174,7 +189,7 @@ function daralta() {
 // ── Navegação ─────────────────────────────────────────────────────────────────
 
 function mostrarNotas() {
-  alert("Funcionalidade em desenvolvimento.");
+  window.location.href = `medicoNotasClinicas?id=${id}`;
 }
 
 function mostrarPlano() {
@@ -216,10 +231,14 @@ document.addEventListener("click", () => {
 
 async function iniciar() {
   try {
-    const resp = await fetch("../../pages/medico/popups/popUpRegistarAlta.html");
+    const resp = await fetch(
+      "../../pages/medico/popups/popUpRegistarAlta.html",
+    );
     const html = await resp.text();
     document.getElementById("popup-container").innerHTML = html;
-    document.getElementById("form-alta").addEventListener("submit", submeterAlta);
+    document
+      .getElementById("form-alta")
+      .addEventListener("submit", submeterAlta);
   } catch (err) {
     console.error("[Popup Alta]", err);
   }
