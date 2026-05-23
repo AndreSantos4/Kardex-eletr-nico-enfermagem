@@ -116,6 +116,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeValidarPassagemTurno.html");
     }
 
+    @GetMapping("/enfermeiroChefeHistoricoTurnos")
+    public ModelAndView enfermeiroChefeHistoricoTurnos() {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeHistoricoTurnos.html");
+    }
+
     /* MÉDICO */
 
     @GetMapping("/medicoDashboard")
