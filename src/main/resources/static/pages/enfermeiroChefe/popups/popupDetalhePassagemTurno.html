@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="../../../styles/enfermeiroChefe/popups/popupDetalhePassagemTurno.css">
+
+<div class="popup-detalhe-turno-overlay" id="popup-detalhe-turno" style="display: none;">
+	<div class="popup-detalhe-turno-box">
+		<div class="popup-detalhe-turno-header">
+			<span id="popup-detalhe-titulo">Passagem de Turno</span>
+			<button class="popup-detalhe-turno-close" onclick="fecharPopupDetalheTurno()">&#10005;</button>
+		</div>
+		<div class="popup-detalhe-turno-content">
+
+			<div class="popup-detalhe-turno-meta">
+				<span id="popup-detalhe-periodo">—</span>
+				<span class="popup-detalhe-meta-sep">&#xb7;</span>
+				<!-- TODO: expor dados de validação no PassagemTurnoDTO (quem validou e quando) -->
+				<span id="popup-detalhe-validado">—</span>
+			</div>
+
+			<div class="popup-detalhe-section">
+				<div class="popup-detalhe-section-header">Equipa de Turno</div>
+				<div class="popup-detalhe-section-body" id="popup-detalhe-equipa">—</div>
+			</div>
+
+			<div class="popup-detalhe-section">
+				<div class="popup-detalhe-section-header">Ocorrências e Pendências</div>
+				<div class="popup-detalhe-section-body popup-detalhe-pendencias-list" id="popup-detalhe-pendencias">
+					<span style="font-style:italic;">Sem pendências.</span>
+				</div>
+			</div>
+
+			<div class="popup-detalhe-nota" id="popup-detalhe-nota" style="display:none;">
+				<strong>Nota de validação:</strong> <span id="popup-detalhe-nota-texto"></span>
+			</div>
+
+			<div class="popup-detalhe-actions">
+				<button type="button" class="btn-cancelar-detalhe-turno" onclick="fecharPopupDetalheTurno()">CANCELAR</button>
+			</div>
+		</div>
+	</div>
+</div>
