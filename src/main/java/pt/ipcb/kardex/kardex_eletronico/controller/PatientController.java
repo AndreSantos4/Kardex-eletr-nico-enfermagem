@@ -21,6 +21,8 @@ import pt.ipcb.kardex.kardex_eletronico.dto.patient.CreatePatientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.PatientKardexDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UpdatePacientFileDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
+
+import pt.ipcb.kardex.kardex_eletronico.dto.process.LimitedProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
 
 @RestController
@@ -59,5 +61,11 @@ public class PatientController {
     public ResponseEntity<ApiResponse<PatientKardexDTO>> getPatientKardex(@PathVariable("patientId") Long patientId){
         var kardex = service.getPatientKardex(patientId);
         return ResponseEntity.ok(ApiResponse.ok("Kardex do utento obtido com sucesso", kardex));
+    }
+
+    @GetMapping("/{patientId}/history")
+    public ResponseEntity<ApiResponse<List<LimitedProcessoClinicoDTO>>> getPatientHistory(@PathVariable Long patientId){
+        var history = service.getHistory(patientId);
+        return ResponseEntity.ok(ApiResponse.ok("Historico de internacoess do utente obtido com sucesso", history));
     }
 }
