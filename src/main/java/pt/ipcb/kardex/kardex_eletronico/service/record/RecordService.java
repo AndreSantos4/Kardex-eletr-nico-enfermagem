@@ -1,9 +1,18 @@
 package pt.ipcb.kardex.kardex_eletronico.service.record;
 
+import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.record.RegistoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.util.PaginationDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 
+import java.util.List;
+
 public interface RecordService {
+
+    @Transactional(readOnly = true)
+    List<RegistoDTO> getRecords(PaginationDTO pagination);
 
     void recordPatientAcceptance(ProcessoClinicoDTO process, boolean newProcess);
 
