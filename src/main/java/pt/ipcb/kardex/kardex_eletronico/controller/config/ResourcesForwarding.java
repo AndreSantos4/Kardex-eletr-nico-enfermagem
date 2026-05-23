@@ -52,6 +52,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/admin/adminRelatoriosIndicadores.html");
     }
 
+    @GetMapping("/adminConsultarLogsAuditoria")
+    public ModelAndView adminConsultarLogsAuditoria() {
+        return new ModelAndView("forward:/pages/admin/adminConsultarLogsAuditoria.html");
+    }
+
     /* ENFERMEIRO */
 
     @GetMapping("/enfermeiroKardexUtente")
