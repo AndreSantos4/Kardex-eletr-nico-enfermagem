@@ -1,13 +1,11 @@
-<link rel="stylesheet" href="../../../styles/medico/popups/popupPrescreverExameComplementar.css">
-
-<div class="pop-up-registar" id="popup-alta">
+<div class="pop-up-registar" id="popup-prescrever-exame" style="display:none">
     <div class="pop-up">
         <div class="pop-up-header">
             <div class="title">
                 <h3>Prescrever Exame Complementar</h3>
             </div>
             <div class="icon">
-                <a href="" class="cross" onclick="fecharPopUp(); return false;">
+                <a href="" class="cross" onclick="fecharPopup(); return false;">
                     <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
                         <path fill="rgb(220, 49, 26)"
                             d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
@@ -16,38 +14,41 @@
             </div>
         </div>
         <div class="pop-up-main">
-           
-            <form id="form-alta">
-                <div class="form-choice">
-                    <div class="select-1">
-                        <label for="tipo-exame">TIPO DE EXAME *</label>
-                        <select name="exame" id="exame">
-                            <option value="opt-1">Hemograma Completo</option>
-                        </select>
-                    </div>
-                    <div class="select-2">
-                        <label for="tipo-exame">URGÊNCIA *</label>
-                        <select name="exame" id="exame">
-                            <option value="opt-1">Normal</option>
-                        </select>
-                    </div>
+            <div class="form-choice">
+                <div class="select-1">
+                    <label for="popup-tipo-exame">TIPO DE EXAME *</label>
+                    <select id="popup-tipo-exame">
+                        <option value="HEMOGRAMA_COMPLETO">Hemograma Completo</option>
+                        <option value="PAINEL_METABOLICO">Painel metabólico</option>
+                        <option value="FUNCAO_HEPATICA">Função hepática</option>
+                        <option value="FUNCAO_TIROIDE">Função tiroide</option>
+                        <option value="NIVEIS_VITAMINAS">Níveis de vitaminas</option>
+                    </select>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="dataHora">DATA PRETENDIDA *</label>
-                        <input type="datetime-local" name="dataHora" id="dataHora" required />
-                        <label for="notas">Indicação Clínica *</label>
-                        <textarea name="notas" id="notas"
-                            placeholder="Motivo da requisição do exame" required></textarea>
-                        <label for="notas">Observações para o laboratório</label>
-                        <textarea name="notas" id="notas" placeholder="Instruções especiais..." required></textarea>
-                    </div>
+                <div class="select-2">
+                    <label for="popup-urgencia">URGÊNCIA *</label>
+                    <select id="popup-urgencia">
+                        <option value="BAIXA">Baixa</option>
+                        <option value="MODERADA">Moderada</option>
+                        <option value="NORMAL">Normal</option>
+                        <option value="ALTA">Alta</option>
+                    </select>
                 </div>
-                <div class="buttons-bottom">
-                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUp()" />
-                    <input type="submit" value="Preescrever Exame" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="popup-data-pretendida">DATA PRETENDIDA *</label>
+                    <input type="date" id="popup-data-pretendida" required />
+                    <label for="popup-indicacao">Indicação Clínica *</label>
+                    <textarea id="popup-indicacao" placeholder="Motivo da requisição do exame" required></textarea>
+                    <label for="popup-observacoes">Observações para o laboratório</label>
+                    <textarea id="popup-observacoes" placeholder="Instruções especiais..."></textarea>
                 </div>
-            </form>
+            </div>
+            <div class="buttons-bottom">
+                <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopup()" />
+                <input type="button" value="Prescrever Exame" onclick="submeterExame()" />
+            </div>
         </div>
     </div>
 </div>
