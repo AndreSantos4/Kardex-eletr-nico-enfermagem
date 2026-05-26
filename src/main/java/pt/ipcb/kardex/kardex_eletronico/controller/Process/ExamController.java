@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.CreateExamDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.EditExamDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.exam.ExamConcludeDTO;
 import pt.ipcb.kardex.kardex_eletronico.service.process.exam.ExamService;
 
 @RestController
@@ -37,5 +38,11 @@ public class ExamController {
     public ResponseEntity<ApiResponse<?>> getExams(@PathVariable Long processId){
         var exams = service.getAllExams(processId);
         return ResponseEntity.ok(ApiResponse.ok("Exames obtidos com sucesso", exams));
+    }
+
+    @PatchMapping("/exams/{examId}/conclude")
+    public ResponseEntity<ApiResponse<?>> concludeExam(@PathVariable Long examId, @RequestBody ExamConcludeDTO data){
+        service.concludeExam(examId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Exame concluido com sucesso", null));
     }
 }
