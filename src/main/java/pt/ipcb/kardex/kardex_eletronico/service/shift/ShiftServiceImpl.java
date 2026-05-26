@@ -13,12 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.ShiftChangeFilter;
-import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftChangeDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.CreateShiftDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.DetailedShiftChangeDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.PassagemTurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.PendenciaDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.TurnoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.atribuicao.AssignNursesDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.util.Pagination;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.AtribuicaoUtente;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.PassagemTurno;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
@@ -193,6 +201,7 @@ public class ShiftServiceImpl implements ShiftService{
         }
 
         return new PassagemTurnoDTO(
+                shiftChange.getId(),
                 mapper.toLimitedDTO(shift),
                 mapper.toLimitedDTO(shiftChange.getProximoTurno()),
                 mapper.toIssuesDTOList(shift.getPendencias())
@@ -243,6 +252,7 @@ public class ShiftServiceImpl implements ShiftService{
     public void validateShiftChange(Long shiftId, CreateShiftChangeDTO data) {
         var shift = repository.findById(shiftId)
                 .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+        var worker = workerService.getAutenticatedWorker();
 
         var shiftChange = shift.getPassagemTurno();
         if(shiftChange == null){
@@ -255,6 +265,8 @@ public class ShiftServiceImpl implements ShiftService{
 
         shiftChange.setPendente(false);
         shiftChange.setObservacoesValidacao(data.observacoes());
+        shiftChange.setValidador(worker);
+        shiftChange.setDataValidacao(LocalDateTime.now(clock));
     }
 
     @Override
@@ -276,6 +288,8 @@ public class ShiftServiceImpl implements ShiftService{
         shiftChange.setPendente(false);
         shiftChange.setObservacoes(null);
         shiftChange.setObservacoesValidacao(null);
+        shiftChange.setValidador(null);
+        shiftChange.setDataValidacao(null);
     }
 
     @Transactional(readOnly = true)
@@ -300,9 +314,18 @@ public class ShiftServiceImpl implements ShiftService{
     public List<PassagemTurnoDTO> getShiftHistory(Pagination pagination, ShiftChangeFilter filter) {
         var passagens = passagemTurnoRepository.findAll(filter.toSpecification(), pagination.toPageable());
         return passagens.stream().map(p -> new PassagemTurnoDTO(
+                p.getId(),
                 mapper.toLimitedDTO(p.getTurno()),
                 mapper.toLimitedDTO(p.getProximoTurno()),
                 mapper.toIssuesDTOList(p.getTurno().getPendencias())
         )).toList();
     }
+
+	@Override
+	public DetailedShiftChangeDTO getDetailedShiftChange(Long changeId) {
+		var change = passagemTurnoRepository.findById(changeId)
+		        .orElseThrow(() -> EntityNotFoundException.forId(changeId, "Passagem de Turno"));
+
+		return mapper.toDetailsChangeDTO(change, change.turno.getPendencias());
+	}
 }
