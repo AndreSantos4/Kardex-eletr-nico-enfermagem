@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.CreateExamDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.EditExamDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.exam.ExamConcludeDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.ExameDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.ResultadoExame;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoExame;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ExameMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.ExameRepository;
@@ -74,5 +76,31 @@ public class ExamServiceImpl implements ExamService {
         var exams = repository.findByProcessoClinicoId(processId);
 
         return mapper.toDtoList(exams);
+    }
+
+    @Transactional
+    @Override
+    public void concludeExam(Long examId, ExamConcludeDTO data) {
+        var exam = repository.findById(examId)
+                .orElseThrow(() -> EntityNotFoundException.forId(examId, "Exame"));
+
+        if(exam.getEstado() == EstadoExame.CONCLUIDO){
+            throw new KardexException("Exame ja foi concluido");
+        }
+
+        var result = new ResultadoExame();
+        result.setData(data.data());
+        result.setResultado(data.resultado());
+        result.setAtencao(data.atencao());
+
+        if(data.atencao()){
+            if(data.atencaoDescricao() == null){
+                throw new KardexException("Descricao da atencao do exame deve ser especificada");
+            }
+            result.setAtencaoDescricao(data.atencaoDescricao());
+        }
+
+        exam.setResultado(result);
+        exam.setEstado(EstadoExame.CONCLUIDO);
     }
 }

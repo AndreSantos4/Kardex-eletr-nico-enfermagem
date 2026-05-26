@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.service.process.exam;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.CreateExamDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.EditExamDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.exam.ExamConcludeDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.exam.ExameDTO;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ExamService {
 
     @Transactional(readOnly = true)
     List<ExameDTO> getAllExams(Long processId);
+
+    void concludeExam(Long examId, ExamConcludeDTO data);
 }
