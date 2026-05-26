@@ -1,17 +1,14 @@
-<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupNotasClinicas.css">
-
-<!-- Popup Notas Clínicas (read-only para enfermeiro) -->
-<div class="popup-notas-overlay" style="display: none;">
-	<div class="popup-notas-box">
-		<div class="popup-notas-header">
+<div class="popup-notas-overlay fixed inset-0 bg-black/55 flex items-center justify-center z-[1000] font-sans" style="display: none;">
+	<div class="popup-notas-box bg-primary rounded-[10px] w-full max-w-[720px] max-h-[85vh] shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col">
+		<div class="popup-notas-header bg-bg-dark px-[22px] py-4 flex items-center justify-between text-[17px] font-bold text-white">
 			<span>Notas Clínicas - <span id="popup-notas-utente">—</span></span>
-			<button class="popup-notas-close" onclick="fecharPopupNotasClinicas()">&#10005;</button>
+			<button class="popup-notas-close bg-[#c0392b] border-0 text-white text-[15px] font-bold w-8 h-8 rounded-full cursor-pointer flex items-center justify-center hover:bg-[#e74c3c] transition-colors leading-none" onclick="fecharPopupNotasClinicas()">&#10005;</button>
 		</div>
-		<div class="popup-notas-content">
-			<h4 class="popup-notas-section-title">Notas de Evolução - Internamento atual</h4>
+		<div class="popup-notas-content px-6 pt-5 pb-6 flex flex-col gap-[14px] overflow-y-auto">
+			<h4 class="popup-notas-section-title m-0 text-white text-[15px] font-bold tracking-[0.02em]">Notas de Evolução - Internamento atual</h4>
 
-			<div class="popup-notas-lista" id="popup-notas-lista">
-				<div class="popup-nota-empty">Sem notas de evolução registadas.</div>
+			<div class="popup-notas-lista flex flex-col gap-3 [&_.popup-nota-item]:bg-white [&_.popup-nota-item]:rounded-md [&_.popup-nota-item]:px-[18px] [&_.popup-nota-item]:py-[14px] [&_.popup-nota-item]:text-bg-dark [&_.popup-nota-item]:leading-[1.5] [&_.popup-nota-header]:text-[13px] [&_.popup-nota-header]:font-bold [&_.popup-nota-header]:text-bg-dark [&_.popup-nota-header]:mb-1.5 [&_.popup-nota-header]:tracking-[0.02em] [&_.popup-nota-texto]:text-[13px] [&_.popup-nota-texto]:text-bg-dark [&_.popup-nota-texto]:leading-[1.55] [&_.popup-nota-texto]:font-medium" id="popup-notas-lista">
+				<div class="popup-nota-empty text-center px-4 py-7 text-white/70 italic">Sem notas de evolução registadas.</div>
 			</div>
 		</div>
 	</div>

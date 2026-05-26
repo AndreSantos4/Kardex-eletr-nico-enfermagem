@@ -1,16 +1,641 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt">
 
 <head>
 	<meta charset="UTF-8">
 	<title>Enfermeiro Chefe - Gestão de Turnos</title>
-	<link rel="stylesheet" type="text/css" href="../../styles/enfermeiroChefe/enfermeiroChefeGerirTurnos.css" />
-	<link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
-	<link rel="stylesheet" type="text/css" href="../../styles/sideBar.css" />
-	<link rel="stylesheet" type="text/css" href="../../styles/mainContent.css" />
-	<link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css" />
-	<link rel="stylesheet" type="text/css" href="../../styles/pageHeader.css" />
-	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+
+<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+<style>
+/* === ../../styles/enfermeiroChefe/enfermeiroChefeGerirTurnos.css === */
+/* Layout */
+.layout {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    padding-right: 14px;
+    min-width: 0;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.main {
+    min-width: 0;
+}
+
+/* Page Header */
+.gt-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0;
+}
+
+.gt-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Info panel base */
+.info-panel {
+    background: var(--card);
+    border-radius: 4px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    min-height: 80px;
+}
+
+.info-panel h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+}
+
+/* Buttons */
+.btn-criar-turno {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 6px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-criar-turno:hover {
+    background: var(--accent);
+    color: var(--card);
+}
+
+.btn-semana-ant {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 6px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-semana-ant:hover {
+    background: var(--accent);
+    color: var(--card);
+}
+
+.btn-editar {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 4px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-editar:hover {
+    background: var(--accent);
+    color: var(--card);
+}
+
+/* Agenda Semanal */
+.gt-agenda-panel {
+    padding: 16px 20px;
+}
+
+.gt-agenda-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.gt-agenda-header h2 {
+    margin-bottom: 0;
+}
+
+.gt-agenda-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.gt-agenda-table-wrap {
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.gt-agenda-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.gt-agenda-table thead tr {
+    background: var(--panel);
+    border-bottom: 2px solid var(--border);
+}
+
+.gt-agenda-table thead th {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.gt-th-turno {
+    width: 120px;
+}
+
+.gt-agenda-table tbody tr {
+    border-bottom: 2px solid var(--border);
+    background: var(--bg);
+}
+
+.gt-agenda-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.gt-agenda-table tbody tr:hover {
+    background: #f0f7fb;
+}
+
+.gt-turno-cell {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 56px;
+    justify-content: center;
+}
+
+.gt-turno-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--card);
+}
+
+.gt-turno-horario {
+    font-size: 11px;
+    color: var(--card);
+    font-family: var(--mono);
+}
+
+.gt-day-cell {
+    padding: 8px 10px;
+    vertical-align: top;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+    border-left: 1px solid var(--border);
+}
+
+/* Enfermeiro chip inside agenda cell */
+.gt-enf-chip {
+    display: block;
+    font-size: 11.5px;
+    color: #1e4d6b;
+    line-height: 1.4;
+}
+
+.gt-enf-chip.chefe {
+    font-weight: 700;
+}
+
+/* Bottom panels */
+.gt-bottom-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+/* Panel header (title + action button) */
+.gt-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.gt-panel-header h2 {
+    margin-bottom: 0;
+}
+
+/* Sessions-panel shared */
+.sessions-panel {
+    background: var(--card);
+    border-radius: 4px;
+    border: 2px solid var(--border);
+    overflow: hidden;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+/* Atribuição table header */
+.gt-atrib-header {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 0.6fr;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--border);
+    background: var(--panel);
+}
+
+.gt-atrib-header span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.gt-atrib-row {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 0.6fr;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--border);
+    align-items: start;
+    background: var(--bg);
+    color: var(--primary);
+    ;
+}
+
+.gt-atrib-row:last-child {
+    border-bottom: none;
+}
+
+.gt-atrib-row:hover {
+    background: #f0f7fb;
+}
+
+.gt-atrib-enf {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e4d6b;
+}
+
+.gt-atrib-utentes {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+.gt-atrib-carga {
+    font-size: 12px;
+    color: var(--text);
+    font-family: var(--mono);
+}
+
+/* Disponibilidade table header */
+.gt-dispon-header {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr 1fr;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--border);
+    background: var(--panel);
+}
+
+.gt-dispon-header span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+/* Disponibilidade rows */
+.gt-dispon-row {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr 1fr;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--border);
+    align-items: center;
+    background: var(--bg);
+}
+
+.gt-dispon-row:last-child {
+    border-bottom: none;
+}
+
+.gt-dispon-row:hover {
+    background: #f0f7fb;
+}
+
+.gt-dispon-enf {
+    font-size: 13px;
+    color: #1e4d6b;
+}
+
+.gt-dispon-estado {
+    font-size: 12px;
+    color: var(--text);
+}
+
+.gt-dispon-turno {
+    font-size: 12px;
+    color: var(--text);
+    font-family: var(--mono);
+}
+
+/* Estado badges */
+.estado-ativo {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.estado-folga {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #fff7e6;
+    color: #b45309;
+    border: 1px solid #fcd34d;
+}
+
+.estado-noite {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+}
+
+/* Scrollable panels */
+.scrollable-panel {
+    max-height: calc(5 * 52px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.scrollable-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-panel::-webkit-scrollbar-track {
+    background: #f0f4f8;
+}
+
+.scrollable-panel::-webkit-scrollbar-thumb {
+    background: var(--primary, #2a6f97);
+    border-radius: 3px;
+}
+
+/* ── Chip de turno na agenda semanal ─────────────────────────────── */
+.gt-turno-chip {
+    background: var(--color-primary, #2563eb);
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin: 3px 2px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: opacity 0.15s;
+    min-width: 0;
+}
+
+.gt-turno-chip:hover {
+    opacity: 0.85;
+}
+
+/* Linha de topo: hora + contagem */
+.gt-chip-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.gt-chip-hora {
+    font-weight: 600;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.gt-chip-count {
+    font-size: 0.70rem;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+/* Lista de nomes dos enfermeiros */
+.gt-chip-nomes {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.gt-chip-enf-nome {
+    display: block;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.92;
+}
+
+.gt-chip-sem-enf {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* === ../../styles/topBar.css === */
+/*Top bar*/
+.topbar {
+	background: var(--surface);
+	padding: 0 24px;
+	height: 52px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--border);
+}
+.topbar-brand {
+	font-size: 13px;
+	color: var(--muted);
+	letter-spacing: 0.06em;
+}
+.topbar-right {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+.topbar-user {
+	background: rgb(107, 56, 56);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+}
+.btn-sair {
+	background: transparent;
+	border: 2px solid var(--accent);
+	color: var(--accent);
+	font-family: var(--sans);
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	padding: 5px 18px;
+	cursor: pointer;
+    border-radius: 10px;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+.btn-sair:hover {
+	background: var(--accent);
+	color: var(--surface);
+}
+
+
+/* === ../../styles/sideBar.css === */
+/*Sidebar*/
+.sidebar {
+	width: 210px;
+	flex-shrink: 0;
+	background: var(--sidebar-bg);
+	align-self: stretch;
+	padding: 12px 0;
+}
+.sidebar-section-label {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	color: var(--accent);
+	padding: 14px 18px 6px;
+	text-transform: uppercase;
+}
+.sidebar-section-label:first-child {
+	padding-top: 6px;
+}
+.sidebar-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 18px;
+	font-size: 13.5px;
+	color: var(--muted);
+	cursor: pointer;
+	transition:
+		background 0.12s,
+		color 0.12s;
+}
+.sidebar-item:hover,
+.sidebar-item.active {
+	background: var(--sidebar-hover);
+	color: #2a6f97;
+}
+.sidebar-item svg {
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+	fill: currentColor;
+}
+
+
+/* === ../../styles/mainContent.css === */
+.main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 14px 14px 14px 16px;
+}
+
+
+/* === ../../styles/rootAndBody.css === */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--bg: #ffffff;
+	--surface: #2a6f97;
+	--surface2: #2a6f97;
+	--panel: #2a6f97;
+	--card: #2a6f97;
+	--text: #e8f4f8;
+	--muted: #a8d4e6;
+	--accent: #ffffff;
+	--sidebar-bg: #2a6f97;
+	--sidebar-hover: #ffffff;
+	--border: rgba(255, 255, 255, 0.12);
+	--mono: "IBM Plex Mono", monospace;
+	--sans: "IBM Plex Sans", sans-serif;
+}
+
+body {
+	font-family: var(--sans);
+	background: var(--bg);
+	color: var(--text);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+}
+
+
+/* === ../../styles/pageHeader.css === */
+/* Page header*/
+.page-header {
+	background: var(--panel);
+	border-radius: 4px;
+	padding: 14px 20px;
+	margin-top: 14px;
+}
+.page-header h1 {
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+.page-header p {
+	font-size: 12px;
+	color: var(--muted);
+	margin-top: 2px;
+	font-family: var(--mono);
+}
+
+</style>
 </head>
 
 <body>

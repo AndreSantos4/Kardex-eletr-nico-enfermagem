@@ -1,14 +1,12 @@
-<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarCateter.css">
-
-<div class="popup-cateter-overlay" style="display: none;">
-	<div class="popup-cateter-box">
-		<div class="popup-cateter-header">
+<div class="popup-cateter-overlay fixed inset-0 bg-black/55 flex items-center justify-center z-[1000] font-sans" style="display: none;">
+	<div class="popup-cateter-box bg-primary rounded-[10px] w-full max-w-[720px] shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+		<div class="popup-cateter-header bg-bg-dark px-5 py-[14px] flex items-center justify-between text-base font-bold text-white">
 			<span>Registar Cateter</span>
-			<button class="popup-cateter-close" onclick="fecharPopupRegistarCateter()">&#10005;</button>
+			<button class="popup-cateter-close bg-[#c0392b] border-0 text-white text-sm font-bold w-8 h-8 rounded-full cursor-pointer flex items-center justify-center hover:bg-[#e74c3c] transition-colors" onclick="fecharPopupRegistarCateter()">&#10005;</button>
 		</div>
-		<div class="popup-cateter-content">
-			<form id="form-registar-cateter" onsubmit="submeterRegistarCateter(event)">
-				<div class="popup-cateter-row-2cols">
+		<div class="popup-cateter-content px-6 pt-[22px] pb-6">
+			<form id="form-registar-cateter" onsubmit="submeterRegistarCateter(event)" class="flex flex-col gap-[18px] [&_.popup-cateter-field]:flex [&_.popup-cateter-field]:flex-col [&_.popup-cateter-field]:gap-2 [&_.popup-cateter-label]:text-[11px] [&_.popup-cateter-label]:font-extrabold [&_.popup-cateter-label]:tracking-[0.07em] [&_.popup-cateter-label]:text-white [&_.popup-cateter-label]:uppercase [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-secondary/40 [&_select]:rounded-full [&_select]:text-bg-dark [&_select]:text-[13px] [&_select]:font-medium [&_select]:px-[18px] [&_select]:py-[11px] [&_select]:w-full [&_select]:cursor-pointer [&_select:focus]:outline-none [&_select:focus]:border-secondary [&_input]:bg-white [&_input]:border-[1.5px] [&_input]:border-secondary/40 [&_input]:rounded-full [&_input]:text-bg-dark [&_input]:text-[13px] [&_input]:font-medium [&_input]:px-[18px] [&_input]:py-[11px] [&_input]:w-full [&_input]:cursor-pointer [&_input:focus]:outline-none [&_input:focus]:border-secondary [&_textarea]:bg-white [&_textarea]:border-[1.5px] [&_textarea]:border-secondary/40 [&_textarea]:rounded-[14px] [&_textarea]:text-bg-dark [&_textarea]:text-[13px] [&_textarea]:px-[18px] [&_textarea]:py-3 [&_textarea]:w-full [&_textarea]:min-h-[60px] [&_textarea]:resize-y [&_textarea:focus]:outline-none [&_textarea:focus]:border-secondary">
+				<div class="popup-cateter-row-2cols grid grid-cols-2 gap-[14px]">
 					<div class="popup-cateter-field">
 						<label class="popup-cateter-label">TIPO DE CATETER *</label>
 						<select id="tipo-cateter" class="popup-cateter-select">
@@ -34,11 +32,10 @@
 						</select>
 					</div>
 				</div>
-				<div class="popup-cateter-row-2cols">
+				<div class="popup-cateter-row-2cols grid grid-cols-2 gap-[14px]">
 					<div class="popup-cateter-field">
 						<label class="popup-cateter-label">LOCAL DE INSERÇÃO *</label>
-						<input type="text" id="local-insercao" class="popup-cateter-input"
-							placeholder="Ex: Antebraço esq. - veia basílica" />
+						<input type="text" id="local-insercao" class="popup-cateter-input" placeholder="Ex: Antebraço esq. - veia basílica" />
 					</div>
 					<div class="popup-cateter-field">
 						<label class="popup-cateter-label">DATA/HORA *</label>
@@ -51,17 +48,15 @@
 				</div>
 				<div class="popup-cateter-field">
 					<label class="popup-cateter-label">OBSERVAÇÕES</label>
-					<textarea id="observacoes-cateter" class="popup-cateter-textarea"
-						placeholder="Estado do local de inserção, permeabilidade" rows="2"></textarea>
+					<textarea id="observacoes-cateter" class="popup-cateter-textarea" placeholder="Estado do local de inserção, permeabilidade" rows="2"></textarea>
 				</div>
-				<div class="popup-cateter-info-note">
-					<div class="popup-cateter-info-icon">i</div>
+				<div class="popup-cateter-info-note bg-secondary/20 border border-secondary/35 rounded-full px-[18px] py-2.5 flex items-center gap-3 text-xs text-white">
+					<div class="popup-cateter-info-icon w-8 h-8 rounded-full bg-bg-dark text-white font-bold text-lg italic flex items-center justify-center shrink-0" style="font-family:serif;">i</div>
 					<span>Substituição recomendada a cada 72-96h (protocolo institucional).</span>
 				</div>
-				<div class="popup-cateter-actions">
-					<button type="button" class="btn-cancelar-cateter"
-						onclick="fecharPopupRegistarCateter()">CANCELAR</button>
-					<button type="submit" class="btn-confirmar-cateter">REGISTAR</button>
+				<div class="popup-cateter-actions flex gap-3 mt-1">
+					<button type="button" class="btn-cancelar-cateter flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-lg cursor-pointer hover:bg-white hover:text-primary transition-colors" onclick="fecharPopupRegistarCateter()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-cateter flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-lg cursor-pointer hover:bg-white hover:text-primary transition-colors">REGISTAR</button>
 				</div>
 			</form>
 		</div>

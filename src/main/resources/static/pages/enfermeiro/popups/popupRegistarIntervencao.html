@@ -1,22 +1,19 @@
-<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarIntervencao.css">
-
-<!-- Popup Registar Intervenção -->
-<div class="popup-reg-intervencao-overlay" id="popup-registar-intervencao" style="display: none;">
-	<div class="popup-reg-intervencao-box">
-		<div class="popup-reg-intervencao-header">
+<div class="popup-reg-intervencao-overlay fixed inset-0 bg-black/55 flex items-center justify-center z-[1000] font-sans" id="popup-registar-intervencao" style="display: none;">
+	<div class="popup-reg-intervencao-box bg-primary rounded-[10px] w-full max-w-[640px] shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+		<div class="popup-reg-intervencao-header bg-bg-dark px-[22px] py-4 flex items-center justify-between text-lg font-bold text-white">
 			<span>Registar Intervenção</span>
-			<button class="popup-reg-intervencao-close" onclick="fecharPopupRegistarIntervencao()">&#10005;</button>
+			<button class="popup-reg-intervencao-close bg-[#c0392b] border-0 text-white text-base font-bold w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:bg-[#e74c3c] transition-colors" onclick="fecharPopupRegistarIntervencao()">&#10005;</button>
 		</div>
-		<div class="popup-reg-intervencao-content">
-			<div class="popup-reg-intervencao-info-note">
-				<div class="popup-reg-intervencao-info-icon">i</div>
-				<div class="popup-reg-intervencao-info-text">
-					<span>Enfermeiro: <strong id="reg-intervencao-enfermeiro">—</strong></span>
-					<span>Paciente: <strong id="reg-intervencao-paciente">—</strong></span>
+		<div class="popup-reg-intervencao-content px-6 pt-[22px] pb-6 flex flex-col gap-[14px]">
+			<div class="popup-reg-intervencao-info-note bg-transparent border-[1.5px] border-white rounded-full py-2 pl-2 pr-4 flex items-center gap-3 text-white text-[13px]">
+				<div class="popup-reg-intervencao-info-icon w-[34px] h-[34px] rounded-full bg-white text-primary font-bold text-xl italic flex items-center justify-center shrink-0" style="font-family:serif;">i</div>
+				<div class="popup-reg-intervencao-info-text flex flex-col gap-[1px] leading-[1.35]">
+					<span>Enfermeiro: <strong class="font-bold" id="reg-intervencao-enfermeiro">—</strong></span>
+					<span>Paciente: <strong class="font-bold" id="reg-intervencao-paciente">—</strong></span>
 				</div>
 			</div>
-			<div class="popup-reg-intervencao-titulo" id="reg-intervencao-titulo">—</div>
-			<form id="form-registar-intervencao" onsubmit="submeterRegistarIntervencao(event)">
+			<div class="popup-reg-intervencao-titulo text-white text-[15px] font-bold mt-0.5" id="reg-intervencao-titulo">—</div>
+			<form id="form-registar-intervencao" onsubmit="submeterRegistarIntervencao(event)" class="flex flex-col gap-[14px] [&_.popup-reg-intervencao-field]:flex [&_.popup-reg-intervencao-field]:flex-col [&_.popup-reg-intervencao-field]:gap-2 [&_.popup-reg-intervencao-label]:text-[11px] [&_.popup-reg-intervencao-label]:font-extrabold [&_.popup-reg-intervencao-label]:tracking-[0.07em] [&_.popup-reg-intervencao-label]:text-white [&_.popup-reg-intervencao-label]:uppercase [&_input]:bg-white [&_input]:border-[1.5px] [&_input]:border-secondary/40 [&_input]:rounded-full [&_input]:text-bg-dark [&_input]:text-[13px] [&_input]:font-medium [&_input]:px-5 [&_input]:py-3 [&_input]:w-full [&_input]:cursor-pointer [&_input:focus]:outline-none [&_input:focus]:border-secondary [&_textarea]:bg-white [&_textarea]:border-[1.5px] [&_textarea]:border-secondary/40 [&_textarea]:rounded-[22px] [&_textarea]:text-bg-dark [&_textarea]:text-[13px] [&_textarea]:px-5 [&_textarea]:py-3 [&_textarea]:w-full [&_textarea]:min-h-[56px] [&_textarea]:resize-y [&_textarea:focus]:outline-none [&_textarea:focus]:border-secondary">
 				<div class="popup-reg-intervencao-field">
 					<label class="popup-reg-intervencao-label">DATA E HORA *</label>
 					<input type="datetime-local" id="reg-intervencao-data-hora" class="popup-reg-intervencao-input" />
@@ -25,9 +22,9 @@
 					<label class="popup-reg-intervencao-label">OBSERVAÇÕES *</label>
 					<textarea id="reg-intervencao-observacoes" class="popup-reg-intervencao-textarea" placeholder="Notas sobre a intervenção..." rows="2"></textarea>
 				</div>
-				<div class="popup-reg-intervencao-actions">
-					<button type="button" class="btn-cancelar-reg-intervencao" onclick="fecharPopupRegistarIntervencao()">CANCELAR</button>
-					<button type="submit" class="btn-confirmar-reg-intervencao">REGISTAR</button>
+				<div class="popup-reg-intervencao-actions flex gap-[14px] mt-1.5">
+					<button type="button" class="btn-cancelar-reg-intervencao flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-[10px] cursor-pointer hover:bg-white hover:text-primary transition-colors" onclick="fecharPopupRegistarIntervencao()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-reg-intervencao flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-[10px] cursor-pointer hover:bg-white hover:text-primary transition-colors">REGISTAR</button>
 				</div>
 			</form>
 		</div>

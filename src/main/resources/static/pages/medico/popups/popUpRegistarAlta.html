@@ -1,39 +1,33 @@
-<link rel="stylesheet" href="../../../styles/medico/popupRegistarAlta.css">
-
-<div class="pop-up-registar" id="popup-alta" style="display: none;">
-    <div class="pop-up">
-        <div class="pop-up-header">
-            <div class="title">
-                <h3>Registar alta clínica</h3>
-            </div>
+<div class="pop-up-registar fixed inset-0 w-screen h-screen z-[1000] flex items-center justify-center backdrop-blur-[4px] bg-black/40" id="popup-alta" style="display: none;">
+    <div class="pop-up bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[700px] max-w-[95vw] overflow-hidden">
+        <div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10">
+            <div class="title"><h3 class="text-white text-[1.05rem] font-semibold m-0">Registar alta clínica</h3></div>
             <div class="icon">
-                <a href="" class="cross" onclick="fecharPopUp(); return false;">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-                        <path fill="rgb(220, 49, 26)"
-                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                <a href="" class="cross flex items-center justify-center bg-white rounded-full w-7 h-7 hover:bg-[#bababa]" onclick="fecharPopUp(); return false;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
                     </svg>
                 </a>
             </div>
         </div>
-        <div class="pop-up-main">
-            <div class="info-box">
+        <div class="pop-up-main px-[18px] py-[14px] flex flex-col gap-2 [&_label]:block [&_label]:text-[#e0f0f8] [&_label]:text-[0.68rem] [&_label]:font-bold [&_label]:tracking-[0.8px] [&_label]:uppercase [&_label]:mb-1 [&_input:not([type=button]):not([type=submit])]:w-full [&_input:not([type=button]):not([type=submit])]:bg-white [&_input:not([type=button]):not([type=submit])]:border-[1.5px] [&_input:not([type=button]):not([type=submit])]:border-white/35 [&_input:not([type=button]):not([type=submit])]:rounded-md [&_input:not([type=button]):not([type=submit])]:px-[10px] [&_input:not([type=button]):not([type=submit])]:py-2 [&_input:not([type=button]):not([type=submit])]:text-[0.87rem] [&_input:not([type=button]):not([type=submit])]:text-[#1a3a4a] [&_input:not([type=button]):not([type=submit])]:outline-none [&_input:not([type=button]):not([type=submit])]:mb-[6px] [&_textarea]:w-full [&_textarea]:bg-white [&_textarea]:border-[1.5px] [&_textarea]:border-white/35 [&_textarea]:rounded-md [&_textarea]:px-[10px] [&_textarea]:py-2 [&_textarea]:text-[0.87rem] [&_textarea]:text-[#1a3a4a] [&_textarea]:outline-none [&_textarea]:min-h-[120px] [&_textarea]:resize-y [&_textarea]:mb-[6px] [&_textarea]:box-border">
+            <div class="info-box text-[#e0f0f8] rounded-full border border-[#e0f0f8] text-sm pl-10 py-1.5">
                 <div>
-                    <p id="popup-nome-utente"></p>
+                    <p id="popup-nome-utente" class="m-0"></p>
                 </div>
             </div>
             <form id="form-alta">
-                <div class="form-row">
-                    <div class="form-group">
+                <div class="form-row flex gap-3">
+                    <div class="form-group flex-1 flex flex-col gap-2">
                         <label for="dataHora">DATA/HORA *</label>
                         <input type="datetime-local" name="dataHora" id="dataHora" required />
                         <label for="notas">NOTAS DA ALTA *</label>
-                        <textarea name="notas" id="notas"
-                            placeholder="Descreve as notas da alta clínica (motivo etc...)." required></textarea>
+                        <textarea name="notas" id="notas" placeholder="Descreve as notas da alta clínica (motivo etc...)." required></textarea>
                     </div>
                 </div>
-                <div class="buttons-bottom">
-                    <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUp()" />
-                    <input type="submit" value="Registar" />
+                <div class="buttons-bottom flex py-[2%] gap-[10px]">
+                    <input type="button" value="Cancelar" class="btn-cancelar flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" onclick="fecharPopUp()" />
+                    <input type="submit" value="Registar" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" />
                 </div>
             </form>
         </div>

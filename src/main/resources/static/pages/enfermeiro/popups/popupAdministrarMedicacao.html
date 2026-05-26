@@ -1,22 +1,17 @@
-<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupAdministrarMedicacao.css">
-
-<div class="pop-up-administrar-medicacao">
-    <div class="pop-up">
-        <div class="pop-up-header">
-            <div class="title">
-                <h3>Registar Medicação</h3>
-            </div>
+<div class="pop-up-administrar-medicacao fixed inset-0 z-[1000] flex items-start justify-center px-4 py-6 overflow-y-auto bg-black/50 backdrop-blur-[4px]">
+    <div class="pop-up bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[950px] max-w-[95vw] overflow-hidden font-sans">
+        <div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10">
+            <div class="title"><h3 class="text-white text-[1.15rem] font-semibold m-0">Registar Medicação</h3></div>
             <div class="icon">
-                <a href="" class="cross" onclick="fecharPopUp('.pop-up-administrar-medicacao')">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-                        <path fill="rgb(220, 49, 26)"
-                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                <a href="" class="cross flex items-center justify-center bg-white rounded-full w-8 h-8 no-underline hover:bg-[#e0e0e0]" onclick="fecharPopUp('.pop-up-administrar-medicacao')">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
                     </svg>
                 </a>
             </div>
         </div>
-        <div class="pop-up-main">
-            <div class="cinco-certos">
+        <div class="pop-up-main p-[18px] flex flex-col gap-[14px]">
+            <div class="cinco-certos flex items-stretch justify-between gap-3 [&>div]:bg-white [&>div]:flex-1 [&>div]:h-[78px] [&>div]:rounded-[10px] [&>div]:text-[#1a3a4a] [&>div]:flex [&>div]:flex-col [&>div]:items-center [&>div]:justify-center [&>div]:text-center [&>div]:p-2 [&>div>p]:my-[2px] [&>div>p]:text-base [&>div>p]:font-bold">
                 <div class="utente">
                     <p>1 - Utente</p>
                     <p id="nome-utenet"></p>
@@ -39,51 +34,46 @@
                 </div>
             </div>
 
-            <div class="recusa-row">
-                <label class="recusa-label">
-                    <input type="checkbox" name="recusa-medicacao" id="recusa-medicacao"
-                        onchange="atualizarBotaoRegistar()">
+            <div class="recusa-row mt-1">
+                <label class="recusa-label inline-flex items-center gap-2.5 text-white text-[0.95rem] font-medium cursor-pointer">
+                    <input type="checkbox" name="recusa-medicacao" id="recusa-medicacao" onchange="atualizarBotaoRegistar()" class="appearance-none w-[18px] h-[18px] border-2 border-white rounded-[3px] bg-transparent cursor-pointer m-0 shrink-0 relative checked:bg-white checked:after:content-[''] checked:after:absolute checked:after:left-1 checked:after:top-0 checked:after:w-[5px] checked:after:h-[10px] checked:after:border-solid checked:after:border-[#1a5f7a] checked:after:border-r-2 checked:after:border-b-2 checked:after:border-t-0 checked:after:border-l-0 checked:after:rotate-45">
                     <span>Registar Recusa ou Impossibilidade de Administração</span>
                 </label>
             </div>
-            <div class="form-row">
-                <div class="form-group form-group--data">
-                    <label for="data-hora">DATA/HORA *</label>
-                    <input type="datetime-local" id="data-hora" name="data-hora" required>
+            <div class="form-row flex gap-[14px]">
+                <div class="form-group form-group--data flex flex-col basis-[32%] grow-0 shrink-0">
+                    <label for="data-hora" class="block text-white text-[0.78rem] font-bold tracking-wider mb-1.5">DATA/HORA *</label>
+                    <input type="datetime-local" id="data-hora" name="data-hora" required class="w-full bg-white border-[1.5px] border-white/35 rounded-md px-3.5 py-3 text-base font-semibold text-[#1a3a4a] outline-none">
                 </div>
-                <div class="form-group form-group--observacoes">
-                    <label for="observacoes">OBSERVAÇÕES *</label>
-                    <input type="text" id="observacoes" name="observacoes" placeholder="Estado do utente, notas ....">
+                <div class="form-group form-group--observacoes flex flex-col flex-1">
+                    <label for="observacoes" class="block text-white text-[0.78rem] font-bold tracking-wider mb-1.5">OBSERVAÇÕES *</label>
+                    <input type="text" id="observacoes" name="observacoes" placeholder="Estado do utente, notas ...." class="w-full bg-white border-[1.5px] border-white/35 rounded-md px-3.5 py-3 text-base font-semibold text-[#1a3a4a] outline-none">
                 </div>
             </div>
 
-            <div class="warning-box" id="warning-box" style="display:none">
-                <span class="warning-icon">&#9888;</span>
-                <span class="warning-text" id="warning-text"></span>
+            <div class="warning-box flex items-center gap-[14px] border-2 border-white rounded-[10px] px-[18px] py-3 bg-transparent" id="warning-box" style="display:none">
+                <span class="warning-icon inline-flex items-center justify-center w-8 h-8 shrink-0 text-white text-[1.6rem] leading-none">&#9888;</span>
+                <span class="warning-text text-white text-[0.95rem] font-medium flex-1" id="warning-text"></span>
             </div>
 
-            <div class="alto-risco-verificacao" id="alto-risco-verificacao" style="display:none">
-                <div class="alto-risco-header">
-                    <span class="warning-icon" style="color: #DC311A;">&#9888;</span>
+            <div class="alto-risco-verificacao bg-white/10 rounded-[10px] p-3" id="alto-risco-verificacao" style="display:none">
+                <div class="alto-risco-header flex items-center gap-2 text-white mb-2">
+                    <span class="warning-icon inline-flex items-center justify-center w-8 h-8 shrink-0 text-[1.6rem] leading-none" style="color: #DC311A;">&#9888;</span>
                     <strong>Medicamento de Alto Risco</strong>
                 </div>
-                <p class="alto-risco-descricao">
+                <p class="alto-risco-descricao text-white text-sm mb-2">
                     Este medicamento requer dupla verificação antes da administração.
-                    Confirme que verificou o medicamento, a dose e o utente com um segundo profissional ou segundo
-                    protocolo.
+                    Confirme que verificou o medicamento, a dose e o utente com um segundo profissional ou segundo protocolo.
                 </p>
-                <label class="alto-risco-confirm-label">
+                <label class="alto-risco-confirm-label flex items-center gap-2 text-white text-sm cursor-pointer bg-white rounded p-2">
                     <input type="checkbox" id="confirmar-alto-risco" onchange="atualizarBotaoRegistar()">
-                    <span style="color: black;">Confirmo que estou ciente do risco e verifiquei todos os parâmetros de
-                        segurança</span>
+                    <span style="color: black;">Confirmo que estou ciente do risco e verifiquei todos os parâmetros de segurança</span>
                 </label>
             </div>
 
-            <div class="buttons-bottom">
-                <button type="button" class="btn-cancelar"
-                    onclick="fecharPopUp('.pop-up-administrar-medicacao')">Cancelar</button>
-                <button type="button" class="btn-registar" id="btn-registar"
-                    onclick="registarMedicacao()">Registar</button>
+            <div class="buttons-bottom flex gap-[14px] mt-1">
+                <button type="button" class="btn-cancelar flex-1 p-3 bg-transparent text-white border-2 border-white rounded-md text-sm font-bold tracking-wider uppercase cursor-pointer hover:bg-white/10 active:scale-[0.98] transition-all" onclick="fecharPopUp('.pop-up-administrar-medicacao')">Cancelar</button>
+                <button type="button" class="btn-registar flex-1 p-3 bg-transparent text-white border-2 border-white rounded-md text-sm font-bold tracking-wider uppercase cursor-pointer hover:bg-white/10 active:scale-[0.98] transition-all" id="btn-registar" onclick="registarMedicacao()">Registar</button>
             </div>
         </div>
     </div>

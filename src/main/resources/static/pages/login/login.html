@@ -4,62 +4,55 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Login</title>
-    <link href="../../styles/login.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: { extend: {
+          colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+          fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+        }},
+      };
+    </script>
   </head>
-  <body>
-    <div id="ecra-login">
-      <div class="login-caixa">
-        <div class="login-cabecalho">
-          <div class="login-titulo">Clínica Psiquiátrica de S. Mateus</div>
+  <body class="font-sans text-[13px] bg-[#f0f4f8] text-[#1a2a3a] m-0 p-0 box-border">
+    <div id="ecra-login" class="flex items-center justify-center min-h-screen bg-primary">
+      <div class="login-caixa bg-white rounded-lg w-[380px] shadow-[0_4px_24px_rgba(0,0,0,0.25)] overflow-hidden">
+        <div class="login-cabecalho bg-[#174A6A] text-white px-6 py-5 text-center">
+          <div class="login-titulo text-lg font-bold tracking-[1px]">Clínica Psiquiátrica de S. Mateus</div>
         </div>
 
-        <div class="login-corpo">
-          <form
-            onsubmit="validateForm(event)"
-            method="post"
-            id="login-campo-auth"
-          >
-            <div class="login-campo">
-              <label>Nº Mecanográfico</label>
-              <input
-                type="text"
-                id="numero_mecanografico"
-                pattern="\d{9}"
-                title="Apenas números são permitidos. O número mecanográfico deve ter exatamente 9 dígitos."
-                required
-              />
+        <div class="login-corpo p-6 flex flex-col gap-[14px]">
+          <form onsubmit="validateForm(event)" method="post" id="login-campo-auth">
+            <div class="login-campo mb-[14px]">
+              <label class="block text-[11px] font-semibold text-[#6a8aaa] mb-1 uppercase tracking-[0.5px]">Nº Mecanográfico</label>
+              <input type="text" id="numero_mecanografico" pattern="\d{9}" title="Apenas números são permitidos. O número mecanográfico deve ter exatamente 9 dígitos." required class="w-full border border-[#d0d9e5] rounded px-2.5 py-2 text-[13px] focus:outline-none focus:border-[#2d6aad]" />
             </div>
 
-            <div class="login-campo">
-              <label>Password</label>
-              <input type="password" id="password" required />
+            <div class="login-campo mb-[14px]">
+              <label class="block text-[11px] font-semibold text-[#6a8aaa] mb-1 uppercase tracking-[0.5px]">Password</label>
+              <input type="password" id="password" required class="w-full border border-[#d0d9e5] rounded px-2.5 py-2 text-[13px] focus:outline-none focus:border-[#2d6aad]" />
             </div>
 
-            <p id="msgError"></p>
+            <p id="msgError" class="hidden text-center p-2.5 text-red-600 m-0"></p>
 
-            <input type="submit" value="ENTRAR" class="login-botao" />
+            <input type="submit" value="ENTRAR" class="login-botao w-full py-[11px] bg-[#174A6A] text-white border-0 rounded text-[13px] font-bold tracking-[1px] cursor-pointer mt-1 hover:bg-[#2d6aad]" />
           </form>
 
-          <form
-            onsubmit="validateM2F(event)"
-            method="post">
-            <div class="login-campo" id="login-campo-m2f">
-              <label>Código de Autencação</label>
-              <div class="login-authn">
-                <input type="text" id="code-authn" placeholder="6 dígitos" />
-                <input
-                  type="submit"
-                  value="Enviar código"
-                  class="login-authn-btn"
-                />
+          <form onsubmit="validateM2F(event)" method="post">
+            <div class="login-campo hidden" id="login-campo-m2f">
+              <label class="block text-[11px] font-semibold text-[#6a8aaa] mb-1 uppercase tracking-[0.5px]">Código de Autencação</label>
+              <div class="login-authn flex gap-2">
+                <input type="text" id="code-authn" placeholder="6 dígitos" class="flex-1 border border-[#d0d9e5] rounded px-2.5 py-2 text-[13px] focus:outline-none focus:border-[#2d6aad]" />
+                <input type="submit" value="Enviar código" class="login-authn-btn whitespace-nowrap px-3 py-2 bg-[#f0f4f8] border border-[#d0d9e5] rounded text-xs cursor-pointer" />
               </div>
-              <div class="login-nota-authn">
+              <div class="login-nota-authn text-[10.5px] text-[#6a8aaa] mt-0.5">
                 Enviado SMS para o telemóvel. Válido 2 minutos.
               </div>
             </div>
           </form>
 
-          <div class="login-aviso-legal">
+          <div class="login-aviso-legal text-center text-[10px] text-[#6a8aaa] leading-[1.5]">
             Acesso restrito a profissionais autorizados.<br />
             Todos os acessos são registados
           </div>
