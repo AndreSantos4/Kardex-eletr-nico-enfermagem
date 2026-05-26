@@ -16,11 +16,13 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.SuspensaoClinica;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoPendencia;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.AdministracaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
+import pt.ipcb.kardex.kardex_eletronico.service.shift.issues.IssuesService;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
@@ -42,6 +44,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final PrescricaoRepository repository;
     private final AdministracaoMapper administracaoMapper;
     private final AdministracaoRepository administracaoRepository;
+    private final IssuesService issuesService;
 
     @Override
     @Transactional
@@ -124,6 +127,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         administration.setTurno(shift);
 
         stockService.subtractFromStock(prescription.getMedicamento(), prescription.getDose().getDose());
+
+        issuesService.executeDefinedIssue(prescription.getId(), TipoPendencia.MEDICACAO);
+        prescription.setUltimaAdministracao(LocalDateTime.now());
 
         administracaoRepository.save(administration);
     }

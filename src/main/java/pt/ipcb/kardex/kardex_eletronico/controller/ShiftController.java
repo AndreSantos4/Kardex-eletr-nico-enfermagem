@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.ShiftChangeFilter;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
+import pt.ipcb.kardex.kardex_eletronico.dto.util.Pagination;
 import pt.ipcb.kardex.kardex_eletronico.service.shift.ShiftService;
 
 @RestController
@@ -144,5 +146,11 @@ public class ShiftController {
         return ResponseEntity.ok(
             ApiResponse.ok("Mudanca de turno obtida com sucesso", change)
         );
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<ApiResponse<List<PassagemTurnoDTO>>> getShiftHistory(Pagination pagination, ShiftChangeFilter filter){
+        var changes = service.getShiftHistory(pagination, filter);
+        return ResponseEntity.ok(ApiResponse.ok("Historico de mudancas de turno obtido com sucesso", changes));
     }
 }

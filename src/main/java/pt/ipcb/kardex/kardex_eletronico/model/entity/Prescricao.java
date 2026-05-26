@@ -8,6 +8,7 @@ import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +64,9 @@ public class Prescricao {
     @JoinColumn(name = "id_frequencia", nullable = false)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     public Frequencia frequencia;
+
+    @Column(name = "ultima_administracao")
+    public LocalDateTime ultimaAdministracao;
     
     @OneToMany(mappedBy = "prescricao", cascade = CascadeType.ALL)
     public List<AdministracaoMedicacao> administracoes = new ArrayList<>();

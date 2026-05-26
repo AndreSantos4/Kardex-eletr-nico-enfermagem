@@ -1,7 +1,9 @@
 package pt.ipcb.kardex.kardex_eletronico.service.shift;
 
 import org.springframework.transaction.annotation.Transactional;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.ShiftChangeFilter;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
+import pt.ipcb.kardex.kardex_eletronico.dto.util.Pagination;
 
 import java.util.List;
 
@@ -33,4 +35,6 @@ public interface ShiftService {
     TurnoDTO getPendingShift();
 
     TurnoDTO getCurrentShift();
+
+    List<PassagemTurnoDTO> getShiftHistory(Pagination pagination, ShiftChangeFilter filter);
 }

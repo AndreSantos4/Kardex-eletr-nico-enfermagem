@@ -12,20 +12,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtentePassagemTurnoDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.AdministracoesDTO;
+import pt.ipcb.kardex.kardex_eletronico.controller.filter.ShiftChangeFilter;
 import pt.ipcb.kardex.kardex_eletronico.dto.shift.*;
+import pt.ipcb.kardex.kardex_eletronico.dto.util.Pagination;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
-import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoPendencia;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.IncidenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
-import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtenteMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.PassagemTurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
@@ -42,11 +38,8 @@ public class ShiftServiceImpl implements ShiftService{
     private final TurnoMapper mapper;
     private final WorkerService workerService;
     private final PatientService patientService;
-    private final ProcessService processService;
-    private final AdministracaoMapper administracaoMapper;
-    private final UtenteMapper utenteMapper;
-    private final IncidenteMapper incidenteMapper;
     private final PassagemTurnoRepository passagemTurnoRepository;
+    private final ProcessService processService;
 
     @Override
     @Transactional
@@ -131,28 +124,30 @@ public class ShiftServiceImpl implements ShiftService{
     @Transactional
     public void assignNurses(Long shiftId, AssignNursesDTO data) {
         var shift = getValidShift(shiftId);
+        var newAssignments = new ArrayList<AtribuicaoUtente>();
 
         data.atribuicoes().forEach(a -> {
             var patient = patientService.getValidPatient(a.idUtente());
             var worker = workerService.getWorker(a.idEnfermeiro());
 
-            if(worker.getDados().getRole() != Role.ENFERMEIRO){
+            if (worker.getDados().getRole() != Role.ENFERMEIRO) {
                 throw new KardexException("O funcionario associado nao e um enfermeiro");
             }
-
-            if(!shift.getEnfermeiros().contains(worker)){
+            if (!shift.getEnfermeiros().contains(worker)) {
                 throw new KardexException("Nao pode ser designado um funcionario que nao foi alocado ao turno");
             }
-
-            if(shift.getAtribuicoes()
+            if (shift.getAtribuicoes()
                     .stream()
-                    .anyMatch(a2 -> a2.getEnfermeiro().equals(worker) && a2.getUtente().equals(patient))){
+                    .anyMatch(a2 -> a2.getEnfermeiro().equals(worker) && a2.getUtente().equals(patient))) {
                 throw new ConflictEntitiesException("Desiganacoes duplicadas");
             }
 
             var assignment = new AtribuicaoUtente(null, worker, patient, shift);
             shift.getAtribuicoes().add(assignment);
+            newAssignments.add(assignment);
         });
+
+        processService.buildPendingIssues(shift, newAssignments);
     }
 
     private Turno getValidShift(Long shiftId){
@@ -193,18 +188,14 @@ public class ShiftServiceImpl implements ShiftService{
             shiftChange.setTurno(shift);
             shiftChange.setProximoTurno(nextShift);
             shift.setPassagemTurno(shiftChange);
-        }
 
-        var patients = shift.getAtribuicoes()
-                .stream()
-                .map(AtribuicaoUtente::getUtente)
-                .toList();
-        List<UtentePassagemTurnoDTO> patientsChange = getUtentePassagemTurnoDTOS(patients, shift);
+            processService.buildPendingIssues(shift, shift.getAtribuicoes().stream().toList());
+        }
 
         return new PassagemTurnoDTO(
                 mapper.toLimitedDTO(shift),
                 mapper.toLimitedDTO(shiftChange.getProximoTurno()),
-                patientsChange
+                mapper.toIssuesDTOList(shift.getPendencias())
         );
     }
 
@@ -235,7 +226,18 @@ public class ShiftServiceImpl implements ShiftService{
 
         return mapper.toDTO(shift);
     }
-  
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PendenciaDTO> getPendingIssues(Long shiftId) {
+        var shift = repository.findById(shiftId)
+                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
+
+        processService.buildPendingIssues(shift, shift.getAtribuicoes().stream().toList());
+
+        return mapper.toIssuesDTOList(shift.getPendencias());
+    }
+
     @Override
     @Transactional
     public void validateShiftChange(Long shiftId, CreateShiftChangeDTO data) {
@@ -276,56 +278,6 @@ public class ShiftServiceImpl implements ShiftService{
         shiftChange.setObservacoesValidacao(null);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<PendenciaDTO> getPendingIssues(Long shiftId) {
-        repository.findById(shiftId)
-                .orElseThrow(() -> EntityNotFoundException.forId(shiftId, "Turno"));
-
-        return passagemTurnoRepository.findByProximoTurnoId(shiftId)
-                .stream()
-                .flatMap(shiftChange -> buildPendencias(shiftChange).stream())
-                .toList();
-    }
-
-    private List<PendenciaDTO> buildPendencias(PassagemTurno shiftChange) {
-        var turno = shiftChange.getTurno();
-        return turno.getAtribuicoes()
-                .stream()
-                .flatMap(atribuicao -> buildPatientPendencias(turno, atribuicao).stream())
-                .toList();
-    }
-
-    private List<PendenciaDTO> buildPatientPendencias(Turno turno, AtribuicaoUtente atribuicao) {
-        var patient = atribuicao.getUtente();
-        var process = processService.getActiveProcess(patient);
-        var pendencias = new ArrayList<>(getMedicacaoPendencias(turno, atribuicao, process));
-
-        if (!processService.vitalSignsInShift(turno, process)) {
-            pendencias.add(new PendenciaDTO(
-                    utenteMapper.toLimitedDto(patient),
-                    TipoPendencia.SINAL_VITAL,
-                    "Sinal Vital nao registado"
-            ));
-        }
-
-        return pendencias;
-    }
-
-    private List<PendenciaDTO> getMedicacaoPendencias(Turno turno, AtribuicaoUtente atribuicao, ProcessoClinico process) {
-        return turno.getAdministracoes()
-                .stream()
-                .filter(a -> a.getPrescricao().getProcesso().equals(process) && !a.getAdministrado())
-                .map(a -> new PendenciaDTO(
-                        utenteMapper.toLimitedDto(atribuicao.getUtente()),
-                        TipoPendencia.MEDICACAO,
-                        a.getPrescricao().getMedicamento().getNome() + " - " +
-                                a.getPrescricao().getDose().getDose() + " " +
-                                a.getPrescricao().getDose().getUnidadeMedida()
-                ))
-                .toList();
-    }
-
     @Transactional(readOnly = true)
     @Override
     public TurnoDTO getPendingShift() {
@@ -335,37 +287,22 @@ public class ShiftServiceImpl implements ShiftService{
         return mapper.toDTO(shift);
     }
 
-    private  List<UtentePassagemTurnoDTO> getUtentePassagemTurnoDTOS(List<Utente> patients, Turno shift) {
-        List<UtentePassagemTurnoDTO> patientsChange = new ArrayList<>();
-
-        patients.forEach(p -> {
-            var process = processService.getActiveProcess(p);
-            var administrations = shift.getAdministracoes()
-                    .stream()
-                    .filter(a -> a.getPrescricao().getProcesso().equals(process))
-                    .toList();
-
-            var administrated    = administracaoMapper.toDTOList(administrations.stream().filter(a -> !a.getPrescricao().getSos() && a.getAdministrado()).toList());
-            var notAdministrated = administracaoMapper.toDTOList(administrations.stream().filter(a -> !a.getAdministrado()).toList());
-            var administratedSOS = administracaoMapper.toDTOList(administrations.stream().filter(a -> a.getPrescricao().getSos()).toList());
-            var vitalSignInShift = processService.vitalSignsInShift(shift, process);
-            var incidents = shift.getIncidentes().stream().filter(i -> i.getProcessoClinico().equals(process)).toList();
-
-            patientsChange.add(new UtentePassagemTurnoDTO(
-                    utenteMapper.toLimitedDto(p),
-                    vitalSignInShift,
-                    new AdministracoesDTO(administrated, notAdministrated, administratedSOS),
-                    incidenteMapper.toDTOList(incidents)
-            ));
-        });
-        return patientsChange;
-    }
-
     @Transactional(readOnly = true)
     @Override
     public TurnoDTO getCurrentShift(){
         var shift = repository.findCurrentShift(LocalDateTime.now(clock))
             .orElse(null);
         return mapper.toDTO(shift);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PassagemTurnoDTO> getShiftHistory(Pagination pagination, ShiftChangeFilter filter) {
+        var passagens = passagemTurnoRepository.findAll(filter.toSpecification(), pagination.toPageable());
+        return passagens.stream().map(p -> new PassagemTurnoDTO(
+                mapper.toLimitedDTO(p.getTurno()),
+                mapper.toLimitedDTO(p.getProximoTurno()),
+                mapper.toIssuesDTOList(p.getTurno().getPendencias())
+        )).toList();
     }
 }
