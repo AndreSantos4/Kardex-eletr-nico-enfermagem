@@ -15,7 +15,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ViaAdministracao;;
 
 @Repository
 public interface MedicamentoRepository extends JpaRepository<Medicamento, Long>{
-    Optional<Medicamento> findByNome(@Param("nome") String nome);
 
     @Query("SELECT COUNT(DISTINCT m.nome) FROM Medicamento m")
     Long countUniqueMedications();

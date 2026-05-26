@@ -1,6 +1,5 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
