@@ -1,5 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.model.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +19,10 @@ public class PassagemTurno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_validador")
+    public Funcionario validador;
+
     @OneToOne(fetch = FetchType.EAGER)
     public Turno turno;
 
@@ -32,6 +38,9 @@ public class PassagemTurno {
 
     @Column(name = "observacoes_validacao")
     public String observacoesValidacao;
+
+    @Column(name = "data_validacao")
+    public LocalDateTime dataValidacao;
 
     @Column(name = "pendente", nullable = false)
     public boolean pendente = true;
