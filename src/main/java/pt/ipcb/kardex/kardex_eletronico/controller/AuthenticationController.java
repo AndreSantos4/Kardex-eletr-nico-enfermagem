@@ -56,7 +56,7 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<?>> verify(@RequestBody @Validated VerifyTwoFactorDTO data,
                                                                          HttpServletResponse response, 
                                                                          HttpServletRequest request) {
-    var result = service.verify2FA(data, response, request);
-    return ResponseEntity.ok(ApiResponse.ok("Login efetuado com sucesso", result));
-}
+        var result = service.verify2FA(data, response, request);
+        return ResponseEntity.ok(ApiResponse.ok("Login efetuado com sucesso", result));
+    }
 }
