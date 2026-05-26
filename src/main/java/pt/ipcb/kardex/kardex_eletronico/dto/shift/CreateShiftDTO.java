@@ -1,7 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.shift;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
