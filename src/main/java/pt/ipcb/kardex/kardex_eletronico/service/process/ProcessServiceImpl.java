@@ -27,6 +27,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.mapper.*;
 import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
+import pt.ipcb.kardex.kardex_eletronico.service.shift.issues.IssuesService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
@@ -40,6 +41,7 @@ public class ProcessServiceImpl implements ProcessService{
     private final WorkerService workerService;
     private final CamaRepository camaRepository;
     private final RecordService recordService;
+    private final IssuesService issuesService;
 
     @Override
     @Transactional
@@ -185,6 +187,8 @@ public class ProcessServiceImpl implements ProcessService{
         vitalSign.setFuncionario(workerService.getAutenticatedWorker());
         process.getSinaisVitais().add(vitalSign);
 
+        issuesService.executeUndefinedIssue(process.getUtente().getId(), TipoPendencia.SINAL_VITAL);
+
         repository.save(process);
     }
 
@@ -223,10 +227,19 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Transactional(readOnly = true)
     @Override
-    public boolean vitalSignsInShift(Turno shift, ProcessoClinico process) {
-        return process.getSinaisVitais()
-                .stream()
-                .anyMatch(v -> !v.getData().isBefore(shift.getInicio())
-                        && !v.getData().isAfter(shift.getFim()));
+    public void buildPendingIssues(Turno shift, List<AtribuicaoUtente> assignments) {
+        List<Pendencia> pendencias = assignments.stream()
+                .flatMap(a -> buildPatientIssues(a, shift).stream())
+                .toList();
+
+        shift.getPendencias().addAll(pendencias);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Pendencia> buildPatientIssues(AtribuicaoUtente assignment, Turno shift) {
+        var process = getActiveProcess(assignment.getUtente());
+
+        return issuesService.buildIssues(process, shift, assignment);
     }
 }
