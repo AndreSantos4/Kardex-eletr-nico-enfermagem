@@ -1,4 +1,23 @@
-<link rel="stylesheet" href="../../styles/enfermeiro/popups/popupRegistarSinaisVitais.css" />
+<style>
+.pop-up-sinaisVitais { position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
+.pop-up-sinaisVitais .pop-up { background:#1a5f7a; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.45); width:700px; max-width:95vw; overflow:hidden; }
+.pop-up-sinaisVitais .pop-up-header { background:#154e66; display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.1); }
+.pop-up-sinaisVitais .pop-up-header h3 { color:#fff; font-size:1.05rem; font-weight:600; margin:0; }
+.pop-up-sinaisVitais .pop-up-header a.cross { display:flex; align-items:center; justify-content:center; background:#fff; border-radius:50%; width:28px; height:28px; }
+.pop-up-sinaisVitais .pop-up-header a.cross:hover { background:hsl(0,0%,73%); }
+.pop-up-sinaisVitais .pop-up-main { padding:14px 18px; display:flex; flex-direction:column; gap:8px; }
+.pop-up-sinaisVitais .pop-up label { display:block; color:#e0f0f8; font-size:0.68rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:4px; }
+.pop-up-sinaisVitais .pop-up input, .pop-up-sinaisVitais .pop-up select { width:100%; background:#fff; border:1.5px solid rgba(255,255,255,0.35); border-radius:6px; padding:8px 10px; font-size:0.87rem; color:#1a3a4a; outline:none; appearance:none; margin-bottom:6px; box-sizing:border-box; }
+.pop-up-sinaisVitais .pop-up input:focus, .pop-up-sinaisVitais .pop-up select:focus { border-color:rgba(255,255,255,0.85); box-shadow:0 0 0 3px rgba(255,255,255,0.15); }
+.pop-up-sinaisVitais .form-row { display:flex; gap:12px; }
+.pop-up-sinaisVitais .form-group { flex:1; }
+.pop-up-sinaisVitais .form-group--observacoes { flex:2; }
+.pop-up-sinaisVitais .pop-up textarea { width:100%; background:#fff; border:1.5px solid rgba(255,255,255,0.35); border-radius:6px; padding:8px 10px; font-size:0.87rem; color:#1a3a4a; outline:none; resize:vertical; min-height:95px; font-family:inherit; box-sizing:border-box; margin-bottom:6px; }
+.pop-up-sinaisVitais .buttons-bottom { display:flex; padding:2% 0%; gap:10px; }
+.pop-up-sinaisVitais .buttons-bottom input { flex:1; padding:10px; background:#2a7fa0; color:#fff; border:2px solid rgba(255,255,255,0.5); border-radius:6px; font-size:0.8rem; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; cursor:pointer; }
+.pop-up-sinaisVitais .buttons-bottom input:hover { background:#236d8c; }
+.pop-up-sinaisVitais .buttons-bottom input:active { transform:scale(0.97); }
+</style>
 
 <div class="pop-up-sinaisVitais" style="display: none">
 	<div class="pop-up">
@@ -9,8 +28,7 @@
 			<div class="icon">
 				<a href="" class="cross" onclick="fecharPopUp('.pop-up-sinaisVitais'); return false;">
 					<svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-						<path fill="rgb(220, 49, 26)"
-							d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+						<path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
 					</svg>
 				</a>
 			</div>
@@ -58,8 +76,7 @@
 					</div>
 				</div>
 				<div class="buttons-bottom">
-					<input type="button" value="Cancelar" class="btn-cancelar"
-						onclick="fecharPopUp('.pop-up-sinaisVitais')" />
+					<input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUp('.pop-up-sinaisVitais')" />
 					<input type="submit" value="Registar" />
 				</div>
 			</form>

@@ -1,38 +1,35 @@
-<link rel="stylesheet" href="../../../styles/enfermeiroChefe/popups/popupDetalhePassagemTurno.css">
-
-<div class="popup-detalhe-turno-overlay" id="popup-detalhe-turno" style="display: none;">
-	<div class="popup-detalhe-turno-box">
-		<div class="popup-detalhe-turno-header">
+<div class="popup-detalhe-turno-overlay fixed inset-0 bg-black/55 flex items-center justify-center z-[1000] font-sans" id="popup-detalhe-turno" style="display: none;">
+	<div class="popup-detalhe-turno-box bg-primary rounded-[10px] w-full max-w-[580px] shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+		<div class="popup-detalhe-turno-header bg-bg-dark px-[22px] py-4 flex items-center justify-between text-[17px] font-bold text-white">
 			<span id="popup-detalhe-titulo">Passagem de Turno</span>
-			<button class="popup-detalhe-turno-close" onclick="fecharPopupDetalheTurno()">&#10005;</button>
+			<button class="popup-detalhe-turno-close bg-[#c0392b] border-0 text-white text-base font-bold w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:bg-[#e74c3c] transition-colors shrink-0" onclick="fecharPopupDetalheTurno()">&#10005;</button>
 		</div>
-		<div class="popup-detalhe-turno-content">
+		<div class="popup-detalhe-turno-content px-[22px] pt-[18px] pb-[22px] flex flex-col gap-[14px]">
 
-			<div class="popup-detalhe-turno-meta">
+			<div class="popup-detalhe-turno-meta flex items-center gap-2.5 text-secondary text-[13px] font-semibold">
 				<span id="popup-detalhe-periodo">—</span>
-				<span class="popup-detalhe-meta-sep">&#xb7;</span>
-				<!-- TODO: expor dados de validação no PassagemTurnoDTO (quem validou e quando) -->
+				<span class="popup-detalhe-meta-sep text-secondary text-lg leading-none">&#xb7;</span>
 				<span id="popup-detalhe-validado">—</span>
 			</div>
 
-			<div class="popup-detalhe-section">
-				<div class="popup-detalhe-section-header">Equipa de Turno</div>
-				<div class="popup-detalhe-section-body" id="popup-detalhe-equipa">—</div>
+			<div class="popup-detalhe-section rounded-md overflow-hidden border border-white/20">
+				<div class="popup-detalhe-section-header bg-white text-bg-dark px-3.5 py-2 text-[13px] font-bold">Equipa de Turno</div>
+				<div class="popup-detalhe-section-body bg-white text-bg-dark px-3.5 py-2.5 text-[13px] font-medium leading-[1.5] border-t border-secondary" id="popup-detalhe-equipa">—</div>
 			</div>
 
-			<div class="popup-detalhe-section">
-				<div class="popup-detalhe-section-header">Ocorrências e Pendências</div>
-				<div class="popup-detalhe-section-body popup-detalhe-pendencias-list" id="popup-detalhe-pendencias">
+			<div class="popup-detalhe-section rounded-md overflow-hidden border border-white/20">
+				<div class="popup-detalhe-section-header bg-white text-bg-dark px-3.5 py-2 text-[13px] font-bold">Ocorrências e Pendências</div>
+				<div class="popup-detalhe-section-body popup-detalhe-pendencias-list bg-white text-bg-dark px-3.5 py-2.5 text-[13px] font-medium leading-[1.5] border-t border-secondary flex flex-col gap-1 [&>.popup-detalhe-pendencia-item]:text-[13px] [&>.popup-detalhe-pendencia-item]:text-bg-dark" id="popup-detalhe-pendencias">
 					<span style="font-style:italic;">Sem pendências.</span>
 				</div>
 			</div>
 
-			<div class="popup-detalhe-nota" id="popup-detalhe-nota" style="display:none;">
-				<strong>Nota de validação:</strong> <span id="popup-detalhe-nota-texto"></span>
+			<div class="popup-detalhe-nota bg-white/10 rounded-md px-3.5 py-2.5 text-white text-xs font-medium leading-[1.5] italic" id="popup-detalhe-nota" style="display:none;">
+				<strong class="not-italic font-bold">Nota de validação:</strong> <span id="popup-detalhe-nota-texto"></span>
 			</div>
 
-			<div class="popup-detalhe-actions">
-				<button type="button" class="btn-cancelar-detalhe-turno" onclick="fecharPopupDetalheTurno()">CANCELAR</button>
+			<div class="popup-detalhe-actions flex justify-end mt-1">
+				<button type="button" class="btn-cancelar-detalhe-turno bg-transparent border-2 border-white text-white text-xs font-bold tracking-[0.05em] px-6 py-2 rounded-lg cursor-pointer hover:bg-white hover:text-primary transition-colors" onclick="fecharPopupDetalheTurno()">CANCELAR</button>
 			</div>
 		</div>
 	</div>

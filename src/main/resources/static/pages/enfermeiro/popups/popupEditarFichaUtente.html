@@ -1,31 +1,26 @@
-<link rel="stylesheet" href="../../styles/enfermeiro/popups/popupEditarFichaUtente.css" />
-
-<div class="pop-up-editar-utente" style="display:none;">
-	<div class="pop-up">
-		<div class="pop-up-header">
-			<div class="title">
-				<h3>Editar Ficha de Utente</h3>
-			</div>
+<div class="pop-up-editar-utente fixed inset-0 z-10 flex items-center justify-center min-h-screen w-full h-full bg-black/55" style="display:none;">
+	<div class="pop-up bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[760px] max-w-[95vw] max-h-[92vh] overflow-y-auto">
+		<div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10 sticky top-0 z-10">
+			<div class="title"><h3 class="text-text text-[1.05rem] font-semibold m-0">Editar Ficha de Utente</h3></div>
 			<div class="icon">
-				<a href="" class="cross" onclick="fecharPopUp('.pop-up-editar-utente'); return false;">
-					<svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-						<path fill="rgb(220, 49, 26)"
-							d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+				<a href="" class="cross flex items-center justify-center bg-white rounded-full w-7 h-7 hover:bg-[#bababa]" onclick="fecharPopUp('.pop-up-editar-utente'); return false;">
+					<svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 384 512">
+						<path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
 					</svg>
 				</a>
 			</div>
 		</div>
-		<div class="pop-up-main">
+		<div class="pop-up-main px-[18px] py-[14px] flex flex-col gap-2 [&_label:not(.flag-item)]:block [&_label:not(.flag-item)]:text-[#e0f0f8] [&_label:not(.flag-item)]:text-[0.68rem] [&_label:not(.flag-item)]:font-bold [&_label:not(.flag-item)]:tracking-[0.8px] [&_label:not(.flag-item)]:uppercase [&_label:not(.flag-item)]:mb-1 [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:w-full [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:bg-white [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:border-[1.5px] [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:border-white/35 [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:rounded-md [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:px-[10px] [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:py-2 [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:text-[0.87rem] [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:text-[#1a3a4a] [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:outline-none [&_input:not([type=checkbox]):not([type=button]):not([type=submit])]:mb-[6px] [&_select]:w-full [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-white/35 [&_select]:rounded-md [&_select]:px-[10px] [&_select]:py-2 [&_select]:text-[0.87rem] [&_select]:text-[#1a3a4a] [&_select]:outline-none [&_select]:mb-[6px]">
 			<form method="post" autocomplete="off" id="form-editar-utente" onsubmit="editarUtente(event)">
 				<label for="edit-name">NOME COMPLETO *</label>
 				<input type="text" name="edit-name" id="edit-name" placeholder="Nome Completo" required />
 
-				<div class="form-row">
-					<div class="form-group">
+				<div class="form-row flex gap-3">
+					<div class="form-group flex-1">
 						<label for="edit-data-nascimento">DATA DE NASCIMENTO *</label>
 						<input type="date" name="edit-data-nascimento" id="edit-data-nascimento" required />
 					</div>
-					<div class="form-group">
+					<div class="form-group flex-1">
 						<label for="edit-sexo">SEXO *</label>
 						<select name="edit-sexo" id="edit-sexo">
 							<option value="">Sexo</option>
@@ -35,72 +30,61 @@
 					</div>
 				</div>
 
-				<div class="form-row">
-					<div class="form-group">
+				<div class="form-row flex gap-3">
+					<div class="form-group flex-1">
 						<label for="edit-n-identificacao">Nº IDENTIFICAÇÃO *</label>
-						<input type="text" name="edit-n-identificacao" id="edit-n-identificacao" placeholder="BI/CC"
-							maxlength="12" pattern="\d{9}[A-Z]{2}\d" title="9 dígitos, 2 letras maiúsculas e 1 dígito"
-							required />
+						<input type="text" name="edit-n-identificacao" id="edit-n-identificacao" placeholder="BI/CC" maxlength="12" pattern="\d{9}[A-Z]{2}\d" title="9 dígitos, 2 letras maiúsculas e 1 dígito" required />
 					</div>
-					<div class="form-group">
+					<div class="form-group flex-1">
 						<label for="edit-n-sns">Nº SNS *</label>
-						<input type="text" name="edit-n-sns" id="edit-n-sns" pattern="\d{9}" placeholder="Número SNS"
-							required />
+						<input type="text" name="edit-n-sns" id="edit-n-sns" pattern="\d{9}" placeholder="Número SNS" required />
 					</div>
 				</div>
 
-				<div class="form-row">
-					<div class="form-group">
+				<div class="form-row flex gap-3">
+					<div class="form-group flex-1">
 						<label for="edit-cama">CAMA *</label>
-						<!-- select substituído pelo searchable pelo JS, igual ao criar utente -->
 						<select name="edit-cama" id="edit-cama"></select>
 					</div>
-					<div class="form-group">
+					<div class="form-group flex-1">
 						<label for="edit-medico-responsavel">MÉDICO RESPONSÁVEL *</label>
 						<select name="edit-medico-responsavel" id="edit-medico-responsavel"></select>
 					</div>
 				</div>
 
-				<div class="form-row">
-					<div class="form-group">
+				<div class="form-row flex gap-3">
+					<div class="form-group flex-1">
 						<label for="edit-contacto">CONTACTO *</label>
 						<input type="tel" name="edit-contacto" id="edit-contacto" placeholder="Contacto" required />
 					</div>
-					<div class="form-group">
+					<div class="form-group flex-1">
 						<label for="edit-contacto-emg">CONTACTO EMERGÊNCIA *</label>
-						<input type="tel" name="edit-contacto-emg" id="edit-contacto-emg" placeholder="Contacto"
-							required />
+						<input type="tel" name="edit-contacto-emg" id="edit-contacto-emg" placeholder="Contacto" required />
 					</div>
 				</div>
 
-				<div class="form-row">
-					<div class="form-group">
+				<div class="form-row flex gap-3">
+					<div class="form-group flex-1">
 						<label>FLAGS DE RISCO</label>
-						<div class="flags-box">
-							<label class="flag-item"><input type="checkbox" name="edit-flags" value="RISCO_FUGA" />
-								Risco de Fuga</label>
-							<label class="flag-item"><input type="checkbox" name="edit-flags"
-									value="RISCO_AUTOMUTILACAO" /> Risco de Automotilação</label>
-							<label class="flag-item"><input type="checkbox" name="edit-flags" value="RISCO_QUEDA" />
-								Risco de Queda</label>
-							<label class="flag-item"><input type="checkbox" name="edit-flags"
-									value="RISCO_AGRESSIVIDADE" /> Risco de Agressividade</label>
+						<div class="flags-box flex flex-col gap-1">
+							<label class="flag-item flex items-center gap-2 text-text text-sm normal-case tracking-normal font-normal mb-0"><input type="checkbox" name="edit-flags" value="RISCO_FUGA" class="!w-auto !mb-0" /> Risco de Fuga</label>
+							<label class="flag-item flex items-center gap-2 text-text text-sm normal-case tracking-normal font-normal mb-0"><input type="checkbox" name="edit-flags" value="RISCO_AUTOMUTILACAO" class="!w-auto !mb-0" /> Risco de Automotilação</label>
+							<label class="flag-item flex items-center gap-2 text-text text-sm normal-case tracking-normal font-normal mb-0"><input type="checkbox" name="edit-flags" value="RISCO_QUEDA" class="!w-auto !mb-0" /> Risco de Queda</label>
+							<label class="flag-item flex items-center gap-2 text-text text-sm normal-case tracking-normal font-normal mb-0"><input type="checkbox" name="edit-flags" value="RISCO_AGRESSIVIDADE" class="!w-auto !mb-0" /> Risco de Agressividade</label>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="form-group flex-1">
 						<label>ALERGIAS CONHECIDAS</label>
-						<div class="alergias-box" id="edit-alergias-box">
-							<!-- linhas injectadas pelo JS -->
-						</div>
-						<button type="button" class="btn-adicionar-alergia" id="edit-btn-adicionar-alergia">
+						<div class="alergias-box flex flex-col gap-1 mb-2" id="edit-alergias-box"></div>
+						<button type="button" class="btn-adicionar-alergia text-[#a8d4e6] text-xs font-semibold bg-transparent border border-white/30 rounded px-3 py-1 cursor-pointer hover:bg-white/10" id="edit-btn-adicionar-alergia">
 							+ Adicionar outras Alergias
 						</button>
 					</div>
 				</div>
 
-				<div class="buttons-bottom">
-					<input type="button" value="Cancelar" onclick="fecharPopUp('.pop-up-editar-utente')" />
-					<input type="submit" value="Guardar" />
+				<div class="buttons-bottom flex py-[2%] gap-[10px]">
+					<input type="button" value="Cancelar" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" onclick="fecharPopUp('.pop-up-editar-utente')" />
+					<input type="submit" value="Guardar" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" />
 				</div>
 			</form>
 		</div>

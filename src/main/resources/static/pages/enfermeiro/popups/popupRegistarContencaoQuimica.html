@@ -1,18 +1,15 @@
-<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupRegistarContencaoQuimica.css">
-
-<div class="popup-contencao-overlay" style="display: none;">
-	<div class="popup-contencao-box">
-		<div class="popup-contencao-header">
+<div class="popup-contencao-overlay fixed inset-0 bg-black/55 flex items-center justify-center z-[1000] font-sans" style="display: none;">
+	<div class="popup-contencao-box bg-primary rounded-[10px] w-full max-w-[720px] shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+		<div class="popup-contencao-header bg-bg-dark px-5 py-[14px] flex items-center justify-between text-base font-bold text-white">
 			<span>Registar Contenção Química</span>
-			<button class="popup-contencao-close" onclick="fecharPopupRegistarContencao()">&#10005;</button>
+			<button class="popup-contencao-close bg-[#c0392b] border-0 text-white text-sm font-bold w-8 h-8 rounded-full cursor-pointer flex items-center justify-center hover:bg-[#e74c3c] transition-colors" onclick="fecharPopupRegistarContencao()">&#10005;</button>
 		</div>
-		<div class="popup-contencao-content">
-			<form id="form-registar-contencao" onsubmit="submeterRegistarContencao(event)">
-				<div class="popup-contencao-row-2cols">
+		<div class="popup-contencao-content px-6 pt-[22px] pb-6">
+			<form id="form-registar-contencao" onsubmit="submeterRegistarContencao(event)" class="flex flex-col gap-[18px] [&_.popup-contencao-field]:flex [&_.popup-contencao-field]:flex-col [&_.popup-contencao-field]:gap-2 [&_.popup-contencao-label]:text-[11px] [&_.popup-contencao-label]:font-extrabold [&_.popup-contencao-label]:tracking-[0.07em] [&_.popup-contencao-label]:text-white [&_.popup-contencao-label]:uppercase [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-secondary/40 [&_select]:rounded-full [&_select]:text-bg-dark [&_select]:text-[13px] [&_select]:font-medium [&_select]:px-[18px] [&_select]:py-[11px] [&_select]:w-full [&_select]:cursor-pointer [&_select:focus]:outline-none [&_select:focus]:border-secondary [&_input]:bg-white [&_input]:border-[1.5px] [&_input]:border-secondary/40 [&_input]:rounded-full [&_input]:text-bg-dark [&_input]:text-[13px] [&_input]:font-medium [&_input]:px-[18px] [&_input]:py-[11px] [&_input]:w-full [&_input]:cursor-pointer [&_input:focus]:outline-none [&_input:focus]:border-secondary [&_textarea]:bg-white [&_textarea]:border-[1.5px] [&_textarea]:border-secondary/40 [&_textarea]:rounded-[14px] [&_textarea]:text-bg-dark [&_textarea]:text-[13px] [&_textarea]:px-[18px] [&_textarea]:py-3.5 [&_textarea]:w-full [&_textarea]:min-h-[100px] [&_textarea]:resize-y [&_textarea:focus]:outline-none [&_textarea:focus]:border-secondary">
+				<div class="popup-contencao-row-2cols grid grid-cols-2 gap-[14px]">
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">MEDICAMENTO *</label>
-						<select id="medicamento-contencao" class="popup-contencao-select"
-							onchange="atualizarDosagemContencao()">
+						<select id="medicamento-contencao" class="popup-contencao-select" onchange="atualizarDosagemContencao()">
 							<option value="" disabled selected>A carregar...</option>
 						</select>
 					</div>
@@ -23,7 +20,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="popup-contencao-row-2cols">
+				<div class="popup-contencao-row-2cols grid grid-cols-2 gap-[14px]">
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">VIA *</label>
 						<select id="via-contencao" class="popup-contencao-select">
@@ -42,8 +39,7 @@
 					</div>
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">DURAÇÃO ESTIMADA *</label>
-						<input type="text" id="duracao-contencao" class="popup-contencao-input"
-							placeholder="Ex: 2-4h" />
+						<input type="text" id="duracao-contencao" class="popup-contencao-input" placeholder="Ex: 2-4h" />
 					</div>
 				</div>
 				<div class="popup-contencao-field">
@@ -52,22 +48,19 @@
 				</div>
 				<div class="popup-contencao-field">
 					<label class="popup-contencao-label">JUSTIFICAÇÃO CLÍNICA *</label>
-					<textarea id="justificacao-contencao" class="popup-contencao-textarea"
-						placeholder="Descreva o comportamento que justificou a contenção química, medidas alternativas tentadas e resposta do utente..."
-						rows="4"></textarea>
+					<textarea id="justificacao-contencao" class="popup-contencao-textarea" placeholder="Descreva o comportamento que justificou a contenção química, medidas alternativas tentadas e resposta do utente..." rows="4"></textarea>
 				</div>
-				<div class="popup-contencao-info-note">
-					<div class="popup-contencao-info-icon">i</div>
-					<div class="popup-contencao-info-text">
-						<strong>Registo crítico e imutável - contexto psiquiátrico</strong>
+				<div class="popup-contencao-info-note bg-secondary/20 border border-secondary/35 rounded-[22px] px-[18px] py-3 flex items-center gap-3 text-xs text-white">
+					<div class="popup-contencao-info-icon w-8 h-8 rounded-full bg-bg-dark text-white font-bold text-lg italic flex items-center justify-center shrink-0" style="font-family:serif;">i</div>
+					<div class="popup-contencao-info-text flex flex-col gap-0.5 leading-[1.4]">
+						<strong class="font-bold">Registo crítico e imutável - contexto psiquiátrico</strong>
 						<span>Requer autorização médica e justificação clínica detalhada.</span>
 						<span>Registo permanente no processo clínico.</span>
 					</div>
 				</div>
-				<div class="popup-contencao-actions">
-					<button type="button" class="btn-cancelar-contencao"
-						onclick="fecharPopupRegistarContencao()">CANCELAR</button>
-					<button type="submit" class="btn-confirmar-contencao">REGISTAR</button>
+				<div class="popup-contencao-actions flex gap-3 mt-1">
+					<button type="button" class="btn-cancelar-contencao flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-lg cursor-pointer hover:bg-white hover:text-primary transition-colors" onclick="fecharPopupRegistarContencao()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-contencao flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-lg cursor-pointer hover:bg-white hover:text-primary transition-colors">REGISTAR</button>
 				</div>
 			</form>
 		</div>

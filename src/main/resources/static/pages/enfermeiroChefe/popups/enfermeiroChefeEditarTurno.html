@@ -1,30 +1,30 @@
-<link rel="stylesheet" href="../../../styles/popups.css" />
-<link rel="stylesheet" href="../../../styles/enfermeiroChefe/popups/enfermeiroChefeEditarTurno.css" />
+<style>
+.et-enf-item input[type="checkbox"] { width:16px; height:16px; min-width:16px; appearance:none; -webkit-appearance:none; background:#fff; border:1.5px solid rgba(26,58,74,0.4); border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; margin:0; }
+.et-enf-item input[type="checkbox"]:checked { background:#2a7fa0; border-color:#2a7fa0; }
+.et-enf-item input[type="checkbox"]:checked::after { content:""; display:block; width:9px; height:5px; border-left:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(-45deg) translate(1px,-1px); }
+</style>
 
-<div class="pop-up-editar-turno" style="display: none">
-  <div class="pop-up pop-up--editar-turno">
-    <div class="pop-up-header">
-      <div class="title">
-        <h3>Editar Turno</h3>
-      </div>
+<div class="pop-up-editar-turno fixed inset-0 flex items-center justify-center bg-black/45 backdrop-blur-[4px] z-[1000]" style="display: none">
+  <div class="pop-up pop-up--editar-turno bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[600px] max-w-[95vw] overflow-hidden">
+    <div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10">
+      <div class="title"><h3 class="text-text text-[1.05rem] font-semibold m-0">Editar Turno</h3></div>
       <div class="icon">
-        <a href="" class="cross" onclick="fecharPopUpEditarTurno(); return false;">
-          <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-            <path fill="rgb(220, 49, 26)"
-              d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+        <a href="" class="cross flex items-center justify-center bg-white rounded-full w-7 h-7 hover:bg-[#bababa]" onclick="fecharPopUpEditarTurno(); return false;">
+          <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 384 512">
+            <path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
           </svg>
         </a>
       </div>
     </div>
 
-    <div class="pop-up-main">
+    <div class="pop-up-main px-[18px] py-[14px] flex flex-col gap-2 [&_label]:block [&_label]:text-[#e0f0f8] [&_label]:text-[0.68rem] [&_label]:font-bold [&_label]:tracking-[0.8px] [&_label]:uppercase [&_label]:mb-1 [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:w-full [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:bg-white [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:border-[1.5px] [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:border-white/35 [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:rounded-md [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:px-[10px] [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:py-2 [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:text-[0.87rem] [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:text-[#1a3a4a] [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:outline-none [&_input:not([type=button]):not([type=submit]):not([type=hidden])]:mb-[6px] [&_select]:w-full [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-white/35 [&_select]:rounded-md [&_select]:px-[10px] [&_select]:py-2 [&_select]:text-[0.87rem] [&_select]:text-[#1a3a4a] [&_select]:outline-none [&_select]:mb-[6px]">
       <form id="form-editar-turno" onsubmit="submeterEditarTurno(event)">
         <input type="hidden" id="et-turno-id" />
 
-        <div class="form-row">
-          <div class="form-group-full">
+        <div class="form-row flex gap-3">
+          <div class="form-group-full basis-full">
             <label for="et-tipo">TIPO DE TURNO *</label>
-            <div class="select-wrap">
+            <div class="select-wrap relative">
               <select id="et-tipo" name="tipo" required onchange="onTipoTurnoEditarChange(this.value)">
                 <option value="MANHA">Manhã (08h-16h)</option>
                 <option value="TARDE">Tarde (16h-00h)</option>
@@ -35,40 +35,40 @@
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
+        <div class="form-row flex gap-3">
+          <div class="form-group flex-1">
             <label for="et-hora-inicio">HORA DE INICIO *</label>
             <input type="time" id="et-hora-inicio" name="horaInicio" value="08:00" required readonly />
           </div>
-          <div class="form-group">
+          <div class="form-group flex-1">
             <label for="et-hora-fim">HORA FIM *</label>
             <input type="time" id="et-hora-fim" name="horaFim" value="16:00" required readonly />
           </div>
         </div>
 
-        <div class="form-group-full">
+        <div class="form-group-full basis-full">
           <label>ENFERMEIROS DISPONÍVEIS *</label>
-          <div class="et-enfermeiros-box" id="et-enfermeiros-box">
-            <div class="et-loading">A carregar enfermeiros...</div>
+          <div class="et-enfermeiros-box bg-white/10 border-[1.5px] border-white/20 rounded-md px-3 py-2 max-h-[140px] overflow-y-auto flex flex-col gap-1.5 mb-1" id="et-enfermeiros-box">
+            <div class="et-loading text-[#9bb8c5] text-[0.82rem] py-1">A carregar enfermeiros...</div>
           </div>
         </div>
 
-        <div class="form-group-full">
+        <div class="form-group-full basis-full">
           <label for="et-observacoes">OBSERVAÇÕES</label>
-          <textarea id="et-observacoes" name="observacoes" placeholder="Notas sobre o turno.." rows="3"></textarea>
+          <textarea id="et-observacoes" name="observacoes" placeholder="Notas sobre o turno.." rows="3" class="w-full bg-white border-[1.5px] border-white/35 rounded-md px-[10px] py-2 text-[0.87rem] text-[#1a3a4a] outline-none resize-y mb-[6px] box-border"></textarea>
         </div>
 
-        <div class="warning-box" id="et-errorBox" style="display: none">
-          <p id="et-errorMsg">Erro ao editar turno.</p>
+        <div class="warning-box bg-white/10 rounded-md px-3 py-2" id="et-errorBox" style="display: none">
+          <p id="et-errorMsg" class="text-[#ff6b6b] text-[0.82rem] text-center m-0">Erro ao editar turno.</p>
         </div>
 
-        <div class="buttons">
-          <input type="button" value="Eliminar Turno" class="btn-eliminar" onclick="eliminarTurno()" />
-          <input type="button" value="Cancelar" class="btn-cancelar" onclick="fecharPopUpEditarTurno()" />
-          <button type="button" id="btn-atribuir-utentes-turno" class="btn-primary">
+        <div class="buttons flex py-[2%] gap-[10px] flex-wrap">
+          <input type="button" value="Eliminar Turno" class="btn-eliminar flex-1 p-[10px] bg-red-600 text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-red-700 transition-colors" onclick="eliminarTurno()" />
+          <input type="button" value="Cancelar" class="btn-cancelar flex-1 p-[10px] bg-transparent text-[#e0f0f8] border-2 border-white/35 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-white/10 transition-colors" onclick="fecharPopUpEditarTurno()" />
+          <button type="button" id="btn-atribuir-utentes-turno" class="btn-primary flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] transition-colors">
             Atribuir Utentes
           </button>
-          <input type="submit" value="Concluir" />
+          <input type="submit" value="Concluir" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] transition-colors" />
         </div>
 
       </form>

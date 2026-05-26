@@ -4,13 +4,1101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../../styles/rootAndBody.css" />
-    <link rel="stylesheet" type="text/css" href="../../styles/topBar.css" />
-    <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
-    <link rel="stylesheet" href="../../styles/enfermeiro/popups/popupAdicionarIntervencaoPlano.css">
-    <link rel="stylesheet" href="../../styles/enfermeiro/popups/popupRegistarIntervencao.css">
-    <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroPlanoCuidado.css">
-    <title>Enfermeiro Plano de Cuidado</title>
+
+<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+
+<title>Enfermeiro Plano de Cuidado</title>
+<style>
+/* === ../../styles/enfermeiro/popups/popupAdicionarIntervencaoPlano.css === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "Inter", "IBM Plex Sans", sans-serif;
+    --font-display: "Manrope", "Inter", sans-serif;
+}
+
+.popup-intervencao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-intervencao-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-intervencao-header {
+    background: var(--bg-dark);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-intervencao-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 700;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.popup-intervencao-close:hover {
+    background: #e74c3c;
+}
+
+.popup-intervencao-content {
+    padding: 22px 24px 24px;
+}
+
+.popup-intervencao-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.popup-intervencao-row-2cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.popup-intervencao-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-intervencao-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-intervencao-select,
+.popup-intervencao-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 999px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px 18px;
+    width: 100%;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.popup-intervencao-select:focus,
+.popup-intervencao-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-intervencao-input::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+}
+
+.popup-intervencao-select option {
+    color: var(--bg-dark);
+    background: var(--white);
+}
+
+.popup-intervencao-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 14px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 18px;
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.popup-intervencao-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-intervencao-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.4);
+}
+
+.popup-intervencao-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-cancelar-intervencao,
+.btn-confirmar-intervencao {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 11px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-intervencao:hover,
+.btn-confirmar-intervencao:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/* === ../../styles/enfermeiro/popups/popupRegistarIntervencao.css === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+    --primary: #2a6f97;
+    --secondary: #a8d4e6;
+    --white: #ffffff;
+    --text: #e8f4f8;
+    --bg-dark: #1a3f5e;
+    --input-bg: #1e4d6b;
+    --sans: "Inter", "IBM Plex Sans", sans-serif;
+    --font-display: "Manrope", "Inter", sans-serif;
+}
+
+.popup-reg-intervencao-overlay,
+.popup-reg-intervencao-overlay *,
+.popup-reg-intervencao-overlay *::before,
+.popup-reg-intervencao-overlay *::after {
+    box-sizing: border-box;
+}
+
+.popup-reg-intervencao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--sans);
+}
+
+.popup-reg-intervencao-box {
+    background: var(--primary);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.popup-reg-intervencao-header {
+    background: var(--bg-dark);
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.popup-reg-intervencao-close {
+    background: #c0392b;
+    border: none;
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.popup-reg-intervencao-close:hover {
+    background: #e74c3c;
+}
+
+.popup-reg-intervencao-content {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.popup-reg-intervencao-info-note {
+    background: transparent;
+    border: 1.5px solid var(--white);
+    border-radius: 999px;
+    padding: 8px 16px 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--white);
+    font-size: 13px;
+}
+
+.popup-reg-intervencao-info-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--primary);
+    font-family: serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.popup-reg-intervencao-info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1.35;
+}
+
+.popup-reg-intervencao-info-text strong {
+    font-weight: 700;
+}
+
+.popup-reg-intervencao-titulo {
+    font-family: var(--font-display);
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.popup-reg-intervencao-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.popup-reg-intervencao-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-reg-intervencao-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+
+.popup-reg-intervencao-input {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 999px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.popup-reg-intervencao-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-reg-intervencao-input::placeholder {
+    color: rgba(26, 63, 94, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.popup-reg-intervencao-textarea {
+    background: var(--white);
+    border: 1.5px solid rgba(168, 212, 230, 0.4);
+    border-radius: 22px;
+    color: var(--bg-dark);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 12px 20px;
+    width: 100%;
+    min-height: 56px;
+    resize: vertical;
+}
+
+.popup-reg-intervencao-textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.popup-reg-intervencao-textarea::placeholder {
+    color: rgba(26, 63, 94, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.popup-reg-intervencao-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.btn-cancelar-reg-intervencao,
+.btn-confirmar-reg-intervencao {
+    flex: 1;
+    background: transparent;
+    border: 2px solid var(--white);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 11px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-cancelar-reg-intervencao:hover,
+.btn-confirmar-reg-intervencao:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/* === ../../styles/enfermeiro/enfermeiroPlanoCuidado.css === */
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+.main-content {
+    flex: 1;
+    overflow-x: hidden;
+}
+
+/* Top Bar */
+.topbar-user {
+    background: transparent;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 0;
+    border-radius: 0;
+    letter-spacing: 0.04em;
+}
+
+/* Side Bar */
+.sidebar {
+    width: 210px;
+    background: var(--surface);
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+    padding: 12px 0;
+    flex-shrink: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.sidebar-item a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--accent);
+}
+
+.sidebar-item.active a {
+    background: var(--accent);
+    color: var(--surface);
+}
+
+.sidebar-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    fill: currentColor;
+}
+
+.sidebar-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    padding: 14px 18px 6px;
+    text-transform: uppercase;
+}
+
+/* Page content */
+.page-content {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Service Header */
+.service-header {
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.service-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.service-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Utente Header Card */
+.utente-header {
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.utente-header-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.utente-header-title h3 {
+    margin: 0 0 2px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+}
+
+.utente-header-title p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.btn-action {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 6px 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition:
+        background 0.15s,
+        color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-action:hover {
+    background: var(--accent);
+    color: var(--surface);
+}
+
+/* Utente Info Row */
+.utente-info-card {
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+.utente-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px 24px;
+    font-size: 12.5px;
+}
+
+.utente-info-grid .utente-nome {
+    grid-column: 1 / -1;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.info-field {
+    color: var(--muted);
+}
+
+.info-field span {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.info-riscos {
+    grid-column: 1 / -1;
+    color: hsl(0, 98%, 36%);
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+/* Alergias */
+.alergias-card {
+    background: var(--surface);
+    border: 1.5px solid var(--muted);
+    border-radius: 4px;
+    padding: 10px 14px;
+}
+
+.alergias-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.alergias-list {
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Main grid */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* Panel */
+.panel {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.panel-header {
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.panel-body {
+    padding: 12px 14px;
+    background-color: var(--accent);
+    border: 1.5px solid var(--card);
+    color: var(--card);
+}
+
+.panel-body p{
+    font-size: small;
+}
+
+.btn-panel {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition:
+        background 0.15s,
+        color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-panel:hover {
+    background: var(--accent);
+    color: var(--surface);
+}
+
+/* Sinais Vitais */
+.sv-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.sv-item {
+    background: var(--card);
+    border-radius: 4px;
+    padding: 10px 14px;
+    text-align: center;
+    min-width: 70px;
+}
+
+.sv-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    line-height: 1.2;
+}
+
+.sv-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* Plano de Cuidados */
+.plano-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    color: var(--card);
+}
+
+.plano-item:last-child {
+    border-bottom: none;
+}
+
+.plano-hora {
+    font-weight: 700;
+    color: var(--card);
+    font-size: 13px;
+}
+
+/* Medicação */
+.med-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 12.5px;
+    gap: 8px;
+}
+
+.med-item:last-child {
+    border-bottom: none;
+}
+
+.med-info-nome {
+    font-weight: 700;
+    color: var(--card);
+}
+
+.med-info-detalhe {
+    font-size: 11px;
+    color: var(--card);
+    margin-top: 1px;
+}
+
+.med-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sos-badge {
+    color: var(--card);
+}
+
+.ok-badge {
+    color: var(--card);
+}
+
+.badge-atrasado {
+    background: hsl(0, 98%, 36%);
+    color: accent;
+}
+
+.badge-hora {
+    color: var(--card);
+    font-size: 12px;
+}
+
+/* Exames e Cateteres */
+.exame-item {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 12.5px;
+}
+
+.exame-item:last-child {
+    border-bottom: none;
+}
+
+.exame-nome {
+    font-weight: 700;
+    color: var(--card);
+}
+
+.exame-detalhe {
+    font-size: 11px;
+    color: var(--card);
+    margin-top: 2px;
+}
+
+.exame-status {
+    font-size: 11px;
+    color: hsl(0, 98%, 36%);
+    font-weight: 600;
+}
+
+/* Ocorrências */
+.ocorrencia-item {
+    display: grid;
+    grid-template-columns: 48px 80px 1fr;
+    gap: 6px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+    align-items: start;
+}
+
+.ocorrencia-item:last-child {
+    border-bottom: none;
+}
+
+.ocorrencia-hora {
+    font-weight: 700;
+    color: var(--card);
+}
+
+.ocorrencia-enf {
+    color: var(--card);
+}
+
+.ocorrencia-desc {
+    color: var(--card);
+}
+
+/* Últimos Registos */
+.registos-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+}
+
+.registos-table th {
+    text-align: left;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--card);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.registos-table td {
+    padding: 6px 8px;
+    color: var(--card);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.registos-table tr:last-child td {
+    border-bottom: none;
+}
+
+.btn-administrar {
+    background: transparent;
+    border: 1.5px solid var(--surface);
+    color: var(--surface);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition:
+        background 0.15s,
+        color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-administrar:hover {
+    background: var(--surface);
+    color: var(--accent);
+}
+
+.warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fff8e1;
+    border: 1px solid #f59e0b;
+    border-left: 4px solid #f59e0b;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0 4px;
+    font-size: 13px;
+    color: #7c5b00;
+    line-height: 1.5;
+}
+
+.warning-box .warning-icon {
+    font-size: 16px;
+    color: #f59e0b;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.warning-box .warning-text {
+    flex: 1;
+}
+
+.alto-risco-verificacao {
+    background: #fff1f0;
+    border: 1px solid rgb(220, 49, 26);
+    border-left: 4px solid rgb(220, 49, 26);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 8px 0 4px;
+}
+
+.alto-risco-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: rgb(220, 49, 26);
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.alto-risco-header svg {
+    flex-shrink: 0;
+}
+
+.alto-risco-descricao {
+    font-size: 12px;
+    color: #5a1a1a;
+    line-height: 1.5;
+    margin: 0 0 10px;
+}
+
+.alto-risco-confirm-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 13px;
+    color: #3d0a0a;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.alto-risco-confirm-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: rgb(220, 49, 26);
+    cursor: pointer;
+}
+
+.btn-registar:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 50px 0;
+}
+
+table button{
+    background-color: white;
+    border-radius: 20px;
+    padding: 7px;
+    cursor: pointer;
+    color: var(--surface);
+    border-color: var(--surface);
+    padding-left: 14px;
+    padding-right: 14px;
+}
+</style>
+<style>
+/* === ../../styles/rootAndBody.css === */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--bg: #ffffff;
+	--surface: #2a6f97;
+	--surface2: #2a6f97;
+	--panel: #2a6f97;
+	--card: #2a6f97;
+	--text: #e8f4f8;
+	--muted: #a8d4e6;
+	--accent: #ffffff;
+	--sidebar-bg: #2a6f97;
+	--sidebar-hover: #ffffff;
+	--border: rgba(255, 255, 255, 0.12);
+	--mono: "IBM Plex Mono", monospace;
+	--sans: "IBM Plex Sans", sans-serif;
+}
+
+body {
+	font-family: var(--sans);
+	background: var(--bg);
+	color: var(--text);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+}
+
+
+/* === ../../styles/topBar.css === */
+/*Top bar*/
+.topbar {
+	background: var(--surface);
+	padding: 0 24px;
+	height: 52px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--border);
+}
+.topbar-brand {
+	font-size: 13px;
+	color: var(--muted);
+	letter-spacing: 0.06em;
+}
+.topbar-right {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+.topbar-user {
+	background: rgb(107, 56, 56);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+}
+.btn-sair {
+	background: transparent;
+	border: 2px solid var(--accent);
+	color: var(--accent);
+	font-family: var(--sans);
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	padding: 5px 18px;
+	cursor: pointer;
+    border-radius: 10px;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+.btn-sair:hover {
+	background: var(--accent);
+	color: var(--surface);
+}
+
+</style>
 </head>
 
 <body>
