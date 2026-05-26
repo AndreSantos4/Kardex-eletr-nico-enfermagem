@@ -54,8 +54,8 @@ public class Exame {
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
     public EstadoExame estado = EstadoExame.PEDIDO_PENDENTE;
-    
-    @JoinColumn(name = "id_resultado_exame")
-    @OneToOne(fetch = FetchType.EAGER)
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_resultado")
     public ResultadoExame resultado;
 }
