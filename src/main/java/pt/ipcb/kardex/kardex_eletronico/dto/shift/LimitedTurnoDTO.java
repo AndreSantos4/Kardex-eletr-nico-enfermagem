@@ -2,11 +2,9 @@ package pt.ipcb.kardex.kardex_eletronico.dto.shift;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record LimitedTurnoDTO(
         @JsonProperty("id") Long id,

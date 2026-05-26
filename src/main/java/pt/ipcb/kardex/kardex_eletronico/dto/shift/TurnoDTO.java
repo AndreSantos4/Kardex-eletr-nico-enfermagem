@@ -6,7 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.worker.FuncionarioDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.shift.atribuicao.AtribuicaoUtenteDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.worker.LimitedFuncionarioDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
 
