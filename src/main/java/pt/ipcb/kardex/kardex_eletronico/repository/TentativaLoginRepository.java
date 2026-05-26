@@ -12,8 +12,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.TentativaLogin;
 
 @Repository
 public interface TentativaLoginRepository extends JpaRepository<TentativaLogin, Long> {
-    List<TentativaLogin> findByEnderecoIP(String ip);
-    List<TentativaLogin> findByNumeroMecanografico(Long numeroMecanografico);
     @Query("""
         SELECT t.enderecoIP, t.numeroMecanografico, COUNT(t) as tentativas
         FROM TentativaLogin t
