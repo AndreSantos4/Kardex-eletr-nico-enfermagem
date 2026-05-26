@@ -1,13 +1,11 @@
 package pt.ipcb.kardex.kardex_eletronico.service.record;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.RecordFilter;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.record.RegistoDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.util.PaginationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.util.Pagination;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Registo;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.NivelRegisto;
@@ -34,12 +32,8 @@ public class RecordServiceImpl implements RecordService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<RegistoDTO> getRecords(PaginationDTO pagination, RecordFilter filter){
-        Pageable pageable = PageRequest.of(
-                pagination.offset() / pagination.count(),
-                pagination.count()
-        );
-
+    public List<RegistoDTO> getRecords(Pagination pagination, RecordFilter filter){
+        Pageable pageable = pagination.toPageable();
         return mapper.toDTOList(
                 repository.findAll(RecordSpecification.withFilter(filter), pageable).toList()
         );
