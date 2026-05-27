@@ -1,10 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt">
 
 <head>
     <meta charset="UTF-8">
     <title>Admin Logs Auditoria</title>
-    <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,18 +14,6 @@
             }},
         };
     </script>
-    <style>
-        /* JS gera linhas e botões com estas classes */
-        .row-datetime { font-size:13px; font-weight:700; }
-        .row-user-name { font-weight:700; }
-        .badge-acesso, .badge-login, .badge-medicamento, .badge-incidente { background:transparent; color:#fff; padding:0; font-weight:700; font-size:13px; }
-        .row-desc { white-space:normal; max-width:500px; word-break:break-word; font-weight:600; font-size:13px; }
-        .row-ip { font-weight:700; text-align:right; }
-        .btn-pagina { min-width:32px; height:32px; padding:0 10px; background:transparent; border:2px solid #1e6b93; border-radius:6px; color:#1e6b93; font-size:12px; font-weight:700; cursor:pointer; transition:background .15s,color .15s; }
-        .btn-pagina:hover { background:rgba(30,107,147,.05); }
-        .btn-pagina.ativo { background:#1e6b93; border-color:#1e6b93; color:#fff; }
-        .paginacao-tamanho select { background:#fff; border:2px solid #1e6b93; color:#1e6b93; font-size:12px; font-weight:700; padding:4px 8px; border-radius:6px; cursor:pointer; outline:none; }
-    </style>
 </head>
 
 <body class="font-sans flex flex-row h-screen w-full m-0 p-0 bg-white overflow-hidden box-border">
@@ -52,7 +39,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col flex-1 gap-4 px-5 py-4 bg-white">
+        <div class="flex flex-col flex-1 gap-4 px-5 py-4 bg-white [&_.row-datetime]:text-[13px] [&_.row-datetime]:font-bold [&_.row-user-name]:font-bold [&_.badge-acesso]:bg-transparent [&_.badge-acesso]:text-white [&_.badge-acesso]:p-0 [&_.badge-acesso]:font-bold [&_.badge-acesso]:text-[13px] [&_.badge-login]:bg-transparent [&_.badge-login]:text-white [&_.badge-login]:p-0 [&_.badge-login]:font-bold [&_.badge-login]:text-[13px] [&_.badge-medicamento]:bg-transparent [&_.badge-medicamento]:text-white [&_.badge-medicamento]:p-0 [&_.badge-medicamento]:font-bold [&_.badge-medicamento]:text-[13px] [&_.badge-incidente]:bg-transparent [&_.badge-incidente]:text-white [&_.badge-incidente]:p-0 [&_.badge-incidente]:font-bold [&_.badge-incidente]:text-[13px] [&_.row-desc]:whitespace-normal [&_.row-desc]:max-w-[500px] [&_.row-desc]:break-words [&_.row-desc]:font-semibold [&_.row-desc]:text-[13px] [&_.row-ip]:font-bold [&_.row-ip]:text-right [&_.btn-pagina]:min-w-[32px] [&_.btn-pagina]:h-8 [&_.btn-pagina]:px-2.5 [&_.btn-pagina]:bg-transparent [&_.btn-pagina]:border-2 [&_.btn-pagina]:border-[#1e6b93] [&_.btn-pagina]:rounded-md [&_.btn-pagina]:text-[#1e6b93] [&_.btn-pagina]:text-xs [&_.btn-pagina]:font-bold [&_.btn-pagina]:cursor-pointer [&_.btn-pagina]:transition-colors [&_.btn-pagina:hover]:bg-[#1e6b93]/5 [&_.btn-pagina.ativo]:bg-[#1e6b93] [&_.btn-pagina.ativo]:border-[#1e6b93] [&_.btn-pagina.ativo]:!text-white [&_.paginacao-tamanho_select]:bg-white [&_.paginacao-tamanho_select]:border-2 [&_.paginacao-tamanho_select]:border-[#1e6b93] [&_.paginacao-tamanho_select]:text-[#1e6b93] [&_.paginacao-tamanho_select]:text-xs [&_.paginacao-tamanho_select]:font-bold [&_.paginacao-tamanho_select]:px-2 [&_.paginacao-tamanho_select]:py-1 [&_.paginacao-tamanho_select]:rounded-md [&_.paginacao-tamanho_select]:cursor-pointer [&_.paginacao-tamanho_select]:outline-none">
             <div class="bg-primary rounded px-5 py-[14px] flex items-center justify-between gap-4 shrink-0">
                 <div>
                     <h1 class="text-white text-[15px] font-bold tracking-wider m-0">Logs de Auditoria</h1>

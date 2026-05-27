@@ -4,452 +4,77 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	
-	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
 	<title>Médico - Notas Clínicas</title>
-<style>
-/* === ../../styles/medico/medicoNotasClinicas.css === */
-:root {
-    --primary: #2a6f97;
-    --secondary: #a8d4e6;
-    --white: #ffffff;
-    --text: #e8f4f8;
-    --bg-dark: #1a3f5e;
-    --border: rgba(255, 255, 255, 0.12);
-    --sans: "IBM Plex Sans", sans-serif;
-}
-
-/* ===== Body ===== */
-body {
-    font-family: var(--sans);
-    color: var(--text);
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: var(--white);
-}
-
-.main-container {
-    display: flex;
-    flex-grow: 1;
-    align-items: stretch;
-}
-
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ===== Top Bar ===== */
-.topbar {
-    height: 52px;
-    background: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    border-bottom: 1px solid var(--border);
-}
-
-.topbar-page {
-    font-size: 13px;
-    color: var(--text);
-    letter-spacing: 0.06em;
-}
-
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.topbar-user {
-    color: var(--white);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-}
-
-.btn-sair {
-    background: transparent;
-    border: 2px solid var(--white);
-    color: var(--white);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    padding: 5px 18px;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: background 0.15s, color 0.15s;
-}
-
-.btn-sair:hover {
-    background: var(--white);
-    color: var(--primary);
-}
-
-/* ===== Sidebar ===== */
-.sidebar {
-    width: 210px;
-    background: var(--primary);
-    padding: 12px 0;
-    border-top: 1px solid var(--white);
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar-item a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 18px;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 14px;
-    transition: background 0.2s;
-}
-
-.sidebar-item a:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: var(--white);
-}
-
-.sidebar-item.active a {
-    background: var(--white);
-    color: var(--primary);
-    font-weight: 700;
-}
-
-.sidebar-item svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    fill: currentColor;
-}
-
-.sidebar-section-label {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    color: rgba(255, 255, 255, 0.9);
-    padding: 20px 18px 8px;
-    text-transform: uppercase;
-}
-
-/* ===== Page Header ===== */
-.page-header {
-    background: var(--primary);
-    border-radius: 4px;
-    padding: 14px 20px;
-    margin: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
-
-.page-header-left {
-    flex: 1;
-    min-width: 0;
-}
-
-.page-header-left h4 {
-    margin: 0;
-    color: var(--white);
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.page-header-left p {
-    margin: 2px 0 0 0;
-    font-size: 12px;
-    color: var(--secondary);
-    font-weight: 500;
-}
-
-.page-header-subtitle {
-    margin: 2px 0 0 0;
-    font-size: 12px;
-    color: var(--secondary);
-    font-weight: 400;
-}
-
-.page-header-right {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.page-header-button {
-    background: transparent;
-    border: 2px solid var(--white);
-    color: var(--white);
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    padding: 6px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    white-space: nowrap;
-}
-
-.page-header-button:hover {
-    background: var(--white);
-    color: var(--primary);
-}
-
-/* ===== Notas Card ===== */
-.notas-card {
-    background: var(--primary);
-    border-radius: 6px;
-    margin: 0 14px 14px 14px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.notas-card-header {
-    background: var(--bg-dark);
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--white);
-}
-
-.notas-card-header h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-}
-
-.notas-close-btn {
-    background: #c0392b;
-    border: none;
-    color: var(--white);
-    font-size: 16px;
-    font-weight: 700;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s;
-    line-height: 1;
-}
-
-.notas-close-btn:hover {
-    background: #e74c3c;
-}
-
-.notas-card-body {
-    padding: 20px 24px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.notas-section-title {
-    margin: 0;
-    color: var(--secondary);
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-}
-
-/* ===== Notas List ===== */
-.notas-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.nota-item {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(168, 212, 230, 0.25);
-    border-radius: 6px;
-    padding: 14px 18px;
-    color: var(--white);
-    line-height: 1.5;
-}
-
-.nota-header {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 6px;
-    letter-spacing: 0.02em;
-}
-
-.nota-header .nota-meta {
-    color: var(--secondary);
-    font-weight: 600;
-}
-
-.nota-texto {
-    font-size: 13px;
-    color: var(--white);
-    line-height: 1.55;
-    font-weight: 500;
-}
-
-.nota-empty {
-    text-align: center;
-    padding: 28px 16px;
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
-}
-
-</style>
+	<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: { extend: {
+				colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+				fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+			}},
+		};
+	</script>
 </head>
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-	tailwind.config = {
-		theme: {
-			extend: {
-				colors: {
-					primary: "#2a6f97",
-					secondary: "#a8d4e6",
-					"bg-dark": "#1a3f5e",
-					text: "#e8f4f8",
-				},
-				fontFamily: {
-					sans: ['"Inter"', "sans-serif"],
-					mono: ['"IBM Plex Mono"', "monospace"],
-				},
-			},
-		},
-	};
-</script>
-
-<body>
-	<!-- Top Bar -->
-	<div class="topbar">
-		<span class="topbar-page">Medico notas clínicas</span>
-		<div class="topbar-right">
-			<span class="topbar-user">
-				<span id="nome-medico"></span>
-			</span>
-			<button class="btn-sair" onclick="logout()">SAIR</button>
+<body class="font-sans text-text m-0 flex flex-col min-h-screen bg-white">
+	<div class="h-[52px] bg-primary flex items-center justify-between px-6 border-b border-white/10">
+		<span class="text-[13px] text-text tracking-wider">Medico notas clínicas</span>
+		<div class="flex items-center gap-4">
+			<span class="bg-transparent text-white text-[13px] font-bold tracking-[0.04em]"><span id="nome-medico"></span></span>
+			<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-widest px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
 		</div>
 	</div>
 
-	<div class="main-container">
-		<!-- Sidebar -->
-		<aside class="sidebar">
+	<div class="flex flex-grow items-stretch">
+		<aside class="w-[210px] bg-primary py-3 shrink-0 [&_ul]:list-none [&_ul]:p-0 [&_ul]:m-0 [&_.sidebar-item_a]:flex [&_.sidebar-item_a]:items-center [&_.sidebar-item_a]:gap-3 [&_.sidebar-item_a]:px-[18px] [&_.sidebar-item_a]:py-3 [&_.sidebar-item_a]:no-underline [&_.sidebar-item_a]:text-text [&_.sidebar-item_a]:text-sm [&_.sidebar-item_a]:transition-colors [&_.sidebar-item_a:hover]:bg-white/15 [&_.sidebar-item_a:hover]:text-white [&_.sidebar-item.active_a]:bg-white [&_.sidebar-item.active_a]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
 			<nav>
-				<div class="sidebar-section-label">Principal</div>
+				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Principal</div>
 				<ul>
-					<li class="sidebar-item">
-						<a href="medicoDashboard">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-								<path
-									d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1z" />
-							</svg>
-							Home
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a href="medicoListaUtentes">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-								<path
-									d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
-							</svg>
-							Lista de Utentes
-						</a>
-					</li>
-					<li class="sidebar-item">
-						<a href="#" onclick="irParaPrescrever(event)">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-								<path
-									d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zM58.6 323.5L21.2 444.6c-2.5 8.2-.2 17.1 5.8 23.1s14.9 8.3 23.1 5.8l121.1-37.4c8.7-2.7 16.6-7.4 23.1-13.9L387.7 220.8 291.2 124.3 72.4 300.4c-6.5 6.5-11.2 14.4-13.9 23.1z" />
-							</svg>
-							Prescrever
-						</a>
-					</li>
+					<li class="sidebar-item"><a href="medicoDashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1z"/></svg>Home</a></li>
+					<li class="sidebar-item"><a href="medicoListaUtentes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32z"/></svg>Lista de Utentes</a></li>
+					<li class="sidebar-item"><a href="#" onclick="irParaPrescrever(event)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0z"/></svg>Prescrever</a></li>
 				</ul>
 
-				<div class="sidebar-section-label">Clínico</div>
+				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Clínico</div>
 				<ul>
-					<li class="sidebar-item">
-						<a href="#">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-								<path
-									d="M0 80C0 53.5 21.5 32 48 32l32 0c26.5 0 48 21.5 48 48l0 80 192 0 0-80c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-80-192 0 0 80c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48L0 80z" />
-							</svg>
-							Exames
-						</a>
-					</li>
-					<li class="sidebar-item active">
-						<a href="#">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-								<path
-									d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z" />
-							</svg>
-							Notas de evolução
-						</a>
-					</li>
+					<li class="sidebar-item"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 80C0 53.5 21.5 32 48 32l32 0c26.5 0 48 21.5 48 48l0 80 192 0 0-80c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-80-192 0 0 80c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48L0 80z"/></svg>Exames</a></li>
+					<li class="sidebar-item active"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64z"/></svg>Notas de evolução</a></li>
 				</ul>
 
-				<div class="sidebar-section-label">Cuidados</div>
+				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Cuidados</div>
 				<ul>
-					<li class="sidebar-item">
-						<a href="#">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-								<path
-									d="M192 0c-41.8 0-77.4 26.7-90.5 64L64 64C28.7 64 0 92.7 0 128L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64l-37.5 0C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM72 272a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm104-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-128 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zM72 368a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zm88 0c0-8.8 7.2-16 16-16l128 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-128 0c-8.8 0-16-7.2-16-16z" />
-							</svg>
-							Planos de Cuidados
-						</a>
-					</li>
+					<li class="sidebar-item"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M192 0c-41.8 0-77.4 26.7-90.5 64L64 64C28.7 64 0 92.7 0 128L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64z"/></svg>Planos de Cuidados</a></li>
 				</ul>
 			</nav>
 		</aside>
 
-		<!-- Main Content -->
-		<main class="main-content">
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="page-header-left">
-					<h4 id="page-title">Notas clínicas - <span id="utente-nome"></span></h4>
-					<p id="page-subtitle" class="page-header-subtitle">
+		<main class="flex-1 flex flex-col">
+			<div class="bg-primary rounded m-[14px] px-5 py-[14px] flex items-center justify-between">
+				<div>
+					<h4 class="m-0" id="page-title">Notas clínicas - <span id="utente-nome"></span></h4>
+					<p class="m-0 mt-0.5 text-xs text-secondary font-normal" id="page-subtitle">
 						Proc. <span id="utente-processo"></span> · Cama <span id="utente-cama"></span> ·
 						<span id="utente-diagnostico"></span> · <span id="utente-dias"></span> dia(s) internado
 					</p>
 				</div>
-				<div class="page-header-right">
-					<button class="page-header-button" onclick="irParaKardex()">Kardex</button>
-					<button class="page-header-button" onclick="abrirNovaNota()">Nova Nota</button>
-					<button class="page-header-button" onclick="abrirHistInternamentos()">Hist. internamentos</button>
+				<div class="flex items-center gap-3">
+					<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="irParaKardex()">Kardex</button>
+					<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="abrirNovaNota()">Nova Nota</button>
+					<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="abrirHistInternamentos()">Hist. internamentos</button>
 				</div>
 			</div>
 
-			<!-- Notas Card -->
-			<div class="notas-card">
-				<div class="notas-card-header">
-					<h3>Notas Clínicas - <span id="header-utente-nome"></span></h3>
-					<button class="notas-close-btn" onclick="fecharNotasClinicas()" aria-label="Fechar">×</button>
+			<div class="bg-primary mx-[14px] mb-[14px] rounded-md overflow-hidden">
+				<div class="bg-bg-dark px-5 py-3.5 flex items-center justify-between text-white">
+					<h3 class="m-0 text-base font-bold tracking-[0.02em]">Notas Clínicas - <span id="header-utente-nome"></span></h3>
+					<button class="bg-transparent border-0 text-white text-2xl cursor-pointer w-7 h-7 flex items-center justify-center hover:opacity-70" onclick="fecharNotasClinicas()" aria-label="Fechar">×</button>
 				</div>
 
-				<div class="notas-card-body">
-					<h4 class="notas-section-title">Notas de Evolução - Internamento atual</h4>
+				<div class="px-5 py-4 [&_.nota-item]:bg-white [&_.nota-item]:rounded-xl [&_.nota-item]:px-5 [&_.nota-item]:py-3 [&_.nota-item]:mb-2.5 [&_.nota-header]:text-bg-dark [&_.nota-header]:font-bold [&_.nota-header]:text-sm [&_.nota-header]:mb-1 [&_.nota-meta]:text-bg-dark/70 [&_.nota-meta]:font-normal [&_.nota-meta]:text-xs [&_.nota-texto]:text-bg-dark [&_.nota-texto]:text-[13px] [&_.nota-texto]:leading-[1.5] [&_.nota-empty]:text-center [&_.nota-empty]:py-7 [&_.nota-empty]:px-4 [&_.nota-empty]:text-white/60 [&_.nota-empty]:italic">
+					<h4 class="text-white text-[13px] font-bold tracking-wider uppercase mb-3 mt-0">Notas de Evolução - Internamento atual</h4>
 
-					<div class="notas-lista" id="notas-lista">
+					<div id="notas-lista">
 						<div class="nota-empty">A carregar notas…</div>
 					</div>
 				</div>

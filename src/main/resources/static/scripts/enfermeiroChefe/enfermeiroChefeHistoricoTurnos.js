@@ -60,7 +60,7 @@ async function carregarHistorico() {
         console.error("[Historico] Erro ao carregar turnos:", err);
         const tbody = document.getElementById("historico-tbody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="7" class="historico-loading">Erro ao carregar dados.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center !p-6 italic !text-primary/60 !font-normal">Erro ao carregar dados.</td></tr>`;
         }
     }
 }
@@ -115,7 +115,7 @@ function _renderTabela(turnos) {
     if (!tbody) return;
 
     if (!turnos || turnos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="historico-loading">Sem resultados para os filtros selecionados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center !p-6 italic !text-primary/60 !font-normal">Sem resultados para os filtros selecionados.</td></tr>`;
         return;
     }
 
@@ -130,7 +130,7 @@ function _renderTabela(turnos) {
         const utenteCell = numUtentes > 0 ? String(numUtentes) : "—";
 
         // TODO: expor pendências e validação no TurnoDTO ou num endpoint de listagem de histórico
-        const pendenciasCell = `<span class="td-sem-pendencias">—</span>`;
+        const pendenciasCell = `<span class="text-primary/55 font-medium italic">—</span>`;
         const validadoCell = "—";
 
         return `<tr>
@@ -140,7 +140,7 @@ function _renderTabela(turnos) {
             <td>${_escapeHtml(utenteCell)}</td>
             <td>${pendenciasCell}</td>
             <td>${validadoCell}</td>
-            <td><button class="btn-ver-mais" onclick="abrirPopupDetalheTurno(${t.id})">VER MAIS</button></td>
+            <td><button class="bg-transparent border-[1.5px] border-primary text-primary text-[11px] font-bold tracking-[0.04em] px-3.5 py-1 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors whitespace-nowrap" onclick="abrirPopupDetalheTurno(${t.id})">VER MAIS</button></td>
         </tr>`;
     }).join("");
 }

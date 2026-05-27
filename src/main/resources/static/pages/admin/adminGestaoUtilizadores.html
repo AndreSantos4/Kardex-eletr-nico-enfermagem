@@ -1,10 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt">
 
 <head>
   <meta charset="UTF-8" />
   <title>Admin Gestão de Utilizadores</title>
-  <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -15,15 +14,6 @@
       }},
     };
   </script>
-  <style>
-    /* badges e botões gerados pelo JS na tabela */
-    .badge-ativo { background:#2e9e6e; color:#fff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:2px; letter-spacing:0.06em; }
-    .badge-inativo { background:#e07070; color:#fff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:2px; letter-spacing:0.06em; }
-    .btn-table { background:transparent; border:1.5px solid #2a6f97; color:#2a6f97; font-size:11px; font-weight:700; letter-spacing:0.08em; padding:4px 10px; cursor:pointer; border-radius:4px; white-space:nowrap; transition:background .15s,color .15s; }
-    .btn-table:hover { background:#2a6f97; color:#fff; }
-    .btn-desativar { border-color:#e07070; color:#e07070; }
-    .btn-desativar:hover { background:#d95b5b; color:#fff; border-color:#d95b5b; }
-  </style>
 </head>
 
 <body class="font-sans flex flex-col h-screen w-full m-0 p-0 bg-white text-text relative box-border">
@@ -79,7 +69,7 @@
                   <th class="text-left px-4 py-3 text-xs font-bold tracking-wider text-white whitespace-nowrap"></th>
                 </tr>
               </thead>
-              <tbody class="[&>tr]:border-b-2 [&>tr]:border-primary [&>tr]:bg-white [&>tr>td]:px-4 [&>tr>td]:py-3 [&>tr>td]:text-black [&>tr>td]:whitespace-nowrap [&_a]:text-black [&_a]:no-underline [&_a]:text-xs [&_.actions]:flex [&_.actions]:gap-1.5 [&_.actions]:justify-end"></tbody>
+              <tbody class="[&>tr]:border-b-2 [&>tr]:border-primary [&>tr]:bg-white [&>tr>td]:px-4 [&>tr>td]:py-3 [&>tr>td]:text-black [&>tr>td]:whitespace-nowrap [&_a]:text-black [&_a]:no-underline [&_a]:text-xs [&_.actions]:flex [&_.actions]:gap-1.5 [&_.actions]:justify-end [&_.badge-ativo]:bg-ok [&_.badge-ativo]:text-white [&_.badge-ativo]:text-[11px] [&_.badge-ativo]:font-bold [&_.badge-ativo]:px-2 [&_.badge-ativo]:py-0.5 [&_.badge-ativo]:rounded-sm [&_.badge-ativo]:tracking-wider [&_.badge-inativo]:bg-[#e07070] [&_.badge-inativo]:text-white [&_.badge-inativo]:text-[11px] [&_.badge-inativo]:font-bold [&_.badge-inativo]:px-2 [&_.badge-inativo]:py-0.5 [&_.badge-inativo]:rounded-sm [&_.badge-inativo]:tracking-wider [&_.btn-table]:bg-transparent [&_.btn-table]:border-[1.5px] [&_.btn-table]:border-primary [&_.btn-table]:text-primary [&_.btn-table]:text-[11px] [&_.btn-table]:font-bold [&_.btn-table]:tracking-[0.08em] [&_.btn-table]:px-2.5 [&_.btn-table]:py-1 [&_.btn-table]:cursor-pointer [&_.btn-table]:rounded [&_.btn-table]:whitespace-nowrap [&_.btn-table]:transition-colors [&_.btn-table:hover]:bg-primary [&_.btn-table:hover]:text-white [&_.btn-desativar]:!border-[#e07070] [&_.btn-desativar]:!text-[#e07070] [&_.btn-desativar:hover]:!bg-[#d95b5b] [&_.btn-desativar:hover]:!text-white [&_.btn-desativar:hover]:!border-[#d95b5b]"></tbody>
             </table>
           </div>
         </div>

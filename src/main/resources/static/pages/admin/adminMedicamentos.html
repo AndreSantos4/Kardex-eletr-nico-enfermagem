@@ -1,10 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt">
 
 <head>
 	<meta charset="UTF-8" />
 	<title>Admin Medicamentos</title>
-	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
 	<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script>
@@ -15,14 +14,6 @@
 			}},
 		};
 	</script>
-	<style>
-		/* Botões e paginação gerados pelo JS */
-		.btn-pagina { min-width:32px; height:32px; padding:0 10px; background:transparent; border:1.5px solid #2a6f97; border-radius:4px; color:#2a6f97; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer; transition:background .15s,color .15s; }
-		.btn-pagina:hover { background:#a8d4e6; }
-		.btn-pagina.ativo { background:#2a6f97; border-color:#2a6f97; color:#fff; }
-		.paginacao-tamanho select { background:#fff; border:1.5px solid #2a6f97; color:#2a6f97; font-size:12px; font-weight:700; padding:4px 8px; border-radius:4px; cursor:pointer; }
-		.paginacao-tamanho select:hover { background:#a8d4e6; }
-	</style>
 </head>
 
 <body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border">
@@ -63,7 +54,7 @@
 				</div>
 			</div>
 
-			<div class="m-[14px] rounded-[5px] border border-primary">
+			<div class="m-[14px] rounded-[5px] border border-primary [&_.btn-pagina]:min-w-[32px] [&_.btn-pagina]:h-8 [&_.btn-pagina]:px-2.5 [&_.btn-pagina]:bg-transparent [&_.btn-pagina]:border-[1.5px] [&_.btn-pagina]:border-primary [&_.btn-pagina]:rounded [&_.btn-pagina]:text-primary [&_.btn-pagina]:text-xs [&_.btn-pagina]:font-bold [&_.btn-pagina]:tracking-wider [&_.btn-pagina]:cursor-pointer [&_.btn-pagina]:transition-colors [&_.btn-pagina:hover]:bg-secondary [&_.btn-pagina.ativo]:bg-primary [&_.btn-pagina.ativo]:border-primary [&_.btn-pagina.ativo]:text-white [&_.paginacao-tamanho_select]:bg-white [&_.paginacao-tamanho_select]:border-[1.5px] [&_.paginacao-tamanho_select]:border-primary [&_.paginacao-tamanho_select]:text-primary [&_.paginacao-tamanho_select]:text-xs [&_.paginacao-tamanho_select]:font-bold [&_.paginacao-tamanho_select]:px-2 [&_.paginacao-tamanho_select]:py-1 [&_.paginacao-tamanho_select]:rounded [&_.paginacao-tamanho_select]:cursor-pointer [&_.paginacao-tamanho_select:hover]:bg-secondary">
 				<div class="w-full overflow-x-auto">
 					<table class="lista-medicamentos w-full border-collapse text-[0.875rem] table-fixed">
 						<thead class="bg-primary text-white text-center">

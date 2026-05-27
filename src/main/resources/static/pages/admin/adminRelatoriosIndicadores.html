@@ -1,10 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt">
 
 <head>
 	<meta charset="UTF-8" />
 	<title>Admin Relatórios e Indicadores</title>
-	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
 	<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script>
@@ -15,18 +14,6 @@
 			}},
 		};
 	</script>
-	<style>
-		/* JS adiciona var-positiva/negativa/neutra a células */
-		.var-positiva { color:#6ee7a8; font-weight:700; }
-		.var-negativa { color:#ff9b9b; font-weight:700; }
-		.var-neutra { color:#a8d4e6; font-weight:600; }
-		@media (max-width: 1200px) {
-			.filtros-grid { grid-template-columns:1fr 1fr !important; }
-			.btn-gerar-relatorio { grid-column:span 2; justify-self:end; }
-			.kpis-grid { grid-template-columns:repeat(2,1fr) !important; }
-			.reports-grid { grid-template-columns:1fr !important; }
-		}
-	</style>
 </head>
 
 <body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border">
@@ -67,7 +54,7 @@
 			</div>
 
 			<div class="bg-primary rounded-md px-5 py-4 text-white">
-				<div class="filtros-grid grid grid-cols-[1.5fr_1.2fr_1fr_1fr_auto] gap-[14px] items-end">
+				<div class="filtros-grid grid grid-cols-[1.5fr_1.2fr_1fr_1fr_auto] gap-[14px] items-end max-[1200px]:!grid-cols-2">
 					<div class="flex flex-col gap-1.5">
 						<label class="text-[11px] font-extrabold tracking-wider text-white uppercase">TIPO DE RELATÓRIO</label>
 						<select id="tipo-relatorio" class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 w-full cursor-pointer focus:outline-none focus:border-secondary" onchange="atualizarRelatorio()">
@@ -95,11 +82,11 @@
 						<label class="text-[11px] font-extrabold tracking-wider text-white uppercase">ATÉ</label>
 						<input type="date" id="data-fim" class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 w-full cursor-pointer focus:outline-none focus:border-secondary" />
 					</div>
-					<button class="btn-gerar-relatorio bg-transparent border-2 border-white text-white text-xs font-bold tracking-wider px-4 py-2.5 rounded-lg cursor-pointer leading-tight min-w-[110px] hover:bg-white hover:text-primary transition-colors" onclick="gerarRelatorio()">GERAR<br />RELATÓRIO</button>
+					<button class="btn-gerar-relatorio bg-transparent border-2 border-white text-white text-xs font-bold tracking-wider px-4 py-2.5 rounded-lg cursor-pointer leading-tight min-w-[110px] hover:bg-white hover:text-primary transition-colors max-[1200px]:col-span-2 max-[1200px]:justify-self-end" onclick="gerarRelatorio()">GERAR<br />RELATÓRIO</button>
 				</div>
 			</div>
 
-			<div class="kpis-grid grid grid-cols-4 gap-[14px]">
+			<div class="kpis-grid grid grid-cols-4 gap-[14px] max-[1200px]:!grid-cols-2">
 				<div class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
 					<span class="text-[38px] font-bold text-primary leading-none" id="kpi-administracoes">—</span>
 					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Administrações<br />Este Mês</span>
@@ -118,7 +105,7 @@
 				</div>
 			</div>
 
-			<div class="reports-grid grid grid-cols-2 gap-[14px]">
+			<div class="reports-grid grid grid-cols-2 gap-[14px] max-[1200px]:!grid-cols-1 [&_.var-positiva]:!text-[#6ee7a8] [&_.var-positiva]:font-bold [&_.var-negativa]:!text-[#ff9b9b] [&_.var-negativa]:font-bold [&_.var-neutra]:!text-secondary [&_.var-neutra]:font-semibold">
 				<div class="bg-primary rounded-md overflow-hidden flex flex-col">
 					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider [&_span]:text-secondary [&_span]:font-semibold">Top 10 Medicamentos - Consumo <span id="periodo-top-medicamentos">Março 2026</span></div>
 					<div class="p-0 bg-primary">

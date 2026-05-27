@@ -4,659 +4,83 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
 	<title>Enf Chefe - Validar Passagem de Turno</title>
-<style>
-/* === ../../styles/enfermeiroChefe/enfermeiroChefeValidarPassagemTurno.css === */
-:root {
-	--primary: #2a6f97;
-	--secondary: #a8d4e6;
-	--white: #ffffff;
-	--text: #e8f4f8;
-	--bg-dark: #1a3f5e;
-	--border: rgba(255, 255, 255, 0.12);
-	--sans: "IBM Plex Sans", sans-serif;
-	--ok: #2e9e6e;
-}
-
-/* ===== Layout ===== */
-.layout {
-	display: flex;
-	flex: 1;
-	gap: 16px;
-	padding-right: 14px;
-}
-
-/* ===== Page Header ===== */
-.page-header {
-	background: var(--primary);
-	border-radius: 4px;
-	padding: 14px 20px;
-	margin: 0;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--white);
-}
-
-.page-header-left h4 {
-	margin: 0 0 2px 0;
-	font-size: 16px;
-	font-weight: 700;
-	letter-spacing: 0.02em;
-}
-
-.page-header-left p {
-	margin: 0;
-	font-size: 12px;
-	color: var(--secondary);
-	font-weight: 500;
-}
-
-.btn-painel {
-	background: transparent;
-	border: 2px solid var(--white);
-	color: var(--white);
-	font-family: var(--sans);
-	font-size: 13px;
-	font-weight: 700;
-	letter-spacing: 0.05em;
-	padding: 5px 20px;
-	cursor: pointer;
-	border-radius: 10px;
-	transition: background 0.15s, color 0.15s;
-}
-
-.btn-painel:hover {
-	background: var(--white);
-	color: var(--primary);
-}
-
-/* ===== Resumo Cards ===== */
-.resumo-grid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 14px;
-}
-
-.resumo-card {
-	background: var(--white);
-	border: 1.5px solid var(--primary);
-	border-radius: 6px;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-}
-
-.resumo-card-header {
-	background: var(--white);
-	color: var(--bg-dark);
-	padding: 10px 16px;
-	font-size: 14px;
-	font-weight: 700;
-	letter-spacing: 0.02em;
-	border-bottom: 1.5px solid var(--secondary);
-}
-
-.resumo-card-body {
-	padding: 12px 16px;
-	color: var(--primary);
-	font-size: 13px;
-	font-weight: 600;
-	line-height: 1.55;
-}
-
-.resumo-card-body p {
-	margin: 0 0 4px 0;
-}
-
-.resumo-card-body p:last-child {
-	margin-bottom: 0;
-}
-
-.resumo-card-list {
-	list-style: none;
-	margin: 0;
-	padding: 12px 16px;
-	color: var(--primary);
-	font-size: 13px;
-	font-weight: 600;
-	line-height: 1.7;
-}
-
-.resumo-card-list li {
-	padding: 0;
-}
-
-.resumo-card-list strong {
-	color: var(--bg-dark);
-	font-weight: 700;
-}
-
-/* ===== Estado dos Utentes ===== */
-.estado-utentes-card {
-	background: var(--white);
-	border: 1.5px solid var(--primary);
-	border-radius: 6px;
-	overflow: hidden;
-}
-
-.estado-utentes-header {
-	background: var(--white);
-	color: var(--bg-dark);
-	padding: 12px 18px;
-	font-size: 14px;
-	font-weight: 700;
-	border-bottom: 1.5px solid var(--secondary);
-}
-
-.estado-utentes-body {
-	background: var(--white);
-}
-
-.estado-utentes-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-family: var(--sans);
-	font-size: 13px;
-	color: var(--primary);
-}
-
-.estado-utentes-table thead tr {
-	background: var(--white);
-	border-bottom: 1px solid var(--secondary);
-}
-
-.estado-utentes-table thead th {
-	text-align: left;
-	padding: 10px 18px;
-	font-weight: 700;
-	font-size: 12px;
-	letter-spacing: 0.05em;
-	color: var(--bg-dark);
-	text-transform: none;
-}
-
-.estado-utentes-table tbody tr {
-	border-bottom: 1px solid #f0f4f8;
-	transition: background 0.15s;
-}
-
-.estado-utentes-table tbody tr:last-child {
-	border-bottom: none;
-}
-
-.estado-utentes-table tbody tr:hover {
-	background: rgba(168, 212, 230, 0.15);
-}
-
-.estado-utentes-table tbody td {
-	padding: 10px 18px;
-	color: var(--primary);
-	font-weight: 600;
-	font-size: 13px;
-	vertical-align: middle;
-}
-
-.estado-utentes-table .ok {
-	color: var(--ok);
-	font-weight: 700;
-	font-size: 15px;
-}
-
-/* ===== Validação ===== */
-.validacao-card {
-	background: var(--white);
-	border: 1.5px solid var(--primary);
-	border-radius: 6px;
-	overflow: hidden;
-	margin-bottom: 14px;
-}
-
-.validacao-header {
-	background: var(--white);
-	color: var(--bg-dark);
-	padding: 12px 18px;
-	font-size: 14px;
-	font-weight: 700;
-	border-bottom: 1.5px solid var(--secondary);
-}
-
-.validacao-body {
-	padding: 16px 18px 18px;
-}
-
-.validacao-body form {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-}
-
-.validacao-field {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.validacao-label {
-	font-size: 12px;
-	font-weight: 700;
-	color: var(--bg-dark);
-	letter-spacing: 0.02em;
-}
-
-.validacao-textarea {
-	background: var(--white);
-	border: 1.5px solid var(--secondary);
-	border-radius: 6px;
-	color: var(--bg-dark);
-	font-family: var(--sans);
-	font-size: 13px;
-	font-weight: 500;
-	padding: 11px 14px;
-	width: 100%;
-	min-height: 70px;
-	resize: vertical;
-	line-height: 1.5;
-}
-
-.validacao-textarea:focus {
-	outline: none;
-	border-color: var(--primary);
-}
-
-.validacao-textarea::placeholder {
-	color: rgba(26, 63, 94, 0.45);
-	font-style: italic;
-}
-
-.validacao-confirmacao {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	color: var(--primary);
-	font-size: 13px;
-	font-weight: 600;
-}
-
-.validacao-confirmacao input[type="checkbox"] {
-	width: 16px;
-	height: 16px;
-	accent-color: var(--primary);
-	cursor: pointer;
-}
-
-.validacao-confirmacao label {
-	cursor: pointer;
-}
-
-.validacao-actions {
-	display: flex;
-	justify-content: flex-end;
-	gap: 12px;
-}
-
-.btn-devolver,
-.btn-validar {
-	background: transparent;
-	border: 2px solid var(--primary);
-	color: var(--primary);
-	font-family: var(--sans);
-	font-size: 12px;
-	font-weight: 700;
-	letter-spacing: 0.03em;
-	padding: 8px 18px;
-	border-radius: 8px;
-	cursor: pointer;
-	transition: background 0.15s, color 0.15s;
-}
-
-.btn-devolver:hover,
-.btn-validar:hover {
-	background: var(--primary);
-	color: var(--white);
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 1100px) {
-	.resumo-grid {
-		grid-template-columns: 1fr;
-	}
-}
-
-
-/* === ../../styles/topBar.css === */
-/*Top bar*/
-.topbar {
-	background: var(--surface);
-	padding: 0 24px;
-	height: 52px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	border-bottom: 1px solid var(--border);
-}
-.topbar-brand {
-	font-size: 13px;
-	color: var(--muted);
-	letter-spacing: 0.06em;
-}
-.topbar-right {
-	display: flex;
-	align-items: center;
-	gap: 16px;
-}
-.topbar-user {
-	background: rgb(107, 56, 56);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 2px;
-    letter-spacing: 0.06em;
-}
-.btn-sair {
-	background: transparent;
-	border: 2px solid var(--accent);
-	color: var(--accent);
-	font-family: var(--sans);
-	font-size: 13px;
-	font-weight: 700;
-	letter-spacing: 0.1em;
-	padding: 5px 18px;
-	cursor: pointer;
-    border-radius: 10px;
-	transition:
-		background 0.15s,
-		color 0.15s;
-}
-.btn-sair:hover {
-	background: var(--accent);
-	color: var(--surface);
-}
-
-
-/* === ../../styles/sideBar.css === */
-/*Sidebar*/
-.sidebar {
-	width: 210px;
-	flex-shrink: 0;
-	background: var(--sidebar-bg);
-	align-self: stretch;
-	padding: 12px 0;
-}
-.sidebar-section-label {
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: 0.12em;
-	color: var(--accent);
-	padding: 14px 18px 6px;
-	text-transform: uppercase;
-}
-.sidebar-section-label:first-child {
-	padding-top: 6px;
-}
-.sidebar-item {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 9px 18px;
-	font-size: 13.5px;
-	color: var(--muted);
-	cursor: pointer;
-	transition:
-		background 0.12s,
-		color 0.12s;
-}
-.sidebar-item:hover,
-.sidebar-item.active {
-	background: var(--sidebar-hover);
-	color: #2a6f97;
-}
-.sidebar-item svg {
-	width: 18px;
-	height: 18px;
-	flex-shrink: 0;
-	fill: currentColor;
-}
-
-
-/* === ../../styles/mainContent.css === */
-.main {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-	padding: 14px 14px 14px 16px;
-}
-
-
-/* === ../../styles/rootAndBody.css === */
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
-:root {
-	--bg: #ffffff;
-	--surface: #2a6f97;
-	--surface2: #2a6f97;
-	--panel: #2a6f97;
-	--card: #2a6f97;
-	--text: #e8f4f8;
-	--muted: #a8d4e6;
-	--accent: #ffffff;
-	--sidebar-bg: #2a6f97;
-	--sidebar-hover: #ffffff;
-	--border: rgba(255, 255, 255, 0.12);
-	--mono: "IBM Plex Mono", monospace;
-	--sans: "IBM Plex Sans", sans-serif;
-}
-
-body {
-	font-family: var(--sans);
-	background: var(--bg);
-	color: var(--text);
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	margin: auto;
-}
-
-
-/* === ../../styles/pageHeader.css === */
-/* Page header*/
-.page-header {
-	background: var(--panel);
-	border-radius: 4px;
-	padding: 14px 20px;
-	margin-top: 14px;
-}
-.page-header h1 {
-	font-size: 15px;
-	font-weight: 700;
-	letter-spacing: 0.04em;
-}
-.page-header p {
-	font-size: 12px;
-	color: var(--muted);
-	margin-top: 2px;
-	font-family: var(--mono);
-}
-
-</style>
+	<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: { extend: {
+				colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+				fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+			}},
+		};
+	</script>
 </head>
 
-<body>
-	<!-- Top Bar -->
-	<div class="topbar">
-		<span class="topbar-brand">Enf Chefe - Validar passagem de turno</span>
-		<div class="topbar-right">
-			<span class="topbar-user">
+<body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border">
+	<div class="bg-primary px-6 h-[52px] flex items-center justify-between border-b border-white/10">
+		<span class="text-[13px] text-secondary tracking-wider">Enf Chefe - Validar passagem de turno</span>
+		<div class="flex items-center gap-4">
+			<span class="bg-[#6b3838] text-white text-[11px] font-bold px-2 py-0.5 rounded-sm tracking-wider">
 				<span id="nome-chefe">Dr. Ana Rodrigues</span> | Turno: <span id="turno-chefe">Tarde 14h-22h</span>
 				<time id="current-datetime"></time>
 			</span>
-			<button class="btn-sair" onclick="logout()">SAIR</button>
+			<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-widest px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
 		</div>
 	</div>
 
-	<div class="layout">
-		<!-- Sidebar -->
-		<nav class="sidebar">
-			<div class="sidebar-section-label">Principal</div>
-			<a href="enfermeiroChefeDashboard" style="text-decoration: none">
-				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-						<path
-							d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z" />
-					</svg>
-					Home
-				</div>
-			</a>
-			<a href="enfermeiroChefeListaUtentes" style="text-decoration: none">
-				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-						<path
-							d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
-					</svg>
-					Lista de Utentes
-				</div>
-			</a>
-			<a href="enfermeiroChefeStock" style="text-decoration: none">
-				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-						<path
-							d="M416 224C398.3 224 384 209.7 384 192C384 174.3 398.3 160 416 160L576 160C593.7 160 608 174.3 608 192L608 352C608 369.7 593.7 384 576 384C558.3 384 544 369.7 544 352L544 269.3L374.6 438.7C362.1 451.2 341.8 451.2 329.3 438.7L224 333.3L86.6 470.6C74.1 483.1 53.8 483.1 41.3 470.6C28.8 458.1 28.8 437.8 41.3 425.3L201.3 265.3C213.8 252.8 234.1 252.8 246.6 265.3L352 370.7L498.7 224L416 224z" />
-					</svg>
-					Stock
-				</div>
-			</a>
+	<div class="flex flex-1 gap-4 pr-[14px]">
+		<nav class="w-[210px] shrink-0 bg-primary self-stretch py-3 [&_a]:no-underline [&_.sidebar-item]:flex [&_.sidebar-item]:items-center [&_.sidebar-item]:gap-2.5 [&_.sidebar-item]:px-[18px] [&_.sidebar-item]:py-2 [&_.sidebar-item]:text-[13.5px] [&_.sidebar-item]:text-secondary [&_.sidebar-item]:cursor-pointer [&_.sidebar-item:hover]:bg-white [&_.sidebar-item:hover]:text-primary [&_.sidebar-item.active]:bg-white [&_.sidebar-item.active]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
+			<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-1.5 pb-1.5 uppercase">Principal</div>
+			<a href="enfermeiroChefeDashboard"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1z"/></svg>Home</div></a>
+			<a href="enfermeiroChefeListaUtentes"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32z"/></svg>Lista de Utentes</div></a>
+			<a href="enfermeiroChefeControloStock"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M416 224C398.3 224 384 209.7 384 192C384 174.3 398.3 160 416 160L576 160C593.7 160 608 174.3 608 192L608 352C608 369.7 593.7 384 576 384C558.3 384 544 369.7 544 352L544 269.3L374.6 438.7C362.1 451.2 341.8 451.2 329.3 438.7L224 333.3L86.6 470.6C74.1 483.1 53.8 483.1 41.3 470.6C28.8 458.1 28.8 437.8 41.3 425.3L201.3 265.3C213.8 252.8 234.1 252.8 246.6 265.3L352 370.7L498.7 224L416 224z"/></svg>Stock</div></a>
 
-			<div class="sidebar-section-label">Supervisão</div>
-			<a href="enfermeiroChefeValidarPassagemTurno" style="text-decoration: none">
-				<div class="sidebar-item active">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-						<path
-							d="M448 96L439.4 96C428.4 76.9 407.7 64 384 64L256 64C232.3 64 211.6 76.9 200.6 96L192 96C156.7 96 128 124.7 128 160L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 160C512 124.7 483.3 96 448 96zM264 176C250.7 176 240 165.3 240 152C240 138.7 250.7 128 264 128L376 128C389.3 128 400 138.7 400 152C400 165.3 389.3 176 376 176L264 176z" />
-					</svg>
-					Validar Turno
-				</div>
-			</a>
+			<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">Supervisão</div>
+			<a href="enfermeiroChefeValidarPassagemTurno"><div class="sidebar-item active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M448 96L439.4 96C428.4 76.9 407.7 64 384 64L256 64C232.3 64 211.6 76.9 200.6 96L192 96C156.7 96 128 124.7 128 160L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 160C512 124.7 483.3 96 448 96z"/></svg>Validar Turno</div></a>
 
-			<div class="sidebar-section-label">Cuidados</div>
-			<a href="enfermeiroChefeRelatoriosIndicadores" style="text-decoration: none">
-				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-						<path
-							d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z" />
-					</svg>
-					Relatórios
-				</div>
-			</a>
-			<a href="enfermeiroChefeGerirTurnos" style="text-decoration: none">
-				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-						<path
-							d="M534.6 182.6C547.1 170.1 547.1 149.8 534.6 137.3L470.6 73.3C461.4 64.1 447.7 61.4 435.7 66.4C423.7 71.4 416 83.1 416 96L416 128L256 128C150 128 64 214 64 320C64 337.7 78.3 352 96 352C113.7 352 128 337.7 128 320C128 249.3 185.3 192 256 192L416 192L416 224C416 236.9 423.8 248.6 435.8 253.6C447.8 258.6 461.5 255.8 470.7 246.7L534.7 182.7zM105.4 457.4C92.9 469.9 92.9 490.2 105.4 502.7L169.4 566.7C178.6 575.9 192.3 578.6 204.3 573.6C216.3 568.6 224 556.9 224 544L224 512L384 512C490 512 576 426 576 320C576 302.3 561.7 288 544 288C526.3 288 512 302.3 512 320C512 390.7 454.7 448 384 448L224 448L224 416C224 403.1 216.2 391.4 204.2 386.4C192.2 381.4 178.5 384.2 169.3 393.3L105.3 457.3z" />
-					</svg>
-					Gestão de Turnos
-				</div>
-			</a>
-			<a href="enfermeiroChefeHistoricoTurnos" style="text-decoration: none">
-				<div class="sidebar-item">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-						<path
-							d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z" />
-					</svg>
-					Histórico de Turnos
-				</div>
-			</a>
+			<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">Cuidados</div>
+			<a href="enfermeiroChefeRelatoriosIndicadores"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z"/></svg>Relatórios</div></a>
+			<a href="enfermeiroChefeGerirTurnos"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M534.6 182.6C547.1 170.1 547.1 149.8 534.6 137.3L470.6 73.3C461.4 64.1 447.7 61.4 435.7 66.4C423.7 71.4 416 83.1 416 96L416 128L256 128C150 128 64 214 64 320C64 337.7 78.3 352 96 352C113.7 352 128 337.7 128 320C128 249.3 185.3 192 256 192L416 192L416 224C416 236.9 423.8 248.6 435.8 253.6C447.8 258.6 461.5 255.8 470.7 246.7L534.7 182.7z"/></svg>Gestão de Turnos</div></a>
+			<a href="enfermeiroChefeHistoricoTurnos"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0z"/></svg>Histórico de Turnos</div></a>
 		</nav>
 
-		<!-- Main Content -->
-		<main class="main">
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="page-header-left">
-					<h4>Validar Passagem de Turno</h4>
-					<p><span id="turno-origem"></span> - <span id="turno-destino"></span> - Enf.
-						<span id="enf-origem"></span>
-					</p>
+		<main class="flex-1 flex flex-col gap-[14px] py-[14px] pr-[14px] pl-4 min-w-0">
+			<div class="bg-primary rounded px-5 py-[14px] flex items-center justify-between text-white">
+				<div>
+					<h4 class="m-0 mb-0.5 text-base font-bold tracking-[0.02em]">Validar Passagem de Turno</h4>
+					<p class="m-0 text-xs text-secondary font-medium"><span id="turno-origem"></span> - <span id="turno-destino"></span> - Enf. <span id="enf-origem"></span></p>
 				</div>
-				<button class="btn-painel">Painel</button>
+				<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-5 py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors">Painel</button>
 			</div>
 
-			<!-- Resumo Cards (3 colunas) -->
-			<div class="resumo-grid">
-				<div class="resumo-card">
-					<div class="resumo-card-header">Sumário</div>
-					<div class="resumo-card-body" id="sumario-body">
-						<p><span id="numUtentes"></span> utentes - <span id="numAdminCon"></span> adm. Con. - <span
-								id="numAdminNCon"></span> não con.</p>
+			<div class="grid grid-cols-3 gap-[14px] max-[1100px]:grid-cols-1">
+				<div class="bg-white border-[1.5px] border-primary rounded-md overflow-hidden flex flex-col">
+					<div class="bg-white text-bg-dark px-4 py-2.5 text-sm font-bold tracking-[0.02em] border-b-[1.5px] border-secondary">Sumário</div>
+					<div class="px-4 py-3 text-primary text-[13px] font-semibold leading-[1.55] [&_p]:m-0 [&_p]:mb-1 [&_p:last-child]:mb-0" id="sumario-body">
+						<p><span id="numUtentes"></span> utentes - <span id="numAdminCon"></span> adm. Con. - <span id="numAdminNCon"></span> não con.</p>
 						<p><span id="numIncidentes"></span> incidente - <span id="numAdminSOS"></span> SOS adm.</p>
 						<p><span id="numPendencias"></span> pendências para <span id="proxTurno"></span></p>
 					</div>
 				</div>
 
-				<div class="resumo-card">
-					<div class="resumo-card-header">Pendências</div>
-					<ul class="resumo-card-list" id="pendencias-list">
-						<!--<li><strong>Haloperidol</strong> — Ferreira</li>
-						<li><strong>Hemograma</strong> — Costa (lab)</li>
-						<li><strong>Cateter CVP</strong> — Santos</li>-->
-					</ul>
+				<div class="bg-white border-[1.5px] border-primary rounded-md overflow-hidden flex flex-col">
+					<div class="bg-white text-bg-dark px-4 py-2.5 text-sm font-bold tracking-[0.02em] border-b-[1.5px] border-secondary">Pendências</div>
+					<ul class="list-none m-0 px-4 py-3 text-primary text-[13px] font-semibold leading-[1.7] [&_strong]:text-bg-dark [&_strong]:font-bold" id="pendencias-list"></ul>
 				</div>
 
-				<div class="resumo-card">
-					<div class="resumo-card-header">Nota Enfermeiro</div>
-					<div class="resumo-card-body" id="nota-enfermeiro-body">
-						<!--<p>Turno decorreu normalmente. Agitação Ferreira 16:30 controlada com SOS.
-							Cateter Santos urgente noite.</p>-->
-					</div>
+				<div class="bg-white border-[1.5px] border-primary rounded-md overflow-hidden flex flex-col">
+					<div class="bg-white text-bg-dark px-4 py-2.5 text-sm font-bold tracking-[0.02em] border-b-[1.5px] border-secondary">Nota Enfermeiro</div>
+					<div class="px-4 py-3 text-primary text-[13px] font-semibold leading-[1.55] [&_p]:m-0 [&_p]:mb-1 [&_p:last-child]:mb-0" id="nota-enfermeiro-body"></div>
 				</div>
 			</div>
 
-			<!-- Estado dos Utentes -->
-			<div class="estado-utentes-card">
-				<div class="estado-utentes-header">Estado dos Utentes</div>
-				<div class="estado-utentes-body">
-					<table class="estado-utentes-table">
-						<thead>
-							<!--<tr>
-								<th>Utente</th>
-								<th>Medicação</th>
-								<th>SV</th>
-								<th>Ocorrências</th>
-								<th>Pendências</th>
-							</tr>-->
-						</thead>
-						<tbody id="estado-utentes-tbody">
-							<!--<tr>
-								<td>Manuel Ferreira - 2B-04</td>
-								<td>1 não adm.</td>
-								<td><span class="ok">✓</span></td>
-								<td>Agitação + SOS</td>
-								<td>Haloperidol</td>
-							</tr>
-							<tr>
-								<td>Maria Santos - 1A-02</td>
-								<td><span class="ok">✓</span></td>
-								<td><span class="ok">✓</span></td>
-								<td>--------</td>
-								<td>Cateter CVP</td>
-							</tr>
-							<tr>
-								<td>João Costa - 3C-01</td>
-								<td><span class="ok">✓</span></td>
-								<td><span class="ok">✓</span></td>
-								<td>--------</td>
-								<td>Hemograma</td>
-							</tr>-->
-						</tbody>
+			<div class="bg-white border-[1.5px] border-primary rounded-md overflow-hidden">
+				<div class="bg-white text-bg-dark px-[18px] py-3 text-sm font-bold border-b-[1.5px] border-secondary">Estado dos Utentes</div>
+				<div class="bg-white">
+					<table class="w-full border-collapse font-sans text-[13px] text-primary [&_thead_tr]:bg-white [&_thead_tr]:border-b [&_thead_tr]:border-secondary [&_thead_th]:text-left [&_thead_th]:px-[18px] [&_thead_th]:py-2.5 [&_thead_th]:font-bold [&_thead_th]:text-xs [&_thead_th]:tracking-[0.05em] [&_thead_th]:text-bg-dark [&_thead_th]:normal-case [&_tbody_tr]:border-b [&_tbody_tr]:border-[#f0f4f8] [&_tbody_tr]:transition-colors [&_tbody_tr:last-child]:border-0 [&_tbody_tr:hover]:bg-secondary/15 [&_tbody_td]:px-[18px] [&_tbody_td]:py-2.5 [&_tbody_td]:text-primary [&_tbody_td]:font-semibold [&_tbody_td]:text-[13px] [&_tbody_td]:align-middle [&_.ok]:!text-ok [&_.ok]:font-bold [&_.ok]:text-[15px]">
+						<thead></thead>
+						<tbody id="estado-utentes-tbody"></tbody>
 					</table>
 				</div>
 			</div>
