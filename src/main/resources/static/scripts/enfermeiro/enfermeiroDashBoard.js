@@ -185,22 +185,19 @@ async function loadDashboard() {
             u => u.processo !== null
         );
 
-        const turnoRes = await fetch(
-            `${API_BASE}workers/me/shift`,
-            { headers }
-        );
-
-        if (!turnoRes.ok) {
-            throw new Error(`HTTP ${turnoRes.status}`);
+        // Sem turno ativo: backend devolve 400. Tratamos como "sem turno" em vez de falhar
+        let turno = null;
+        try {
+            const turnoRes = await fetch(`${API_BASE}workers/me/shift`, { headers });
+            if (turnoRes.ok) {
+                const turnoJson = await turnoRes.json();
+                if (turnoJson.success) turno = turnoJson.data;
+            } else {
+                console.warn(`[Dashboard] Sem turno ativo (HTTP ${turnoRes.status})`);
+            }
+        } catch (errTurno) {
+            console.warn("[Dashboard] Erro ao obter turno:", errTurno);
         }
-
-        const turnoJson = await turnoRes.json();
-
-        if (!turnoJson.success) {
-            throw new Error(turnoJson.message);
-        }
-        console.log(turnoJson);
-        const turno = turnoJson.data;
 
         let pendencias = [];
 
