@@ -1,8 +1,10 @@
+const API_BASE  = "http://localhost:8080/api";
 const PAGE_SIZE = 10;
 
-let allRows     = [];
-let filtered    = [];
-let currentPage = 1;
+let allRows       = [];
+let filtered      = [];
+let currentPage   = 1;
+let currentUserId = null;
 
 
 function verificarDado(val) {
@@ -34,23 +36,42 @@ async function fetchJson(url) {
 }
 
 async function carregarDados() {
-    try {
-        const [sessionsResp, strangeResp] = await Promise.all([
-            fetchJson(`http://localhost:8080/api/sessions`),
-            fetchJson(`http://localhost:8080/api/sessions/attemps/strange`)
-        ]);
+    const [sessionsRes, strangeRes] = await Promise.allSettled([
+        fetchJson(`${API_BASE}/sessions`),
+        fetchJson(`${API_BASE}/sessions/attemps/strange`)
+    ]);
 
-        const sessions = (sessionsResp.data ?? []).map(s => ({ ...s, _type: 'session' }));
-        const strange  = (strangeResp.data  ?? []).map(s => ({ ...s, _type: 'strange' }));
+    let sessions = [];
+    let strange  = [];
+    const erros  = [];
 
-        allRows     = [...sessions, ...strange];
-        filtered    = [...allRows];
-        currentPage = 1;
-        preencherDados();
-    } catch (err) {
-        mostrarErro('Não foi possível carregar os dados. Verifique a ligação à API.');
-        console.error(err);
+    if (sessionsRes.status === 'fulfilled') {
+        sessions = (sessionsRes.value?.data ?? []).map(s => ({ ...s, _type: 'session' }));
+    } else {
+        console.error('[sessoes] sessions endpoint falhou:', sessionsRes.reason);
+        erros.push('sessões ativas');
     }
+
+    if (strangeRes.status === 'fulfilled') {
+        strange = (strangeRes.value?.data ?? []).map(s => ({ ...s, _type: 'strange' }));
+    } else {
+        console.error('[sessoes] strange endpoint falhou:', strangeRes.reason);
+        erros.push('tentativas suspeitas');
+    }
+
+    allRows     = [...sessions, ...strange];
+    filtered    = [...allRows];
+    currentPage = 1;
+
+    // Só mostra a faixa vermelha se ambos os endpoints falharem; um único falhar
+    // já se vê na consola e a tabela mostra o que conseguiu carregar.
+    if (erros.length === 2) {
+        mostrarErro('Não foi possível carregar os dados. Verifique a ligação à API.');
+        renderPagination();
+        return;
+    }
+
+    preencherDados();
 }
 
 function preencherDados() {
@@ -83,7 +104,11 @@ function preencherDados() {
 
 function criarLinha(row) {
     if (row._type === 'session') {
-        const u = row.utilizador ?? {};
+        const u       = row.utilizador ?? {};
+        const isSelf  = currentUserId != null && u.id === currentUserId;
+        const accao   = isSelf
+            ? `<span class="text-xs italic text-primary/55">Sessão atual</span>`
+            : `<button class="btn-revogar" data-action="revogar" data-id="${String(row.id ?? '')}">REVOGAR</button>`;
         return `
         <div class="table-row">
             <div class="row-user">
@@ -95,13 +120,7 @@ function criarLinha(row) {
             <span class="row-time">${fmtTime(row.inicio)}</span>
             <span class="row-time">${fmtTime(u.dataUltimaAtividade)}</span>
             <span class="row-desc">${verificarDado(u.email)}</span>
-            <div class="row-actions">
-                <button class="btn-revogar"
-                        data-action="revogar"
-                        data-id="${String(row.id ?? '')}">
-                    REVOGAR
-                </button>
-            </div>
+            <div class="row-actions">${accao}</div>
         </div>`;
     }
 
@@ -192,10 +211,27 @@ async function handleRevogar(sessionId) {
             method: 'DELETE',
             credentials: 'include'
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+            let msg = `HTTP ${res.status}`;
+            try {
+                const body = await res.json();
+                if (body?.message) msg = body.message;
+            } catch { /* corpo não-JSON */ }
+            throw new Error(msg);
+        }
+        mostrarNotificacao({
+            titulo: 'Sessão revogada',
+            mensagem: `A sessão #${sessionId} foi terminada com sucesso.`,
+            tipo: 'sucesso'
+        });
         await carregarDados();
     } catch (err) {
         console.error(err);
+        mostrarNotificacao({
+            titulo: 'Erro ao revogar sessão',
+            mensagem: err?.message ?? 'Não foi possível terminar a sessão.',
+            tipo: 'erro'
+        });
     }
 }
 
@@ -209,10 +245,27 @@ async function handleBloquear(ip) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ipAddress: ip })
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) {
+            let msg = `HTTP ${res.status}`;
+            try {
+                const body = await res.json();
+                if (body?.message) msg = body.message;
+            } catch { /* corpo não-JSON */ }
+            throw new Error(msg);
+        }
+        mostrarNotificacao({
+            titulo: 'IP bloqueado',
+            mensagem: `O endereço ${ip} foi adicionado à lista de bloqueio.`,
+            tipo: 'sucesso'
+        });
         await carregarDados();
     } catch (err) {
         console.error(err);
+        mostrarNotificacao({
+            titulo: 'Erro ao bloquear IP',
+            mensagem: err?.message ?? 'Não foi possível bloquear o IP.',
+            tipo: 'erro'
+        });
     }
 }
 
@@ -226,7 +279,18 @@ function mostrarErro(msg) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function carregarUtilizadorAtual() {
+    try {
+        const res = await fetchJson(`${API_BASE}/users/me`);
+        currentUserId = res?.data?.id ?? null;
+    } catch (err) {
+        console.warn('[sessoes] não foi possível identificar o utilizador atual:', err);
+        currentUserId = null;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
     setupSearch();
+    await carregarUtilizadorAtual();
     carregarDados();
 });
