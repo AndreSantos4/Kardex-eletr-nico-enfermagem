@@ -346,12 +346,19 @@ async function fetchJson(url) {
 
 async function loadPassagemTurno() {
   try {
-    // 1. Turno atual do enfermeiro
-    const jsonMyShift = await fetchJson(`${API_BASE}workers/me/shift`);
-    if (!jsonMyShift.success)
-      throw new Error(jsonMyShift.message ?? "Erro ao obter turno do enfermeiro");
+    // 1. Turno atual do enfermeiro.
+    //    O backend devolve 400 quando o enfermeiro não está em turno activo —
+    //    tratamos esse caso como "sem turno" em vez de erro crítico.
+    let jsonMyShift = null;
+    try {
+      jsonMyShift = await fetchJson(`${API_BASE}workers/me/shift`);
+    } catch (errShift) {
+      console.warn("[Passagem Turno] Sem turno activo:", errShift);
+      mostrarSemTurno();
+      return;
+    }
 
-    if (!jsonMyShift.data) {
+    if (!jsonMyShift?.success || !jsonMyShift.data) {
       mostrarSemTurno();
       return;
     }
