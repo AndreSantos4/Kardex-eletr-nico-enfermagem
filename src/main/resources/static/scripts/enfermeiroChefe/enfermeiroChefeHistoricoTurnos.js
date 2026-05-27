@@ -192,7 +192,9 @@ async function abrirPopupDetalhePassagem(passagemId) {
 }
 
 function _preencherPopupDetalhe(passagem, detalhe) {
-    const turnoData = passagem?.turno ?? detalhe?.turno;
+    // Preferimos os dados detalhados (do endpoint /shifts/changes/{id}); usamos a passagem da
+    // listagem como fallback caso o detalhe não venha.
+    const turnoData = detalhe?.turno ?? passagem?.turno;
 
     const tipo = turnoData?.tipo ?? "—";
     const labelTipo = _labelTurno(tipo);
@@ -203,15 +205,32 @@ function _preencherPopupDetalhe(passagem, detalhe) {
     const horaFim = _extrairHora(turnoData?.fim);
     _setPopupDetalhe("popup-detalhe-periodo", `${labelTipo} ${horaInicio}–${horaFim}`);
 
-    _setPopupDetalhe("popup-detalhe-validado", "Validado — dados não disponíveis");
+    // Validador + data/hora de validação
+    const validadorNome = detalhe?.validador?.dados?.nome;
+    const horaValidacao = _extrairHoraISO(detalhe?.dataValidacao);
+    if (validadorNome && horaValidacao) {
+        _setPopupDetalhe("popup-detalhe-validado", `Validado — ${validadorNome} · ${horaValidacao}`);
+    } else if (validadorNome) {
+        _setPopupDetalhe("popup-detalhe-validado", `Validado — ${validadorNome}`);
+    } else {
+        _setPopupDetalhe("popup-detalhe-validado", "Aguarda validação");
+    }
 
-    const enfermeiros = (detalhe?.enfermeiros ?? []).map((e) => e.dados?.nome ?? e.nome ?? "—");
+    // Equipa: turno.enfermeiros[].dados.nome
+    const enfermeiros = (turnoData?.enfermeiros ?? []).map((e) => e.dados?.nome ?? "—");
     _setPopupDetalhe(
         "popup-detalhe-equipa",
         enfermeiros.length > 0 ? enfermeiros.join(" - ") : "—"
     );
 
-    const pendencias = passagem?.dadosTurnoUtentes ?? passagem?.dadosTurnoUtente ?? detalhe?.pendencias ?? [];
+    // Pendências: detalhe.dadosTurnoUtentes (preferido) ou passagem.dadosTurnoUtentes
+    const pendencias =
+        detalhe?.dadosTurnoUtentes ??
+        detalhe?.dadosTurnoUtente ??
+        passagem?.dadosTurnoUtentes ??
+        passagem?.dadosTurnoUtente ??
+        [];
+
     const pendEl = document.getElementById("popup-detalhe-pendencias");
     if (pendEl) {
         if (pendencias.length === 0) {
@@ -225,8 +244,16 @@ function _preencherPopupDetalhe(passagem, detalhe) {
         }
     }
 
+    // Nota de validação (só mostra se existir)
     const notaEl = document.getElementById("popup-detalhe-nota");
-    if (notaEl) notaEl.style.display = "none";
+    const notaTextoEl = document.getElementById("popup-detalhe-nota-texto");
+    const nota = (detalhe?.notaValidacao ?? "").trim();
+    if (notaEl && notaTextoEl && nota) {
+        notaTextoEl.textContent = nota;
+        notaEl.style.display = "";
+    } else if (notaEl) {
+        notaEl.style.display = "none";
+    }
 }
 
 function fecharPopupDetalheTurno() {
@@ -271,6 +298,19 @@ function _extrairHora(str) {
     const partes = str.split(":");
     if (partes.length < 3) return "—";
     return `${partes[1]}:${partes[2]}`;
+}
+
+/**
+ * Extrai "HH:mm" de uma data ISO ("yyyy-MM-ddTHH:mm:ss") ou retorna "" se inválido.
+ * Usado para a dataValidacao do DetailedShiftChangeDTO (LocalDateTime sem @JsonFormat).
+ */
+function _extrairHoraISO(iso) {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
 }
 
 /**
