@@ -1,6 +1,6 @@
 const API_BASE = "http://localhost:8080/api";
 
-let todosTurnos = [];
+let todasPassagens = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     await carregarPopups();
@@ -36,7 +36,6 @@ async function carregarPopups() {
 // ─── Info do Chefe ────────────────────────────────────────────────────────────
 
 async function carregarInfoChefe() {
-    // TODO: endpoint de perfil do utilizador autenticado (GET /api/workers/me ou similar)
     const nomeEl = document.getElementById("nome-chefe");
     const turnoEl = document.getElementById("turno-chefe");
     if (nomeEl) nomeEl.textContent = "—";
@@ -47,17 +46,22 @@ async function carregarInfoChefe() {
 
 async function carregarHistorico() {
     try {
-        const res = await fetch(`${API_BASE}/shifts`, {
+        const res = await fetch(`${API_BASE}/shifts/history?offset=0&count=10`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         if (!json.success) throw new Error(json.message);
 
-        todosTurnos = json.data ?? [];
+        // Ordenar por data/hora de início do turno (mais recente primeiro)
+        todasPassagens = (json.data ?? []).slice().sort((a, b) => {
+            const tsA = _toTimestamp(a.turno?.inicio);
+            const tsB = _toTimestamp(b.turno?.inicio);
+            return tsB - tsA;
+        });
         aplicarFiltros();
     } catch (err) {
-        console.error("[Historico] Erro ao carregar turnos:", err);
+        console.error("[Historico] Erro ao carregar histórico:", err);
         const tbody = document.getElementById("historico-tbody");
         if (tbody) {
             tbody.innerHTML = `<tr><td colspan="7" class="text-center !p-6 italic !text-primary/60 !font-normal">Erro ao carregar dados.</td></tr>`;
@@ -84,21 +88,18 @@ function aplicarFiltros() {
     const dataInicio = document.getElementById("filtro-data-inicio")?.value ?? "";
     const dataFim = document.getElementById("filtro-data-fim")?.value ?? "";
 
-    const filtrados = todosTurnos.filter((t) => {
-        const dataISOTurno = _parseTurnoDataISO(t.inicio);
+    const filtrados = todasPassagens.filter((p) => {
+        const dataISOTurno = _parseTurnoDataISO(p.turno?.inicio);
 
         if (dataInicio && dataISOTurno && dataISOTurno < dataInicio) return false;
         if (dataFim && dataISOTurno && dataISOTurno > dataFim) return false;
 
         if (texto) {
-            const nomesEnf = (t.enfermeiros ?? [])
-                .map((e) => (e.dados?.nome ?? "").toLowerCase())
+            const nomesUtentes = (p.dadosTurnoUtentes ?? p.dadosTurnoUtente ?? [])
+                .map((d) => (d.utente?.nome ?? d.utente?.nomeProprio ?? "").toLowerCase())
                 .join(" ");
-            const nomesUtentes = (t.atribuicoes ?? [])
-                .map((a) => (a.utente?.nome ?? a.utente?.nomeProprio ?? "").toLowerCase())
-                .join(" ");
-            const tipoStr = _labelTurno(t.tipo).toLowerCase();
-            const haystack = `${nomesEnf} ${nomesUtentes} ${tipoStr}`;
+            const tipoStr = _labelTurno(p.turno?.tipo).toLowerCase();
+            const haystack = `${nomesUtentes} ${tipoStr}`;
             if (!haystack.includes(texto)) return false;
         }
 
@@ -110,27 +111,35 @@ function aplicarFiltros() {
 
 // ─── Render tabela ────────────────────────────────────────────────────────────
 
-function _renderTabela(turnos) {
+function _renderTabela(passagens) {
     const tbody = document.getElementById("historico-tbody");
     if (!tbody) return;
 
-    if (!turnos || turnos.length === 0) {
+    if (!passagens || passagens.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center !p-6 italic !text-primary/60 !font-normal">Sem resultados para os filtros selecionados.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = turnos.map((t) => {
-        const labelTipo = _labelTurno(t.tipo);
-        const data = _formatarDataTurno(t.inicio);
+    tbody.innerHTML = passagens.map((p) => {
+        const labelTipo = _labelTurno(p.turno?.tipo);
+        const data = _formatarDataTurno(p.turno?.inicio);
 
-        const nomes = (t.enfermeiros ?? []).map((e) => _abreviarNome(e.dados?.nome ?? ""));
-        const equipa = nomes.length > 0 ? nomes.join(" - ") : "—";
+        // PassagemTurnoDTO não expõe enfermeiros; mostramos "—" enquanto não houver endpoint que o devolva
+        const equipa = "—";
 
-        const numUtentes = (t.atribuicoes ?? []).length;
-        const utenteCell = numUtentes > 0 ? String(numUtentes) : "—";
+        const pendencias = p.dadosTurnoUtentes ?? p.dadosTurnoUtente ?? [];
+        const utentesUnicos = new Set(
+            pendencias
+                .map((d) => d.utente?.id ?? d.utente?.nome ?? d.utente?.nomeProprio)
+                .filter((x) => x != null)
+        );
+        const utenteCell = utentesUnicos.size > 0 ? String(utentesUnicos.size) : "—";
 
-        // TODO: expor pendências e validação no TurnoDTO ou num endpoint de listagem de histórico
-        const pendenciasCell = `<span class="text-primary/55 font-medium italic">—</span>`;
+        const naoExecutadas = pendencias.filter((d) => !d.executada).length;
+        const pendenciasCell = pendencias.length > 0
+            ? `${naoExecutadas} / ${pendencias.length}`
+            : `<span class="text-primary/55 font-medium italic">—</span>`;
+
         const validadoCell = "—";
 
         return `<tr>
@@ -140,21 +149,14 @@ function _renderTabela(turnos) {
             <td>${_escapeHtml(utenteCell)}</td>
             <td>${pendenciasCell}</td>
             <td>${validadoCell}</td>
-            <td><button class="bg-transparent border-[1.5px] border-primary text-primary text-[11px] font-bold tracking-[0.04em] px-3.5 py-1 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors whitespace-nowrap" onclick="abrirPopupDetalheTurno(${t.id})">VER MAIS</button></td>
+            <td><button class="bg-transparent border-[1.5px] border-primary text-primary text-[11px] font-bold tracking-[0.04em] px-3.5 py-1 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors whitespace-nowrap" onclick="abrirPopupDetalhePassagem(${p.id})">VER MAIS</button></td>
         </tr>`;
     }).join("");
 }
 
-function _abreviarNome(nome) {
-    if (!nome) return "—";
-    const partes = nome.trim().split(/\s+/);
-    if (partes.length === 1) return partes[0];
-    return `${partes[0][0]}. ${partes[partes.length - 1]}`;
-}
-
 // ─── Popup detalhe ────────────────────────────────────────────────────────────
 
-async function abrirPopupDetalheTurno(turnoId) {
+async function abrirPopupDetalhePassagem(passagemId) {
     const overlay = document.getElementById("popup-detalhe-turno");
     if (!overlay) return;
 
@@ -170,71 +172,59 @@ async function abrirPopupDetalheTurno(turnoId) {
     overlay.style.display = "flex";
 
     try {
-        const turnoBase = todosTurnos.find((t) => t.id === turnoId);
+        const passagem = todasPassagens.find((p) => p.id === passagemId);
 
-        const [resMudanca, resPendencias] = await Promise.all([
-            fetch(`${API_BASE}/shifts/${turnoId}/change`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-            }),
-            fetch(`${API_BASE}/shifts/${turnoId}/pending`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-            }),
-        ]);
+        const res = await fetch(`${API_BASE}/shifts/changes/${passagemId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
 
-        let mudanca = null;
-        if (resMudanca.ok) {
-            const jsonMudanca = await resMudanca.json();
-            if (jsonMudanca.success) mudanca = jsonMudanca.data;
+        let detalhe = null;
+        if (res.ok) {
+            const json = await res.json();
+            if (json.success) detalhe = json.data;
         }
 
-        let pendencias = [];
-        if (resPendencias.ok) {
-            const jsonPend = await resPendencias.json();
-            if (jsonPend.success) pendencias = jsonPend.data ?? [];
-        }
-
-        _preencherPopupDetalhe(turnoBase, mudanca, pendencias);
+        _preencherPopupDetalhe(passagem, detalhe);
     } catch (err) {
-        console.error("[Historico] Erro ao carregar detalhe do turno:", err);
+        console.error("[Historico] Erro ao carregar detalhe da passagem:", err);
         _setPopupDetalhe("popup-detalhe-equipa", "Erro ao carregar dados.");
     }
 }
 
-function _preencherPopupDetalhe(turno, mudanca, pendencias) {
-    const turnoData = mudanca?.turno ?? turno;
+function _preencherPopupDetalhe(passagem, detalhe) {
+    const turnoData = passagem?.turno ?? detalhe?.turno;
 
-    const tipo = turnoData?.tipo ?? turno?.tipo ?? "—";
+    const tipo = turnoData?.tipo ?? "—";
     const labelTipo = _labelTurno(tipo);
-    const dataFormatada = _formatarDataTurno(turnoData?.inicio ?? turno?.inicio);
+    const dataFormatada = _formatarDataTurno(turnoData?.inicio);
     _setPopupDetalhe("popup-detalhe-titulo", `Passagem de Turno — ${labelTipo} ${dataFormatada}`);
 
-    const horaInicio = _extrairHora(turnoData?.inicio ?? turno?.inicio);
-    const horaFim = _extrairHora(turnoData?.fim ?? turno?.fim);
+    const horaInicio = _extrairHora(turnoData?.inicio);
+    const horaFim = _extrairHora(turnoData?.fim);
     _setPopupDetalhe("popup-detalhe-periodo", `${labelTipo} ${horaInicio}–${horaFim}`);
 
-    // TODO: expor dados de validação no PassagemTurnoDTO (quem validou e quando)
     _setPopupDetalhe("popup-detalhe-validado", "Validado — dados não disponíveis");
 
-    const enfermeiros = (turno?.enfermeiros ?? []).map((e) => e.dados?.nome ?? "—");
+    const enfermeiros = (detalhe?.enfermeiros ?? []).map((e) => e.dados?.nome ?? e.nome ?? "—");
     _setPopupDetalhe(
         "popup-detalhe-equipa",
         enfermeiros.length > 0 ? enfermeiros.join(" - ") : "—"
     );
 
+    const pendencias = passagem?.dadosTurnoUtentes ?? passagem?.dadosTurnoUtente ?? detalhe?.pendencias ?? [];
     const pendEl = document.getElementById("popup-detalhe-pendencias");
     if (pendEl) {
         if (pendencias.length === 0) {
             pendEl.innerHTML = `<span style="font-style:italic;">Sem pendências.</span>`;
         } else {
-            pendEl.innerHTML = pendencias.map((p) => {
-                const nomeUtente = p.utente?.nome ?? p.utente?.nomeProprio ?? "—";
-                const descricao = p.descricao ?? p.desscricao ?? "—";
+            pendEl.innerHTML = pendencias.map((d) => {
+                const nomeUtente = d.utente?.nome ?? d.utente?.nomeProprio ?? "—";
+                const descricao = d.descricao ?? "—";
                 return `<div class="popup-detalhe-pendencia-item"><strong>Pendência</strong> - ${_escapeHtml(nomeUtente)} - ${_escapeHtml(descricao)}</div>`;
             }).join("");
         }
     }
 
-    // TODO: expor observacoesValidacao no PassagemTurnoDTO
     const notaEl = document.getElementById("popup-detalhe-nota");
     if (notaEl) notaEl.style.display = "none";
 }
@@ -242,6 +232,11 @@ function _preencherPopupDetalhe(turno, mudanca, pendencias) {
 function fecharPopupDetalheTurno() {
     const overlay = document.getElementById("popup-detalhe-turno");
     if (overlay) overlay.style.display = "none";
+}
+
+// Mantido para compat. com popups que usem o nome antigo
+function abrirPopupDetalheTurno(id) {
+    return abrirPopupDetalhePassagem(id);
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -276,6 +271,21 @@ function _extrairHora(str) {
     const partes = str.split(":");
     if (partes.length < 3) return "—";
     return `${partes[1]}:${partes[2]}`;
+}
+
+/**
+ * Converte "dd/MM/yyyy:HH:mm:ss" para timestamp numérico (para ordenação).
+ */
+function _toTimestamp(str) {
+    if (!str) return 0;
+    const partes = str.split(":");
+    if (partes.length < 4) return 0;
+    const [dia, mes, ano] = partes[0].split("/");
+    const hora = partes[1];
+    const min = partes[2];
+    const seg = partes[3];
+    if (!dia || !mes || !ano) return 0;
+    return new Date(`${ano}-${mes}-${dia}T${hora}:${min}:${seg}`).getTime();
 }
 
 /**
