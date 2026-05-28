@@ -43,7 +43,7 @@
       <header class="bg-primary rounded px-5 py-[14px] flex items-center justify-between">
         <h2 class="text-white text-[15px] font-bold tracking-wider m-0">Perfil de Colaborador</h2>
         <div class="flex items-center gap-2">
-          <button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-[18px] py-[5px] cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors" onclick="window.location.href = 'adminGestaoUtilizadores.html'">UTILIZADORES</button>
+          <button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-[18px] py-[5px] cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors" onclick="window.location.href = 'adminGestaoUtilizadores'">UTILIZADORES</button>
           <button class="bg-white text-primary text-[13px] font-bold tracking-wider px-[18px] py-[5px] cursor-pointer rounded-md border-2 border-white hover:bg-transparent hover:text-white transition-colors" id="btn-editar">EDITAR</button>
         </div>
       </header>
@@ -78,7 +78,7 @@
           </div>
         </article>
 
-        <article class="bg-primary rounded-md p-5 text-white">
+        <article id="section-atividade" class="bg-primary rounded-md p-5 text-white">
           <h3 class="text-[13px] font-bold tracking-wider uppercase mb-3 m-0">Atividade Recente</h3>
           <div class="flex flex-col gap-2 [&_.activity-row]:flex [&_.activity-row]:justify-between [&_.activity-row]:items-center [&_.activity-row]:py-1.5 [&_.activity-row]:border-b [&_.activity-row]:border-white/10 [&_.label]:text-secondary [&_.label]:text-xs [&_.value]:text-white [&_.value]:text-sm [&_.value]:font-semibold">
             <div class="activity-row"><span class="label">Último acesso</span><span class="value" id="val-ultimo-acesso"></span></div>
@@ -88,7 +88,7 @@
           </div>
         </article>
 
-        <article class="bg-primary rounded-md p-5 text-white">
+        <article id="section-turnos" class="bg-primary rounded-md p-5 text-white">
           <h3 class="text-[13px] font-bold tracking-wider uppercase mb-3 m-0">Turnos Recentes</h3>
           <div class="shifts-table">
             <div class="shifts-row shifts-header grid grid-cols-4 gap-2 py-2 border-b border-white/20 text-secondary text-xs font-bold uppercase">
