@@ -485,10 +485,6 @@ function inicializar() {
     setTimeout(inicializar, 500);
     return;
   }
-  if (id)
-    document.querySelector('a[href="medicoExames"]').href =
-      `medicoExames?id=${id}`;
-
   btnConfirmar.addEventListener("click", enviarPrescricao);
   medicamento.addEventListener("change", atualizarDosesEVia);
   document
