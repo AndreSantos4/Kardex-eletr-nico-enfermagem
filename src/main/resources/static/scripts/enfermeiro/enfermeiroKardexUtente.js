@@ -1773,6 +1773,116 @@ function submeterAdministrarSOS(event) {
   // TODO: POST /api/processes/{processoId}/sos-administrations
 }
 
+// ─── Popup Histórico de Internamentos ────────────────────────────────────────
+//   Endpoint: GET /api/patients/{id}/history (devolve lista de ProcessoClinico)
+
+async function abrirPopupHistInternamentos() {
+  if (!id) return;
+  await carregarPopUp("../../pages/enfermeiro/popups/popupHistoricoInternamentos.html");
+
+  const overlay = document.querySelector(".popup-hist-internamentos-overlay");
+  if (!overlay) return;
+
+  // nome do utente para o cabeçalho
+  const nomeEl = document.getElementById("utente-nome");
+  const nome = nomeEl ? nomeEl.textContent.trim() : "—";
+  const tituloEl = document.getElementById("popup-hist-utente");
+  if (tituloEl) tituloEl.textContent = nome || "—";
+
+  _renderHistInternamentos(null); // estado de carregamento
+  overlay.style.display = "flex";
+
+  try {
+    const res = await fetch(`http://localhost:8080/api/patients/${id}/history`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success) {
+      console.warn("[Hist. Internamentos]", json.message);
+      _renderHistInternamentos([]);
+      return;
+    }
+    _renderHistInternamentos(json.data ?? []);
+  } catch (err) {
+    console.error("[Hist. Internamentos] Erro:", err);
+    _renderHistInternamentos([]);
+  }
+}
+
+function fecharPopupHistInternamentos() {
+  const overlay = document.querySelector(".popup-hist-internamentos-overlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function _renderHistInternamentos(lista) {
+  const container = document.getElementById("popup-hist-lista");
+  if (!container) return;
+
+  if (lista === null) {
+    container.innerHTML = '<div class="text-center py-7 px-4 text-white/70 italic">A carregar internamentos…</div>';
+    return;
+  }
+  if (!lista || lista.length === 0) {
+    container.innerHTML = '<div class="text-center py-7 px-4 text-white/70 italic">Sem internamentos registados.</div>';
+    return;
+  }
+
+  // Ordenar: activos primeiro, depois por dataEntrada descendente
+  const ordenados = lista.slice().sort((a, b) => {
+    const ativoA = !a.dataAlta && !a.alta;
+    const ativoB = !b.dataAlta && !b.alta;
+    if (ativoA && !ativoB) return -1;
+    if (ativoB && !ativoA) return 1;
+    const da = _calcularDiasInternado(a.dataEntrada);
+    const db = _calcularDiasInternado(b.dataEntrada);
+    return (da ?? 0) - (db ?? 0); // menos dias = mais recente
+  });
+
+  container.innerHTML = ordenados.map((i) => {
+    const ativo = !i.dataAlta && i.alta !== true;
+    const estado = ativo ? "Ativo" : "Alta";
+    const corEstado = ativo ? "text-green-300" : "text-white/65";
+
+    const procId = i.id ?? "—";
+    const entrada = (i.dataEntrada ?? "").substring(0, 10) || "—";
+    const saida = i.dataAlta ? i.dataAlta.substring(0, 10) : null;
+    const diasInternado = _calcularDiasInternado(i.dataEntrada);
+    const periodo = ativo
+      ? `${entrada} → presente`
+      : `${entrada} → ${saida ?? "—"}${diasInternado != null ? ` (${diasInternado} dias)` : ""}`;
+
+    const motivo = i.motivoInternamento ?? i.diagnosticoPrincipal ?? "—";
+    const medico = i.medicoResponsavel?.dados?.nome ?? "—";
+    const tipoAlta = i.tipoAlta ? ` · ${_humanizar(i.tipoAlta)}` : "";
+
+    const titulo = ativo
+      ? `Internamento atual - ${procId}`
+      : `Internamento anterior · ${procId}`;
+
+    return `
+      <div class="bg-white rounded-full px-6 py-3 flex items-center justify-between gap-4 shadow-sm">
+        <div class="min-w-0 flex-1">
+          <div class="text-bg-dark text-[13.5px] font-bold leading-tight truncate">${_escHist(titulo)}</div>
+          <div class="text-bg-dark/75 text-[12px] mt-0.5 truncate">${_escHist(periodo)} · Motivo: ${_escHist(motivo)}${medico !== "—" ? " · " + _escHist(medico) : ""}${tipoAlta}</div>
+        </div>
+        <span class="${corEstado} text-[13px] font-bold whitespace-nowrap">${estado}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function _humanizar(s) {
+  if (!s) return "";
+  const t = String(s).toLowerCase().replace(/_/g, " ");
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function _escHist(s) {
+  if (s == null) return "";
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
 /**
  * Aceita "dd/MM/yyyy:HH:mm:ss" (formato do backend) ou ISO. Devolve nº de dias
  * desde a data de entrada até hoje, ou null se a string não for parseável.
