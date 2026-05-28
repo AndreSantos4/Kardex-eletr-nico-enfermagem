@@ -35,6 +35,7 @@ async function _carregarPopups() {
     var popups = [
         "../../pages/admin/popups/popupAdicionarMedicamento.html",
         "../../pages/admin/popups/popupDesativarMedicamento.html",
+        "../../pages/admin/popups/popupEditarMedicamento.html",
     ];
 
     for (var i = 0; i < popups.length; i++) {
@@ -46,7 +47,7 @@ async function _carregarPopups() {
             var div  = document.createElement("div");
             div.innerHTML = html;
             div.querySelectorAll(
-                ".pop-up-adicionar-medicamento, .pop-up-desativar-medicamento"
+                ".pop-up-adicionar-medicamento, .pop-up-desativar-medicamento, .pop-up-editar-medicamento"
             ).forEach(function(p) { p.style.display = "none"; });
             document.body.appendChild(div);
         } catch (e) {
@@ -64,6 +65,14 @@ function _ligarForms() {
         console.warn("[forms] form de adicionar nao encontrado.");
     }
 
+    var formEditar = document.querySelector(".pop-up-editar-medicamento form");
+    if (formEditar) {
+        formEditar.removeAttribute("onsubmit");
+        formEditar.addEventListener("submit", guardarEdicaoMedicamento);
+    } else {
+        console.warn("[forms] form de editar nao encontrado.");
+    }
+
     var formDesativar = document.querySelector("#form-desativar-medicamento");
     if (formDesativar) {
         formDesativar.removeAttribute("onsubmit");
@@ -74,7 +83,7 @@ function _ligarForms() {
 }
 
 document.addEventListener("click", function(e) {
-    [".pop-up-adicionar-medicamento", ".pop-up-desativar-medicamento"].forEach(function(sel) {
+    [".pop-up-adicionar-medicamento", ".pop-up-desativar-medicamento", ".pop-up-editar-medicamento"].forEach(function(sel) {
         var popup = document.querySelector(sel);
         if (popup && e.target === popup) fecharPopUp(sel);
     });
@@ -475,8 +484,82 @@ async function ativarMedicamento(id) {
 }
 
 function editarMedicamento(id) {
-    // TODO: implementar popup de edicao
-    console.log("Editar medicamento:", id);
+    var med = null;
+    for (var i = 0; i < _todosMedicamentos.length; i++) {
+        if (_todosMedicamentos[i].id === id) { med = _todosMedicamentos[i]; break; }
+    }
+    if (!med) return;
+
+    var popup = document.querySelector(".pop-up-editar-medicamento");
+    if (!popup) { console.error("Popup editar nao encontrado no DOM."); return; }
+
+    var form = popup.querySelector("#form-editar-medicamento");
+    if (form) form.setAttribute("data-medicamento-id", id);
+
+    var dosagensTexto = (med.dosagens || []).map(function(d) {
+        return d.dose + _abreviarUnidade(d.unidadeMedida);
+    }).join(", ");
+
+    var doseMaxTexto = "";
+    if (med.dosagemMaxDiaria) {
+        doseMaxTexto = med.dosagemMaxDiaria.dose + _abreviarUnidade(med.dosagemMaxDiaria.unidadeMedida) + "/dia";
+    }
+
+    var set = function(sel, val) { var el = popup.querySelector(sel); if (el) el.value = val || ""; };
+    set("[name='nome']", med.nome);
+    set("[name='principio-ativo']", med.principioAtivo);
+    set("[name='classe-farmacologica']", med.classeFarmacologica);
+    set("[name='via']", med.viaAdministracao);
+    set("[name='forma']", med.formaFarmaceutica);
+    set("[name='dosagens']", dosagensTexto);
+    set("[name='dose-maxima']", doseMaxTexto);
+    var altoRiscoEl = popup.querySelector("[name='alto-risco']");
+    if (altoRiscoEl) altoRiscoEl.checked = !!med.altoRisco;
+
+    popup.style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+async function guardarEdicaoMedicamento(event) {
+    event.preventDefault();
+    var form = event.target;
+    var id   = parseInt(form.getAttribute("data-medicamento-id"), 10);
+    if (!id) {
+        mostrarNotificacao({ titulo: "Erro", mensagem: "ID do medicamento nao encontrado.", tipo: "erro" });
+        return;
+    }
+
+    var dados = _extrairDadosFormulario(form);
+    if (!dados) return;
+
+    var btnSubmit = form.querySelector('[type="submit"]');
+    _setBtnLoading(btnSubmit, true, "A guardar...");
+
+    try {
+        var res = await fetch(API_BASE + "/" + id, {
+            method:  "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization:  "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify(dados),
+        });
+
+        if (!res.ok) {
+            var json = await res.json().catch(function() { return {}; });
+            throw new Error(json.message || "Erro " + res.status + " ao editar medicamento.");
+        }
+
+        mostrarNotificacao({ titulo: "Medicamento editado", mensagem: dados.nome + " foi atualizado.", tipo: "sucesso" });
+        fecharPopUp(".pop-up-editar-medicamento");
+        await carregarMedicamentos();
+
+    } catch (err) {
+        console.error(err);
+        mostrarNotificacao({ titulo: "Erro ao editar", mensagem: err.message, tipo: "erro" });
+    } finally {
+        _setBtnLoading(btnSubmit, false, "Guardar");
+    }
 }
 
 function _extrairDadosFormulario(form) {

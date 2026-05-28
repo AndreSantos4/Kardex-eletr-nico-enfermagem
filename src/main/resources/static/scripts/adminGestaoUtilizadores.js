@@ -52,7 +52,7 @@ async function carregarPopups() {
 
   await Promise.all(
     popups.map(async (nome) => {
-      const resp = await fetch(`popups/${nome}.html`);
+      const resp = await fetch(`/pages/admin/popups/${nome}.html`);
       const html = await resp.text();
       container.insertAdjacentHTML("beforeend", html);
     }),
@@ -180,7 +180,7 @@ function getToken() {
 }
 
 function irParaPerfil(id) {
-  window.location.href = `perfilColaborador.html?id=${id}`;
+  window.location.href = `perfilColaborador?id=${id}`;
 }
 
 async function ativarUtilizador(id) {

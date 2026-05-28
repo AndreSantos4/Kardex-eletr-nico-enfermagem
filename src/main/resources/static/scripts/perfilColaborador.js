@@ -78,6 +78,13 @@ async function carregarPerfil() {
       user.contactoEmergencia ?? "-";
     document.getElementById("val-cc").textContent = user.numeroCC ?? "-";
 
+    if (user.role !== "ENFERMEIRO") {
+      const secAtividade = document.getElementById("section-atividade");
+      const secTurnos = document.getElementById("section-turnos");
+      if (secAtividade) secAtividade.style.display = "none";
+      if (secTurnos) secTurnos.style.display = "none";
+    }
+
     document.getElementById("val-ultimo-acesso").textContent =
       summary?.lastAccess ?? "-";
     document.getElementById("val-turnos-mes").textContent =
