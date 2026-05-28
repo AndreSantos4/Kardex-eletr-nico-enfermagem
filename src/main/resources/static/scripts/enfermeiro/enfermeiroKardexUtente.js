@@ -336,10 +336,8 @@ async function carregarUtente(id) {
 
     caseData = { cama: processo.cama?.id ?? "—" };
 
-    const [dia, mes, ano] = processo.dataEntrada.split("/");
-    const dias = Math.floor(
-      (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
-    );
+    // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vem colado à hora.
+    const dias = _calcularDiasInternado(processo.dataEntrada) ?? 0;
 
     document.getElementById("header-title").textContent =
       `Kardex - ${utenteData.nome}`;
@@ -1773,4 +1771,27 @@ function submeterAdministrarSOS(event) {
   fecharPopupAdministrarSOS();
 
   // TODO: POST /api/processes/{processoId}/sos-administrations
+}
+
+/**
+ * Aceita "dd/MM/yyyy:HH:mm:ss" (formato do backend) ou ISO. Devolve nº de dias
+ * desde a data de entrada até hoje, ou null se a string não for parseável.
+ */
+function _calcularDiasInternado(dataEntrada) {
+  if (!dataEntrada) return null;
+  const m = String(dataEntrada).match(/^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/);
+  let d;
+  if (m) {
+    d = new Date(
+      parseInt(m[3], 10),
+      parseInt(m[2], 10) - 1,
+      parseInt(m[1], 10),
+      parseInt(m[4] ?? "0", 10),
+      parseInt(m[5] ?? "0", 10),
+    );
+  } else {
+    d = new Date(dataEntrada);
+  }
+  if (isNaN(d.getTime())) return null;
+  return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
 }
