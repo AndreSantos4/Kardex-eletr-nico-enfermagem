@@ -67,6 +67,9 @@ public class Prescricao {
 
     @Column(name = "ultima_administracao")
     public LocalDateTime ultimaAdministracao;
+
+    @Column(name = "hora_administracao_prevista")
+    public LocalDateTime horaAdministracaoPrevista;
     
     @OneToMany(mappedBy = "prescricao", cascade = CascadeType.ALL)
     public List<AdministracaoMedicacao> administracoes = new ArrayList<>();
