@@ -58,10 +58,8 @@ async function carregarUtente(id) {
     // Page header title + subtitle
     document.getElementById("page-title").textContent =
       `Kardex - ${dados.nome}`;
-    const [dE, mE, aE] = processo.dataEntrada.split("/").map(Number);
-    const diasInternado = Math.floor(
-      (Date.now() - new Date(aE, mE - 1, dE).getTime()) / 86400000,
-    );
+    // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vinha colado à hora (NaN).
+    const diasInternado = _calcularDiasInternado(processo.dataEntrada) ?? 0;
     document.getElementById("page-subtitle").textContent =
       `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "—"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
 
@@ -124,6 +122,8 @@ async function carregarUtente(id) {
 
     // Medicação Ativa — carregada via endpoint de prescrições
     carregarMedicacaoAtiva(processo.id);
+    carregarExamesECateteres(processo.id);
+    carregarOcorrencias(processo.id);
   } catch (err) {
     console.error("[KardexUtente]", err);
     alert("Erro de ligação ao servidor.");
@@ -246,3 +246,126 @@ async function iniciar() {
 }
 
 iniciar();
+
+// ── Exames e Cateteres ───────────────────────────────────────────────────────
+
+async function carregarExamesECateteres(processId) {
+  const container = document.querySelector(".exames-cateteres");
+  if (!container) return;
+  try {
+    const [resEx, resCat] = await Promise.allSettled([
+      fetch(`/api/processes/${processId}/exams`),
+      fetch(`/api/processes/${processId}/cateteres`),
+    ]);
+
+    let exames = [];
+    let cateteres = [];
+
+    if (resEx.status === "fulfilled" && resEx.value.ok) {
+      const json = await resEx.value.json();
+      exames = json.data ?? [];
+    }
+    if (resCat.status === "fulfilled" && resCat.value.ok) {
+      const json = await resCat.value.json();
+      cateteres = json.data ?? [];
+    }
+
+    const partes = [];
+    if (exames.length > 0) {
+      partes.push(`<div class="font-bold text-[12px] uppercase tracking-wider text-primary/70">Exames</div>`);
+      partes.push(exames.slice(0, 3).map((e) => {
+        const tipo = e.tipo ?? "Exame";
+        const data = e.dataPretendida ?? e.data ?? "—";
+        const medico = e.medico?.dados?.nome ?? e.medicoSolicitante?.dados?.nome ?? "—";
+        return `<div class="leading-tight"><div class="font-semibold">${escapeHtml(tipo)}</div><div class="text-xs text-primary/75">Pedido a ${escapeHtml(data)}${medico !== "—" ? " — " + escapeHtml(medico) : ""}</div></div>`;
+      }).join(""));
+    }
+    if (cateteres.length > 0) {
+      partes.push(`<div class="font-bold text-[12px] uppercase tracking-wider text-primary/70 mt-1">Cateteres</div>`);
+      partes.push(cateteres.slice(0, 3).map((c) => {
+        const tipo = c.tipo ?? "Cateter";
+        const local = c.localInsercao ?? c.local ?? "—";
+        const calibre = c.calibre ?? "—";
+        const dataIns = c.dataInsercao ?? c.data ?? "—";
+        return `<div class="leading-tight"><div class="font-semibold">${escapeHtml(tipo)}${local !== "—" ? " — " + escapeHtml(local) : ""}</div><div class="text-xs text-primary/75">Inserido ${escapeHtml(dataIns)} · Calibre ${escapeHtml(calibre)}</div></div>`;
+      }).join(""));
+    }
+
+    if (partes.length === 0) {
+      container.innerHTML = `<p class="m-0 italic text-primary/55">Sem exames ou cateteres registados.</p>`;
+      return;
+    }
+    container.innerHTML = partes.join("");
+  } catch (err) {
+    console.error("[Exames/Cateteres]", err);
+    container.innerHTML = `<p class="m-0 italic text-primary/55">Erro ao carregar.</p>`;
+  }
+}
+
+// ── Ocorrências de Hoje ──────────────────────────────────────────────────────
+
+async function carregarOcorrencias(processId) {
+  const container = document.querySelector(".ocorrencias");
+  if (!container) return;
+  try {
+    const res = await fetch(`/api/processes/${processId}/incidents`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const incidentes = json.data ?? [];
+
+    const hoje = new Date().toISOString().slice(0, 10);
+    const ocorrenciasHoje = incidentes.filter((i) => {
+      const d = String(i.data ?? "").substring(0, 10);
+      // formato backend "dd/MM/yyyy"
+      const m = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(d);
+      if (m) return `${m[3]}-${m[2]}-${m[1]}` === hoje;
+      return false;
+    });
+
+    if (ocorrenciasHoje.length === 0) {
+      container.innerHTML = `<p class="m-0 italic text-primary/55">Sem ocorrências registadas hoje.</p>`;
+      return;
+    }
+
+    container.innerHTML = ocorrenciasHoje.slice(0, 5).map((i) => {
+      const hora = String(i.data ?? "").split(":").slice(1, 3).join(":") || "—";
+      const enf = i.enfermeiro?.dados?.nome ?? i.funcionario?.dados?.nome ?? "—";
+      const tipo = i.tipo ?? "Incidente";
+      const desc = i.descricao ?? "—";
+      return `<div class="leading-tight"><div><span class="font-semibold">${escapeHtml(hora)}</span> · ${escapeHtml(enf)}</div><div class="text-xs text-primary/75">${escapeHtml(tipo)} — ${escapeHtml(desc)}</div></div>`;
+    }).join("");
+  } catch (err) {
+    console.error("[Ocorrências]", err);
+    container.innerHTML = `<p class="m-0 italic text-primary/55">Erro ao carregar ocorrências.</p>`;
+  }
+}
+
+function escapeHtml(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+/**
+ * Aceita "dd/MM/yyyy:HH:mm:ss" (formato do backend) ou ISO. Devolve nº de dias
+ * desde a data de entrada até hoje, ou null se a string não for parseável.
+ */
+function _calcularDiasInternado(dataEntrada) {
+  if (!dataEntrada) return null;
+  const m = String(dataEntrada).match(/^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/);
+  let d;
+  if (m) {
+    d = new Date(
+      parseInt(m[3], 10),
+      parseInt(m[2], 10) - 1,
+      parseInt(m[1], 10),
+      parseInt(m[4] ?? "0", 10),
+      parseInt(m[5] ?? "0", 10),
+    );
+  } else {
+    d = new Date(dataEntrada);
+  }
+  if (isNaN(d.getTime())) return null;
+  return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
+}
