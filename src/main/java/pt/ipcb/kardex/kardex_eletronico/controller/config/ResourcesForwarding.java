@@ -89,6 +89,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiro/enfermeiroPlanoCuidados.html?id=" + id);
     }
 
+    @GetMapping("/enfermeiroAdministracaoMedicacao")
+    public ModelAndView enfermeiroAdministracaoMedicacao(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiro/enfermeiroAdministracaoMedicacao.html?id=" + id);
+    }
+
     /* ENFERMEIRO CHEFE */
 
     @GetMapping("/enfermeiroChefeDashboard")
