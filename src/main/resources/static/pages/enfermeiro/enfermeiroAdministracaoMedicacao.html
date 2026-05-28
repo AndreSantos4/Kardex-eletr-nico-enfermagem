@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Administração de Medicação</title>
+	<link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: { extend: {
+				colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+				fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+			}},
+		};
+	</script>
+	<style>
+		:root { --surface: #1a3f5e; --border: #d0d9e5; --muted: #5b738a; }
+	</style>
+</head>
+
+<body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border">
+	<div class="bg-primary px-6 h-[52px] flex items-center justify-between border-b border-white/10">
+		<span class="text-[13px] text-text tracking-wider">Administração de Medicação</span>
+		<div class="flex items-center gap-4">
+			<span class="bg-transparent text-white text-[13px] font-bold tracking-[0.04em]">Enf. <span id="nome-enf"></span><span id="turno-wrapper"> | Turno: <span id="turno"></span></span></span>
+			<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-widest px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
+		</div>
+	</div>
+
+	<div class="flex flex-grow items-stretch">
+		<aside class="w-[210px] bg-primary py-3 shrink-0 [&_ul]:list-none [&_ul]:p-0 [&_ul]:m-0 [&_.sidebar-item_a]:flex [&_.sidebar-item_a]:items-center [&_.sidebar-item_a]:gap-3 [&_.sidebar-item_a]:px-[18px] [&_.sidebar-item_a]:py-3 [&_.sidebar-item_a]:no-underline [&_.sidebar-item_a]:text-text [&_.sidebar-item_a]:text-sm [&_.sidebar-item_a]:transition-colors [&_.sidebar-item_a]:cursor-pointer [&_.sidebar-item_a:hover]:bg-white/15 [&_.sidebar-item_a:hover]:text-white [&_.sidebar-item.active_a]:bg-white [&_.sidebar-item.active_a]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
+			<nav>
+				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Principal</div>
+				<ul>
+					<li class="sidebar-item"><a href="enfermeiroDashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1z"/></svg>Home</a></li>
+					<li class="sidebar-item"><a href="enfermeiroListaUtentes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32z"/></svg>Lista de Utentes</a></li>
+				</ul>
+
+				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Turno</div>
+				<ul>
+					<li class="sidebar-item"><a href="enfermeiroPassagemTurno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 118.6c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S352 19.1 352 32l0 32-160 0C86 64 0 150 0 256 0 273.7 14.3 288 32 288s32-14.3 32-32c0-70.7 57.3-128 128-128l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64z"/></svg>Passagem de Turno</a></li>
+				</ul>
+
+				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Cuidados</div>
+				<ul>
+					<li class="sidebar-item"><a href="#" onclick="irParaPlano(); return false;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64z"/></svg>Planos de Cuidados</a></li>
+					<li class="sidebar-item active"><a><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M112 256c0-26.5 21.5-48 48-48s48 21.5 48 48-21.5 48-48 48-48-21.5-48-48zm56-216c0-22.1 17.9-40 40-40s40 17.9 40 40v40h120c39.8 0 72 32.2 72 72v24h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32v160c0 35.3-28.7 64-64 64H88c-35.3 0-64-28.7-64-64V256H0c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16h24v-24c0-39.8 32.2-72 72-72h64V40z"/></svg>Administração</a></li>
+					<li class="sidebar-item"><a href="#" onclick="abrirPopUpAdministrarSOS(); return false;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M208.5 32c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 140.9 122-70.4c15.3-8.8 34.9-3.6 43.7 11.7l16 27.7c8.8 15.3 3.6 34.9-11.7 43.7l-122 70.4 122 70.4c15.3 8.8 20.6 28.4 11.7 43.7l-16 27.7c-8.8 15.3-28.4 20.6-43.7 11.7l-122-70.4 0 140.9c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-140.9-122 70.4c-15.3 8.8-34.9 3.6-43.7-11.7l-16-27.7c-8.8-15.3-3.6-34.9 11.7-43.7l122-70.4-122-70.4c-15.3-8.8-20.5-28.4-11.7-43.7l16-27.7c8.8-15.3 28.4-20.5 43.7-11.7l122 70.4 0-140.9z"/></svg>Administração SOS</a></li>
+					<li class="sidebar-item"><a href="#" onclick="abrirPopUpContencaoQuimica(); return false;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21z"/></svg>Contenção Química</a></li>
+				</ul>
+			</nav>
+		</aside>
+
+		<main class="flex-1 p-[14px] flex flex-col gap-2.5">
+			<!-- Header -->
+			<div class="bg-primary rounded px-5 py-[14px] flex items-center justify-between gap-4">
+				<div class="flex-1 min-w-0">
+					<h3 class="m-0 mb-0.5 text-base font-bold text-white tracking-[0.02em]">Administração de Medicação — 5 Certos</h3>
+					<p class="m-0 text-xs text-secondary font-medium" id="header-utente-info">A carregar...</p>
+				</div>
+				<button class="bg-transparent border-2 border-white text-white font-sans text-xs font-bold tracking-[0.03em] px-4 py-1.5 cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors whitespace-nowrap" onclick="irParaKardex()">VOLTAR KARDEX</button>
+			</div>
+
+			<!-- Alergias -->
+			<div id="alergias-box" class="bg-white border-2 border-alertas rounded-md p-3 flex flex-col gap-1" style="display:none;">
+				<div class="text-alertas text-[13px] font-bold">Alergias — Atenção antes de qualquer medicação</div>
+				<div id="alergias-list" class="text-[12.5px] text-bg-dark"></div>
+			</div>
+
+			<!-- Grid: Administração de Hoje (esq.) + Utente (dir.) -->
+			<div class="grid grid-cols-[1fr_360px] gap-2.5 max-[1000px]:grid-cols-1">
+				<div class="bg-white border border-primary rounded-md overflow-hidden">
+					<div class="bg-primary text-white px-4 py-2.5 text-[14px] font-bold">Administração de Hoje</div>
+					<div class="p-2 flex flex-col" id="prescricoes-body">
+						<p class="text-bg-dark text-[13px] p-3 italic">A carregar prescrições...</p>
+					</div>
+				</div>
+
+				<div class="bg-white border border-primary rounded-md overflow-hidden">
+					<div class="bg-primary text-white px-4 py-2.5 text-[14px] font-bold">Utente</div>
+					<div class="p-3 text-[13px] text-bg-dark flex flex-col gap-1.5" id="utente-info-body">
+						<p class="m-0 italic text-muted">A carregar...</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Histórico de administrações de hoje -->
+			<div class="bg-white border border-primary rounded-md overflow-hidden">
+				<div class="bg-primary text-white px-4 py-2.5 text-[14px] font-bold">Histórico de Administrações de Hoje</div>
+				<div class="overflow-x-auto">
+					<table class="w-full border-collapse text-[12.5px]">
+						<thead>
+							<tr class="bg-white border-b-[1.5px] border-primary [&_th]:text-left [&_th]:px-3 [&_th]:py-2 [&_th]:font-bold [&_th]:text-bg-dark [&_th]:text-[12px] [&_th]:tracking-wider [&_th]:uppercase">
+								<th>H. prev.</th>
+								<th>H. real</th>
+								<th>Medicamento</th>
+								<th>Via</th>
+								<th>Enfermeiro</th>
+								<th>Estado</th>
+							</tr>
+						</thead>
+						<tbody id="historico-tbody" class="[&_tr]:border-b [&_tr]:border-[#f0f4f8] [&_tr:last-child]:border-0 [&_td]:px-3 [&_td]:py-2 [&_td]:text-bg-dark [&_td]:align-middle">
+							<tr><td colspan="6" class="!text-center !p-4 italic text-muted">Histórico não disponível.</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<div id="popup-container"></div>
+	<div id="notificacoes-container"></div>
+
+	<script src="../../scripts/logout.js"></script>
+	<script src="../../scripts/topBar.js"></script>
+	<script src="../../scripts/notificacao.js"></script>
+	<script src="../../scripts/enfermeiro/enfermeiroAdministracaoMedicacao.js"></script>
+</body>
+
+</html>
