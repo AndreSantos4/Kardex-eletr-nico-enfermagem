@@ -85,6 +85,10 @@ function abrirPaginaPlano() {
   window.location.href = `enfermeiroPlanoCuidados?id=${id}`;
 }
 
+function abrirPaginaAdministracao() {
+  window.location.href = `enfermeiroAdministracaoMedicacao?id=${id}`;
+}
+
 function irParaHistoricoPrescricoes() {
   window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
 }
