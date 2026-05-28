@@ -41,12 +41,12 @@
 
 		<main class="flex-1 flex flex-col gap-[14px] py-[14px] pr-[14px] pl-4">
 			<div class="bg-primary rounded px-5 py-[14px] flex items-center justify-between gap-4">
-				<div>
+				<div class="page-header-left">
 					<h4 class="text-[15px] font-bold tracking-wider m-0">Administração do sistema</h4>
 					<p id="current-datetime" class="text-xs text-secondary mt-0.5 font-mono m-0"></p>
 				</div>
 				<div class="flex items-center gap-2">
-					<div class="flex items-center bg-white border border-white/10 rounded px-2.5 py-[5px] gap-1.5">
+					<div class="search-input-wrap flex items-center bg-white border border-white/10 rounded px-2.5 py-[5px] gap-1.5">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-3.5 h-3.5 fill-secondary shrink-0"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
 						<input type="text" placeholder="Nome do medicamento" class="bg-transparent border-0 outline-none text-primary text-[13px] w-[180px] placeholder:text-secondary" />
 					</div>
@@ -55,7 +55,7 @@
 			</div>
 
 			<div class="m-[14px] rounded-[5px] border border-primary [&_.btn-pagina]:min-w-[32px] [&_.btn-pagina]:h-8 [&_.btn-pagina]:px-2.5 [&_.btn-pagina]:bg-transparent [&_.btn-pagina]:border-[1.5px] [&_.btn-pagina]:border-primary [&_.btn-pagina]:rounded [&_.btn-pagina]:text-primary [&_.btn-pagina]:text-xs [&_.btn-pagina]:font-bold [&_.btn-pagina]:tracking-wider [&_.btn-pagina]:cursor-pointer [&_.btn-pagina]:transition-colors [&_.btn-pagina:hover]:bg-secondary [&_.btn-pagina.ativo]:bg-primary [&_.btn-pagina.ativo]:border-primary [&_.btn-pagina.ativo]:text-white [&_.paginacao-tamanho_select]:bg-white [&_.paginacao-tamanho_select]:border-[1.5px] [&_.paginacao-tamanho_select]:border-primary [&_.paginacao-tamanho_select]:text-primary [&_.paginacao-tamanho_select]:text-xs [&_.paginacao-tamanho_select]:font-bold [&_.paginacao-tamanho_select]:px-2 [&_.paginacao-tamanho_select]:py-1 [&_.paginacao-tamanho_select]:rounded [&_.paginacao-tamanho_select]:cursor-pointer [&_.paginacao-tamanho_select:hover]:bg-secondary">
-				<div class="w-full overflow-x-auto">
+				<div class="lista-medicamentos-table w-full overflow-x-auto">
 					<table class="lista-medicamentos w-full border-collapse text-[0.875rem] table-fixed">
 						<thead class="bg-primary text-white text-center">
 							<tr>

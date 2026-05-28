@@ -17,7 +17,7 @@
 </head>
 
 <body class="font-sans flex flex-col h-screen w-full m-0 p-0 bg-white text-text relative box-border">
-  <div class="container flex flex-col h-screen relative">
+  <div class="flex flex-col h-screen relative">
     <div class="content-container w-full h-full absolute top-0 left-0 flex flex-col">
       <div class="bg-primary px-6 h-[52px] flex items-center justify-between border-b border-white/10">
         <span class="text-[13px] text-secondary tracking-wider">Gestão de Utilizadores</span>
@@ -41,14 +41,14 @@
 			<a href="adminRelatoriosIndicadores"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z"/></svg>Relatórios</div></a>
 		</nav>
 
-        <div class="flex-1 flex flex-col gap-[14px] py-[14px] pr-[14px] pl-4">
+        <div class="content-container flex-1 flex flex-col gap-[14px] py-[14px] pr-[14px] pl-4">
           <div class="bg-primary rounded px-5 py-[14px] flex items-center justify-between">
-            <div>
+            <div class="page-header-left">
               <h1 class="text-[15px] font-bold tracking-wider m-0">Administração do Sistema</h1>
               <p class="text-xs text-secondary mt-0.5 font-mono m-0">0 utilizadores</p>
             </div>
             <div class="flex items-center gap-2">
-              <div class="flex items-center bg-white border border-white/10 rounded px-2.5 py-[5px] gap-1.5">
+              <div class="search-input-wrap flex items-center bg-white border border-white/10 rounded px-2.5 py-[5px] gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-3.5 h-3.5 fill-secondary shrink-0"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
                 <input type="text" placeholder="Utilizador, Nº Mecan." class="bg-transparent border-0 outline-none text-primary text-[13px] w-[180px] placeholder:text-secondary" />
               </div>
@@ -56,7 +56,7 @@
             </div>
           </div>
 
-          <div class="bg-primary rounded border border-white/10 overflow-x-auto">
+          <div class="table-panel bg-primary rounded border border-white/10 overflow-x-auto">
             <table class="users-table w-full border-collapse text-[13px]">
               <thead>
                 <tr class="border-b-2 border-white/10">
@@ -74,9 +74,8 @@
           </div>
         </div>
       </div>
-
-      <div class="pop-up-container" style="display: none" id="popUpContainer"></div>
     </div>
+    <div class="pop-up-container" style="display: none" id="popUpContainer"></div>
   </div>
   <script src="../../scripts/logout.js"></script>
 	<script src="../../scripts/topBar.js"></script>
