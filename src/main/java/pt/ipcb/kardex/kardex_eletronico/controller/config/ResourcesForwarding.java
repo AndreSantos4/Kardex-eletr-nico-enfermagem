@@ -131,6 +131,11 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeHistoricoTurnos.html");
     }
 
+    @GetMapping("/enfermeiroChefeKardexUtente")
+    public ModelAndView enfermeiroChefeKardexUtente(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeKardexUtente.html?id=" + id);
+    }
+
     /* MÉDICO */
 
     @GetMapping("/medicoDashboard")
