@@ -38,8 +38,8 @@
 
 				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Clínico</div>
 				<ul>
-					<li class="sidebar-item"><a href="medicoExames"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M184.6 411.5c-3.1 7.3-5.4 14.9-6.8 22.6-14.5 8.8-31.5 13.9-49.8 13.9-53 0-96-43-96-96L32 64C14.3 64 0 49.7 0 32S14.3 0 32 0L224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 255.6-39.4 91.9zM96 64l0 128 64 0 0-128-64 0zM352 0L512 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 153.4 91.3 213c2.3 5.4 3.8 11.1 4.4 17l.3 .6-.3 0c.2 1.8 .3 3.6 .3 5.4 0 32.3-26.2 58.6-58.6 58.6l-266.9 0c-32.3 0-58.6-26.2-58.6-58.6 0-1.8 .1-3.6 .3-5.4l-.3 0 .3-.6c.6-5.8 2.1-11.6 4.4-17L320 217.4 320 64c-17.7 0-32-14.3-32-32S302.3 0 320 0l32 0z"/></svg>Exames</a></li>
-					<li class="sidebar-item"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M311.4 32l8.6 0c35.3 0 64 28.7 64 64l0 352c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l8.6 0C83.6 12.9 104.3 0 128 0L256 0c23.7 0 44.4 12.9 55.4 32z"/></svg>Notas de evolução</a></li>
+					<li class="sidebar-item"><a href="#" onclick="sidebarNavegar(event,'medicoExames')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M184.6 411.5c-3.1 7.3-5.4 14.9-6.8 22.6-14.5 8.8-31.5 13.9-49.8 13.9-53 0-96-43-96-96L32 64C14.3 64 0 49.7 0 32S14.3 0 32 0L224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 255.6-39.4 91.9zM96 64l0 128 64 0 0-128-64 0zM352 0L512 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 153.4 91.3 213c2.3 5.4 3.8 11.1 4.4 17l.3 .6-.3 0c.2 1.8 .3 3.6 .3 5.4 0 32.3-26.2 58.6-58.6 58.6l-266.9 0c-32.3 0-58.6-26.2-58.6-58.6 0-1.8 .1-3.6 .3-5.4l-.3 0 .3-.6c.6-5.8 2.1-11.6 4.4-17L320 217.4 320 64c-17.7 0-32-14.3-32-32S302.3 0 320 0l32 0z"/></svg>Exames</a></li>
+					<li class="sidebar-item"><a href="#" onclick="sidebarNavegar(event,'medicoNotasClinicas')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M311.4 32l8.6 0c35.3 0 64 28.7 64 64l0 352c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l8.6 0C83.6 12.9 104.3 0 128 0L256 0c23.7 0 44.4 12.9 55.4 32z"/></svg>Notas de evolução</a></li>
 				</ul>
 
 				<div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Cuidados</div>
@@ -142,7 +142,7 @@
 						</div>
 
 						<div class="flex justify-end">
-							<button class="bg-transparent border-2 border-primary text-primary text-[13px] font-bold tracking-wider px-6 py-2 cursor-pointer rounded-[10px] hover:bg-primary hover:text-white transition-colors" type="button">CONFIRMAR PRESCRIÇÃO</button>
+							<button class="btn-confirmar bg-transparent border-2 border-primary text-primary text-[13px] font-bold tracking-wider px-6 py-2 cursor-pointer rounded-[10px] hover:bg-primary hover:text-white transition-colors" type="button">CONFIRMAR PRESCRIÇÃO</button>
 						</div>
 					</div>
 				</div>
@@ -180,6 +180,7 @@
 	<script src="../../scripts/topBar.js"></script>
 	<div id="notificacoes-container"></div>
 	<script src="../../scripts/notificacao.js"></script>
+	<script src="../../scripts/medico/medicoSidebarNav.js"></script>
 	<script src="../../scripts/medico/medicoPrescreverMedicamento.js"></script>
 </body>
 
