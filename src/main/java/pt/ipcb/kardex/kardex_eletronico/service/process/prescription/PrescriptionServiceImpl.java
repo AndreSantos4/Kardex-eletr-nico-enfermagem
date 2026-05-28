@@ -10,10 +10,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.SuspensaoClinica;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoPendencia;
@@ -26,6 +23,7 @@ import pt.ipcb.kardex.kardex_eletronico.service.shift.issues.IssuesService;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +33,8 @@ import java.util.List;
 public class PrescriptionServiceImpl implements PrescriptionService {
     private final int TOLERANCIA_ADMINISTRACAO_SOS_MINUTOS = 10;
     private final int TOLERANCIA_ADMINISTRACAO_MINUTOS = 30;
+
+    private final Clock clock;
 
     private final ProcessService processService;
     private final WorkerService workerService;
@@ -61,6 +61,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         prescription.setMedicamento(medication);
         prescription.setDose(dose);
         prescription.setProcesso(process);
+        prescription.setHoraAdministracaoPrevista(calculatePredictedAdministrationTime(prescription));
 
         repository.save(prescription);
     }
@@ -130,6 +131,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         issuesService.executeDefinedIssue(prescription.getId(), TipoPendencia.MEDICACAO);
         prescription.setUltimaAdministracao(LocalDateTime.now());
+        prescription.setHoraAdministracaoPrevista(calculatePredictedAdministrationTime(prescription));
 
         administracaoRepository.save(administration);
     }
@@ -185,5 +187,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to) {
         var prescriptions = repository.findByProcessoIdFiltered(processId, state, from, to);
         return mapper.toDTOList(prescriptions);
+    }
+
+    private LocalDateTime calculatePredictedAdministrationTime(Prescricao prescription) {
+        var interval = prescription.getFrequencia().getIntervaloMinHoras();
+        if(prescription.getDataInicio().isBefore(LocalDate.now(clock)) || prescription.getUltimaAdministracao() == null){
+            return prescription.getDataInicio().atStartOfDay();
+        }
+
+        return prescription.getUltimaAdministracao().plusHours(interval);
     }
 }
