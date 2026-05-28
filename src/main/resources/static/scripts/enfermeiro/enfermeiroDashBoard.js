@@ -45,7 +45,7 @@ function lastSVHour(sinaisVitais) {
     return timePart || "—";
 }
 
-function renderTabelaUtentes(utentes) {
+function renderTabelaUtentes(utentes, pendencias = []) {
     const tbody = document.getElementById("lista-utentes-tbody");
     if (!tbody) return;
 
@@ -59,6 +59,16 @@ function renderTabelaUtentes(utentes) {
 
     document.getElementById("utentes-atribuidos").textContent = utentes.length;
 
+    // Mapa utenteId → primeira pendência MEDICACAO não executada
+    const medicacaoPorUtente = new Map();
+    (pendencias ?? []).forEach(p => {
+        if (p.tipo !== "MEDICACAO" || p.executada) return;
+        const uid = p.utente?.id;
+        if (uid != null && !medicacaoPorUtente.has(uid)) {
+            medicacaoPorUtente.set(uid, p);
+        }
+    });
+
     tbody.innerHTML = utentes.map(u => {
         const p = u.processo;
         const numeroProcesso = p?.id ?? "—";
@@ -67,7 +77,7 @@ function renderTabelaUtentes(utentes) {
         const diagnostico = p?.diagnosticoPrincipal ?? "—";
         const svHora = lastSVHour(p?.sinaisVitais);
 
-        const proxMedicacao = "—"; // TODO: endpoint de medicações
+        const proxMedicacao = renderProxMedicacao(medicacaoPorUtente.get(u.id));
 
         const flagsHtml = renderFlags(u.flags);
         const temAlergias = u.alergias && u.alergias.length > 0;
@@ -88,6 +98,20 @@ function renderTabelaUtentes(utentes) {
             <td><button class="ver-mais" onclick="verUtente(${u.id})">VER MAIS</button></td>
         </tr>`;
     }).join("");
+}
+
+/**
+ * Recebe uma pendência MEDICACAO (ou undefined) e devolve o HTML da coluna "Próx. Medicação".
+ * O backend cria a pendência exactamente quando a hora prevista de administração já passou
+ * (ver IssuesServiceImpl.buildMedicationsIssues), portanto se houver pendência → está atrasado.
+ * A descricao é "Administracao de <nome do medicamento> pendente" — extraímos o nome.
+ */
+function renderProxMedicacao(pendMedicacao) {
+    if (!pendMedicacao) return "—";
+    const desc = pendMedicacao.descricao ?? "";
+    const m = /Administracao de (.+?) pendente/i.exec(desc);
+    const nomeMed = m ? m[1] : desc || "Medicação";
+    return `<span style="color:hsl(0,98%,36%);font-weight:700;">Atrasado</span><br><span style="font-size:0.8rem;">${nomeMed}</span>`;
 }
 
 function renderAlertas(utentes) {
@@ -129,21 +153,26 @@ function renderStatusBar(utentes, pendencias = []) {
 
     pendencias.forEach(p => {
         const tipo = p.tipo ?? "DESCONHECIDO";
-
         counts[tipo] = (counts[tipo] || 0) + 1;
     });
+
+    // O backend cria pendências de tipo MEDICACAO precisamente quando a hora prevista
+    // de administração já passou (ver IssuesServiceImpl.buildMedicationsIssues).
+    // Portanto MEDICACAO pendentes == administrações atrasadas.
+    const medicacoes = counts["MEDICACAO"] || 0;
+    const naoExecutadas = pendencias.filter(p => !p.executada).length;
 
     document.getElementById("sinais-vitais-registar").textContent =
         counts["SINAL_VITAL"] || 0;
 
     document.getElementById("medicacoes-pendentes").textContent =
-        counts["MEDICACAO"] || 0;
+        medicacoes;
 
     document.getElementById("administracao-atrasada").textContent =
-        counts["ADMINISTRACAO_ATRASADA"] || 0;
+        medicacoes;
 
     document.getElementById("pendencias-turno-anterior").textContent =
-        pendencias.length;
+        naoExecutadas;
 
     console.log("Pendências agrupadas:", counts);
 }
@@ -220,7 +249,7 @@ async function loadDashboard() {
             }
         }
 
-        renderTabelaUtentes(internados);
+        renderTabelaUtentes(internados, pendencias);
 
         renderStatusBar(internados, pendencias);
 
