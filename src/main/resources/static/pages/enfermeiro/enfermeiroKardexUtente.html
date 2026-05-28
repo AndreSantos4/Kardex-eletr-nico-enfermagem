@@ -15,6 +15,16 @@
             }},
         };
     </script>
+    <style>
+        /* Variáveis CSS usadas em inline-styles dentro do JS (#a8d4e6 era cinzento claro).
+           Sem isto o `color:var(--surface)` cai para currentColor herdado do `text-text`
+           (#e8f4f8 — quase branco) e os textos dentro dos painéis ficam invisíveis. */
+        :root {
+            --surface: #1a3f5e;
+            --border: #d0d9e5;
+            --muted: #5b738a;
+        }
+    </style>
 </head>
 
 <body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border">

@@ -1398,19 +1398,58 @@ async function carregarPlanoDeHoje() {
 
   const frequenciaLabel = {
     CONTINUA: "Contínua",
+    CONTINUO: "Contínua",
     DIARIA: "Diária",
     BD: "2x/dia",
     TID: "3x/dia",
     QID: "4x/dia",
     SOS: "SOS",
     SEMANAL: "Semanal",
+    DIA_1: "1x/dia",
+    DIA_2: "2x/dia",
+    DIA_3: "3x/dia",
+    DIA_4: "4x/dia",
+    DIA_5: "5x/dia",
+    DIA_6: "6x/dia",
+    H_2: "De 2 em 2 horas",
+    H_4: "De 4 em 4 horas",
+    "1_DIA": "1x/dia",
+    "2_DIA": "2x/dia",
+    "3_DIA": "3x/dia",
+    "4_DIA": "4x/dia",
+    "6_DIA": "6x/dia",
+    "2H": "De 2 em 2 horas",
+    "4H": "De 4 em 4 horas",
+  };
+
+  // Mapa de nomes de intervenções de enfermagem (corresponde aos enums do backend)
+  const intervencaoLabel = {
+    VIGILANCIA_CONTINUA: "Vigilância contínua",
+    VIGILANCIA_1_1: "Vigilância 1:1",
+    CONTENCAO_VERBAL: "Contenção verbal",
+    APOIO_EMOCIONAL: "Apoio emocional",
+    RELACAO_TERAPEUTICA: "Estabelecer relação terapêutica",
+    ATIVIDADES_ESTRUTURADAS: "Promover atividades estruturadas",
+    EDUCAR_MEDICACAO: "Educar sobre medicação",
+    MONITORIZAR_VITAIS: "Monitorizar sinais vitais",
+    AVALIAR_HUMOR_RISCO: "Avaliar humor / risco",
+    MONITORIZAR_ALIMENTACAO: "Monitorizar ingestão alimentar",
+    HIGIENE_SONO: "Promover higiene do sono",
+    OUTRO: "Outro",
   };
 
   const prioridadeConfig = {
-    CRITICA: { cor: "#c62828", texto: "CRÍTICA" },
-    ALTA: { cor: "rgb(220,49,26)", texto: "ALTA" },
-    MEDIA: { cor: "#e65100", texto: "MÉDIA" },
-    BAIXA: { cor: "#2e7d32", texto: "BAIXA" },
+    CRITICA: { cor: "#c62828", texto: "Crítica" },
+    ALTA: { cor: "rgb(220,49,26)", texto: "Alta" },
+    MEDIA: { cor: "#e65100", texto: "Média" },
+    BAIXA: { cor: "#2e7d32", texto: "Baixa" },
+  };
+
+  // Fallback: SNAKE_CASE → "Title case" (Monitorizar Alimentacao)
+  const humanize = (s) => {
+    if (!s) return "—";
+    const lower = String(s).toLowerCase().replace(/_/g, " ");
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
   };
 
   try {
@@ -1473,10 +1512,12 @@ async function carregarPlanoDeHoje() {
           ? "Clica para desmarcar"
           : "Marcar como realizado deve ser feito no plano de cuidados";
 
+      const nomeIntervencao = intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
+
       row.innerHTML = `
         <div style="flex:1;min-width:0;">
           <div style="font-weight:600;color:var(--surface);${textoRiscado}">
-            ${inv.intervencao ?? "—"}
+            ${nomeIntervencao}
             <span style="display:inline-block;margin-left:6px;background:${prio.cor};color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;vertical-align:middle;">${prio.texto}</span>
           </div>
           <div style="color:var(--surface);margin-top:3px;font-size:12px;">
