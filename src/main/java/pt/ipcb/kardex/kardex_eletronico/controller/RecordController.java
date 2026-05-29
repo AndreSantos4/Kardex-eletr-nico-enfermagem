@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
@@ -32,6 +33,12 @@ public class RecordController {
     @GetMapping("/clinic")
     public ResponseEntity<ApiResponse<List<RegistoClinicoDTO>>> getAllClinicRecords(){
         var records = clinicRecordService.getAllRecords();
+        return ResponseEntity.ok(ApiResponse.ok("Registos obtidos com sucesso", records));
+    }
+
+    @GetMapping("/clinic/{processId}")
+    public ResponseEntity<ApiResponse<List<RegistoClinicoDTO>>> getAllProcessClinicRecords(@PathVariable Long processId){
+        var records = clinicRecordService.getAllRecords(processId);
         return ResponseEntity.ok(ApiResponse.ok("Registos obtidos com sucesso", records));
     }
 }
