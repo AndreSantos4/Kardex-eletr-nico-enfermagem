@@ -18,7 +18,7 @@
 
 <body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border overflow-x-hidden">
 	<div class="bg-primary px-6 h-[52px] flex items-center justify-between border-b border-white/10">
-		<span class="text-[13px] text-secondary tracking-wider" id="servico-nome">—</span>
+		<span class="text-[13px] text-secondary tracking-wider">Enf Chefe - Gestão de Turnos</span>
 		<div class="flex items-center gap-4">
 			<span class="text-white text-[11px] font-bold px-2 py-0.5 rounded-sm tracking-wider">
 				<span id="nome-chefe">—</span>
@@ -42,27 +42,23 @@
 		</nav>
 
 		<div class="flex-1 flex flex-col gap-[14px] py-[14px] pr-[14px] pl-4 min-w-0">
-			<div class="bg-primary rounded px-5 py-[14px] flex justify-between items-center mt-0">
+			<div class="bg-primary rounded-[5px] px-5 py-3 flex justify-between items-center">
 				<div class="flex flex-col gap-0.5">
-					<h1 class="text-[15px] font-bold tracking-[0.04em]">Gestão de Turnos</h1>
-					<p class="text-xs text-secondary mt-0.5 font-mono" id="header-datetime">—</p>
+					<h1 class="text-[15px] font-bold tracking-wider text-white m-0">Gestão de Turnos</h1>
+					<p class="text-xs text-secondary font-mono m-0" id="header-datetime">—</p>
 				</div>
-				<button class="bg-transparent border-[1.5px] border-white text-white font-sans text-[11px] font-bold tracking-[0.08em] px-4 py-1.5 cursor-pointer rounded transition-colors hover:bg-white hover:text-primary whitespace-nowrap" id="btn-criar-turno-header">Criar Turno</button>
+				<button class="bg-transparent border-2 border-white text-white text-[11px] font-bold tracking-[0.08em] px-4 py-1.5 cursor-pointer rounded-md transition-colors hover:bg-white hover:text-primary whitespace-nowrap" id="btn-criar-turno-header">+ CRIAR TURNO</button>
 			</div>
 
-			<div class="bg-primary rounded px-5 py-4 border border-white/10 min-h-[80px]">
-				<div class="flex justify-between items-center mb-3.5">
-					<h2 class="text-[13px] font-bold tracking-wider text-white uppercase m-0">Agenda Semanal</h2>
-					<div class="flex gap-2.5 items-center">
-						<button class="bg-transparent border-[1.5px] border-white text-white font-sans text-[11px] font-bold tracking-[0.08em] px-4 py-1.5 cursor-pointer rounded transition-colors hover:bg-white hover:text-primary whitespace-nowrap" id="btn-criar-turno-agenda">Criar Turno</button>
-					</div>
+			<section class="bg-white rounded-[5px] border border-primary overflow-hidden">
+				<div class="bg-primary px-4 py-2.5 flex items-center justify-between text-text">
+					<span class="text-sm font-semibold tracking-wider">Agenda Semanal</span>
 				</div>
-
-				<div class="border-2 border-white/10 rounded overflow-hidden">
-					<table class="w-full border-collapse table-fixed [&_thead_tr]:bg-primary [&_thead_tr]:border-b-2 [&_thead_tr]:border-white/10 [&_thead_th]:text-[11px] [&_thead_th]:font-bold [&_thead_th]:tracking-[0.08em] [&_thead_th]:text-secondary [&_thead_th]:uppercase [&_thead_th]:px-3 [&_thead_th]:py-2.5 [&_thead_th]:text-left [&_tbody_tr]:border-b-2 [&_tbody_tr]:border-white/10 [&_tbody_tr]:bg-white [&_tbody_tr:last-child]:border-0 [&_tbody_tr:hover]:bg-[#f0f7fb] [&_.gt-day-cell]:px-2.5 [&_.gt-day-cell]:py-2 [&_.gt-day-cell]:align-top [&_.gt-day-cell]:text-xs [&_.gt-day-cell]:text-primary [&_.gt-day-cell]:leading-[1.5] [&_.gt-day-cell]:border-l [&_.gt-day-cell]:border-white/10 [&_.gt-turno-cell]:px-3 [&_.gt-turno-cell]:py-2.5 [&_.gt-turno-cell]:flex [&_.gt-turno-cell]:flex-col [&_.gt-turno-cell]:gap-0.5 [&_.gt-turno-cell]:min-h-[56px] [&_.gt-turno-cell]:justify-center [&_.gt-turno-name]:text-[13px] [&_.gt-turno-name]:font-bold [&_.gt-turno-name]:text-primary [&_.gt-turno-horario]:text-[11px] [&_.gt-turno-horario]:text-primary [&_.gt-turno-horario]:font-mono [&_.gt-enf-chip]:block [&_.gt-enf-chip]:text-[11.5px] [&_.gt-enf-chip]:text-input-bg [&_.gt-enf-chip]:leading-[1.4] [&_.gt-enf-chip.chefe]:font-bold [&_.gt-turno-chip]:bg-primary [&_.gt-turno-chip]:text-white [&_.gt-turno-chip]:rounded-md [&_.gt-turno-chip]:px-2 [&_.gt-turno-chip]:py-1.5 [&_.gt-turno-chip]:m-0.5 [&_.gt-turno-chip]:cursor-pointer [&_.gt-turno-chip]:text-[0.78rem] [&_.gt-turno-chip]:transition-opacity [&_.gt-turno-chip]:min-w-0 [&_.gt-turno-chip:hover]:opacity-85 [&_.gt-chip-top]:flex [&_.gt-chip-top]:justify-between [&_.gt-chip-top]:items-center [&_.gt-chip-top]:gap-1 [&_.gt-chip-top]:mb-1 [&_.gt-chip-hora]:font-semibold [&_.gt-chip-hora]:text-[0.75rem] [&_.gt-chip-hora]:whitespace-nowrap [&_.gt-chip-count]:text-[0.70rem] [&_.gt-chip-count]:opacity-85 [&_.gt-chip-count]:whitespace-nowrap [&_.gt-chip-nomes]:flex [&_.gt-chip-nomes]:flex-col [&_.gt-chip-nomes]:gap-0.5 [&_.gt-chip-enf-nome]:block [&_.gt-chip-enf-nome]:text-[0.72rem] [&_.gt-chip-enf-nome]:whitespace-nowrap [&_.gt-chip-enf-nome]:overflow-hidden [&_.gt-chip-enf-nome]:text-ellipsis [&_.gt-chip-enf-nome]:opacity-90 [&_.gt-chip-sem-enf]:opacity-60 [&_.gt-chip-sem-enf]:italic">
+				<div class="bg-white">
+					<table class="w-full border-collapse table-fixed [&_thead_tr]:bg-primary/5 [&_thead_tr]:border-b [&_thead_tr]:border-primary/15 [&_thead_th]:text-[10.5px] [&_thead_th]:font-bold [&_thead_th]:tracking-[0.08em] [&_thead_th]:text-primary/65 [&_thead_th]:uppercase [&_thead_th]:px-3 [&_thead_th]:py-2 [&_thead_th]:text-left [&_thead_th]:border-l [&_thead_th]:border-primary/10 [&_thead_th:first-child]:border-l-0 [&_tbody_tr]:border-b [&_tbody_tr]:border-primary/10 [&_tbody_tr]:bg-white [&_tbody_tr:last-child]:border-0 [&_tbody_tr:nth-child(even)]:bg-primary/[0.025] [&_.gt-day-cell]:px-2 [&_.gt-day-cell]:py-1.5 [&_.gt-day-cell]:align-top [&_.gt-day-cell]:text-xs [&_.gt-day-cell]:text-primary [&_.gt-day-cell]:leading-[1.5] [&_.gt-day-cell]:border-l [&_.gt-day-cell]:border-primary/10 [&_.gt-turno-cell]:px-3 [&_.gt-turno-cell]:py-2.5 [&_.gt-turno-cell]:flex [&_.gt-turno-cell]:flex-col [&_.gt-turno-cell]:gap-0.5 [&_.gt-turno-cell]:min-h-[64px] [&_.gt-turno-cell]:justify-center [&_.gt-turno-cell]:border-r-2 [&_.gt-turno-cell]:border-primary/20 [&_.gt-turno-name]:text-[13px] [&_.gt-turno-name]:font-bold [&_.gt-turno-name]:text-primary [&_.gt-turno-horario]:text-[10.5px] [&_.gt-turno-horario]:text-primary/65 [&_.gt-turno-horario]:font-mono [&_.gt-enf-chip]:block [&_.gt-enf-chip]:text-[11.5px] [&_.gt-enf-chip]:text-input-bg [&_.gt-enf-chip]:leading-[1.4] [&_.gt-enf-chip.chefe]:font-bold [&_.gt-turno-chip]:bg-primary [&_.gt-turno-chip]:text-white [&_.gt-turno-chip]:rounded-md [&_.gt-turno-chip]:px-2.5 [&_.gt-turno-chip]:py-1.5 [&_.gt-turno-chip]:m-0.5 [&_.gt-turno-chip]:cursor-pointer [&_.gt-turno-chip]:text-[0.78rem] [&_.gt-turno-chip]:transition-all [&_.gt-turno-chip]:min-w-0 [&_.gt-turno-chip]:shadow-sm [&_.gt-turno-chip:hover]:shadow-md [&_.gt-turno-chip:hover]:-translate-y-px [&_.gt-turno-chip:hover]:bg-bg-dark [&_.gt-chip-top]:flex [&_.gt-chip-top]:justify-between [&_.gt-chip-top]:items-center [&_.gt-chip-top]:gap-1 [&_.gt-chip-top]:mb-1 [&_.gt-chip-hora]:font-bold [&_.gt-chip-hora]:text-[0.75rem] [&_.gt-chip-hora]:whitespace-nowrap [&_.gt-chip-hora]:tracking-wide [&_.gt-chip-count]:text-[0.70rem] [&_.gt-chip-count]:bg-white/15 [&_.gt-chip-count]:rounded-full [&_.gt-chip-count]:px-1.5 [&_.gt-chip-count]:py-px [&_.gt-chip-count]:whitespace-nowrap [&_.gt-chip-nomes]:flex [&_.gt-chip-nomes]:flex-col [&_.gt-chip-nomes]:gap-0.5 [&_.gt-chip-enf-nome]:block [&_.gt-chip-enf-nome]:text-[0.72rem] [&_.gt-chip-enf-nome]:whitespace-nowrap [&_.gt-chip-enf-nome]:overflow-hidden [&_.gt-chip-enf-nome]:text-ellipsis [&_.gt-chip-enf-nome]:opacity-90 [&_.gt-chip-sem-enf]:opacity-65 [&_.gt-chip-sem-enf]:italic [&_.gt-empty-agenda]:text-center [&_.gt-empty-agenda]:py-8 [&_.gt-empty-agenda]:text-primary/55 [&_.gt-empty-agenda]:italic [&_.gt-empty-agenda]:text-[13px]">
 						<thead>
 							<tr>
-								<th class="w-[120px]">Turno</th>
+								<th class="w-[130px]">Turno</th>
 								<th id="th-seg">Seg —</th>
 								<th id="th-ter">Ter —</th>
 								<th id="th-qua">Quarta —</th>
@@ -75,44 +71,40 @@
 						<tbody id="agenda-body"></tbody>
 					</table>
 				</div>
-			</div>
+			</section>
 
-			<div class="grid grid-cols-2 gap-[18px]">
-				<div class="bg-primary rounded px-5 py-4 border border-white/10 min-h-[80px]">
-					<div class="flex justify-between items-center mb-3.5">
-						<h2 class="text-[13px] font-bold tracking-wider text-white uppercase m-0">Atribuição de Utentes - Turno Atual</h2>
+			<div class="grid grid-cols-2 gap-[14px] items-start">
+				<section class="bg-white rounded-[5px] border border-primary overflow-hidden flex flex-col self-stretch">
+					<div class="bg-primary px-4 py-2.5 flex items-center justify-between text-text">
+						<span class="text-sm font-semibold tracking-wider">Atribuição de Utentes — Turno Atual</span>
 					</div>
-					<div class="bg-primary rounded border-2 border-white/10 overflow-hidden mb-auto mt-auto">
-						<div class="grid grid-cols-[1fr_1.6fr_0.6fr] px-4 py-2.5 border-b-2 border-white/10 bg-primary [&>span]:text-[11px] [&>span]:font-bold [&>span]:tracking-[0.08em] [&>span]:text-secondary [&>span]:uppercase">
-							<span>Enfermeiros</span>
-							<span>Utentes Atribuídos</span>
-							<span>Carga</span>
-						</div>
+					<div class="grid grid-cols-[1fr_1.6fr_0.7fr] px-4 py-2 bg-primary/5 border-b border-primary/15 [&>span]:text-[10.5px] [&>span]:font-bold [&>span]:tracking-[0.08em] [&>span]:text-primary/65 [&>span]:uppercase [&>span:nth-child(3)]:text-right [&>span:nth-child(3)]:pr-2">
+						<span>Enfermeiros</span>
+						<span>Utentes Atribuídos</span>
+						<span>Carga</span>
 					</div>
-					<div id="atribuicao-body" class="max-h-[260px] overflow-y-auto overflow-x-hidden [&_.gt-atrib-row]:grid [&_.gt-atrib-row]:grid-cols-[1fr_1.6fr_0.6fr] [&_.gt-atrib-row]:px-4 [&_.gt-atrib-row]:py-2.5 [&_.gt-atrib-row]:border-b-2 [&_.gt-atrib-row]:border-white/10 [&_.gt-atrib-row]:items-start [&_.gt-atrib-row]:bg-white [&_.gt-atrib-row]:text-primary [&_.gt-atrib-row:last-child]:border-0 [&_.gt-atrib-row:hover]:bg-[#f0f7fb] [&_.gt-atrib-enf]:text-[13px] [&_.gt-atrib-enf]:font-semibold [&_.gt-atrib-enf]:text-input-bg [&_.gt-atrib-utentes]:text-xs [&_.gt-atrib-utentes]:text-primary [&_.gt-atrib-utentes]:leading-[1.5] [&_.gt-atrib-carga]:text-xs [&_.gt-atrib-carga]:text-primary [&_.gt-atrib-carga]:font-mono">
+					<div id="atribuicao-body" class="bg-white max-h-[280px] overflow-y-auto overflow-x-hidden [&_.gt-atrib-row]:grid [&_.gt-atrib-row]:grid-cols-[1fr_1.6fr_0.7fr] [&_.gt-atrib-row]:px-4 [&_.gt-atrib-row]:py-2.5 [&_.gt-atrib-row]:border-b [&_.gt-atrib-row]:border-primary/10 [&_.gt-atrib-row]:items-start [&_.gt-atrib-row]:bg-white [&_.gt-atrib-row]:text-primary [&_.gt-atrib-row:last-child]:border-0 [&_.gt-atrib-row:nth-child(even)]:bg-primary/[0.025] [&_.gt-atrib-row:hover]:bg-primary/[0.06] [&_.gt-atrib-enf]:text-[13px] [&_.gt-atrib-enf]:font-semibold [&_.gt-atrib-enf]:text-primary [&_.gt-atrib-utentes]:text-[12px] [&_.gt-atrib-utentes]:text-primary/80 [&_.gt-atrib-utentes]:leading-[1.5] [&_.gt-atrib-carga]:text-[12px] [&_.gt-atrib-carga]:text-primary [&_.gt-atrib-carga]:font-mono [&_.gt-atrib-carga]:font-semibold [&_.gt-atrib-carga]:text-right [&_.gt-atrib-carga]:pr-2 [&_.gt-atrib-row>span:nth-child(3)]:text-right [&_.gt-atrib-row>span:nth-child(3)]:pr-2 [&_.gt-atrib-row>span:nth-child(3)]:font-mono [&_.gt-atrib-row>span:nth-child(3)]:font-semibold">
 						<div class="gt-atrib-row">
-							<span style="padding:12px;color:#888;">A carregar...</span>
+							<span class="italic text-primary/55 text-[13px] col-span-3">A carregar...</span>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div class="bg-primary rounded px-5 py-4 border border-white/10 min-h-[80px]">
-					<div class="flex justify-between items-center mb-3.5">
-						<h2 class="text-[13px] font-bold tracking-wider text-white uppercase m-0">Disponibilidade da Equipa</h2>
+				<section class="bg-white rounded-[5px] border border-primary overflow-hidden flex flex-col self-stretch">
+					<div class="bg-primary px-4 py-2.5 flex items-center justify-between text-text">
+						<span class="text-sm font-semibold tracking-wider">Disponibilidade da Equipa</span>
 					</div>
-					<div class="bg-primary rounded border-2 border-white/10 overflow-hidden mb-auto mt-auto">
-						<div class="grid grid-cols-[1fr_0.8fr_1fr] px-4 py-2.5 border-b-2 border-white/10 bg-primary [&>span]:text-[11px] [&>span]:font-bold [&>span]:tracking-[0.08em] [&>span]:text-secondary [&>span]:uppercase">
-							<span>Enfermeiros</span>
-							<span>Estado</span>
-							<span>Próximo Turno</span>
-						</div>
+					<div class="grid grid-cols-[1fr_0.9fr_1fr] px-4 py-2 bg-primary/5 border-b border-primary/15 [&>span]:text-[10.5px] [&>span]:font-bold [&>span]:tracking-[0.08em] [&>span]:text-primary/65 [&>span]:uppercase">
+						<span>Enfermeiros</span>
+						<span>Estado</span>
+						<span>Próximo Turno</span>
 					</div>
-					<div id="disponibilidade-body" class="max-h-[260px] overflow-y-auto overflow-x-hidden [&_.gt-dispon-row]:grid [&_.gt-dispon-row]:grid-cols-[1fr_0.8fr_1fr] [&_.gt-dispon-row]:px-4 [&_.gt-dispon-row]:py-2.5 [&_.gt-dispon-row]:border-b-2 [&_.gt-dispon-row]:border-white/10 [&_.gt-dispon-row]:items-center [&_.gt-dispon-row]:bg-white [&_.gt-dispon-row:last-child]:border-0 [&_.gt-dispon-row:hover]:bg-[#f0f7fb] [&_.gt-dispon-enf]:text-[13px] [&_.gt-dispon-enf]:text-input-bg [&_.gt-dispon-estado]:text-xs [&_.gt-dispon-estado]:text-primary [&_.gt-dispon-turno]:text-xs [&_.gt-dispon-turno]:text-primary [&_.gt-dispon-turno]:font-mono [&_.estado-ativo]:inline-block [&_.estado-ativo]:text-[11px] [&_.estado-ativo]:font-bold [&_.estado-ativo]:px-2 [&_.estado-ativo]:py-0.5 [&_.estado-ativo]:rounded [&_.estado-ativo]:bg-[#f0fdf4] [&_.estado-ativo]:!text-[#166534] [&_.estado-ativo]:border [&_.estado-ativo]:border-[#86efac] [&_.estado-folga]:inline-block [&_.estado-folga]:text-[11px] [&_.estado-folga]:font-bold [&_.estado-folga]:px-2 [&_.estado-folga]:py-0.5 [&_.estado-folga]:rounded [&_.estado-folga]:bg-[#fff7e6] [&_.estado-folga]:!text-[#b45309] [&_.estado-folga]:border [&_.estado-folga]:border-[#fcd34d] [&_.estado-noite]:inline-block [&_.estado-noite]:text-[11px] [&_.estado-noite]:font-bold [&_.estado-noite]:px-2 [&_.estado-noite]:py-0.5 [&_.estado-noite]:rounded [&_.estado-noite]:bg-[#eff6ff] [&_.estado-noite]:!text-[#1d4ed8] [&_.estado-noite]:border [&_.estado-noite]:border-[#93c5fd]">
+					<div id="disponibilidade-body" class="bg-white max-h-[280px] overflow-y-auto overflow-x-hidden [&_.gt-dispon-row]:grid [&_.gt-dispon-row]:grid-cols-[1fr_0.9fr_1fr] [&_.gt-dispon-row]:px-4 [&_.gt-dispon-row]:py-2.5 [&_.gt-dispon-row]:border-b [&_.gt-dispon-row]:border-primary/10 [&_.gt-dispon-row]:items-center [&_.gt-dispon-row]:bg-white [&_.gt-dispon-row:last-child]:border-0 [&_.gt-dispon-row:nth-child(even)]:bg-primary/[0.025] [&_.gt-dispon-row:hover]:bg-primary/[0.06] [&_.gt-dispon-enf]:text-[13px] [&_.gt-dispon-enf]:font-semibold [&_.gt-dispon-enf]:text-primary [&_.gt-dispon-estado]:text-xs [&_.gt-dispon-estado]:text-primary [&_.gt-dispon-turno]:text-xs [&_.gt-dispon-turno]:text-primary/80 [&_.gt-dispon-turno]:font-mono [&_.estado-ativo]:inline-block [&_.estado-ativo]:text-[10.5px] [&_.estado-ativo]:font-bold [&_.estado-ativo]:px-2.5 [&_.estado-ativo]:py-0.5 [&_.estado-ativo]:rounded-full [&_.estado-ativo]:bg-ok/15 [&_.estado-ativo]:!text-ok [&_.estado-folga]:inline-block [&_.estado-folga]:text-[10.5px] [&_.estado-folga]:font-bold [&_.estado-folga]:px-2.5 [&_.estado-folga]:py-0.5 [&_.estado-folga]:rounded-full [&_.estado-folga]:bg-amber-100 [&_.estado-folga]:!text-amber-700 [&_.estado-noite]:inline-block [&_.estado-noite]:text-[10.5px] [&_.estado-noite]:font-bold [&_.estado-noite]:px-2.5 [&_.estado-noite]:py-0.5 [&_.estado-noite]:rounded-full [&_.estado-noite]:bg-blue-100 [&_.estado-noite]:!text-blue-700">
 						<div class="gt-dispon-row">
-							<span style="padding:12px;color:#888;">A carregar...</span>
+							<span class="italic text-primary/55 text-[13px] col-span-3">A carregar...</span>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 	</div>

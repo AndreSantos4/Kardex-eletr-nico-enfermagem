@@ -124,8 +124,13 @@ function _renderTabela(passagens) {
         const labelTipo = _labelTurno(p.turno?.tipo);
         const data = _formatarDataTurno(p.turno?.inicio);
 
-        // PassagemTurnoDTO não expõe enfermeiros; mostramos "—" enquanto não houver endpoint que o devolva
-        const equipa = "—";
+        // PassagemTurnoDTO.turno é agora TurnoDTO completo → tem .enfermeiros
+        const enfermeiros = (p.turno?.enfermeiros ?? [])
+            .map((e) => e.dados?.nome ?? e.nome)
+            .filter(Boolean);
+        const equipa = enfermeiros.length > 0
+            ? _escapeHtml(enfermeiros.join(", "))
+            : `<span class="text-primary/55 font-medium italic">—</span>`;
 
         const pendencias = p.dadosTurnoUtentes ?? p.dadosTurnoUtente ?? [];
         const utentesUnicos = new Set(
@@ -140,12 +145,21 @@ function _renderTabela(passagens) {
             ? `${naoExecutadas} / ${pendencias.length}`
             : `<span class="text-primary/55 font-medium italic">—</span>`;
 
-        const validadoCell = "—";
+        const validadorNome = p.validador?.dados?.nome;
+        const horaValidacao = _extrairHoraISO(p.dataValidacao);
+        let validadoCell;
+        if (validadorNome) {
+            validadoCell = horaValidacao
+                ? `${_escapeHtml(validadorNome)} <span class="text-primary/55 font-mono">· ${horaValidacao}</span>`
+                : _escapeHtml(validadorNome);
+        } else {
+            validadoCell = `<span class="text-primary/55 font-medium italic">Pendente</span>`;
+        }
 
         return `<tr>
             <td>${_escapeHtml(labelTipo)}</td>
             <td>${_escapeHtml(data)}</td>
-            <td>${_escapeHtml(equipa)}</td>
+            <td>${equipa}</td>
             <td>${_escapeHtml(utenteCell)}</td>
             <td>${pendenciasCell}</td>
             <td>${validadoCell}</td>

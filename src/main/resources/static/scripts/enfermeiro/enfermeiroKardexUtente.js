@@ -597,6 +597,76 @@ function atualizarSinaisVitaisUI(sv) {
     `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
 }
 
+/**
+ * Verifica se ainda é permitido administrar esta prescrição agora.
+ * Regras:
+ *   - intervaloMinHoras: tem de passar X horas desde a última administração
+ *   - DIARIO/frequencia X: máximo X administrações por dia
+ */
+function _verificarLimitesAdministracao(p) {
+  const lista = (p.administracoes ?? []).filter((a) => a.administrado !== false);
+  if (lista.length === 0) return { permitido: true, motivo: "" };
+
+  const ordenadas = lista
+    .map((a) => ({ ...a, _data: _parseDataAdmin(a.data) }))
+    .filter((a) => a._data)
+    .sort((a, b) => b._data - a._data);
+  if (ordenadas.length === 0) return { permitido: true, motivo: "" };
+
+  const ultima = ordenadas[0];
+  const agora = new Date();
+
+  const intervaloMin = p.frequencia?.intervaloMinHoras ?? 0;
+  if (intervaloMin > 0) {
+    const proximaPermitida = new Date(
+      ultima._data.getTime() + intervaloMin * 3_600_000,
+    );
+    if (agora < proximaPermitida) {
+      const minutosFalta = Math.ceil((proximaPermitida - agora) / 60000);
+      const horas = Math.floor(minutosFalta / 60);
+      const mins = minutosFalta % 60;
+      const tempo =
+        horas > 0
+          ? `${horas}h${mins > 0 ? ` ${mins}min` : ""}`
+          : `${mins}min`;
+      return {
+        permitido: false,
+        motivo: `Próxima administração em ${tempo} (intervalo mín. ${intervaloMin}h)`,
+      };
+    }
+  }
+
+  const periodo = String(p.frequencia?.periodo ?? "").toUpperCase();
+  const maxPorPeriodo = p.frequencia?.frequencia ?? 0;
+  if ((periodo === "DIARIO" || periodo === "DIARIA") && maxPorPeriodo > 0) {
+    const hojeAno = agora.getFullYear();
+    const hojeMes = agora.getMonth();
+    const hojeDia = agora.getDate();
+    const hoje = ordenadas.filter(
+      (a) =>
+        a._data.getFullYear() === hojeAno &&
+        a._data.getMonth() === hojeMes &&
+        a._data.getDate() === hojeDia,
+    );
+    if (hoje.length >= maxPorPeriodo) {
+      return {
+        permitido: false,
+        motivo: `Limite diário atingido (${hoje.length}/${maxPorPeriodo} hoje)`,
+      };
+    }
+  }
+
+  return { permitido: true, motivo: "" };
+}
+
+function _parseDataAdmin(raw) {
+  if (!raw) return null;
+  const m = /^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})$/.exec(raw);
+  if (m) return new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:${m[6]}`);
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
@@ -635,9 +705,20 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
       (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
     const horariosPrevistos = p.horariosPrevistos ?? [];
 
+    const limite = _verificarLimitesAdministracao(p);
+    const podeAdministrar = limite.permitido;
+    const motivoBloqueio = limite.motivo;
+
     const badgeAltoRisco = altoRisco
       ? `<span style="display:inline-block;margin-left:6px;background:rgb(220,49,26);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;padding:1px 5px;border-radius:3px;vertical-align:middle;">ALTO RISCO</span>`
       : "";
+    const linhaLimite = motivoBloqueio
+      ? `<div style="color:hsl(0,98%,36%);font-size:11px;font-weight:600;margin-top:2px">${motivoBloqueio}</div>`
+      : "";
+
+    const btnAttr = podeAdministrar
+      ? `onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})"`
+      : `disabled style="opacity:0.55;cursor:not-allowed" title="${motivoBloqueio.replace(/"/g, "&quot;")}"`;
 
     const row = document.createElement("div");
     row.className = "med-row";
@@ -648,9 +729,9 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
         <div style="font-weight:600;color:var(--surface)">${nomeMed}${badgeAltoRisco}</div>
         <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
         <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
+        ${linhaLimite}
       </div>
-      <button class="btn-administrar"
-        onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})">
+      <button class="btn-administrar" ${btnAttr}>
         ADMINISTRAR
       </button>
     `;
@@ -788,6 +869,27 @@ async function registarMedicacao() {
 
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar administração");
+
+    const json = await resp.json().catch(() => ({}));
+
+    // Quando a dose ia ultrapassar o máximo diário, o backend devolve
+    // um MaxDoseAlertDTO em vez de gravar a administração.
+    if (
+      json.success &&
+      json.data &&
+      json.data.maxDose != null &&
+      json.data.dose != null
+    ) {
+      const med = json.data.medicamento?.nome ?? "medicação";
+      const unidade = json.data.medicamento?.unidadeMedida ?? "";
+      mostrarNotificacao({
+        titulo: "Administração bloqueada — dose máxima",
+        mensagem: `${med}: a soma de doses nas últimas 24h excede o máximo diário (${json.data.maxDose} ${unidade}). Requer validação clínica.`,
+        tipo: "aviso",
+      });
+      return;
+    }
+
     fecharPopUp(".pop-up-administrar-medicacao");
     mostrarNotificacao({
       titulo: "Administração",
@@ -796,6 +898,10 @@ async function registarMedicacao() {
         : "Medicação administrada com sucesso.",
       tipo: "sucesso",
     });
+    // Recarregar dados para refletir o histórico e bloquear nova administração
+    if (typeof carregarUtente === "function" && typeof id !== "undefined") {
+      await carregarUtente(id);
+    }
   } catch (err) {
     let mensagem = err.message;
     try {
