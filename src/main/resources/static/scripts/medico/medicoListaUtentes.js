@@ -71,11 +71,11 @@ function renderizarTabela() {
 
     tbody.innerHTML += `
     <tr>
-      <td>${u.id}</td>
+      <td>${u.processo.id ?? u.id}</td>
       <td>${u.nome}</td>
       <td>${cama}</td>
-      <td>${u.processo.diagnosticoPrincipal}</td>
-      <td>${u.processo.medicoResponsavel.dados.nome}</td>
+      <td>${u.processo.diagnosticoPrincipal ?? "—"}</td>
+      <td>${u.processo.medicoResponsavel?.dados?.nome ?? "—"}</td>
       <td>${(u.processo.dataEntrada ?? "").split(":")[0]}</td>
       <td>${estado}</td>
       <td>${alertas}</td>
@@ -164,6 +164,12 @@ function atualizarContador() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarUtilizadores();
+
+  const notif = sessionStorage.getItem("notificacao_pendente");
+  if (notif) {
+    sessionStorage.removeItem("notificacao_pendente");
+    try { mostrarNotificacao(JSON.parse(notif)); } catch (_) {}
+  }
 
   const inputPesquisa = document.querySelector(".search-input-wrap input");
   inputPesquisa?.addEventListener("input", (e) =>
