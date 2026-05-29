@@ -3,6 +3,7 @@ package pt.ipcb.kardex.kardex_eletronico.model.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.CateterDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.ContencaoDTO;
@@ -31,6 +32,9 @@ public interface ParametrosMapper {
     Contencao fromCreateContainmentDto(CreateContencaoDTO data);
 
     IncidenteDTO ToContainmentDto(Contencao data);
+
+    @Mapping(source = "medicamento.viaAdministracao", target = "via")
+    ContencaoDTO toContainmentDto(Contencao data);
 
     List<ContencaoDTO> toContainmentDtoList(List<Contencao> data);
 }
