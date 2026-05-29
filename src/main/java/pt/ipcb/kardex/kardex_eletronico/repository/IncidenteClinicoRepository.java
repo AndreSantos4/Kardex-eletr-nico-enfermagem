@@ -7,17 +7,18 @@ import org.springframework.stereotype.Repository;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.IncidenteClinico;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public interface IncidenteClinicoRepository extends JpaRepository<IncidenteClinico, Long> {
 
     @Query("""
         SELECT COUNT(i) FROM IncidenteClinico i
-        WHERE (CAST(:de AS date) IS NULL OR i.data >= :de)
-        AND (CAST(:ate AS date) IS NULL OR i.data <= :ate)
+        WHERE i.data >= :de
+        AND i.data <= :ate
     """)
     long countIncidents(
-            @Param("de") LocalDate de,
-            @Param("ate") LocalDate ate
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
     );
 }

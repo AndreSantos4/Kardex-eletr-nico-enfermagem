@@ -77,12 +77,15 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional(readOnly = true)
     public KardexReportsDTO getReports(ReportsFilter filter) {
+        LocalDateTime from = filter.de() != null ? LocalDateTime.of(filter.de(), LocalTime.MIDNIGHT) : LocalDateTime.of(2000, 1, 1, 0, 0);
+        LocalDateTime to = filter.ate() != null ? LocalDateTime.of(filter.ate(), LocalTime.MIDNIGHT) : LocalDateTime.of(2099, 12, 31, 23, 59);
+
         var administrations = administracaoRepository.countByAdministradoFiltered(
-                true, filter.de(), filter.ate());
+                true, from, to);
         var nonAdministrations = administracaoRepository.countByAdministradoFiltered(
-                false, filter.de(), filter.ate());
+                false, from, to);
         var incidents = incidenteClinicoRepository.countIncidents(
-                filter.de(), filter.ate());
+                from, to);
 
         return new KardexReportsDTO(administrations, nonAdministrations, incidents);
     }
