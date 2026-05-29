@@ -112,12 +112,12 @@ async function carregarUtente(id) {
       document.getElementById("dor").innerHTML = sv.dor;
       document.getElementById("glicemia").innerHTML = sv.glicemia;
     } else {
-      svGrid.style.display = "none";
+      if (svGrid) svGrid.style.display = "none";
       const msg = document.createElement("p");
       msg.style.cssText =
         "margin: auto; color: var(--primary); font-size: 13px; text-align: center; padding: 10px;";
       msg.textContent = "Ainda não foram registados sinais vitais.";
-      svBar.appendChild(msg);
+      if (svBar) svBar.appendChild(msg);
     }
 
     // Medicação Ativa — carregada via endpoint de prescrições
@@ -146,8 +146,8 @@ async function carregarMedicacaoAtiva(processId) {
     medicacaoContainer.innerHTML = "";
     prescricoes.forEach((p) => {
       const nomeMed = p.medicamento?.nome ?? "—";
-      const dose = p.dose ?? "—";
-      const unidade = formatarUnidade(p.medicamento?.unidadeMedida);
+      const dose = p.dose?.dose ?? "—";
+      const unidade = formatarUnidade(p.dose?.unidadeMedida ?? p.medicamento?.unidadeMedida);
       const via = formatarVia(p.medicamento?.viaAdministracao);
       const motivo = p.motivo ?? "";
       const badges = [];
@@ -193,7 +193,7 @@ function mostrarNotas() {
 }
 
 function mostrarPlano() {
-  alert("Funcionalidade em desenvolvimento.");
+  mostrarNotificacao({ titulo: "Não disponível", mensagem: "O plano de cuidados não está disponível para o médico.", tipo: "aviso" });
 }
 
 function mostrarLista() {
