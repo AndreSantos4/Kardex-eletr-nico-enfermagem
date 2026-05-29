@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegistoClinico;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,13 +23,23 @@ public class RegistoClinico {
     public Integer id;
     
     @Column(name = "timestamp", nullable = false)
-    public Timestamp timestamp;
+    public LocalDateTime timestamp = LocalDateTime.now();
     
     @JoinColumn(name = "id_funcionario", nullable = false)
-    @ManyToOne(targetEntity = Funcionario.class)
+    @ManyToOne(targetEntity = Funcionario.class, fetch = FetchType.EAGER)
     public Funcionario funcionario;
     
-    @JoinColumn(name = "id_utente", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    public Utente utente;
+    @JoinColumn(name = "id_processo", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    public ProcessoClinico processo;
+
+    @Column(name = "tipo", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public TipoRegistoClinico tipo;
+
+    @Column(name = "detalhes")
+    public String detalhes;
+
+    @Column(name = "detalhes_numericos")
+    public float detalhesNumericos;
 }
