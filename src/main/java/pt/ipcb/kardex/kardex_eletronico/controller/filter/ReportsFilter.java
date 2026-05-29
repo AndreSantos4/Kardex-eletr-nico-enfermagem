@@ -5,8 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public record ReportsFilter(
-    @JsonProperty("de") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate de,
-    @JsonProperty("ate") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate ate
+    @JsonProperty("de") 
+    @JsonFormat(pattern = "dd/MM/yyyy") 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    LocalDate de,
+    @JsonProperty("ate") 
+    @JsonFormat(pattern = "dd/MM/yyyy") 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    LocalDate ate
 ) {
 }
