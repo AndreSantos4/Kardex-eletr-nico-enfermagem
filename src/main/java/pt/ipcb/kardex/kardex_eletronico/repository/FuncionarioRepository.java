@@ -54,38 +54,38 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
         SELECT a.funcionario.id, COUNT(a)
         FROM AdministracaoMedicacao a
         WHERE a.administrado = true
-        AND (CAST(:de AS date) IS NULL OR a.data >= :de)
-        AND (CAST(:ate AS date) IS NULL OR a.data <= :ate)
+        AND a.data >= :de
+        AND a.data <= :ate
         GROUP BY a.funcionario.id
     """)
     List<Object[]> countAdministracoesByFuncionario(
-            @Param("de") LocalDate de,
-            @Param("ate") LocalDate ate
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
     );
 
     @Query("""
         SELECT i.funcionarioExecutou.id, COUNT(i)
         FROM Intervencao i
         WHERE i.funcionarioExecutou IS NOT NULL
-        AND (CAST(:de AS date) IS NULL OR i.dataExecucao >= :de)
-        AND (CAST(:ate AS date) IS NULL OR i.dataExecucao <= :ate)
+        AND i.dataExecucao >= :de
+        AND i.dataExecucao <= :ate
         GROUP BY i.funcionarioExecutou.id
     """)
     List<Object[]> countIntervencoesByFuncionario(
-            @Param("de") LocalDate de,
-            @Param("ate") LocalDate ate
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
     );
 
     @Query("""
         SELECT f.id, COUNT(t)
         FROM Funcionario f
         JOIN f.turnos t
-        WHERE (CAST(:de AS date) IS NULL OR CAST(t.inicio AS date) >= :de)
-        AND (CAST(:ate AS date) IS NULL OR CAST(t.inicio AS date) <= :ate)
+        WHERE t.inicio >= :de
+        AND t.inicio <= :ate
         GROUP BY f.id
     """)
     List<Object[]> countTurnosByFuncionario(
-            @Param("de") LocalDate de,
-            @Param("ate") LocalDate ate
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
     );
 }

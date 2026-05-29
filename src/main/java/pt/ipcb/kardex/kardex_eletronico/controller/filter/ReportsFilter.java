@@ -4,13 +4,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public record ReportsFilter(
-    @JsonProperty("periodo") @JsonFormat(pattern = "MM/yyyy") YearMonth period,
-    @JsonProperty("de") LocalDate de,
-    @JsonProperty("ate") LocalDate ate
+    @JsonProperty("de") 
+    @JsonFormat(pattern = "dd/MM/yyyy") 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    LocalDate de,
+    @JsonProperty("ate") 
+    @JsonFormat(pattern = "dd/MM/yyyy") 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    LocalDate ate
 ) {
-
-
 }

@@ -4,14 +4,18 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>Admin Relatórios e Indicadores</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script>
 		tailwind.config = {
-			theme: { extend: {
-				colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
-				fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
-			}},
+			theme: {
+				extend: {
+					colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+					fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+				}
+			},
 		};
 	</script>
 </head>
@@ -20,124 +24,200 @@
 	<div class="bg-primary px-6 h-[52px] flex items-center justify-between border-b border-white/10">
 		<span class="text-[13px] text-secondary tracking-wider">Admin Relatórios e Indicadores</span>
 		<div class="flex items-center gap-4">
-			<span class="text-white text-[11px] font-bold px-2 py-0.5 rounded-sm tracking-wider" id="nome-admin">Administrador</span>
-			<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-widest px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
+			<span class="text-white text-[11px] font-bold px-2 py-0.5 rounded-sm tracking-wider"
+				id="nome-admin">Administrador</span>
+			<button
+				class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-widest px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors"
+				onclick="logout()">SAIR</button>
 		</div>
 	</div>
 
 	<div class="flex flex-1 min-h-[calc(100vh-52px)]">
-				<aside class="w-[210px] shrink-0 bg-primary self-stretch py-3 [&_a]:no-underline [&_.sidebar-item]:flex [&_.sidebar-item]:items-center [&_.sidebar-item]:gap-2.5 [&_.sidebar-item]:px-[18px] [&_.sidebar-item]:py-2 [&_.sidebar-item]:text-[13.5px] [&_.sidebar-item]:text-secondary [&_.sidebar-item]:cursor-pointer [&_.sidebar-item:hover]:bg-white [&_.sidebar-item:hover]:text-primary [&_.sidebar-item.active]:bg-white [&_.sidebar-item.active]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
+		<aside
+			class="w-[210px] shrink-0 bg-primary self-stretch py-3 [&_a]:no-underline [&_.sidebar-item]:flex [&_.sidebar-item]:items-center [&_.sidebar-item]:gap-2.5 [&_.sidebar-item]:px-[18px] [&_.sidebar-item]:py-2 [&_.sidebar-item]:text-[13.5px] [&_.sidebar-item]:text-secondary [&_.sidebar-item]:cursor-pointer [&_.sidebar-item:hover]:bg-white [&_.sidebar-item:hover]:text-primary [&_.sidebar-item.active]:bg-white [&_.sidebar-item.active]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
 			<nav>
-				<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-1.5 pb-1.5 uppercase">Principal</div>
-				<a href="adminDashboard"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"/></svg>Home</div></a>
-				<a href="adminGestaoUtilizadores"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/></svg>Utilizadores</div></a>
-				<a href="adminMedicamentos"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112-96 0 0-112zM176 368c0-48.7 18.1-93.2 48-127l0-129C224 50.1 173.9 0 112 0S0 50.1 0 112L0 400c0 61.9 50.1 112 112 112 37.3 0 70.3-18.2 90.7-46.3-17-28.6-26.7-62-26.7-97.7zm64.7 67.4c4.6 8.7 16.3 9.7 23.3 2.7L438.1 264c7-7 6-18.7-2.7-23.3-20.1-10.7-43-16.7-67.4-16.7-79.5 0-144 64.5-144 144 0 24.3 6 47.3 16.7 67.4zM297.9 472c-7 7-6 18.7 2.7 23.3 20.1 10.7 43 16.7 67.4 16.7 79.5 0 144-64.5 144-144 0-24.3-6-47.3-16.7-67.4-4.6-8.7-16.3-9.7-23.3-2.7L297.9 472z"/></svg>Medicamentos</div></a>
-				<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">Auditoria</div>
-				<a href="adminConsultarLogsAuditoria"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/></svg>Logs Auditoria</div></a>
-				<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">Controlo</div>
-				<a href="adminSessoesAtivas"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M200 48l112 0c4.4 0 8 3.6 8 8l0 40-128 0 0-40c0-4.4 3.6-8 8-8zm-56 8l0 40-80 0C28.7 96 0 124.7 0 160l0 96 512 0 0-96c0-35.3-28.7-64-64-64l-80 0 0-40c0-30.9-25.1-56-56-56L200 0c-30.9 0-56 25.1-56 56zM512 304l-192 0 0 16c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-16-192 0 0 112c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-112z"/></svg>Sessões Ativas</div></a>
-				<a href="adminRelatoriosIndicadores"><div class="sidebar-item active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z"/></svg>Relatórios</div></a>
+				<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-1.5 pb-1.5 uppercase">
+					Principal</div>
+				<a href="adminDashboard">
+					<div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							<path
+								d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z" />
+						</svg>Home</div>
+				</a>
+				<a href="adminGestaoUtilizadores">
+					<div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+							<path
+								d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
+						</svg>Utilizadores</div>
+				</a>
+				<a href="adminMedicamentos">
+					<div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							<path
+								d="M64 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112-96 0 0-112zM176 368c0-48.7 18.1-93.2 48-127l0-129C224 50.1 173.9 0 112 0S0 50.1 0 112L0 400c0 61.9 50.1 112 112 112 37.3 0 70.3-18.2 90.7-46.3-17-28.6-26.7-62-26.7-97.7zm64.7 67.4c4.6 8.7 16.3 9.7 23.3 2.7L438.1 264c7-7 6-18.7-2.7-23.3-20.1-10.7-43-16.7-67.4-16.7-79.5 0-144 64.5-144 144 0 24.3 6 47.3 16.7 67.4zM297.9 472c-7 7-6 18.7 2.7 23.3 20.1 10.7 43 16.7 67.4 16.7 79.5 0 144-64.5 144-144 0-24.3-6-47.3-16.7-67.4-4.6-8.7-16.3-9.7-23.3-2.7L297.9 472z" />
+						</svg>Medicamentos</div>
+				</a>
+				<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">
+					Auditoria</div>
+				<a href="adminConsultarLogsAuditoria">
+					<div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+							<path
+								d="M0 64C0 28.7 28.7 0 64 0L213.5 0c17 0 33.3 6.7 45.3 18.7L365.3 125.3c12 12 18.7 28.3 18.7 45.3L384 448c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm208-5.5l0 93.5c0 13.3 10.7 24 24 24L325.5 176 208 58.5zM120 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z" />
+						</svg>Logs Auditoria</div>
+				</a>
+				<div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">
+					Controlo</div>
+				<a href="adminSessoesAtivas">
+					<div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							<path
+								d="M200 48l112 0c4.4 0 8 3.6 8 8l0 40-128 0 0-40c0-4.4 3.6-8 8-8zm-56 8l0 40-80 0C28.7 96 0 124.7 0 160l0 96 512 0 0-96c0-35.3-28.7-64-64-64l-80 0 0-40c0-30.9-25.1-56-56-56L200 0c-30.9 0-56 25.1-56 56zM512 304l-192 0 0 16c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-16-192 0 0 112c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-112z" />
+						</svg>Sessões Ativas</div>
+				</a>
+				<a href="adminRelatoriosIndicadores">
+					<div class="sidebar-item active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+							<path
+								d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l256 0 0-64-256 0zm32-232c0 13.3 10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0c-13.3 0-24 10.7-24 24zm24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z" />
+						</svg>Relatórios</div>
+				</a>
 			</nav>
 		</aside>
 
 		<main class="flex-1 flex flex-col gap-[14px] px-4 py-[14px] bg-white">
 			<div class="bg-primary rounded px-5 py-[14px] flex items-center justify-between text-white">
 				<h4 class="m-0 text-base font-bold tracking-wider">Relatórios e Indicadores</h4>
-				<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="window.location.href='adminDashboard'">Admin.</button>
+				<button
+					class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors"
+					onclick="window.location.href='adminDashboard'">Admin.</button>
 			</div>
 
+			<!-- Filtro de datas -->
 			<div class="bg-primary rounded-md px-5 py-4 text-white">
-				<div class="filtros-grid grid grid-cols-[1.5fr_1.2fr_1fr_1fr_auto] gap-[14px] items-end max-[1200px]:!grid-cols-2">
-					<div class="flex flex-col gap-1.5">
-						<label class="text-[11px] font-extrabold tracking-wider text-white uppercase">TIPO DE RELATÓRIO</label>
-						<select id="tipo-relatorio" class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 w-full cursor-pointer focus:outline-none focus:border-secondary" onchange="atualizarRelatorio()">
-							<option value="MEDICAMENTOS">Consumo de medicamento</option>
-							<option value="MATERIAL">Consumo de material clínico</option>
-							<option value="ATIVIDADE">Atividade por profissional</option>
-							<option value="ESTATISTICAS">Estatísticas clínicas</option>
-						</select>
-					</div>
-					<div class="flex flex-col gap-1.5">
-						<label class="text-[11px] font-extrabold tracking-wider text-white uppercase">PERÍODO</label>
-						<select id="periodo-relatorio" class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 w-full cursor-pointer focus:outline-none focus:border-secondary" onchange="atualizarPeriodo()">
-							<option value="MARCO_2026" selected>Março 2026</option>
-							<option value="FEVEREIRO_2026">Fevereiro 2026</option>
-							<option value="JANEIRO_2026">Janeiro 2026</option>
-							<option value="ULTIMO_TRIMESTRE">Último trimestre</option>
-							<option value="PERSONALIZADO">Personalizado</option>
-						</select>
-					</div>
+				<div class="flex gap-[14px] items-end flex-wrap">
 					<div class="flex flex-col gap-1.5">
 						<label class="text-[11px] font-extrabold tracking-wider text-white uppercase">DE</label>
-						<input type="date" id="data-inicio" class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 w-full cursor-pointer focus:outline-none focus:border-secondary" />
+						<input type="date" id="data-inicio"
+							class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 cursor-pointer focus:outline-none focus:border-secondary"
+							onchange="carregarTodos()" />
 					</div>
 					<div class="flex flex-col gap-1.5">
 						<label class="text-[11px] font-extrabold tracking-wider text-white uppercase">ATÉ</label>
-						<input type="date" id="data-fim" class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 w-full cursor-pointer focus:outline-none focus:border-secondary" />
+						<input type="date" id="data-fim"
+							class="bg-white border-[1.5px] border-secondary/40 rounded text-bg-dark text-[13px] font-semibold px-3 py-2.5 cursor-pointer focus:outline-none focus:border-secondary"
+							onchange="carregarTodos()" />
 					</div>
-					<button class="btn-gerar-relatorio bg-transparent border-2 border-white text-white text-xs font-bold tracking-wider px-4 py-2.5 rounded-lg cursor-pointer leading-tight min-w-[110px] hover:bg-white hover:text-primary transition-colors max-[1200px]:col-span-2 max-[1200px]:justify-self-end" onclick="gerarRelatorio()">GERAR<br />RELATÓRIO</button>
 				</div>
 			</div>
 
-			<div class="kpis-grid grid grid-cols-4 gap-[14px] max-[1200px]:!grid-cols-2">
-				<div class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
+			<!-- KPIs -->
+			<div class="grid grid-cols-3 gap-[14px] max-[1200px]:grid-cols-2">
+				<div
+					class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
 					<span class="text-[38px] font-bold text-primary leading-none" id="kpi-administracoes">—</span>
-					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Administrações<br />Este Mês</span>
+					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Administrações</span>
 				</div>
-				<div class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
+				<div
+					class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
 					<span class="text-[38px] font-bold text-primary leading-none" id="kpi-nao-administracoes">—</span>
-					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Não<br />Administrações<br />Registadas</span>
+					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Não
+						Administrações<br />Registadas</span>
 				</div>
-				<div class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
+				<div
+					class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
 					<span class="text-[38px] font-bold text-primary leading-none" id="kpi-incidentes">—</span>
 					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Incidentes<br />Clínicos</span>
 				</div>
-				<div class="bg-white border-[1.5px] border-primary rounded-md px-[18px] py-4 flex flex-col items-start gap-1.5 min-h-[110px]">
-					<span class="text-[38px] font-bold text-primary leading-none" id="kpi-adesao">—</span>
-					<span class="text-xs font-semibold text-bg-dark leading-[1.3]">Taxa de<br />Adesão<br />Terapêutica</span>
-				</div>
 			</div>
 
-			<div class="reports-grid grid grid-cols-2 gap-[14px] max-[1200px]:!grid-cols-1 [&_.var-positiva]:!text-[#6ee7a8] [&_.var-positiva]:font-bold [&_.var-negativa]:!text-[#ff9b9b] [&_.var-negativa]:font-bold [&_.var-neutra]:!text-secondary [&_.var-neutra]:font-semibold">
+			<!-- Tabelas -->
+			<div
+				class="grid grid-cols-2 gap-[14px] max-[1200px]:grid-cols-1 [&_.var-positiva]:!text-[#6ee7a8] [&_.var-positiva]:font-bold [&_.var-negativa]:!text-[#ff9b9b] [&_.var-negativa]:font-bold [&_.var-neutra]:!text-secondary [&_.var-neutra]:font-semibold">
+
 				<div class="bg-primary rounded-md overflow-hidden flex flex-col">
-					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider [&_span]:text-secondary [&_span]:font-semibold">Top 10 Medicamentos - Consumo <span id="periodo-top-medicamentos">Março 2026</span></div>
-					<div class="p-0 bg-primary">
-						<table class="w-full border-collapse text-[13px] text-white">
-							<thead><tr class="bg-white/10 border-b border-white/20"><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">ID</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Medicamento</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Unidades</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Var</th></tr></thead>
-							<tbody id="top-medicamentos-tbody" class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px] [&>tr>td]:align-middle"><tr><td colspan="4" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.</td></tr></tbody>
-						</table>
-					</div>
+					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider">Top 10
+						Medicamentos — Consumo</div>
+					<table class="w-full border-collapse text-[13px] text-white">
+						<thead>
+							<tr class="bg-white/10 border-b border-white/20">
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									#</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Medicamento</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Quantidade</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Adm.</th>
+							</tr>
+						</thead>
+						<tbody id="top-medicamentos-tbody"
+							class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px] [&>tr>td]:align-middle">
+							<tr>
+								<td colspan="4" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 
 				<div class="bg-primary rounded-md overflow-hidden flex flex-col">
-					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider [&_span]:text-secondary [&_span]:font-semibold">Atividade por Profissional — <span id="periodo-atividade">Março 2026</span></div>
-					<div class="p-0 bg-primary">
-						<table class="w-full border-collapse text-[13px] text-white">
-							<thead><tr class="bg-white/10 border-b border-white/20"><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Enfermeiro</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Adm. med.</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Intervenções</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Turnos</th></tr></thead>
-							<tbody id="atividade-tbody" class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px]"><tr><td colspan="4" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.</td></tr></tbody>
-						</table>
-					</div>
+					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider">Atividade por
+						Profissional</div>
+					<table class="w-full border-collapse text-[13px] text-white">
+						<thead>
+							<tr class="bg-white/10 border-b border-white/20">
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Enfermeiro</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Adm. med.</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Intervenções</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Turnos</th>
+							</tr>
+						</thead>
+						<tbody id="atividade-tbody"
+							class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px]">
+							<tr>
+								<td colspan="4" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 
-				<div class="bg-primary rounded-md overflow-hidden flex flex-col">
-					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider">Estatísticas Clínicas do Serviço</div>
-					<div class="p-0 bg-primary">
-						<table class="w-full border-collapse text-[13px] text-white">
-							<thead><tr class="bg-white/10 border-b border-white/20"><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Indicador</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Valor</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Referência</th></tr></thead>
-							<tbody id="estatisticas-tbody" class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px]"><tr><td colspan="3" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.</td></tr></tbody>
-						</table>
-					</div>
+				<div class="bg-primary rounded-md overflow-hidden flex flex-col col-span-2 max-[1200px]:col-span-1">
+					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider">Consumo de
+						Cateteres</div>
+					<table class="w-full border-collapse text-[13px] text-white">
+						<thead>
+							<tr class="bg-white/10 border-b border-white/20">
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Tipo</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Calibre</th>
+								<th
+									class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">
+									Quantidade</th>
+							</tr>
+						</thead>
+						<tbody id="material-tbody"
+							class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px]">
+							<tr>
+								<td colspan="3" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 
-				<div class="bg-primary rounded-md overflow-hidden flex flex-col">
-					<div class="bg-bg-dark text-white px-4 py-3 text-[13px] font-bold tracking-wider [&_span]:text-secondary [&_span]:font-semibold">Consumo de Material Clínico — <span id="periodo-material">Março 2026</span></div>
-					<div class="p-0 bg-primary">
-						<table class="w-full border-collapse text-[13px] text-white">
-							<thead><tr class="bg-white/10 border-b border-white/20"><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Material</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Qtd.</th><th class="text-left px-4 py-2.5 font-bold text-[11px] tracking-wider uppercase text-secondary">Custo est.</th></tr></thead>
-							<tbody id="material-tbody" class="[&>tr]:border-b [&>tr]:border-white/10 [&>tr:last-child]:border-0 [&>tr:hover]:bg-white/5 [&>tr>td]:px-4 [&>tr>td]:py-2.5 [&>tr>td]:text-white [&>tr>td]:text-[13px]"><tr><td colspan="3" class="!text-center !py-6 !text-white/60 !italic">Sem dados disponíveis.</td></tr></tbody>
-						</table>
-					</div>
-				</div>
 			</div>
 		</main>
 	</div>
