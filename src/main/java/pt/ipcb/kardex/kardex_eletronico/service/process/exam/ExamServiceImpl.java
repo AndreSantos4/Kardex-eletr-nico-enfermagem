@@ -52,7 +52,7 @@ public class ExamServiceImpl implements ExamService {
             throw new KardexException("Nao e possivel editar um exame ja marcado ou realizado");
         }
 
-        exam.setDataPretendida(data.dataPrentendida());
+        exam.setDataPretendida(data.dataPretendida());
         exam.setIndicacaoClinica(data.indicacaoClinica());
         exam.setUrgencia(data.urgencia());
     }
