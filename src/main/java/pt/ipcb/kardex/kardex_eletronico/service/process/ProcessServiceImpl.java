@@ -181,13 +181,14 @@ public class ProcessServiceImpl implements ProcessService{
     @Transactional
     public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns) {
         var process = getValidProcess(processId);
+        var shift = workerService.getCurrentShift(workerService.getAutenticatedWorker().getId());
 
         var vitalSign = mapper.fromVitalSignRegister(vitalSigns);
         vitalSign.setProcessoClinico(process);
         vitalSign.setFuncionario(workerService.getAutenticatedWorker());
         process.getSinaisVitais().add(vitalSign);
 
-        issuesService.executeUndefinedIssue(process.getUtente().getId(), TipoPendencia.SINAL_VITAL);
+        issuesService.executeUndefinedIssue(process.getUtente().getId(), TipoPendencia.SINAL_VITAL, shift.getId());
 
         repository.save(process);
     }

@@ -151,7 +151,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         stockService.subtractFromStock(prescription.getMedicamento(), prescription.getDose().getDose());
 
         if(!prescription.getSos()){
-            issuesService.executeDefinedIssue(prescription.getId(), TipoPendencia.MEDICACAO);
+            issuesService.executeDefinedIssue(prescription.getId(), TipoPendencia.MEDICACAO, shift.getId());
             prescription.setUltimaAdministracao(LocalDateTime.now());
             prescription.setHoraAdministracaoPrevista(calculatePredictedAdministrationTime(prescription));
         }
