@@ -17,4 +17,6 @@ public interface ClinicRecordService {
     void createClinicRecord(ProcessoClinico processo, TipoRegistoClinico tipo, String detalhes, float detalhesNumericos);
 
     List<RegistoClinicoDTO> getAllRecords();
+
+    List<RegistoClinicoDTO> getAllRecords(Long processId);
 }
