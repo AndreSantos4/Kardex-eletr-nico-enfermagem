@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,4 +49,43 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     long countByDadosRoleAndDadosAtivo(Role enfermeiro, boolean ativo);
 
     List<Funcionario> findAllByDadosAtivo(boolean ativo);
+
+    @Query("""
+        SELECT a.funcionario.id, COUNT(a)
+        FROM AdministracaoMedicacao a
+        WHERE a.administrado = true
+        AND (CAST(:de AS date) IS NULL OR a.data >= :de)
+        AND (CAST(:ate AS date) IS NULL OR a.data <= :ate)
+        GROUP BY a.funcionario.id
+    """)
+    List<Object[]> countAdministracoesByFuncionario(
+            @Param("de") LocalDate de,
+            @Param("ate") LocalDate ate
+    );
+
+    @Query("""
+        SELECT i.funcionarioExecutou.id, COUNT(i)
+        FROM Intervencao i
+        WHERE i.funcionarioExecutou IS NOT NULL
+        AND (CAST(:de AS date) IS NULL OR i.dataExecucao >= :de)
+        AND (CAST(:ate AS date) IS NULL OR i.dataExecucao <= :ate)
+        GROUP BY i.funcionarioExecutou.id
+    """)
+    List<Object[]> countIntervencoesByFuncionario(
+            @Param("de") LocalDate de,
+            @Param("ate") LocalDate ate
+    );
+
+    @Query("""
+        SELECT f.id, COUNT(t)
+        FROM Funcionario f
+        JOIN f.turnos t
+        WHERE (CAST(:de AS date) IS NULL OR CAST(t.inicio AS date) >= :de)
+        AND (CAST(:ate AS date) IS NULL OR CAST(t.inicio AS date) <= :ate)
+        GROUP BY f.id
+    """)
+    List<Object[]> countTurnosByFuncionario(
+            @Param("de") LocalDate de,
+            @Param("ate") LocalDate ate
+    );
 }

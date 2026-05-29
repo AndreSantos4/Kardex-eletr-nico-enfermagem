@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface RegistoClinicoRepository extends JpaRepository<RegistoClinico, Long> {
 
-
     List<RegistoClinico> findAllByProcessoId(Long processId);
 }
