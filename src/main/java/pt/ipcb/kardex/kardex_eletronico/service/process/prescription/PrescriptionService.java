@@ -1,6 +1,7 @@
 package pt.ipcb.kardex.kardex_eletronico.service.process.prescription;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.MaxDoseAlertDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.administration.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.PrescricaoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
@@ -15,7 +16,7 @@ public interface PrescriptionService {
 
     void suspendPrescription(Long prescriptionId, SuspendPrescriptionDTO data);
 
-    void administrateMedication(Long prescriptionId, CreateAdministrationDTO data);
+    MaxDoseAlertDTO administrateMedication(Long prescriptionId, CreateAdministrationDTO data);
 
     List<PrescricaoDTO> getPrescriptionHistory(Long processId, PrescriptionState state, LocalDate from, LocalDate to);
 }
