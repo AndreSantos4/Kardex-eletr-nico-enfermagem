@@ -15,10 +15,14 @@
 					</div>
 					<div class="popup-contencao-field">
 						<label class="popup-contencao-label">DOSAGEM *</label>
-						<select id="dosagem-contencao" class="popup-contencao-select">
+						<select id="dosagem-contencao" class="popup-contencao-select" onchange="validarDoseContencao()">
 							<option value="" disabled selected>Selecione o medicamento</option>
 						</select>
 					</div>
+				</div>
+				<div id="aviso-dose-contencao" class="hidden bg-alertas/20 border border-alertas text-alertas text-[12px] font-bold px-3 py-2 rounded-md items-start gap-2">
+					<span class="leading-none text-base">⚠</span>
+					<span id="aviso-dose-contencao-texto">Dose excessiva — acima da dose máxima diária.</span>
 				</div>
 				<div class="popup-contencao-row-2cols grid grid-cols-2 gap-[14px]">
 					<div class="popup-contencao-field">
