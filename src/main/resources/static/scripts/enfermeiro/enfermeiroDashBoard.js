@@ -2,10 +2,23 @@ const API_BASE = "http://localhost:8080/api/";
 const tipoMap = {
     SINAL_VITAL: "Sinal Vital",
     MEDICACAO: "Medicação",
+    CATETER: "Cateter",
+    EXAME: "Exame",
     ADMINISTRACAO_ATRASADA: "Administração Atrasada",
     PROCEDIMENTO: "Procedimento",
     OBSERVACAO: "Observação",
     AVALIACAO: "Avaliação",
+};
+
+const prioridadePorTipo = {
+    MEDICACAO: { texto: "Alta", cor: "hsl(0,98%,36%)" },
+    EXAME: { texto: "Alta", cor: "hsl(0,98%,36%)" },
+    CATETER: { texto: "Média", cor: "#ca8a04" },
+    SINAL_VITAL: { texto: "Média", cor: "#ca8a04" },
+    PROCEDIMENTO: { texto: "Média", cor: "#ca8a04" },
+    OBSERVACAO: { texto: "Baixa", cor: "#2e7d32" },
+    AVALIACAO: { texto: "Baixa", cor: "#2e7d32" },
+    ADMINISTRACAO_ATRASADA: { texto: "Alta", cor: "hsl(0,98%,36%)" },
 };
 
 function updateClock() {
@@ -317,16 +330,15 @@ function renderPendencias(pendencias) {
 
     tbody.innerHTML = pendencias.map(p => {
         const utente = p.utente?.nome ?? "—";
-        console.log(p);
-        const prioridade = p.tipo;
-
+        const prio = prioridadePorTipo[p.tipo] ?? { texto: "Média", cor: "#e65100" };
+        const prioBadge = `<span style="display:inline-block;background:${prio.cor};color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">${prio.texto}</span>`;
 
         return `
             <tr>
                 <td>${utente}</td>
                 <td>${tipoMap[p.tipo] ?? p.tipo}</td>
                 <td>${p.descricao ?? "—"}</td>
-                <td>${prioridade}</td>
+                <td>${prioBadge}</td>
             </tr>
         `;
     }).join("");
