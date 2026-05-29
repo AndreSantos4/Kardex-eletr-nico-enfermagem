@@ -120,67 +120,67 @@
                 <div class="[&_.alerta]:!text-alertas [&_.alerta]:m-0 [&_.alerta]:p-[5px] [&_.alerta]:flex [&_.alerta_p]:p-0 [&_.alerta_p]:m-0" id="alertas"></div>
             </div>
 
-            <div class="m-[14px] rounded-[5px] border-t border-b border-primary flex items-stretch gap-3">
-                <div class="flex-1 border-l border-r border-primary rounded-[5px] flex flex-col">
-                    <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm h-7 flex items-center">Sinais Vitais</div>
-                    <div class="grid grid-cols-3 gap-2 m-2.5 [&>div]:bg-primary [&>div]:rounded-[3px] [&>div]:text-text [&>div]:flex [&>div]:items-center [&>div]:justify-center [&>div]:flex-col [&>div]:p-[5px] [&>div]:h-[70px] [&>div_p]:m-0.5 [&>div_p]:text-xs [&>div_p]:text-center">
-                        <div><p id="tensao-art"></p><p>mmHg</p><p>Tensão Art.</p></div>
-                        <div><p id="freq-card"></p><p>bpm</p><p>Freq. Card.</p></div>
-                        <div><p id="temperatura"></p><p>ºC</p><p>Temperatura</p></div>
-                        <div><p id="spo2"></p><p>%</p><p>SpO2</p></div>
-                        <div><p id="dor"></p><p>Dor</p></div>
-                        <div><p id="glicemia"></p><p>mg/dL</p><p>Glicémia</p></div>
-                    </div>
-                </div>
-                <div class="flex-1 border-l border-r border-primary rounded-[5px]">
-                    <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm flex items-center">
-                        <div class="w-1/2">Plano de Cuidados Hoje</div>
-                        <div class="w-1/2 flex justify-end">
-                            <button class="bg-transparent border-2 border-white text-white text-xs font-bold tracking-[0.01em] p-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="">VER COMPLETO</button>
+            <div class="mx-[14px] mb-[14px] grid grid-cols-2 gap-3 items-start [&_.panel]:rounded-[5px] [&_.panel]:border [&_.panel]:border-primary [&_.panel]:flex [&_.panel]:flex-col [&_.panel]:overflow-hidden [&_.panel]:self-start [&_.panel-header]:bg-primary [&_.panel-header]:text-text [&_.panel-header]:px-3 [&_.panel-header]:py-2 [&_.panel-header]:text-sm [&_.panel-header]:font-semibold [&_.panel-header]:flex [&_.panel-header]:items-center [&_.panel-header]:justify-between [&_.panel-header]:gap-2 [&_.panel-body]:p-3 [&_.panel-body]:text-primary [&_.panel-body]:text-[13px] [&_.sv-grid]:flex [&_.sv-grid]:flex-nowrap [&_.sv-grid]:justify-between [&_.sv-grid]:gap-1 [&_.sv-item]:bg-primary [&_.sv-item]:rounded [&_.sv-item]:px-1 [&_.sv-item]:py-1.5 [&_.sv-item]:text-center [&_.sv-item]:flex-1 [&_.sv-item]:min-w-0 [&_.sv-value]:text-[15px] [&_.sv-value]:font-bold [&_.sv-value]:text-secondary [&_.sv-value]:leading-[1.15] [&_.sv-value_small]:!text-[10px] [&_.sv-label]:text-[10px] [&_.sv-label]:text-secondary [&_.sv-label]:mt-0.5 [&_.plano-item]:flex [&_.plano-item]:items-start [&_.plano-item]:justify-between [&_.plano-item]:gap-3 [&_.plano-item]:py-2 [&_.plano-item]:border-b [&_.plano-item]:border-primary/15 [&_.plano-item:last-child]:border-0 [&_.plano-item_.plano-nome]:font-semibold [&_.plano-item_.plano-info]:text-[12px] [&_.plano-item_.plano-info]:text-primary/70 [&_.plano-item_.plano-info]:mt-0.5 [&_.med-item]:py-2 [&_.med-item]:border-b [&_.med-item]:border-primary/15 [&_.med-item:last-child]:border-0 [&_.med-item_.med-nome]:font-semibold [&_.med-item_.med-info]:text-[12px] [&_.med-item_.med-info]:text-primary/70 [&_.med-item_.med-info]:mt-0.5 [&_.ec-section-title]:text-[11px] [&_.ec-section-title]:font-bold [&_.ec-section-title]:uppercase [&_.ec-section-title]:tracking-wider [&_.ec-section-title]:text-primary/70 [&_.ec-section-title]:mb-1 [&_.ec-item]:py-1.5 [&_.ec-item]:border-b [&_.ec-item]:border-primary/15 [&_.ec-item:last-child]:border-0 [&_.ec-item_.ec-nome]:font-semibold [&_.ec-item_.ec-info]:text-[12px] [&_.ec-item_.ec-info]:text-primary/70 [&_.ec-item_.ec-info]:mt-0.5 [&_.oc-item]:py-1.5 [&_.oc-item]:border-b [&_.oc-item]:border-primary/15 [&_.oc-item:last-child]:border-0 [&_.oc-item_.oc-head]:font-semibold [&_.oc-item_.oc-info]:text-[12px] [&_.oc-item_.oc-info]:text-primary/70 [&_.oc-item_.oc-info]:mt-0.5">
+                <div class="panel">
+                    <div class="panel-header">Sinais Vitais</div>
+                    <div class="panel-body">
+                        <div class="sv-grid">
+                            <div class="sv-item"><div class="sv-value" id="sv-tensao">—</div><div class="sv-label">Tensão Art.</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-freq-card">—</div><div class="sv-label">Freq. Card.</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-temperatura">—</div><div class="sv-label">Temperatura</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-spo2">—</div><div class="sv-label">SpO2</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-dor">—</div><div class="sv-label">Dor</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-glicemia">—</div><div class="sv-label">Glicémia</div></div>
                         </div>
                     </div>
-                    <div class="flex items-start justify-center gap-[15px] m-[5px] flex-1 text-primary [&_p]:m-0">
-                        <div class="w-1/2"><p id="atividade"></p></div>
-                        <div class="w-1/2 flex justify-end"><p id="hora-atividade"></p></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>Plano de Cuidados Hoje</span>
+                        <button class="bg-transparent border-2 border-white text-white text-[11px] font-bold tracking-[0.04em] px-2.5 py-[3px] cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors whitespace-nowrap" onclick="mostrarPlano()">VER COMPLETO</button>
+                    </div>
+                    <div class="panel-body" id="plano-cuidados-body">
+                        <p class="m-0 italic text-primary/55">A carregar plano...</p>
                     </div>
                 </div>
-            </div>
 
-            <div class="m-[14px] rounded-[5px] border-t border-b border-primary flex items-stretch gap-10 min-h-[200px]">
-                <div class="w-1/2 border-l border-r border-primary rounded-[5px] flex-1 flex flex-col">
-                    <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm h-7 flex items-center">Medicação Ativa</div>
-                    <div class="medicacao p-2.5 text-primary text-[13px] flex flex-col gap-1.5 flex-1">
+                <div class="panel">
+                    <div class="panel-header">Medicação Ativa</div>
+                    <div class="panel-body medicacao">
                         <p class="m-0 italic text-primary/55">A carregar medicação...</p>
                     </div>
                 </div>
-                <div class="w-1/2 border-l border-r border-primary rounded-[5px] flex-1 flex flex-col">
-                    <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm h-7 flex items-center">Exames e Cateteres</div>
-                    <div class="exames-cateteres p-2.5 text-primary text-[13px] flex flex-col gap-2.5 flex-1">
+
+                <div class="panel">
+                    <div class="panel-header">Exames e Cateteres</div>
+                    <div class="panel-body exames-cateteres">
                         <p class="m-0 italic text-primary/55">A carregar...</p>
                     </div>
                 </div>
-            </div>
 
-            <div class="m-[14px] rounded-[5px] border-t border-b border-primary flex items-stretch gap-10 min-h-[200px]">
-                <div class="w-1/2 border-l border-r border-primary rounded-[5px] flex-1 flex flex-col">
-                    <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm h-7 flex items-center">Ocorrências de Hoje</div>
-                    <div class="ocorrencias p-2.5 text-primary text-[13px] flex flex-col gap-1.5 flex-1">
+                <div class="panel">
+                    <div class="panel-header">Ocorrências de Hoje</div>
+                    <div class="panel-body ocorrencias">
                         <p class="m-0 italic text-primary/55">Sem ocorrências registadas hoje.</p>
                     </div>
                 </div>
-                <div class="w-1/2 h-full border-l border-r border-primary rounded-[5px] flex-1">
-                    <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm h-7 flex items-center">Últimos Registos Clínicos</div>
-                    <div class="m-[5px] text-primary">
+
+                <div class="panel">
+                    <div class="panel-header">Últimos Registos Clínicos</div>
+                    <div class="panel-body !p-0">
                         <div class="w-full overflow-x-auto">
                             <table class="w-full border-collapse font-sans text-sm">
-                                <thead class="[&_tr]:bg-primary [&_tr]:text-white [&_tr]:text-center [&_tr]:border-b [&_tr]:border-white [&_th]:px-4 [&_th]:py-1.5 [&_th]:font-semibold [&_th]:text-[0.75rem] [&_th]:whitespace-nowrap">
+                                <thead class="[&_tr]:bg-primary/10 [&_th]:text-primary [&_th]:text-left [&_th]:px-3 [&_th]:py-1.5 [&_th]:font-semibold [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wider [&_th]:whitespace-nowrap">
                                     <tr>
                                         <th>Tipo</th>
                                         <th>Valor</th>
                                         <th>Hora</th>
                                     </tr>
                                 </thead>
-                                <tbody id="registos-tbody" class="[&_tr]:bg-white [&_tr]:text-primary [&_tr]:border-b [&_tr]:border-[#2a5a8c] [&_td]:px-4 [&_td]:py-1.5 [&_td]:align-middle [&_td]:text-center"></tbody>
+                                <tbody id="registos-tbody" class="[&_tr]:border-b [&_tr]:border-primary/15 [&_tr:last-child]:border-0 [&_td]:px-3 [&_td]:py-1.5 [&_td]:text-[13px]">
+                                    <tr><td colspan="3" class="italic text-primary/55">Sem registos.</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
