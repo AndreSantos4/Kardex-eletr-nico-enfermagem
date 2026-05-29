@@ -2,6 +2,7 @@ const API_BASE = "http://localhost:8080/api";
 const utenteId = new URLSearchParams(window.location.search).get("id");
 let processoId = null;
 let nomeUtente = "";
+let _prescricoesCache = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     if (!utenteId) {
@@ -63,7 +64,8 @@ async function carregarUtente() {
         }
 
         await renderPrescricoes();
-        renderHistorico(proc?.prescricoes ?? []);
+        // O histórico é renderizado dentro de renderPrescricoes() com os dados atualizados
+        // que já incluem as administracoes (PrescricaoDTO.administracoes).
     } catch (err) {
         console.error("[Admin] Erro ao carregar utente:", err);
         notificar("Erro", "Não foi possível carregar os dados do utente.", "erro");
@@ -128,6 +130,9 @@ async function renderPrescricoes() {
             return;
         }
 
+        // Guarda em memória para o histórico
+        _prescricoesCache = prescricoes;
+
         body.innerHTML = prescricoes.map(p => {
             const nome = p.medicamento?.nome ?? "Medicamento";
             const dose = p.dose ? `${p.dose.dose}${p.dose.unidadeMedida ? " " + p.dose.unidadeMedida : ""}` : "—";
@@ -138,21 +143,38 @@ async function renderPrescricoes() {
             const horariosPrev = p.horariosPrevistos ?? [];
             const altoRisco = (p.altoRisco === true) || (p.medicamento?.altoRisco === true);
 
+            const limite = _verificarLimitesAdministracao(p);
+            const podeAdministrar = limite.permitido;
+            const motivoBloqueio = limite.motivo;
+
             const badgeSOS = sos ? `<span class="ml-2 inline-block bg-[#c0392b] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">SOS</span>` : "";
             const badgeRisco = altoRisco ? `<span class="ml-2 inline-block bg-alertas text-white text-[10px] font-bold px-1.5 py-0.5 rounded">ALTO RISCO</span>` : "";
+            const linhaLimite = motivoBloqueio
+                ? `<div class="text-alertas text-[11.5px] font-semibold mt-0.5">${esc(motivoBloqueio)}</div>`
+                : "";
+
+            const btnClass = podeAdministrar
+                ? "bg-primary text-white border-2 border-primary cursor-pointer hover:bg-white hover:text-primary"
+                : "bg-bg-dark/30 text-white/70 border-2 border-bg-dark/30 cursor-not-allowed";
+            const btnAttrs = podeAdministrar
+                ? `onclick='abrirAdministrar(${p.id}, ${JSON.stringify(nome)}, ${JSON.stringify(dose)}, ${JSON.stringify(via)}, ${altoRisco}, ${JSON.stringify(horariosPrev)})'`
+                : `disabled title=${JSON.stringify(motivoBloqueio || "")}`;
 
             return `
             <div class="flex items-center justify-between gap-2 px-3 py-2 border-b border-[#e5edf3] last:border-0">
                 <div class="flex-1 min-w-0">
                     <div class="text-bg-dark font-bold text-[13.5px]">${esc(nome)} ${esc(dose)}${badgeSOS}${badgeRisco}</div>
                     <div class="text-bg-dark/65 text-[12px] mt-0.5">Via ${esc(via)} · ${esc(freq)}${medico !== "—" ? " · " + esc(medico) : ""}</div>
+                    ${linhaLimite}
                 </div>
-                <button class="bg-primary text-white border-2 border-primary text-[12px] font-bold tracking-wide px-3 py-1.5 cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors whitespace-nowrap"
-                    onclick='abrirAdministrar(${p.id}, ${JSON.stringify(nome)}, ${JSON.stringify(dose)}, ${JSON.stringify(via)}, ${altoRisco}, ${JSON.stringify(horariosPrev)})'>
+                <button class="${btnClass} text-[12px] font-bold tracking-wide px-3 py-1.5 rounded-md transition-colors whitespace-nowrap" ${btnAttrs}>
                     ADMINISTRAR
                 </button>
             </div>`;
         }).join("");
+
+        // Renderiza histórico com os dados que acabámos de receber
+        renderHistorico(prescricoes);
     } catch (err) {
         console.error("[Admin] Erro ao carregar prescrições:", err);
         body.innerHTML = `<p class="text-alertas text-[13px] p-3">Erro ao carregar prescrições.</p>`;
@@ -308,6 +330,98 @@ function atualizarBotaoRegistar() {
     }
 }
 
+function fecharPopUp(seletorPopup) {
+    const popup = document.querySelector(seletorPopup);
+    if (popup) popup.style.display = "none";
+}
+
+function _formatarDataHoraBackend(datetimeLocal) {
+    if (!datetimeLocal) return "";
+    const [datePart, timePart] = String(datetimeLocal).split("T");
+    if (!datePart || !timePart) return "";
+    const [year, month, day] = datePart.split("-");
+    return `${day}/${month}/${year}:${timePart}:00`;
+}
+
+async function registarMedicacao() {
+    if (!prescricaoSelecionadaId) {
+        _notificarErro("Erro", "Prescrição não identificada.");
+        return;
+    }
+
+    const dataHoraRaw = document.getElementById("data-hora")?.value;
+    if (!dataHoraRaw) {
+        _notificarAviso("Formulário incompleto", "Data e hora não especificados.");
+        return;
+    }
+
+    const observacoes = document.getElementById("observacoes")?.value.trim() ?? "";
+    const recusa = document.getElementById("recusa-medicacao")?.checked ?? false;
+
+    const body = {
+        foi_administrado: !recusa,
+        observacoes: observacoes
+            || (recusa ? "Recusa/impossibilidade de administração" : "Administrado sem intercorrências"),
+        data: _formatarDataHoraBackend(dataHoraRaw),
+    };
+
+    try {
+        const resp = await fetch(
+            `${API_BASE}/processes/prescriptions/${prescricaoSelecionadaId}/administrations`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(body),
+            },
+        );
+
+        if (!resp.ok) throw new Error((await resp.text()) || "Erro ao registar administração");
+
+        const json = await resp.json().catch(() => ({}));
+
+        // Quando a soma das doses nas últimas 24h excede a dose máxima diária,
+        // o backend devolve um MaxDoseAlertDTO em vez de gravar a administração.
+        if (json.success && json.data && json.data.maxDose != null && json.data.dose != null) {
+            const med = json.data.medicamento?.nome ?? "medicação";
+            const unidade = json.data.medicamento?.unidadeMedida ?? "";
+            _notificarAviso(
+                "Administração bloqueada — dose máxima",
+                `${med}: a soma de doses nas últimas 24h excede o máximo diário (${json.data.maxDose} ${unidade}). Requer validação clínica.`,
+            );
+            return;
+        }
+
+        fecharPopUp(".pop-up-administrar-medicacao");
+        _notificarSucesso(
+            "Administração",
+            recusa ? "Recusa registada com sucesso." : "Medicação administrada com sucesso.",
+        );
+
+        // Recarregar dados para atualizar histórico e prescrições
+        await carregarUtente();
+    } catch (err) {
+        let mensagem = err.message;
+        try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) {}
+        _notificarErro("Erro", mensagem || "Erro ao registar administração.");
+    }
+}
+
+function _notificarSucesso(titulo, mensagem) {
+    if (typeof mostrarNotificacao === "function") mostrarNotificacao({ titulo, mensagem, tipo: "sucesso" });
+    else notificar(titulo, mensagem, "sucesso");
+}
+function _notificarErro(titulo, mensagem) {
+    if (typeof mostrarNotificacao === "function") mostrarNotificacao({ titulo, mensagem, tipo: "erro" });
+    else notificar(titulo, mensagem, "erro");
+}
+function _notificarAviso(titulo, mensagem) {
+    if (typeof mostrarNotificacao === "function") mostrarNotificacao({ titulo, mensagem, tipo: "aviso" });
+    else notificar(titulo, mensagem, "aviso");
+}
+
 function abrirPopUpAdministrarSOS() {
     const el = document.querySelector(".popup-sos-overlay");
     if (el) el.style.display = "flex";
@@ -319,6 +433,66 @@ function abrirPopUpContencaoQuimica() {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Verifica se ainda é permitido administrar esta prescrição agora.
+ * Devolve { permitido: bool, motivo: string }.
+ * Regras:
+ *   - intervaloMinHoras: a última administração tem de estar >= N horas no passado
+ *   - DIARIO/frequencia X: máximo X administrações por dia
+ */
+function _verificarLimitesAdministracao(p) {
+    const administracoes = (p.administracoes ?? []).filter(a => a.administrado !== false);
+    if (administracoes.length === 0) return { permitido: true, motivo: "" };
+
+    const ordenadas = administracoes
+        .map(a => ({ ...a, _data: parseBackendDate(a.data) }))
+        .filter(a => a._data)
+        .sort((a, b) => b._data - a._data);
+
+    if (ordenadas.length === 0) return { permitido: true, motivo: "" };
+
+    const ultima = ordenadas[0];
+    const agora = new Date();
+
+    // 1) Intervalo mínimo entre administrações
+    const intervaloMin = p.frequencia?.intervaloMinHoras ?? 0;
+    if (intervaloMin > 0) {
+        const proximaPermitida = new Date(ultima._data.getTime() + intervaloMin * 3_600_000);
+        if (agora < proximaPermitida) {
+            const minutosFalta = Math.ceil((proximaPermitida - agora) / 60000);
+            const horas = Math.floor(minutosFalta / 60);
+            const mins = minutosFalta % 60;
+            const tempo = horas > 0 ? `${horas}h${mins > 0 ? ` ${mins}min` : ""}` : `${mins}min`;
+            return {
+                permitido: false,
+                motivo: `Próxima administração permitida em ${tempo} (intervalo mín. ${intervaloMin}h)`,
+            };
+        }
+    }
+
+    // 2) Frequência diária: contar administrações de hoje
+    const periodo = String(p.frequencia?.periodo ?? "").toUpperCase();
+    const maxPorPeriodo = p.frequencia?.frequencia ?? 0;
+    if ((periodo === "DIARIO" || periodo === "DIARIA") && maxPorPeriodo > 0) {
+        const hojeAno = agora.getFullYear();
+        const hojeMes = agora.getMonth();
+        const hojeDia = agora.getDate();
+        const hoje = ordenadas.filter(a =>
+            a._data.getFullYear() === hojeAno &&
+            a._data.getMonth() === hojeMes &&
+            a._data.getDate() === hojeDia
+        );
+        if (hoje.length >= maxPorPeriodo) {
+            return {
+                permitido: false,
+                motivo: `Limite diário atingido (${hoje.length}/${maxPorPeriodo} hoje)`,
+            };
+        }
+    }
+
+    return { permitido: true, motivo: "" };
+}
 
 function formatFrequencia(f) {
     if (!f) return "—";
