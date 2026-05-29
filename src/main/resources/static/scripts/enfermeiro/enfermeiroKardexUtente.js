@@ -266,7 +266,7 @@ async function carregarCamasEdicao() {
     const livres = dataLivres.success ? dataLivres.data : [];
     const ocupadas = dataOcupadas.success ? dataOcupadas.data : [];
 
-    const camaActualId = caseData.cama !== "—" ? String(caseData.cama) : null;
+    const camaActualId = caseData.cama !== "Não atribuído" ? String(caseData.cama) : null;
     const camaActual = camaActualId
       ? ocupadas.find((c) => String(c.id) === camaActualId)
       : null;
@@ -280,7 +280,7 @@ async function carregarCamasEdicao() {
     document.getElementById("edit-cama")?.parentElement?._popularItens?.(items);
   } catch (err) {
     console.error("Erro ao carregar camas para edição:", err);
-    if (caseData.cama !== "—") {
+    if (caseData.cama !== "Não atribuído") {
       document
         .getElementById("edit-cama")
         ?.parentElement?._popularItens?.([
@@ -334,7 +334,7 @@ async function carregarUtente(id) {
       nome: processo.medicoResponsavel?.dados?.nome ?? "Sem médico",
     };
 
-    caseData = { cama: processo.cama?.id ?? "—" };
+    caseData = { cama: processo.cama?.id ?? "Não atribuído" };
 
     // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vem colado à hora.
     const dias = _calcularDiasInternado(processo.dataEntrada) ?? 0;
@@ -410,8 +410,8 @@ async function abrirPopUpEditarFichaUtente() {
   await carregarCamasEdicao();
   definirValorSearchableSelect(
     "edit-cama",
-    caseData.cama !== "—" ? String(caseData.cama) : "",
-    caseData.cama !== "—" ? `Cama ${caseData.cama}` : "Sem cama",
+    caseData.cama !== "Não atribuído" ? String(caseData.cama) : "",
+    caseData.cama !== "Não atribuído" ? `Cama ${caseData.cama}` : "Sem cama",
   );
 
   document.querySelectorAll("input[name='edit-flags']").forEach((cb) => {
@@ -597,6 +597,76 @@ function atualizarSinaisVitaisUI(sv) {
     `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
 }
 
+/**
+ * Verifica se ainda é permitido administrar esta prescrição agora.
+ * Regras:
+ *   - intervaloMinHoras: tem de passar X horas desde a última administração
+ *   - DIARIO/frequencia X: máximo X administrações por dia
+ */
+function _verificarLimitesAdministracao(p) {
+  const lista = (p.administracoes ?? []).filter((a) => a.administrado !== false);
+  if (lista.length === 0) return { permitido: true, motivo: "" };
+
+  const ordenadas = lista
+    .map((a) => ({ ...a, _data: _parseDataAdmin(a.data) }))
+    .filter((a) => a._data)
+    .sort((a, b) => b._data - a._data);
+  if (ordenadas.length === 0) return { permitido: true, motivo: "" };
+
+  const ultima = ordenadas[0];
+  const agora = new Date();
+
+  const intervaloMin = p.frequencia?.intervaloMinHoras ?? 0;
+  if (intervaloMin > 0) {
+    const proximaPermitida = new Date(
+      ultima._data.getTime() + intervaloMin * 3_600_000,
+    );
+    if (agora < proximaPermitida) {
+      const minutosFalta = Math.ceil((proximaPermitida - agora) / 60000);
+      const horas = Math.floor(minutosFalta / 60);
+      const mins = minutosFalta % 60;
+      const tempo =
+        horas > 0
+          ? `${horas}h${mins > 0 ? ` ${mins}min` : ""}`
+          : `${mins}min`;
+      return {
+        permitido: false,
+        motivo: `Próxima administração em ${tempo} (intervalo mín. ${intervaloMin}h)`,
+      };
+    }
+  }
+
+  const periodo = String(p.frequencia?.periodo ?? "").toUpperCase();
+  const maxPorPeriodo = p.frequencia?.frequencia ?? 0;
+  if ((periodo === "DIARIO" || periodo === "DIARIA") && maxPorPeriodo > 0) {
+    const hojeAno = agora.getFullYear();
+    const hojeMes = agora.getMonth();
+    const hojeDia = agora.getDate();
+    const hoje = ordenadas.filter(
+      (a) =>
+        a._data.getFullYear() === hojeAno &&
+        a._data.getMonth() === hojeMes &&
+        a._data.getDate() === hojeDia,
+    );
+    if (hoje.length >= maxPorPeriodo) {
+      return {
+        permitido: false,
+        motivo: `Limite diário atingido (${hoje.length}/${maxPorPeriodo} hoje)`,
+      };
+    }
+  }
+
+  return { permitido: true, motivo: "" };
+}
+
+function _parseDataAdmin(raw) {
+  if (!raw) return null;
+  const m = /^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})$/.exec(raw);
+  if (m) return new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:${m[6]}`);
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
@@ -635,9 +705,20 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
       (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
     const horariosPrevistos = p.horariosPrevistos ?? [];
 
+    const limite = _verificarLimitesAdministracao(p);
+    const podeAdministrar = limite.permitido;
+    const motivoBloqueio = limite.motivo;
+
     const badgeAltoRisco = altoRisco
       ? `<span style="display:inline-block;margin-left:6px;background:rgb(220,49,26);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;padding:1px 5px;border-radius:3px;vertical-align:middle;">ALTO RISCO</span>`
       : "";
+    const linhaLimite = motivoBloqueio
+      ? `<div style="color:hsl(0,98%,36%);font-size:11px;font-weight:600;margin-top:2px">${motivoBloqueio}</div>`
+      : "";
+
+    const btnAttr = podeAdministrar
+      ? `onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})"`
+      : `disabled style="opacity:0.55;cursor:not-allowed" title="${motivoBloqueio.replace(/"/g, "&quot;")}"`;
 
     const row = document.createElement("div");
     row.className = "med-row";
@@ -648,9 +729,9 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
         <div style="font-weight:600;color:var(--surface)">${nomeMed}${badgeAltoRisco}</div>
         <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
         <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
+        ${linhaLimite}
       </div>
-      <button class="btn-administrar"
-        onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})">
+      <button class="btn-administrar" ${btnAttr}>
         ADMINISTRAR
       </button>
     `;
@@ -659,7 +740,7 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
 
   contencoes.forEach((c) => {
     const nomeMed = c.medicamento?.nome ?? "Contenção Química";
-    const via = c.medicamento?.viaAdministracao ?? "—";
+    const via = c.via ?? c.medicamento?.viaAdministracao ?? "—";
 
     const dose = c.dose;
     const doseNum = parseFloat(dose?.dose ?? 0);
@@ -788,6 +869,27 @@ async function registarMedicacao() {
 
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar administração");
+
+    const json = await resp.json().catch(() => ({}));
+
+    // Quando a dose ia ultrapassar o máximo diário, o backend devolve
+    // um MaxDoseAlertDTO em vez de gravar a administração.
+    if (
+      json.success &&
+      json.data &&
+      json.data.maxDose != null &&
+      json.data.dose != null
+    ) {
+      const med = json.data.medicamento?.nome ?? "medicação";
+      const unidade = json.data.medicamento?.unidadeMedida ?? "";
+      mostrarNotificacao({
+        titulo: "Administração bloqueada — dose máxima",
+        mensagem: `${med}: a soma de doses nas últimas 24h excede o máximo diário (${json.data.maxDose} ${unidade}). Requer validação clínica.`,
+        tipo: "aviso",
+      });
+      return;
+    }
+
     fecharPopUp(".pop-up-administrar-medicacao");
     mostrarNotificacao({
       titulo: "Administração",
@@ -796,6 +898,10 @@ async function registarMedicacao() {
         : "Medicação administrada com sucesso.",
       tipo: "sucesso",
     });
+    // Recarregar dados para refletir o histórico e bloquear nova administração
+    if (typeof carregarUtente === "function" && typeof id !== "undefined") {
+      await carregarUtente(id);
+    }
   } catch (err) {
     let mensagem = err.message;
     try {
@@ -1016,6 +1122,47 @@ function atualizarDosagemContencao() {
       selectDose.appendChild(opt);
     });
   }
+  esconderAvisoContencao();
+}
+
+function esconderAvisoContencao() {
+  const aviso = document.getElementById("aviso-dose-contencao");
+  if (aviso) { aviso.classList.add("hidden"); aviso.classList.remove("flex"); }
+}
+
+function mostrarAvisoContencao(texto) {
+  const aviso = document.getElementById("aviso-dose-contencao");
+  const txt = document.getElementById("aviso-dose-contencao-texto");
+  if (txt) txt.textContent = texto;
+  if (aviso) { aviso.classList.remove("hidden"); aviso.classList.add("flex"); }
+}
+
+// Devolve true se a dose for válida, false se for excessiva (já mostra o aviso).
+function validarDoseContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+  if (!selectMed || !selectDose) return true;
+
+  const idMed = parseInt(selectMed.value);
+  const idDose = parseInt(selectDose.value);
+  if (!idMed || !idDose) { esconderAvisoContencao(); return true; }
+
+  const med = _medicamentosContencao.find((m) => m.id === idMed);
+  if (!med?.dosagemMaxDiaria) { esconderAvisoContencao(); return true; }
+
+  const dose = med.dosagens?.find((d) => d.id === idDose);
+  if (!dose) { esconderAvisoContencao(); return true; }
+
+  const maxDose = med.dosagemMaxDiaria.dose;
+  const maxUnidade = med.dosagemMaxDiaria.unidadeMedida;
+  if (dose.unidadeMedida === maxUnidade && dose.dose > maxDose) {
+    mostrarAvisoContencao(
+      `Dose excessiva — ${dose.dose} ${formatarUnidade(dose.unidadeMedida)} excede a dose máxima diária (${maxDose} ${formatarUnidade(maxUnidade)}).`,
+    );
+    return false;
+  }
+  esconderAvisoContencao();
+  return true;
 }
 
 function fecharPopupRegistarContencao() {
@@ -1040,6 +1187,15 @@ async function submeterRegistarContencao(event) {
       titulo: "Formulário incompleto",
       mensagem: "Preenche todos os campos obrigatórios.",
       tipo: "aviso",
+    });
+    return;
+  }
+
+  if (!validarDoseContencao()) {
+    mostrarNotificacao({
+      titulo: "Dose excessiva",
+      mensagem: "A dose selecionada excede a dose máxima diária. Não é possível registar.",
+      tipo: "erro",
     });
     return;
   }
@@ -1479,12 +1635,8 @@ async function carregarPlanoDeHoje() {
 
     intervencoes.forEach((inv) => {
       const feita = inv.funcionarioExecutou != null;
-      const realizadaPorId = String(
-        inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "",
-      );
-      const podeDesmarcar =
-        feita && String(realizadaPorId) === String(enfermeiroAtualId);
-      const checkboxBloqueada = !feita || (feita && !podeDesmarcar);
+      const podeDesmarcar = feita;
+      const checkboxBloqueada = !feita;
 
       const prio = prioridadeConfig[inv.prioridade] ?? {
         cor: "#666",
@@ -1508,11 +1660,9 @@ async function carregarPlanoDeHoje() {
       const textoRiscado = feita
         ? "text-decoration:line-through;opacity:0.55;"
         : "";
-      const tituloCb = apenasLeitura(feita, podeDesmarcar)
-        ? "Registado por outro enfermeiro"
-        : feita
-          ? "Clica para desmarcar"
-          : "Marcar como realizado deve ser feito no plano de cuidados";
+      const tituloCb = feita
+        ? "Clica para desmarcar"
+        : "Marcar como realizado deve ser feito no plano de cuidados";
 
       const nomeIntervencao = intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
 
@@ -1736,7 +1886,73 @@ async function abrirPopUpAdministrarSOS() {
   );
   const inputDataHora = document.getElementById("data-hora-sos");
   if (inputDataHora) inputDataHora.value = agora();
+  popularPrescricoesSOS();
   abrirPopUp(".popup-sos-overlay");
+}
+
+function popularPrescricoesSOS() {
+  const select = document.getElementById("prescricao-sos");
+  if (!select) return;
+
+  const prescricoesSOS = (processoData?.prescricoes ?? []).filter(
+    (p) => p.sos === true && p.estado === "ATIVA",
+  );
+
+  select.innerHTML = "";
+  if (prescricoesSOS.length === 0) {
+    select.innerHTML =
+      '<option value="" disabled selected>Sem prescrições SOS ativas</option>';
+    atualizarPrescricaoSOS();
+    return;
+  }
+
+  const optHeader = document.createElement("option");
+  optHeader.value = "";
+  optHeader.disabled = true;
+  optHeader.selected = true;
+  optHeader.textContent = "Selecione a prescrição";
+  select.appendChild(optHeader);
+
+  prescricoesSOS.forEach((p) => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    const nome = p.medicamento?.nome ?? "Medicação";
+    const dose = p.dose
+      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
+      : "";
+    opt.textContent = `${nome}${dose ? " — " + dose : ""}`;
+    select.appendChild(opt);
+  });
+
+  atualizarPrescricaoSOS();
+}
+
+function _getPrescricaoSOSSelecionada() {
+  const id = parseInt(document.getElementById("prescricao-sos")?.value);
+  if (!id) return null;
+  return (processoData?.prescricoes ?? []).find((p) => p.id === id) ?? null;
+}
+
+function atualizarPrescricaoSOS() {
+  const presc = _getPrescricaoSOSSelecionada();
+  const elNome = document.getElementById("sos-prescricao-medicamento");
+  const elDet = document.getElementById("sos-prescricao-detalhe");
+
+  if (!presc) {
+    if (elNome) elNome.textContent = "Selecionar prescrição SOS";
+    if (elDet) elDet.textContent = "Dose máx. e intervalo mínimo definidos pela prescrição.";
+  } else {
+    const nome = presc.medicamento?.nome ?? "Medicação";
+    const max = presc.medicamento?.dosagemMaxDiaria;
+    if (elNome) elNome.textContent = nome;
+    if (elDet) {
+      elDet.textContent = max
+        ? `Dose máx. diária: ${max.dose} ${formatarUnidade(max.unidadeMedida)}`
+        : "Sem dose máxima registada.";
+    }
+  }
+  esconderAvisoSOS();
+  validarDoseSOS();
 }
 
 function fecharPopupAdministrarSOS() {
@@ -1746,19 +1962,134 @@ function fecharPopupAdministrarSOS() {
   popup.querySelector("form")?.reset();
 }
 
+// Limites máximos razoáveis por unidade para uma administração SOS (one-shot).
+// Quando a seleção de prescrição SOS estiver wired-up, comparar contra a prescrição.
+const LIMITES_DOSE_SOS = {
+  mg: 1000,
+  g: 5,
+  mcg: 1000,
+  ml: 50,
+  ui: 100000,
+};
+
+function _parseDoseSOS(texto) {
+  const m = /^(\d+(?:[.,]\d+)?)\s*(mg|mcg|g|ml|ui)?$/i.exec((texto ?? "").trim());
+  if (!m) return null;
+  return {
+    valor: parseFloat(m[1].replace(",", ".")),
+    unidade: (m[2] ?? "mg").toLowerCase(),
+  };
+}
+
+function esconderAvisoSOS() {
+  const aviso = document.getElementById("aviso-dose-sos");
+  if (aviso) { aviso.classList.add("hidden"); aviso.classList.remove("flex"); }
+}
+
+function mostrarAvisoSOS(texto) {
+  const aviso = document.getElementById("aviso-dose-sos");
+  const txt = document.getElementById("aviso-dose-sos-texto");
+  if (txt) txt.textContent = texto;
+  if (aviso) { aviso.classList.remove("hidden"); aviso.classList.add("flex"); }
+}
+
+// Converte um valor para a unidade abreviada (mg/g/mcg/ml/ui) numa escala comum em mg
+// para podermos comparar mg vs g vs mcg de forma robusta.
+function _doseEmMg(valor, unidadeAbrev) {
+  const u = String(unidadeAbrev || "").toLowerCase();
+  if (u === "g") return valor * 1000;
+  if (u === "mg") return valor;
+  if (u === "mcg") return valor / 1000;
+  return valor; // ml/ui não convertíveis — só comparáveis em si mesmas
+}
+
+// Devolve true se a dose for válida, false se for inválida ou excessiva (mostra o aviso).
+function validarDoseSOS() {
+  const valor = document.getElementById("dose-sos")?.value.trim();
+  if (!valor) { esconderAvisoSOS(); return true; }
+
+  const parsed = _parseDoseSOS(valor);
+  if (!parsed) {
+    mostrarAvisoSOS("Formato inválido — use por exemplo \"5mg\", \"0.5g\", \"100mcg\".");
+    return false;
+  }
+
+  const presc = _getPrescricaoSOSSelecionada();
+  const max = presc?.medicamento?.dosagemMaxDiaria;
+  const dosePresc = presc?.dose;
+
+  // 1) Limite máximo diário do medicamento (se existir): converte tudo para mg.
+  if (max?.dose != null) {
+    const maxAbrev = formatarUnidade(max.unidadeMedida).toLowerCase();
+    const ehMassa = ["mg", "g", "mcg"].includes(parsed.unidade) && ["mg", "g", "mcg"].includes(maxAbrev);
+    const mesmaUnidade = parsed.unidade === maxAbrev;
+    if (ehMassa || mesmaUnidade) {
+      const parsedMg = ehMassa ? _doseEmMg(parsed.valor, parsed.unidade) : parsed.valor;
+      const maxMg = ehMassa ? _doseEmMg(max.dose, maxAbrev) : max.dose;
+      if (parsedMg > maxMg) {
+        mostrarAvisoSOS(
+          `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose máxima diária da prescrição (${max.dose} ${formatarUnidade(max.unidadeMedida)}).`,
+        );
+        return false;
+      }
+    }
+  }
+
+  // 2) Sem máximo configurado mas prescrição tem dose por administração: usar essa como referência.
+  if (max?.dose == null && dosePresc?.dose != null) {
+    const doseAbrev = formatarUnidade(dosePresc.unidadeMedida).toLowerCase();
+    const ehMassa = ["mg", "g", "mcg"].includes(parsed.unidade) && ["mg", "g", "mcg"].includes(doseAbrev);
+    const mesmaUnidade = parsed.unidade === doseAbrev;
+    if (ehMassa || mesmaUnidade) {
+      const parsedMg = ehMassa ? _doseEmMg(parsed.valor, parsed.unidade) : parsed.valor;
+      const doseMg = ehMassa ? _doseEmMg(dosePresc.dose, doseAbrev) : dosePresc.dose;
+      if (parsedMg > doseMg) {
+        mostrarAvisoSOS(
+          `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose prescrita por administração (${dosePresc.dose} ${formatarUnidade(dosePresc.unidadeMedida)}).`,
+        );
+        return false;
+      }
+    }
+  }
+
+  // 3) Sem prescrição ou sem dados: limite heurístico por unidade.
+  if (!presc) {
+    const limite = LIMITES_DOSE_SOS[parsed.unidade];
+    if (limite && parsed.valor > limite) {
+      mostrarAvisoSOS(
+        `Dose excessiva — ${parsed.valor}${parsed.unidade} excede o máximo seguro (${limite}${parsed.unidade}). Verifique a prescrição.`,
+      );
+      return false;
+    }
+  }
+
+  esconderAvisoSOS();
+  return true;
+}
+
 function submeterAdministrarSOS(event) {
   if (event) event.preventDefault();
 
+  const prescricaoId = document.getElementById("prescricao-sos")?.value;
   const condicao = document.getElementById("condicao-sos")?.value;
   const descricao = document.getElementById("descricao-sos")?.value.trim();
   const dataHora = document.getElementById("data-hora-sos")?.value;
   const dose = document.getElementById("dose-sos")?.value.trim();
 
-  if (!condicao || !descricao || !dataHora || !dose) {
+  if (!prescricaoId || !condicao || !descricao || !dataHora || !dose) {
     mostrarNotificacao({
       titulo: "Formulário incompleto",
       mensagem: "Preenche todos os campos obrigatórios.",
       tipo: "aviso",
+    });
+    return;
+  }
+
+  if (!validarDoseSOS()) {
+    mostrarNotificacao({
+      titulo: "Dose excessiva",
+      mensagem: "A dose introduzida excede o limite seguro. Não é possível registar.",
+      tipo: "erro",
     });
     return;
   }

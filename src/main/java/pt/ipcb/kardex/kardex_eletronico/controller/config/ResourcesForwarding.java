@@ -111,8 +111,8 @@ public class ResourcesForwarding {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeGerirTurnos.html");
     }
 
-    @GetMapping("/enfermeiroChefeStock")
-    public ModelAndView enfermeiroChefeStock(){
+    @GetMapping("/enfermeiroChefeControloStock")
+    public ModelAndView enfermeiroChefeControloStock(){
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeControloStock.html");
     }
 
@@ -134,6 +134,16 @@ public class ResourcesForwarding {
     @GetMapping("/enfermeiroChefeKardexUtente")
     public ModelAndView enfermeiroChefeKardexUtente(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeKardexUtente.html?id=" + id);
+    }
+
+    @GetMapping("/enfermeiroChefePlanoCuidados")
+    public ModelAndView enfermeiroChefePlanoCuidados(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefePlanoCuidados.html?id=" + id);
+    }
+
+    @GetMapping("/enfermeiroChefeHistoricoPrescricoes")
+    public ModelAndView enfermeiroChefeHistoricoPrescricoes(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/enfermeiroChefe/enfermeiroChefeHistoricoPrescricoes.html?id=" + id);
     }
 
     /* MÉDICO */
@@ -171,5 +181,10 @@ public class ResourcesForwarding {
     @GetMapping("/medicoExames")
     public ModelAndView medicoExames(@RequestParam("id") Long id) {
         return new ModelAndView("forward:/pages/medico/medicoExames.html?id=" + id);
+    }
+
+    @GetMapping("/medicoPlanoCuidados")
+    public ModelAndView medicoPlanoCuidados(@RequestParam("id") Long id) {
+        return new ModelAndView("forward:/pages/medico/medicoPlanoCuidados.html?id=" + id);
     }
 }

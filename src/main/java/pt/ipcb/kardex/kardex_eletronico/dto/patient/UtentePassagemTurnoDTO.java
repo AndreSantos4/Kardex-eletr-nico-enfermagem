@@ -2,7 +2,7 @@ package pt.ipcb.kardex.kardex_eletronico.dto.patient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.AdministracoesDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.administration.AdministracoesDTO;
 
 import java.util.List;
 

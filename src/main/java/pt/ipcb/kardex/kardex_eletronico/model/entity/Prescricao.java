@@ -42,6 +42,7 @@ public class Prescricao {
     public String motivo = "";
     
     @Column(name = "estado", nullable = false)
+    @Enumerated(EnumType.STRING)
     public PrescriptionState estado = PrescriptionState.ATIVA;
 
     @JoinColumn(name = "id_suspensao")

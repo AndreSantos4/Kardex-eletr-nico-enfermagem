@@ -219,9 +219,10 @@ async function carregarSemana() {
         custom: { nome: "Personalizado", horario: "" }
     };
 
+    const ORDEM_TIPOS = ["manha", "tarde", "noite", "custom"];
     const tiposPresentes = [...new Set(
         turnosSemana.map(t => mapTipoParaLinha(t.tipo)).filter(Boolean)
-    )];
+    )].sort((a, b) => ORDEM_TIPOS.indexOf(a) - ORDEM_TIPOS.indexOf(b));
 
     if (!tiposPresentes.length) {
         agendaBody.innerHTML = '<tr><td colspan="8" class="gt-empty-agenda">Não existem turnos agendados para esta semana.</td></tr>';
@@ -335,25 +336,76 @@ async function carregarAtribuicoesDeEnfermeiros(idTurno = null) {
     }
 }
 
+// Derivada do que já está no frontend (enfermeirosDisponiveis + turnosSemana).
+// Quando existir um endpoint /nurses/availability no backend, substituir por fetch.
 async function carregarDisponibilidadeEquipa() {
     const body = document.getElementById("disponibilidade-body");
     if (!body) return;
-    // TODO: implementar endpoint /nurses/availability
-    body.innerHTML = '<div class="gt-dispon-row"><span style="padding:12px;color:#888;">Sem dados de disponibilidade.</span></div>';
+
+    if (!enfermeirosDisponiveis.length) {
+        await carregarEnfermeiros();
+    }
+
+    const agora = new Date();
+    const linhas = enfermeirosDisponiveis
+        .slice()
+        .sort((a, b) => a.nome.localeCompare(b.nome, "pt", { sensitivity: "base" }))
+        .map(enf => {
+            const turnosDoEnf = turnosSemana
+                .filter(t => (t.enfermeiros ?? []).some(e => e.id === enf.id));
+
+            const turnoAtual = turnosDoEnf.find(t => turnoEstaAtivo(t)) ?? null;
+            const proximo = turnosDoEnf
+                .filter(t => {
+                    const inicio = parseTurnoDate(`${t.data}:${t.inicio}`);
+                    return inicio && inicio > agora;
+                })
+                .sort((a, b) => parseTurnoDate(`${a.data}:${a.inicio}`) - parseTurnoDate(`${b.data}:${b.inicio}`))[0] ?? null;
+
+            let estado;
+            if (turnoAtual) {
+                estado = turnoAtual.tipo === "NOITE" ? "Noite" : "Ativo";
+            } else {
+                estado = "Livre";
+            }
+
+            const proximoLabel = proximo
+                ? `${_labelTipoTurno(proximo.tipo)} ${proximo.data?.substring(0, 5) ?? ""} ${proximo.inicio}–${proximo.fim}`
+                : "—";
+
+            return { nome: enf.nome, estado, proximoTurno: proximoLabel };
+        });
+
+    renderizarDisponibilidade(linhas);
+}
+
+function _labelTipoTurno(tipo) {
+    switch ((tipo ?? "").toUpperCase()) {
+        case "MANHA": return "Manhã";
+        case "TARDE": return "Tarde";
+        case "NOITE": return "Noite";
+        case "CUSTOM": return "Pers.";
+        default: return tipo ?? "—";
+    }
 }
 
 function renderizarDisponibilidade(enfermeiros) {
     const body = document.getElementById("disponibilidade-body");
     if (!body) return;
     if (!enfermeiros.length) {
-        body.innerHTML = '<div class="gt-dispon-row"><span style="padding:12px;color:#888;">Sem dados de disponibilidade.</span></div>';
+        body.innerHTML = '<div class="gt-dispon-row"><span class="italic text-primary/55 text-[13px] col-span-3">Sem enfermeiros para mostrar.</span></div>';
         return;
     }
+    const estadoClass = {
+        Ativo: "estado-ativo",
+        Folga: "estado-folga",
+        Noite: "estado-noite",
+    };
     body.innerHTML = enfermeiros.map(enf => `
         <div class="gt-dispon-row">
-            <span>${enf.nome || "—"}</span>
-            <span class="gt-estado gt-estado--${(enf.estado || "").toLowerCase()}">${enf.estado || "—"}</span>
-            <span>${enf.proximoTurno || "—"}</span>
+            <span class="gt-dispon-enf">${enf.nome || "—"}</span>
+            <span><span class="${estadoClass[enf.estado] ?? "estado-folga"}">${enf.estado || "—"}</span></span>
+            <span class="gt-dispon-turno">${enf.proximoTurno || "—"}</span>
         </div>
     `).join("");
 }
@@ -607,10 +659,10 @@ function renderizarCheckboxesEnfermeiros(containerId, selecionados = []) {
     box.innerHTML = [...enfermeirosDisponiveis]
         .sort((a, b) => a.nome.localeCompare(b.nome, "pt", { sensitivity: "base" }))
         .map(enf => `
-            <label class="ct-enf-item">
-                <input type="checkbox" name="enfermeiros" value="${enf.id}"
+            <label class="ct-enf-item et-enf-item !flex !items-center gap-2 cursor-pointer !mb-0 !text-white !text-[0.87rem] !font-normal !normal-case !tracking-normal py-1 px-1.5 rounded hover:bg-white/10 transition-colors">
+                <input type="checkbox" name="enfermeiros" value="${enf.id}" class="!w-4 !h-4 shrink-0 cursor-pointer accent-[#2a7fa0] !m-0 !p-0 !border-0"
                     ${selecionados.includes(enf.id) ? "checked" : ""} />
-                ${enf.nome}
+                <span class="flex-1 min-w-0 truncate">${enf.nome}</span>
             </label>
         `).join("");
 }

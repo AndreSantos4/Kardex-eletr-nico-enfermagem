@@ -61,28 +61,41 @@
                     </span>
                 </div>
                 <div class="flex gap-2.5 shrink-0">
-                    <button class="bg-transparent border-2 border-white text-white text-xs font-bold px-4 py-1 cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="abrirPopup()">+ PRESCREVER EXAME</button>
+                    <button class="bg-transparent border-2 border-white text-white text-xs font-bold tracking-[0.03em] px-4 py-1.5 cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="irParaKardex()">Kardex</button>
+                    <button class="bg-transparent border-2 border-white text-white text-xs font-bold tracking-[0.03em] px-4 py-1.5 cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="abrirPopup()">Prescrever Exame</button>
                 </div>
             </div>
 
-            <div class="flex gap-[14px] m-[14px] items-start flex-1">
-                <div class="w-full overflow-x-auto rounded-md border border-primary text-primary">
-                    <table class="w-full border-collapse font-sans text-sm">
-                        <thead class="[&_tr]:bg-primary [&_tr]:text-white [&_tr]:text-center [&_tr]:border-b [&_tr]:border-white [&_th]:px-4 [&_th]:py-3 [&_th]:font-semibold [&_th]:text-[0.8rem] [&_th]:normal-case [&_th]:whitespace-nowrap">
-                            <tr>
-                                <th>Tipo</th>
-                                <th>Urgência</th>
-                                <th>Data Pedido</th>
-                                <th>Data Pretendida</th>
-                                <th>Indicação Clínica</th>
-                                <th>Observações</th>
-                                <th>Estado</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="exames-tbody" class="[&_tr]:bg-white [&_tr]:text-primary [&_tr]:border-b [&_tr]:border-[#2a5a8c] [&_tr]:transition-colors [&_tr:hover]:bg-text [&_td]:px-4 [&_td]:py-3.5 [&_td]:align-middle [&_td]:text-center [&_button]:min-w-[32px] [&_button]:h-8 [&_button]:px-2.5 [&_button]:mx-0.5 [&_button]:bg-transparent [&_button]:border-[1.5px] [&_button]:border-primary [&_button]:rounded [&_button]:text-primary [&_button]:text-xs [&_button]:font-bold [&_button]:tracking-wider [&_button]:cursor-pointer [&_button]:transition-colors [&_button:hover]:bg-secondary"></tbody>
-                    </table>
-                </div>
+            <div class="grid grid-cols-2 gap-[14px] m-[14px] items-start">
+                <section class="rounded-[5px] border border-primary overflow-hidden flex flex-col self-start bg-white">
+                    <div class="bg-primary px-4 py-2.5 flex items-center justify-between text-sm font-semibold text-text">
+                        <span>Exames Prescritos</span>
+                        <span id="exames-count" class="text-[11px] font-bold tracking-wider text-secondary"></span>
+                    </div>
+                    <div class="bg-white flex flex-col [&_.exame-row]:grid [&_.exame-row]:grid-cols-[minmax(0,1.4fr)_minmax(0,0.85fr)_minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,0.95fr)_140px] [&_.exame-row]:gap-3 [&_.exame-row]:items-center [&_.exame-row]:px-4 [&_.exame-row]:py-2.5 [&_.exame-row]:border-b [&_.exame-row]:border-primary/10 [&_.exame-row:last-child]:border-0 [&_.exame-row.exame-head]:bg-primary/5 [&_.exame-row.exame-head]:py-2 [&_.exame-row.exame-head]:border-b [&_.exame-row.exame-head]:border-primary/20 [&_.exame-row:not(.exame-head):hover]:bg-primary/[0.04] [&_.exame-head_span]:text-[10.5px] [&_.exame-head_span]:font-bold [&_.exame-head_span]:tracking-[0.06em] [&_.exame-head_span]:uppercase [&_.exame-head_span]:text-primary/65 [&_.exame-cell]:flex [&_.exame-cell]:flex-col [&_.exame-cell]:gap-0.5 [&_.exame-cell]:min-w-0 [&_.exame-cell-valor]:text-[13px] [&_.exame-cell-valor]:font-semibold [&_.exame-cell-valor]:text-primary [&_.exame-cell-valor]:leading-tight [&_.exame-cell-valor]:truncate [&_.exame-cell-sub]:text-[11px] [&_.exame-cell-sub]:text-primary/60 [&_.exame-cell-sub]:leading-tight [&_.exame-cell-sub]:truncate [&_.urg-badge]:inline-block [&_.urg-badge]:text-[10.5px] [&_.urg-badge]:font-bold [&_.urg-badge]:tracking-wider [&_.urg-badge]:uppercase [&_.urg-badge]:px-2 [&_.urg-badge]:py-0.5 [&_.urg-badge]:rounded-full [&_.urg-badge]:w-fit [&_.urg-NORMAL]:bg-primary/10 [&_.urg-NORMAL]:!text-primary [&_.urg-BAIXA]:bg-ok/15 [&_.urg-BAIXA]:!text-ok [&_.urg-MODERADA]:bg-amber-100 [&_.urg-MODERADA]:!text-amber-700 [&_.urg-ALTA]:bg-alertas/15 [&_.urg-ALTA]:!text-alertas [&_.urg-URGENTE]:bg-alertas/15 [&_.urg-URGENTE]:!text-alertas [&_.estado-badge]:inline-block [&_.estado-badge]:text-[11px] [&_.estado-badge]:font-semibold [&_.estado-badge]:text-primary [&_.estado-badge]:leading-tight [&_.exame-actions]:flex [&_.exame-actions]:flex-col [&_.exame-actions]:gap-1.5 [&_.exame-actions]:shrink-0 [&_.exame-actions]:w-full [&_.btn-exame]:bg-transparent [&_.btn-exame]:border-[1.5px] [&_.btn-exame]:border-primary [&_.btn-exame]:text-primary [&_.btn-exame]:text-[10.5px] [&_.btn-exame]:font-bold [&_.btn-exame]:tracking-[0.06em] [&_.btn-exame]:px-3 [&_.btn-exame]:py-0.5 [&_.btn-exame]:cursor-pointer [&_.btn-exame]:rounded-full [&_.btn-exame]:text-center [&_.btn-exame:hover]:bg-primary [&_.btn-exame:hover]:text-white [&_.btn-eliminar]:!border-alertas [&_.btn-eliminar]:!text-alertas [&_.btn-eliminar:hover]:!bg-alertas [&_.btn-eliminar:hover]:!text-white">
+                        <div class="exame-row exame-head">
+                            <span>Tipo</span>
+                            <span>Urgência</span>
+                            <span>Data pedido</span>
+                            <span>Data pretendida</span>
+                            <span>Estado</span>
+                            <span></span>
+                        </div>
+                        <div id="exames-list" class="flex flex-col">
+                            <p class="m-0 italic text-primary/55 text-[13px] text-center py-6">A carregar exames...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-[5px] border border-primary overflow-hidden flex flex-col self-start bg-white">
+                    <div class="bg-primary px-4 py-2.5 flex items-center justify-between text-sm font-semibold text-text">
+                        <span>Resultados Disponíveis</span>
+                        <span id="resultados-count" class="text-[11px] font-bold tracking-wider text-secondary"></span>
+                    </div>
+                    <div id="resultados-list" class="bg-white p-3 flex flex-col gap-2.5 [&_.resultado-card]:bg-white [&_.resultado-card]:border [&_.resultado-card]:border-primary/15 [&_.resultado-card]:rounded-md [&_.resultado-card]:px-4 [&_.resultado-card]:py-3 [&_.resultado-card_.resultado-head]:flex [&_.resultado-card_.resultado-head]:items-center [&_.resultado-card_.resultado-head]:justify-between [&_.resultado-card_.resultado-head]:gap-3 [&_.resultado-card_.resultado-titulo]:text-[13px] [&_.resultado-card_.resultado-titulo]:font-bold [&_.resultado-card_.resultado-titulo]:text-primary [&_.resultado-card_.resultado-flag]:text-[10.5px] [&_.resultado-card_.resultado-flag]:font-bold [&_.resultado-card_.resultado-flag]:uppercase [&_.resultado-card_.resultado-flag]:tracking-[0.06em] [&_.resultado-card_.resultado-flag]:px-2 [&_.resultado-card_.resultado-flag]:py-0.5 [&_.resultado-card_.resultado-flag]:rounded-full [&_.flag-ok]:bg-ok/15 [&_.flag-ok]:!text-ok [&_.flag-atencao]:bg-alertas/15 [&_.flag-atencao]:!text-alertas [&_.resultado-card_.resultado-corpo]:text-[12.5px] [&_.resultado-card_.resultado-corpo]:text-primary/85 [&_.resultado-card_.resultado-corpo]:mt-1.5 [&_.resultado-card_.resultado-corpo]:leading-snug [&_.resultado-card_.resultado-meta]:text-[11.5px] [&_.resultado-card_.resultado-meta]:!text-alertas [&_.resultado-card_.resultado-meta]:mt-1 [&_.resultado-card_.resultado-meta]:font-semibold">
+                        <p class="m-0 italic text-primary/55 text-[13px] text-center py-6">A carregar resultados...</p>
+                    </div>
+                </section>
             </div>
         </main>
     </div>

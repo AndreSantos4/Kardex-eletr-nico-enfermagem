@@ -29,7 +29,10 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.PassagemTurno;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Role;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoTurno;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.LimitedFuncionarioDTO;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.Funcionario;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.TurnoMapper;
+import pt.ipcb.kardex.kardex_eletronico.model.mapper.UtilizadorMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.PassagemTurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.TurnoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.patient.PatientService;
@@ -44,6 +47,7 @@ public class ShiftServiceImpl implements ShiftService{
 
     private final TurnoRepository repository;
     private final TurnoMapper mapper;
+    private final UtilizadorMapper utilizadorMapper;
     private final WorkerService workerService;
     private final PatientService patientService;
     private final PassagemTurnoRepository passagemTurnoRepository;
@@ -202,10 +206,17 @@ public class ShiftServiceImpl implements ShiftService{
 
         return new PassagemTurnoDTO(
                 shiftChange.getId(),
-                mapper.toLimitedDTO(shift),
+                mapper.toDTO(shift),
                 mapper.toLimitedDTO(shiftChange.getProximoTurno()),
-                mapper.toIssuesDTOList(shift.getPendencias())
+                mapper.toIssuesDTOList(shift.getPendencias()),
+                _toLimitedFuncionario(shiftChange.getValidador()),
+                shiftChange.getDataValidacao()
         );
+    }
+
+    private LimitedFuncionarioDTO _toLimitedFuncionario(Funcionario f) {
+        if (f == null) return null;
+        return new LimitedFuncionarioDTO(f.getId(), utilizadorMapper.toDTO(f.getDados()));
     }
 
     @Override
@@ -236,7 +247,7 @@ public class ShiftServiceImpl implements ShiftService{
         return mapper.toDTO(shift);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public List<PendenciaDTO> getPendingIssues(Long shiftId) {
         var shift = repository.findById(shiftId)
@@ -315,9 +326,11 @@ public class ShiftServiceImpl implements ShiftService{
         var passagens = passagemTurnoRepository.findAll(filter.toSpecification(), pagination.toPageable());
         return passagens.stream().map(p -> new PassagemTurnoDTO(
                 p.getId(),
-                mapper.toLimitedDTO(p.getTurno()),
+                mapper.toDTO(p.getTurno()),
                 mapper.toLimitedDTO(p.getProximoTurno()),
-                mapper.toIssuesDTOList(p.getTurno().getPendencias())
+                mapper.toIssuesDTOList(p.getTurno().getPendencias()),
+                _toLimitedFuncionario(p.getValidador()),
+                p.getDataValidacao()
         )).toList();
     }
 

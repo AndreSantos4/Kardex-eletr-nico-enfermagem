@@ -37,8 +37,6 @@ public class IssuesServiceImpl implements IssuesService {
         return result;
     }
 
-    //TODO PENDENCIAS DUPLICADAS
-
     private void buildExamsIssues(AtribuicaoUtente assignment, Turno shift, ProcessoClinico process, ArrayList<Pendencia> result){
         process.getExames().forEach(e -> {
             if(e.dataPretendida.equals(shift.getInicio().toLocalDate()) ||
@@ -96,6 +94,22 @@ public class IssuesServiceImpl implements IssuesService {
         }
     }
 
+    private void buildMedicationsIssues(AtribuicaoUtente assignment, Turno shift, ProcessoClinico process, ArrayList<Pendencia> result) {
+        process.getPrescricoes().forEach(p -> {
+            if (p.getUltimaAdministracao() != null || LocalDateTime.now(clock).isAfter(p.getHoraAdministracaoPrevista())) {
+                if(!issueAlreadyExists(shift, TipoPendencia.MEDICACAO, p.getId(), assignment.getUtente())){
+                    var issue = new Pendencia();
+                    issue.setTipo(TipoPendencia.MEDICACAO);
+                    issue.setIdObjeto(p.getId());
+                    issue.setDescricao("Administracao de " + p.getMedicamento().getNome() + " pendente");
+                    issue.setTurno(shift);
+                    issue.setUtente(assignment.getUtente());
+                    result.add(issue);
+                }
+            }
+        });
+    }
+
     private boolean issueAlreadyExists(Turno shift, TipoPendencia tipo, Long idObjeto, Utente utente) {
         return shift.getPendencias().stream().anyMatch(p ->
                 p.getTipo() == tipo &&
@@ -104,33 +118,18 @@ public class IssuesServiceImpl implements IssuesService {
         );
     }
 
-    private void buildMedicationsIssues(AtribuicaoUtente assignment, Turno shift, ProcessoClinico process, ArrayList<Pendencia> result) {
-        process.getPrescricoes().forEach(p -> {
-            if (LocalDateTime.now(clock).isAfter(
-                    p.getUltimaAdministracao().plusHours(p.getFrequencia().getIntervaloMinHoras()))) {
-                var issue = new Pendencia();
-                issue.setTipo(TipoPendencia.MEDICACAO);
-                issue.setIdObjeto(p.getId());
-                issue.setDescricao("Administracao de " + p.getMedicamento().getNome() + " pendente");
-                issue.setTurno(shift);
-                issue.setUtente(assignment.getUtente());
-                result.add(issue);
-            }
-        });
-    }
-
     @Transactional
     @Override
-    public void executeDefinedIssue(Long objectId, TipoPendencia tipo) {
-        var pendencia = repository.findByIdObjetoAndTipo(objectId, tipo)
+    public void executeDefinedIssue(Long objectId, TipoPendencia tipo, Long shiftId) {
+        var pendencia = repository.findByIdObjetoAndTipoAndTurnoId(objectId, tipo, shiftId)
                 .orElseThrow(() -> new KardexException("Pendencia inexistente"));
         resolveIssue(pendencia);
     }
 
     @Transactional
     @Override
-    public void executeUndefinedIssue(Long patientId, TipoPendencia tipo) {
-        var pendencia = repository.findByUtenteIdAndTipo(patientId, tipo)
+    public void executeUndefinedIssue(Long patientId, TipoPendencia tipo, Long shiftId) {
+        var pendencia = repository.findByUtenteIdAndTipoAndTurnoId(patientId, tipo, shiftId)
                 .orElseThrow(() -> new KardexException("Pendencia inexistente"));
         resolveIssue(pendencia);
     }
@@ -139,11 +138,13 @@ public class IssuesServiceImpl implements IssuesService {
         if (pendencia.isExecutada()) {
             throw new KardexException("Pendencia ja executada");
         }
+
         var now = LocalDateTime.now(clock);
-        if (pendencia.getTurno().getInicio().isBefore(now) && pendencia.getTurno().getFim().isAfter(now)) {
+        if (pendencia.getTurno().getInicio().isAfter(now) || pendencia.getTurno().getFim().isBefore(now)) {
             repository.delete(pendencia);
             return;
         }
+
         pendencia.setExecutada(true);
     }
 }

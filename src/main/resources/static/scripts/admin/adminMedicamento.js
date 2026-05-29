@@ -290,15 +290,16 @@ function _renderizarPaginacao() {
 
     var totalPaginas = Math.max(1, Math.ceil(_medicamentosFiltrados.length / _itemsPorPagina));
     var div = document.createElement("div");
-    div.className = "paginacao";
+    div.className = "paginacao flex items-center justify-between gap-3 px-4 py-2.5 border-t border-primary/30 bg-white";
 
     var seletor = document.createElement("div");
-    seletor.className = "paginacao-tamanho";
+    seletor.className = "paginacao-tamanho flex items-center gap-2 text-primary text-xs font-semibold";
     var label  = document.createElement("label");
     label.htmlFor     = "items-por-pagina";
     label.textContent = "Medicamentos por pagina:";
     var select = document.createElement("select");
     select.id = "items-por-pagina";
+    select.className = "bg-white border border-primary rounded text-primary text-xs font-semibold px-2 py-1 cursor-pointer outline-none";
     for (var i = 0; i < OPCOES_ITEMS_POR_PAGINA.length; i++) {
         var n = OPCOES_ITEMS_POR_PAGINA[i];
         var opt = document.createElement("option");
@@ -318,7 +319,7 @@ function _renderizarPaginacao() {
     div.appendChild(seletor);
 
     var paginas = document.createElement("div");
-    paginas.className = "paginacao-paginas";
+    paginas.className = "paginacao-paginas flex items-center gap-1.5";
     for (var j = 0; j < totalPaginas; j++) {
         (function(idx) {
             var btn = document.createElement("button");
@@ -331,7 +332,9 @@ function _renderizarPaginacao() {
     div.appendChild(paginas);
 
     var tabela = document.querySelector(".lista-medicamentos-table");
-    tabela.parentNode.insertBefore(div, tabela.nextSibling);
+    if (tabela && tabela.parentNode) {
+        tabela.parentNode.insertBefore(div, tabela.nextSibling);
+    }
 }
 
 function _atualizarContador() {

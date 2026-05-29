@@ -13,8 +13,8 @@ public interface IssuesService {
 
     List<Pendencia> buildIssues(ProcessoClinico process, Turno shift, AtribuicaoUtente atribuicaoUtente);
 
-    public void executeDefinedIssue(Long objectId, TipoPendencia tipo);
+    void executeDefinedIssue(Long objectId, TipoPendencia tipo, Long shiftId);
 
     @Transactional
-    void executeUndefinedIssue(Long patientId, TipoPendencia tipo);
+    void executeUndefinedIssue(Long patientId, TipoPendencia tipo, Long shiftId);
 }

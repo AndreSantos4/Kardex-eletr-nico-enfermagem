@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,4 +66,13 @@ public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{
         @Param("estadoAtual") PrescriptionState estadoAtual,
         @Param("novoEstado") PrescriptionState novoEstado
     );
+
+    @Query("""
+        SELECT SUM(a.prescricao.dose.dose)
+        FROM AdministracaoMedicacao a
+        WHERE a.administrado = true
+        AND a.data >= :since
+        AND a.prescricao.medicamento.id = :medicamentoId
+    """)
+    BigDecimal sumDosesLast24h(@Param("since") LocalDateTime since, @Param("medicamentoId") Long medicamentoId);
 }

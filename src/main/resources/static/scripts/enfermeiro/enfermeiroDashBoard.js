@@ -2,10 +2,23 @@ const API_BASE = "http://localhost:8080/api/";
 const tipoMap = {
     SINAL_VITAL: "Sinal Vital",
     MEDICACAO: "Medicação",
+    CATETER: "Cateter",
+    EXAME: "Exame",
     ADMINISTRACAO_ATRASADA: "Administração Atrasada",
     PROCEDIMENTO: "Procedimento",
     OBSERVACAO: "Observação",
     AVALIACAO: "Avaliação",
+};
+
+const prioridadePorTipo = {
+    MEDICACAO: { texto: "Alta", cor: "hsl(0,98%,36%)" },
+    EXAME: { texto: "Alta", cor: "hsl(0,98%,36%)" },
+    CATETER: { texto: "Média", cor: "#ca8a04" },
+    SINAL_VITAL: { texto: "Média", cor: "#ca8a04" },
+    PROCEDIMENTO: { texto: "Média", cor: "#ca8a04" },
+    OBSERVACAO: { texto: "Baixa", cor: "#2e7d32" },
+    AVALIACAO: { texto: "Baixa", cor: "#2e7d32" },
+    ADMINISTRACAO_ATRASADA: { texto: "Alta", cor: "hsl(0,98%,36%)" },
 };
 
 function updateClock() {
@@ -59,14 +72,14 @@ function renderTabelaUtentes(utentes, pendencias = []) {
 
     document.getElementById("utentes-atribuidos").textContent = utentes.length;
 
-    // Mapa utenteId → primeira pendência MEDICACAO não executada
+    // Mapa utenteId → lista de pendências MEDICACAO não executadas
     const medicacaoPorUtente = new Map();
     (pendencias ?? []).forEach(p => {
         if (p.tipo !== "MEDICACAO" || p.executada) return;
         const uid = p.utente?.id;
-        if (uid != null && !medicacaoPorUtente.has(uid)) {
-            medicacaoPorUtente.set(uid, p);
-        }
+        if (uid == null) return;
+        if (!medicacaoPorUtente.has(uid)) medicacaoPorUtente.set(uid, []);
+        medicacaoPorUtente.get(uid).push(p);
     });
 
     tbody.innerHTML = utentes.map(u => {
@@ -101,17 +114,23 @@ function renderTabelaUtentes(utentes, pendencias = []) {
 }
 
 /**
- * Recebe uma pendência MEDICACAO (ou undefined) e devolve o HTML da coluna "Próx. Medicação".
- * O backend cria a pendência exactamente quando a hora prevista de administração já passou
- * (ver IssuesServiceImpl.buildMedicationsIssues), portanto se houver pendência → está atrasado.
- * A descricao é "Administracao de <nome do medicamento> pendente" — extraímos o nome.
+ * Recebe uma lista de pendências MEDICACAO (ou undefined) e devolve o HTML da coluna
+ * "Próx. Medicação". O backend cria a pendência exactamente quando a hora prevista de
+ * administração já passou (ver IssuesServiceImpl.buildMedicationsIssues), portanto se
+ * existir pendência → está atrasada. A descrição é "Administracao de <medicamento> pendente".
  */
-function renderProxMedicacao(pendMedicacao) {
-    if (!pendMedicacao) return "—";
-    const desc = pendMedicacao.descricao ?? "";
-    const m = /Administracao de (.+?) pendente/i.exec(desc);
-    const nomeMed = m ? m[1] : desc || "Medicação";
-    return `<span style="color:hsl(0,98%,36%);font-weight:700;">Atrasado</span><br><span style="font-size:0.8rem;">${nomeMed}</span>`;
+function renderProxMedicacao(pendsMedicacao) {
+    const lista = Array.isArray(pendsMedicacao) ? pendsMedicacao : (pendsMedicacao ? [pendsMedicacao] : []);
+    if (lista.length === 0) return "—";
+    return lista.slice(0, 3).map(p => {
+        const desc = p.descricao ?? "";
+        const m = /Administracao de (.+?) pendente/i.exec(desc);
+        const nomeMed = m ? m[1] : desc || "Medicação";
+        return `<div style="line-height:1.2;margin:2px 0;">
+            <div style="color:hsl(0,98%,36%);font-weight:700;font-size:0.8rem;">Atrasado</div>
+            <div style="font-size:0.8rem;">${nomeMed}</div>
+        </div>`;
+    }).join('<div style="height:4px;"></div>');
 }
 
 function renderAlertas(utentes) {
@@ -311,16 +330,15 @@ function renderPendencias(pendencias) {
 
     tbody.innerHTML = pendencias.map(p => {
         const utente = p.utente?.nome ?? "—";
-        console.log(p);
-        const prioridade = p.tipo;
-
+        const prio = prioridadePorTipo[p.tipo] ?? { texto: "Média", cor: "#e65100" };
+        const prioBadge = `<span style="display:inline-block;background:${prio.cor};color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">${prio.texto}</span>`;
 
         return `
             <tr>
                 <td>${utente}</td>
                 <td>${tipoMap[p.tipo] ?? p.tipo}</td>
                 <td>${p.descricao ?? "—"}</td>
-                <td>${prioridade}</td>
+                <td>${prioBadge}</td>
             </tr>
         `;
     }).join("");

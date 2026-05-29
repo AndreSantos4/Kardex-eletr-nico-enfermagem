@@ -61,7 +61,7 @@ async function carregarUtente(id) {
     // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vinha colado à hora (NaN).
     const diasInternado = _calcularDiasInternado(processo.dataEntrada) ?? 0;
     document.getElementById("page-subtitle").textContent =
-      `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "—"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
+      `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "Não atribuído"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
 
     // Info bar
     document.getElementById("nome-utente").innerHTML = dados.nome;
@@ -76,7 +76,7 @@ async function carregarUtente(id) {
     document.getElementById("processo").innerHTML = processo.id;
     document.getElementById("data-nascimento").innerHTML = dados.dataNascimento;
     document.getElementById("cama").innerHTML =
-      processo.cama == null ? "Sem cama" : processo.cama.id;
+      processo.cama == null ? "Não atribuído" : processo.cama.id;
     document.getElementById("estado").innerHTML = "Internado";
     document.getElementById("dias-internado").innerHTML = diasInternado;
 
@@ -99,31 +99,17 @@ async function carregarUtente(id) {
 
     // Sinais Vitais
     const sinaisVitais = processo.sinaisVitais;
-    const svGrid = document.querySelector(".sinais-vitais");
-    const svBar = document.querySelector(".sinais-vitais-bar");
-
     if (sinaisVitais && sinaisVitais.length > 0) {
-      const sv = sinaisVitais[sinaisVitais.length - 1];
-      document.getElementById("tensao-art").innerHTML =
-        `${sv.tensaoArteriaSistolica}/${sv.tensaoArteriaDistolica}`;
-      document.getElementById("freq-card").innerHTML = sv.frequenciaCardiaca;
-      document.getElementById("temperatura").innerHTML = sv.temperatura;
-      document.getElementById("spo2").innerHTML = sv.spo2;
-      document.getElementById("dor").innerHTML = sv.dor;
-      document.getElementById("glicemia").innerHTML = sv.glicemia;
+      atualizarSinaisVitaisUI(sinaisVitais[sinaisVitais.length - 1]);
     } else {
-      if (svGrid) svGrid.style.display = "none";
-      const msg = document.createElement("p");
-      msg.style.cssText =
-        "margin: auto; color: var(--primary); font-size: 13px; text-align: center; padding: 10px;";
-      msg.textContent = "Ainda não foram registados sinais vitais.";
-      if (svBar) svBar.appendChild(msg);
+      atualizarSinaisVitaisUI(null);
     }
 
     // Medicação Ativa — carregada via endpoint de prescrições
     carregarMedicacaoAtiva(processo.id);
     carregarExamesECateteres(processo.id);
     carregarOcorrencias(processo.id);
+    carregarPlanoDeHoje(processo.id);
   } catch (err) {
     console.error("[KardexUtente]", err);
     alert("Erro de ligação ao servidor.");
@@ -143,33 +129,23 @@ async function carregarMedicacaoAtiva(processId) {
       return;
     }
 
-    medicacaoContainer.innerHTML = "";
-    prescricoes.forEach((p) => {
+    medicacaoContainer.innerHTML = prescricoes.map((p) => {
       const nomeMed = p.medicamento?.nome ?? "—";
-      const dose = p.dose?.dose ?? "—";
-      const unidade = formatarUnidade(p.dose?.unidadeMedida ?? p.medicamento?.unidadeMedida);
+      const doseObj = p.dose;
+      const doseValor = doseObj && typeof doseObj === "object"
+        ? `${doseObj.dose ?? ""} ${formatarUnidade(doseObj.unidadeMedida)}`.trim()
+        : (doseObj ?? "—");
       const via = formatarVia(p.medicamento?.viaAdministracao);
       const motivo = p.motivo ?? "";
-      const badges = [];
-      if (p.sos)
-        badges.push(
-          `<span style="background:#b45309;color:#fff;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:700;margin-left:6px;">SOS</span>`,
-        );
-
-      const item = document.createElement("div");
-      item.style.cssText =
-        "width:100%; border-bottom:1px solid rgba(42,111,151,0.15); padding:6px 0;";
-      item.innerHTML = `
-        <div class="medicacao-left-cima">
-          <p><strong>${nomeMed}</strong></p>
-          <p>&nbsp;${dose}&nbsp;${unidade}</p>
-          ${badges.join("")}
-        </div>
-        <div class="medicacao-left-baixo">
-          <p>${via}${motivo ? ` — ${motivo}` : ""}</p>
+      const sosBadge = p.sos
+        ? `<span class="inline-block bg-[#b45309] text-white rounded-sm px-1.5 py-px text-[10px] font-bold ml-1.5 align-middle">SOS</span>`
+        : "";
+      return `
+        <div class="med-item">
+          <div class="med-nome">${escapeHtml(nomeMed)} ${sosBadge}</div>
+          <div class="med-info">${escapeHtml(doseValor)} · ${escapeHtml(via)}${motivo ? ` — ${escapeHtml(motivo)}` : ""}</div>
         </div>`;
-      medicacaoContainer.appendChild(item);
-    });
+    }).join("");
   } catch (err) {
     console.error("[Medicação Ativa]", err);
     medicacaoContainer.innerHTML = `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Erro ao carregar medicação.</p>`;
@@ -193,7 +169,7 @@ function mostrarNotas() {
 }
 
 function mostrarPlano() {
-  mostrarNotificacao({ titulo: "Não disponível", mensagem: "O plano de cuidados não está disponível para o médico.", tipo: "aviso" });
+  window.location.href = `medicoPlanoCuidados?id=${id}`;
 }
 
 function mostrarLista() {
@@ -272,22 +248,30 @@ async function carregarExamesECateteres(processId) {
 
     const partes = [];
     if (exames.length > 0) {
-      partes.push(`<div class="font-bold text-[12px] uppercase tracking-wider text-primary/70">Exames</div>`);
+      partes.push(`<div class="ec-section-title">Exames</div>`);
       partes.push(exames.slice(0, 3).map((e) => {
         const tipo = e.tipo ?? "Exame";
-        const data = e.dataPretendida ?? e.data ?? "—";
-        const medico = e.medico?.dados?.nome ?? e.medicoSolicitante?.dados?.nome ?? "—";
-        return `<div class="leading-tight"><div class="font-semibold">${escapeHtml(tipo)}</div><div class="text-xs text-primary/75">Pedido a ${escapeHtml(data)}${medico !== "—" ? " — " + escapeHtml(medico) : ""}</div></div>`;
+        const data = e.dataPretendida ?? e.data;
+        const medico = e.medico?.dados?.nome ?? e.medicoSolicitante?.dados?.nome;
+        const linhas = [];
+        if (data) linhas.push(`Pedido a ${escapeHtml(data)}`);
+        if (medico) linhas.push(escapeHtml(medico));
+        const sub = linhas.join(" — ");
+        return `<div class="ec-item"><div class="ec-nome">${escapeHtml(tipo)}</div>${sub ? `<div class="ec-info">${sub}</div>` : ""}</div>`;
       }).join(""));
     }
     if (cateteres.length > 0) {
-      partes.push(`<div class="font-bold text-[12px] uppercase tracking-wider text-primary/70 mt-1">Cateteres</div>`);
+      partes.push(`<div class="ec-section-title mt-2">Cateteres</div>`);
       partes.push(cateteres.slice(0, 3).map((c) => {
         const tipo = c.tipo ?? "Cateter";
-        const local = c.localInsercao ?? c.local ?? "—";
-        const calibre = c.calibre ?? "—";
-        const dataIns = c.dataInsercao ?? c.data ?? "—";
-        return `<div class="leading-tight"><div class="font-semibold">${escapeHtml(tipo)}${local !== "—" ? " — " + escapeHtml(local) : ""}</div><div class="text-xs text-primary/75">Inserido ${escapeHtml(dataIns)} · Calibre ${escapeHtml(calibre)}</div></div>`;
+        const local = c.localInsercao ?? c.local;
+        const calibre = c.calibre;
+        const dataIns = c.dataInsercao ?? c.data;
+        const linhas = [];
+        if (dataIns) linhas.push(`Inserido ${escapeHtml(dataIns)}`);
+        if (calibre) linhas.push(`Calibre ${escapeHtml(calibre)}`);
+        const sub = linhas.join(" · ");
+        return `<div class="ec-item"><div class="ec-nome">${escapeHtml(tipo)}${local ? " — " + escapeHtml(local) : ""}</div>${sub ? `<div class="ec-info">${sub}</div>` : ""}</div>`;
       }).join(""));
     }
 
@@ -332,7 +316,7 @@ async function carregarOcorrencias(processId) {
       const enf = i.enfermeiro?.dados?.nome ?? i.funcionario?.dados?.nome ?? "—";
       const tipo = i.tipo ?? "Incidente";
       const desc = i.descricao ?? "—";
-      return `<div class="leading-tight"><div><span class="font-semibold">${escapeHtml(hora)}</span> · ${escapeHtml(enf)}</div><div class="text-xs text-primary/75">${escapeHtml(tipo)} — ${escapeHtml(desc)}</div></div>`;
+      return `<div class="oc-item"><div class="oc-head">${escapeHtml(hora)} · ${escapeHtml(enf)}</div><div class="oc-info">${escapeHtml(tipo)} — ${escapeHtml(desc)}</div></div>`;
     }).join("");
   } catch (err) {
     console.error("[Ocorrências]", err);
@@ -345,6 +329,111 @@ function escapeHtml(s) {
   return String(s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+// ── Sinais Vitais ────────────────────────────────────────────────────────────
+
+function atualizarSinaisVitaisUI(sv) {
+  const tensao = document.getElementById("sv-tensao");
+  const freq = document.getElementById("sv-freq-card");
+  const temp = document.getElementById("sv-temperatura");
+  const spo2 = document.getElementById("sv-spo2");
+  const dor = document.getElementById("sv-dor");
+  const gli = document.getElementById("sv-glicemia");
+
+  if (!sv) {
+    [tensao, freq, temp, spo2, dor, gli].forEach((el) => {
+      if (el) el.innerHTML = "—";
+    });
+    return;
+  }
+  if (tensao) tensao.innerHTML = `${sv.tensaoArteriaSistolica}/${sv.tensaoArteriaDistolica}<br><small style="font-size:11px">mmHg</small>`;
+  if (freq) freq.innerHTML = `${sv.frequenciaCardiaca}<br><small style="font-size:11px">bpm</small>`;
+  if (temp) temp.innerHTML = `${sv.temperatura}<br><small style="font-size:11px">°C</small>`;
+  if (spo2) spo2.innerHTML = `${sv.spo2}<br><small style="font-size:11px">%</small>`;
+  if (dor) dor.textContent = sv.dor;
+  if (gli) gli.innerHTML = `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
+}
+
+// ── Plano de Cuidados Hoje ───────────────────────────────────────────────────
+
+async function carregarPlanoDeHoje(processId) {
+  const body = document.getElementById("plano-cuidados-body");
+  if (!body) return;
+
+  const frequenciaLabel = {
+    CONTINUA: "Contínua", CONTINUO: "Contínua", DIARIA: "Diária",
+    BD: "2x/dia", TID: "3x/dia", QID: "4x/dia", SOS: "SOS", SEMANAL: "Semanal",
+    UMA_VEZ: "Uma vez", DUAS_VEZES: "Duas vezes", TRES_VEZES: "Três vezes",
+    DIA_1: "1x/dia", DIA_2: "2x/dia", DIA_3: "3x/dia", DIA_4: "4x/dia", DIA_5: "5x/dia", DIA_6: "6x/dia",
+    H_2: "De 2 em 2 horas", H_4: "De 4 em 4 horas",
+    "1_DIA": "1x/dia", "2_DIA": "2x/dia", "3_DIA": "3x/dia", "4_DIA": "4x/dia", "6_DIA": "6x/dia",
+    "2H": "De 2 em 2 horas", "4H": "De 4 em 4 horas",
+  };
+  const intervencaoLabel = {
+    VIGILANCIA_CONTINUA: "Vigilância contínua", VIGILANCIA_1_1: "Vigilância 1:1",
+    ADMINISTRACAO_MEDICACAO: "Administração de Medicação",
+    AVALIACAO_SINAIS_VITAIS: "Avaliação de Sinais Vitais",
+    CUIDADOS_HIGIENE: "Cuidados de Higiene",
+    CONTENCAO_VERBAL: "Contenção verbal", APOIO_EMOCIONAL: "Apoio emocional",
+    RELACAO_TERAPEUTICA: "Estabelecer relação terapêutica",
+    ATIVIDADES_ESTRUTURADAS: "Promover atividades estruturadas",
+    EDUCAR_MEDICACAO: "Educar sobre medicação",
+    MONITORIZAR_VITAIS: "Monitorizar sinais vitais",
+    AVALIAR_HUMOR_RISCO: "Avaliar humor / risco",
+    MONITORIZAR_ALIMENTACAO: "Monitorizar ingestão alimentar",
+    HIGIENE_SONO: "Promover higiene do sono",
+    OUTRO: "Outro",
+  };
+  const prioridadeConfig = {
+    CRITICA: { cor: "#c62828", texto: "Crítica" },
+    ALTA: { cor: "rgb(220,49,26)", texto: "Alta" },
+    MEDIA: { cor: "#e65100", texto: "Média" },
+    BAIXA: { cor: "#2e7d32", texto: "Baixa" },
+  };
+  const humanize = (s) => {
+    if (!s) return "—";
+    const lower = String(s).toLowerCase().replace(/_/g, " ");
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  };
+
+  try {
+    const resp = await fetch(`/api/processes/${processId}/plan`);
+    if (!resp.ok) {
+      body.innerHTML = `<p class="m-0 italic text-primary/55 text-[13px]">Sem plano de cuidados ativo.</p>`;
+      return;
+    }
+    const json = await resp.json();
+    const intervencoes = json.data?.intervencoes ?? [];
+    if (intervencoes.length === 0) {
+      body.innerHTML = `<p class="m-0 italic text-primary/55 text-[13px]">Sem intervenções para hoje.</p>`;
+      return;
+    }
+
+    body.innerHTML = intervencoes.map((inv) => {
+      const feita = inv.funcionarioExecutou != null;
+      const prio = prioridadeConfig[inv.prioridade] ?? { cor: "#666", texto: inv.prioridade ?? "—" };
+      const freq = frequenciaLabel[inv.frequencia] ?? inv.frequencia ?? "—";
+      const nome = intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
+      const textoRiscado = feita ? "line-through opacity-55" : "";
+      return `
+        <div class="flex items-start justify-between gap-3 px-2.5 py-2 border-b border-primary/15 last:border-0 text-[13px]">
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold text-primary ${textoRiscado}">
+              ${escapeHtml(nome)}
+              <span class="inline-block ml-1.5 text-white text-[10px] font-bold px-1.5 py-px rounded-sm align-middle" style="background:${prio.cor}">${escapeHtml(prio.texto)}</span>
+            </div>
+            <div class="text-primary/70 text-[12px] mt-0.5">
+              ${escapeHtml(freq)}${inv.horarioPrevisto ? ` · ${escapeHtml(inv.horarioPrevisto)}` : ""}${inv.objetivo ? ` · Obj: ${escapeHtml(inv.objetivo)}` : ""}
+            </div>
+          </div>
+          <input type="checkbox" disabled ${feita ? "checked" : ""} title="Apenas leitura" class="mt-1 w-4 h-4 shrink-0 cursor-not-allowed accent-primary" />
+        </div>`;
+    }).join("");
+  } catch (err) {
+    console.error("[Plano de Cuidados]", err);
+    body.innerHTML = `<p class="m-0 italic text-primary/55 text-[13px]">Erro ao carregar plano de cuidados.</p>`;
+  }
 }
 
 /**

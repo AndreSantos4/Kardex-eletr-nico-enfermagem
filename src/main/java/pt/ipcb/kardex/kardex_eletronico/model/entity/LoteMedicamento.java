@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class LoteMedicamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
 
     @JoinColumn(name = "id_medicamento", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

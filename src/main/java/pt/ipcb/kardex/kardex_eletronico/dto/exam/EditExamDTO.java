@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public record EditExamDTO(
         @JsonProperty("urgencia") Urgencia urgencia,
-        @JsonProperty("dataPretendida") @JsonFormat(pattern = "dd/MM/yyy") LocalDate dataPrentendida,
+        @JsonProperty("dataPretendida") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataPretendida,
         @JsonProperty("indicacao") String indicacaoClinica
 ) {
 }

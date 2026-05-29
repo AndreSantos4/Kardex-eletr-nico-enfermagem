@@ -66,21 +66,8 @@ function renderizarTabela() {
     if (!u.processo) return;
 
     const estado = u.processo.alta ? "Alta" : "Internado";
-    const cama = u.processo.cama?.id ?? "—";
-    const dataEntrada = (u.processo.dataEntrada ?? "").substring(0, 10) || "—";
-
-    const alertasBadges = [];
-    const FLAG_LABELS = {
-      RISCO_FUGA: "Risco Fuga",
-      RISCO_AGRESSIVIDADE: "Risco Agressividade",
-      RISCO_QUEDA: "Risco Queda",
-      RISCO_AUTOMUTILACAO: "Risco Automutilação",
-    };
-    (u.flags ?? []).forEach(f => {
-      if (FLAG_LABELS[f]) alertasBadges.push(FLAG_LABELS[f]);
-    });
-    if ((u.alergias ?? []).length > 0) alertasBadges.push("Alergias");
-    const alertas = alertasBadges.join(" · ") || "—";
+    const cama = u.processo.cama?.id ?? "Nenhuma";
+    const alertas = renderAlertas(u);
 
     tbody.innerHTML += `
     <tr>
@@ -89,7 +76,7 @@ function renderizarTabela() {
       <td>${cama}</td>
       <td>${u.processo.diagnosticoPrincipal ?? "—"}</td>
       <td>${u.processo.medicoResponsavel?.dados?.nome ?? "—"}</td>
-      <td>${dataEntrada}</td>
+      <td>${(u.processo.dataEntrada ?? "").split(":")[0]}</td>
       <td>${estado}</td>
       <td>${alertas}</td>
       <td>
@@ -100,6 +87,22 @@ function renderizarTabela() {
       </td>
     </tr>`;
   });
+}
+
+function renderAlertas(u) {
+  const labels = [];
+  const flags = u.flags ?? [];
+  flags.forEach((f) => {
+    const texto = String(f).replace(/^RISCO_/, "").toLowerCase();
+    labels.push(texto.charAt(0).toUpperCase() + texto.slice(1));
+  });
+  const alergias = u.alergias ?? [];
+  if (alergias.length > 0) {
+    labels.push("Alergias");
+  }
+  return labels.length === 0
+    ? `<span class="text-primary/50 text-xs">—</span>`
+    : `<span class="text-alertas text-xs font-semibold">${labels.join(", ")}</span>`;
 }
 
 function renderizarPaginacao() {

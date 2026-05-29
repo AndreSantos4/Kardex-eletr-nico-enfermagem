@@ -48,7 +48,7 @@
 					<h4 class="m-0 mb-0.5 text-base font-bold tracking-[0.02em]">Validar Passagem de Turno</h4>
 					<p class="m-0 text-xs text-secondary font-medium"><span id="turno-origem"></span> - <span id="turno-destino"></span> - Enf. <span id="enf-origem"></span></p>
 				</div>
-				<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-5 py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors">Painel</button>
+				<button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-wider px-5 py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="location.href='enfermeiroChefeDashboard'">Home</button>
 			</div>
 
 			<div class="grid grid-cols-3 gap-[14px] max-[1100px]:grid-cols-1">
@@ -76,7 +76,15 @@
 				<div class="bg-white text-bg-dark px-[18px] py-3 text-sm font-bold border-b-[1.5px] border-secondary">Estado dos Utentes</div>
 				<div class="bg-white">
 					<table class="w-full border-collapse font-sans text-[13px] text-primary [&_thead_tr]:bg-white [&_thead_tr]:border-b [&_thead_tr]:border-secondary [&_thead_th]:text-left [&_thead_th]:px-[18px] [&_thead_th]:py-2.5 [&_thead_th]:font-bold [&_thead_th]:text-xs [&_thead_th]:tracking-[0.05em] [&_thead_th]:text-bg-dark [&_thead_th]:normal-case [&_tbody_tr]:border-b [&_tbody_tr]:border-[#f0f4f8] [&_tbody_tr]:transition-colors [&_tbody_tr:last-child]:border-0 [&_tbody_tr:hover]:bg-secondary/15 [&_tbody_td]:px-[18px] [&_tbody_td]:py-2.5 [&_tbody_td]:text-primary [&_tbody_td]:font-semibold [&_tbody_td]:text-[13px] [&_tbody_td]:align-middle [&_.ok]:!text-ok [&_.ok]:font-bold [&_.ok]:text-[15px]">
-						<thead></thead>
+						<thead>
+							<tr>
+								<th>Utente</th>
+								<th>Medicação</th>
+								<th>SV</th>
+								<th>Ocorrências</th>
+								<th>SOS</th>
+							</tr>
+						</thead>
 						<tbody id="estado-utentes-tbody"></tbody>
 					</table>
 				</div>

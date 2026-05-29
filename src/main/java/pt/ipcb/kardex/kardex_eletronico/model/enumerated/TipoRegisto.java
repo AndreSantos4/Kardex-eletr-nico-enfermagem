@@ -5,7 +5,8 @@ public enum TipoRegisto {
     PATIENT_ACCEPTANCE("Utente admitido"),
     PATIENT_DISCHARGE("Utente liberado"),
     USER_CREATION("Criacao de utilizador"),
-    PASSWORD_RESET_REQUEST("Pedido de alteracao de password");
+    PASSWORD_RESET_REQUEST("Pedido de alteracao de password"),
+    ADMINISTRATION("Administracao de medicacao");
     
     public final String nome;
     
