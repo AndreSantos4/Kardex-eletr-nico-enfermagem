@@ -659,7 +659,7 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
 
   contencoes.forEach((c) => {
     const nomeMed = c.medicamento?.nome ?? "Contenção Química";
-    const via = c.medicamento?.viaAdministracao ?? "—";
+    const via = c.via ?? c.medicamento?.viaAdministracao ?? "—";
 
     const dose = c.dose;
     const doseNum = parseFloat(dose?.dose ?? 0);
@@ -1016,6 +1016,47 @@ function atualizarDosagemContencao() {
       selectDose.appendChild(opt);
     });
   }
+  esconderAvisoContencao();
+}
+
+function esconderAvisoContencao() {
+  const aviso = document.getElementById("aviso-dose-contencao");
+  if (aviso) { aviso.classList.add("hidden"); aviso.classList.remove("flex"); }
+}
+
+function mostrarAvisoContencao(texto) {
+  const aviso = document.getElementById("aviso-dose-contencao");
+  const txt = document.getElementById("aviso-dose-contencao-texto");
+  if (txt) txt.textContent = texto;
+  if (aviso) { aviso.classList.remove("hidden"); aviso.classList.add("flex"); }
+}
+
+// Devolve true se a dose for válida, false se for excessiva (já mostra o aviso).
+function validarDoseContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+  if (!selectMed || !selectDose) return true;
+
+  const idMed = parseInt(selectMed.value);
+  const idDose = parseInt(selectDose.value);
+  if (!idMed || !idDose) { esconderAvisoContencao(); return true; }
+
+  const med = _medicamentosContencao.find((m) => m.id === idMed);
+  if (!med?.dosagemMaxDiaria) { esconderAvisoContencao(); return true; }
+
+  const dose = med.dosagens?.find((d) => d.id === idDose);
+  if (!dose) { esconderAvisoContencao(); return true; }
+
+  const maxDose = med.dosagemMaxDiaria.dose;
+  const maxUnidade = med.dosagemMaxDiaria.unidadeMedida;
+  if (dose.unidadeMedida === maxUnidade && dose.dose > maxDose) {
+    mostrarAvisoContencao(
+      `Dose excessiva — ${dose.dose} ${formatarUnidade(dose.unidadeMedida)} excede a dose máxima diária (${maxDose} ${formatarUnidade(maxUnidade)}).`,
+    );
+    return false;
+  }
+  esconderAvisoContencao();
+  return true;
 }
 
 function fecharPopupRegistarContencao() {
@@ -1040,6 +1081,15 @@ async function submeterRegistarContencao(event) {
       titulo: "Formulário incompleto",
       mensagem: "Preenche todos os campos obrigatórios.",
       tipo: "aviso",
+    });
+    return;
+  }
+
+  if (!validarDoseContencao()) {
+    mostrarNotificacao({
+      titulo: "Dose excessiva",
+      mensagem: "A dose selecionada excede a dose máxima diária. Não é possível registar.",
+      tipo: "erro",
     });
     return;
   }
@@ -1730,7 +1780,73 @@ async function abrirPopUpAdministrarSOS() {
   );
   const inputDataHora = document.getElementById("data-hora-sos");
   if (inputDataHora) inputDataHora.value = agora();
+  popularPrescricoesSOS();
   abrirPopUp(".popup-sos-overlay");
+}
+
+function popularPrescricoesSOS() {
+  const select = document.getElementById("prescricao-sos");
+  if (!select) return;
+
+  const prescricoesSOS = (processoData?.prescricoes ?? []).filter(
+    (p) => p.sos === true && p.estado === "ATIVA",
+  );
+
+  select.innerHTML = "";
+  if (prescricoesSOS.length === 0) {
+    select.innerHTML =
+      '<option value="" disabled selected>Sem prescrições SOS ativas</option>';
+    atualizarPrescricaoSOS();
+    return;
+  }
+
+  const optHeader = document.createElement("option");
+  optHeader.value = "";
+  optHeader.disabled = true;
+  optHeader.selected = true;
+  optHeader.textContent = "Selecione a prescrição";
+  select.appendChild(optHeader);
+
+  prescricoesSOS.forEach((p) => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    const nome = p.medicamento?.nome ?? "Medicação";
+    const dose = p.dose
+      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
+      : "";
+    opt.textContent = `${nome}${dose ? " — " + dose : ""}`;
+    select.appendChild(opt);
+  });
+
+  atualizarPrescricaoSOS();
+}
+
+function _getPrescricaoSOSSelecionada() {
+  const id = parseInt(document.getElementById("prescricao-sos")?.value);
+  if (!id) return null;
+  return (processoData?.prescricoes ?? []).find((p) => p.id === id) ?? null;
+}
+
+function atualizarPrescricaoSOS() {
+  const presc = _getPrescricaoSOSSelecionada();
+  const elNome = document.getElementById("sos-prescricao-medicamento");
+  const elDet = document.getElementById("sos-prescricao-detalhe");
+
+  if (!presc) {
+    if (elNome) elNome.textContent = "Selecionar prescrição SOS";
+    if (elDet) elDet.textContent = "Dose máx. e intervalo mínimo definidos pela prescrição.";
+  } else {
+    const nome = presc.medicamento?.nome ?? "Medicação";
+    const max = presc.medicamento?.dosagemMaxDiaria;
+    if (elNome) elNome.textContent = nome;
+    if (elDet) {
+      elDet.textContent = max
+        ? `Dose máx. diária: ${max.dose} ${formatarUnidade(max.unidadeMedida)}`
+        : "Sem dose máxima registada.";
+    }
+  }
+  esconderAvisoSOS();
+  validarDoseSOS();
 }
 
 function fecharPopupAdministrarSOS() {
@@ -1740,19 +1856,134 @@ function fecharPopupAdministrarSOS() {
   popup.querySelector("form")?.reset();
 }
 
+// Limites máximos razoáveis por unidade para uma administração SOS (one-shot).
+// Quando a seleção de prescrição SOS estiver wired-up, comparar contra a prescrição.
+const LIMITES_DOSE_SOS = {
+  mg: 1000,
+  g: 5,
+  mcg: 1000,
+  ml: 50,
+  ui: 100000,
+};
+
+function _parseDoseSOS(texto) {
+  const m = /^(\d+(?:[.,]\d+)?)\s*(mg|mcg|g|ml|ui)?$/i.exec((texto ?? "").trim());
+  if (!m) return null;
+  return {
+    valor: parseFloat(m[1].replace(",", ".")),
+    unidade: (m[2] ?? "mg").toLowerCase(),
+  };
+}
+
+function esconderAvisoSOS() {
+  const aviso = document.getElementById("aviso-dose-sos");
+  if (aviso) { aviso.classList.add("hidden"); aviso.classList.remove("flex"); }
+}
+
+function mostrarAvisoSOS(texto) {
+  const aviso = document.getElementById("aviso-dose-sos");
+  const txt = document.getElementById("aviso-dose-sos-texto");
+  if (txt) txt.textContent = texto;
+  if (aviso) { aviso.classList.remove("hidden"); aviso.classList.add("flex"); }
+}
+
+// Converte um valor para a unidade abreviada (mg/g/mcg/ml/ui) numa escala comum em mg
+// para podermos comparar mg vs g vs mcg de forma robusta.
+function _doseEmMg(valor, unidadeAbrev) {
+  const u = String(unidadeAbrev || "").toLowerCase();
+  if (u === "g") return valor * 1000;
+  if (u === "mg") return valor;
+  if (u === "mcg") return valor / 1000;
+  return valor; // ml/ui não convertíveis — só comparáveis em si mesmas
+}
+
+// Devolve true se a dose for válida, false se for inválida ou excessiva (mostra o aviso).
+function validarDoseSOS() {
+  const valor = document.getElementById("dose-sos")?.value.trim();
+  if (!valor) { esconderAvisoSOS(); return true; }
+
+  const parsed = _parseDoseSOS(valor);
+  if (!parsed) {
+    mostrarAvisoSOS("Formato inválido — use por exemplo \"5mg\", \"0.5g\", \"100mcg\".");
+    return false;
+  }
+
+  const presc = _getPrescricaoSOSSelecionada();
+  const max = presc?.medicamento?.dosagemMaxDiaria;
+  const dosePresc = presc?.dose;
+
+  // 1) Limite máximo diário do medicamento (se existir): converte tudo para mg.
+  if (max?.dose != null) {
+    const maxAbrev = formatarUnidade(max.unidadeMedida).toLowerCase();
+    const ehMassa = ["mg", "g", "mcg"].includes(parsed.unidade) && ["mg", "g", "mcg"].includes(maxAbrev);
+    const mesmaUnidade = parsed.unidade === maxAbrev;
+    if (ehMassa || mesmaUnidade) {
+      const parsedMg = ehMassa ? _doseEmMg(parsed.valor, parsed.unidade) : parsed.valor;
+      const maxMg = ehMassa ? _doseEmMg(max.dose, maxAbrev) : max.dose;
+      if (parsedMg > maxMg) {
+        mostrarAvisoSOS(
+          `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose máxima diária da prescrição (${max.dose} ${formatarUnidade(max.unidadeMedida)}).`,
+        );
+        return false;
+      }
+    }
+  }
+
+  // 2) Sem máximo configurado mas prescrição tem dose por administração: usar essa como referência.
+  if (max?.dose == null && dosePresc?.dose != null) {
+    const doseAbrev = formatarUnidade(dosePresc.unidadeMedida).toLowerCase();
+    const ehMassa = ["mg", "g", "mcg"].includes(parsed.unidade) && ["mg", "g", "mcg"].includes(doseAbrev);
+    const mesmaUnidade = parsed.unidade === doseAbrev;
+    if (ehMassa || mesmaUnidade) {
+      const parsedMg = ehMassa ? _doseEmMg(parsed.valor, parsed.unidade) : parsed.valor;
+      const doseMg = ehMassa ? _doseEmMg(dosePresc.dose, doseAbrev) : dosePresc.dose;
+      if (parsedMg > doseMg) {
+        mostrarAvisoSOS(
+          `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose prescrita por administração (${dosePresc.dose} ${formatarUnidade(dosePresc.unidadeMedida)}).`,
+        );
+        return false;
+      }
+    }
+  }
+
+  // 3) Sem prescrição ou sem dados: limite heurístico por unidade.
+  if (!presc) {
+    const limite = LIMITES_DOSE_SOS[parsed.unidade];
+    if (limite && parsed.valor > limite) {
+      mostrarAvisoSOS(
+        `Dose excessiva — ${parsed.valor}${parsed.unidade} excede o máximo seguro (${limite}${parsed.unidade}). Verifique a prescrição.`,
+      );
+      return false;
+    }
+  }
+
+  esconderAvisoSOS();
+  return true;
+}
+
 function submeterAdministrarSOS(event) {
   if (event) event.preventDefault();
 
+  const prescricaoId = document.getElementById("prescricao-sos")?.value;
   const condicao = document.getElementById("condicao-sos")?.value;
   const descricao = document.getElementById("descricao-sos")?.value.trim();
   const dataHora = document.getElementById("data-hora-sos")?.value;
   const dose = document.getElementById("dose-sos")?.value.trim();
 
-  if (!condicao || !descricao || !dataHora || !dose) {
+  if (!prescricaoId || !condicao || !descricao || !dataHora || !dose) {
     mostrarNotificacao({
       titulo: "Formulário incompleto",
       mensagem: "Preenche todos os campos obrigatórios.",
       tipo: "aviso",
+    });
+    return;
+  }
+
+  if (!validarDoseSOS()) {
+    mostrarNotificacao({
+      titulo: "Dose excessiva",
+      mensagem: "A dose introduzida excede o limite seguro. Não é possível registar.",
+      tipo: "erro",
     });
     return;
   }
