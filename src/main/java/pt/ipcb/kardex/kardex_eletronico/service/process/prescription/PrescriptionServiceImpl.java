@@ -165,6 +165,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return null;
     }
 
+    
     private boolean validateMaxDose(Prescricao prescription) {
         var dose = prescription.getDose().getDose();
         var medication = prescription.getMedicamento();
@@ -178,7 +179,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         var dosesToday = raw != null ? raw : BigDecimal.ZERO;
         var tempDoses = dosesToday.add(dose);
 
-        return tempDoses.compareTo(maxDose) <= 0;
+        return tempDoses.compareTo(maxDose) > 0;
     }
 
     @Transactional(readOnly = true)
