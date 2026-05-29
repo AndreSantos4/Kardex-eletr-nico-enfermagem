@@ -236,7 +236,7 @@ public class ShiftServiceImpl implements ShiftService{
         return mapper.toDTO(shift);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public List<PendenciaDTO> getPendingIssues(Long shiftId) {
         var shift = repository.findById(shiftId)
