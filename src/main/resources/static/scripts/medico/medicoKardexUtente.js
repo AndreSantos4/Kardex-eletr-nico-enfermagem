@@ -1,5 +1,10 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
+let processoId = null;
+
+function _authHeaders() {
+  return { Authorization: `Bearer ${localStorage.getItem("token")}` };
+}
 
 // ── Utilitários ───────────────────────────────────────────────────────────────
 
@@ -48,12 +53,16 @@ function formatarVia(via) {
 
 async function carregarUtente(id) {
   try {
-    const resp = await fetch(`/api/patients/${id}`);
+    const resp = await fetch(`http://localhost:8080/api/patients/${id}`, {
+      headers: _authHeaders(),
+    });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const json = await resp.json();
 
     const dados = json.data.dados;
     const processo = dados.processo;
+    processoId = processo.id;
+    const prescricoes = processo.prescricoes ?? [];
 
     // Page header title + subtitle
     document.getElementById("page-title").textContent =
@@ -106,7 +115,7 @@ async function carregarUtente(id) {
     }
 
     // Medicação Ativa — carregada via endpoint de prescrições
-    carregarMedicacaoAtiva(processo.id);
+    await carregarMedicacaoAtiva(prescricoes);
     carregarExamesECateteres(processo.id);
     carregarOcorrencias(processo.id);
     carregarPlanoDeHoje(processo.id);
@@ -116,40 +125,70 @@ async function carregarUtente(id) {
   }
 }
 
-async function carregarMedicacaoAtiva(processId) {
+async function carregarMedicacaoAtiva(prescricoes) {
   const medicacaoContainer = document.querySelector(".medicacao");
+  const ativas = prescricoes.filter((p) => p.estado === "ATIVA");
+
+  let contencoes = [];
   try {
-    const resp = await fetch(`/api/processes/${processId}/prescriptions`);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const json = await resp.json();
-    const prescricoes = (json.data ?? []).filter((p) => p.estado == "ATIVA");
+    const res = await fetch(
+      `http://localhost:8080/api/processes/${processoId}/containments`,
+      { headers: _authHeaders() },
+    );
+    const json = await res.json();
+    contencoes = json.success ? (json.data ?? []) : [];
+  } catch (err) {
+    console.error("[Contenções]", err);
+  }
 
-    if (prescricoes.length === 0) {
-      medicacaoContainer.innerHTML = `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Sem medicação ativa registada.</p>`;
-      return;
-    }
+  if (ativas.length === 0 && contencoes.length === 0) {
+    medicacaoContainer.innerHTML = `<p class="m-0 italic text-primary/55">Sem medicação ativa registada.</p>`;
+    return;
+  }
 
-    medicacaoContainer.innerHTML = prescricoes.map((p) => {
+  const htmlAtivas = ativas
+    .map((p) => {
       const nomeMed = p.medicamento?.nome ?? "—";
       const doseObj = p.dose;
-      const doseValor = doseObj && typeof doseObj === "object"
-        ? `${doseObj.dose ?? ""} ${formatarUnidade(doseObj.unidadeMedida)}`.trim()
-        : (doseObj ?? "—");
+      const doseValor =
+        doseObj && typeof doseObj === "object"
+          ? `${doseObj.dose ?? ""} ${formatarUnidade(doseObj.unidadeMedida)}`.trim()
+          : (doseObj ?? "—");
       const via = formatarVia(p.medicamento?.viaAdministracao);
       const motivo = p.motivo ?? "";
       const sosBadge = p.sos
         ? `<span class="inline-block bg-[#b45309] text-white rounded-sm px-1.5 py-px text-[10px] font-bold ml-1.5 align-middle">SOS</span>`
         : "";
       return `
-        <div class="med-item">
-          <div class="med-nome">${escapeHtml(nomeMed)} ${sosBadge}</div>
-          <div class="med-info">${escapeHtml(doseValor)} · ${escapeHtml(via)}${motivo ? ` — ${escapeHtml(motivo)}` : ""}</div>
-        </div>`;
-    }).join("");
-  } catch (err) {
-    console.error("[Medicação Ativa]", err);
-    medicacaoContainer.innerHTML = `<p style="margin:auto; color:var(--primary); font-size:13px; text-align:center; padding:10px;">Erro ao carregar medicação.</p>`;
-  }
+      <div class="med-item">
+        <div class="med-nome">${escapeHtml(nomeMed)} ${sosBadge}</div>
+        <div class="med-info">${escapeHtml(doseValor)} · ${escapeHtml(via)}${motivo ? ` — ${escapeHtml(motivo)}` : ""}</div>
+      </div>`;
+    })
+    .join("");
+
+  const htmlContencoes = contencoes
+    .map((c) => {
+      const nomeMed = c.medicamento?.nome ?? "Contenção Química";
+      const via = formatarVia(c.medicamento?.viaAdministracao ?? c.via);
+      const dose = c.dose;
+      const doseNum = parseFloat(dose?.dose ?? 0);
+      const doseVal = dose
+        ? `${doseNum % 1 === 0 ? doseNum : doseNum.toFixed(3).replace(/\.?0+$/, "")} ${formatarUnidade(dose.unidadeMedida)}`
+        : "—";
+      const hora = (c.data ?? "").split(":").slice(1, 3).join(":");
+      return `
+      <div class="med-item">
+        <div class="med-nome">
+          ${escapeHtml(nomeMed)}
+          <span class="inline-block ml-1.5 rounded-sm px-1.5 py-px text-[10px] font-bold align-middle" style="background:rgb(120,40,160);color:#fff">CONTENÇÃO</span>
+        </div>
+        <div class="med-info">${escapeHtml(doseVal)} · ${escapeHtml(via)} · Duração: ${escapeHtml(c.duracao ?? "—")}${hora ? ` · Às ${hora}` : ""}</div>
+      </div>`;
+    })
+    .join("");
+
+  medicacaoContainer.innerHTML = htmlAtivas + htmlContencoes;
 }
 
 // ── Alta ──────────────────────────────────────────────────────────────────────
@@ -203,6 +242,74 @@ document.addEventListener("click", () => {
   document.getElementById("historico-menu")?.classList.remove("open");
 });
 
+const TIPO_LABEL_REGISTO = {
+  EXAME: "Exame",
+  MEDICACAO: "Medicação",
+  SINAL_VITAL: "Sinais Vitais",
+  INCIDENTE: "Incidente",
+  CATETER: "Cateter",
+  NOTA: "Nota",
+  CONTENCAO: "Contenção",
+  PRESCRICAO: "Prescrição",
+  ALTA: "Alta",
+  INTERNAMENTO: "Internamento",
+  PLANO_CUIDADOS: "Plano de Cuidados",
+  INTERVENCAO: "Intervenção",
+};
+
+function _formatarTimestamp(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return ts;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+async function carregarRegistosClinicosTabela() {
+  const tbody = document.getElementById("registos-tbody");
+  if (!tbody || !processoId) return;
+
+  tbody.innerHTML = `<tr><td colspan="3" class="px-3 py-2 italic text-primary/55">A carregar…</td></tr>`;
+
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/records/clinic/${processoId}`,
+      {
+        headers: _authHeaders(),
+      },
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const registos = json.data ?? [];
+
+    if (registos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" class="px-3 py-2 italic text-primary/55">Sem registos clínicos.</td></tr>`;
+      return;
+    }
+
+    const ordenados = registos
+      .slice()
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    tbody.innerHTML = ordenados
+      .slice(0, 10)
+      .map((r) => {
+        const tipo = TIPO_LABEL_REGISTO[r.tipo] ?? r.tipo ?? "—";
+        const valor = r.detalhes ?? "—";
+        const hora = _formatarTimestamp(r.timestamp);
+        return `<tr>
+        <td class="px-3 py-1.5">${escapeHtml(tipo)}</td>
+        <td class="px-3 py-1.5">${escapeHtml(valor)}</td>
+        <td class="px-3 py-1.5">${escapeHtml(hora)}</td>
+      </tr>`;
+      })
+      .join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="3" class="px-3 py-2 italic text-primary/55">Erro ao carregar registos.</td></tr>`;
+    console.error("Erro em carregarRegistosClinicosTabela:", err);
+  }
+}
+
 // ── Inicialização ─────────────────────────────────────────────────────────────
 
 async function iniciar() {
@@ -218,7 +325,8 @@ async function iniciar() {
   } catch (err) {
     console.error("[Popup Alta]", err);
   }
-  carregarUtente(id);
+  await carregarUtente(id);
+  carregarRegistosClinicosTabela();
 }
 
 iniciar();
@@ -230,8 +338,12 @@ async function carregarExamesECateteres(processId) {
   if (!container) return;
   try {
     const [resEx, resCat] = await Promise.allSettled([
-      fetch(`/api/processes/${processId}/exams`),
-      fetch(`/api/processes/${processId}/cateteres`),
+      fetch(`http://localhost:8080/api/processes/${processId}/exams`, {
+        headers: _authHeaders(),
+      }),
+      fetch(`http://localhost:8080/api/processes/${processId}/cateteres`, {
+        headers: _authHeaders(),
+      }),
     ]);
 
     let exames = [];
@@ -249,30 +361,41 @@ async function carregarExamesECateteres(processId) {
     const partes = [];
     if (exames.length > 0) {
       partes.push(`<div class="ec-section-title">Exames</div>`);
-      partes.push(exames.slice(0, 3).map((e) => {
-        const tipo = e.tipo ?? "Exame";
-        const data = e.dataPretendida ?? e.data;
-        const medico = e.medico?.dados?.nome ?? e.medicoSolicitante?.dados?.nome;
-        const linhas = [];
-        if (data) linhas.push(`Pedido a ${escapeHtml(data)}`);
-        if (medico) linhas.push(escapeHtml(medico));
-        const sub = linhas.join(" — ");
-        return `<div class="ec-item"><div class="ec-nome">${escapeHtml(tipo)}</div>${sub ? `<div class="ec-info">${sub}</div>` : ""}</div>`;
-      }).join(""));
+      partes.push(
+        exames
+          .slice(0, 3)
+          .map((e) => {
+            const tipo = e.tipo ?? "Exame";
+            const data = e.dataPretendida ?? e.data;
+            const medico =
+              e.medico?.dados?.nome ?? e.medicoSolicitante?.dados?.nome;
+            const linhas = [];
+            if (data) linhas.push(`Pedido a ${escapeHtml(data)}`);
+            if (medico) linhas.push(escapeHtml(medico));
+            const sub = linhas.join(" — ");
+            return `<div class="ec-item"><div class="ec-nome">${escapeHtml(tipo)}</div>${sub ? `<div class="ec-info">${sub}</div>` : ""}</div>`;
+          })
+          .join(""),
+      );
     }
     if (cateteres.length > 0) {
       partes.push(`<div class="ec-section-title mt-2">Cateteres</div>`);
-      partes.push(cateteres.slice(0, 3).map((c) => {
-        const tipo = c.tipo ?? "Cateter";
-        const local = c.localInsercao ?? c.local;
-        const calibre = c.calibre;
-        const dataIns = c.dataInsercao ?? c.data;
-        const linhas = [];
-        if (dataIns) linhas.push(`Inserido ${escapeHtml(dataIns)}`);
-        if (calibre) linhas.push(`Calibre ${escapeHtml(calibre)}`);
-        const sub = linhas.join(" · ");
-        return `<div class="ec-item"><div class="ec-nome">${escapeHtml(tipo)}${local ? " — " + escapeHtml(local) : ""}</div>${sub ? `<div class="ec-info">${sub}</div>` : ""}</div>`;
-      }).join(""));
+      partes.push(
+        cateteres
+          .slice(0, 3)
+          .map((c) => {
+            const tipo = c.tipo ?? "Cateter";
+            const local = c.localInsercao ?? c.local;
+            const calibre = c.calibre;
+            const dataIns = c.dataInsercao ?? c.data;
+            const linhas = [];
+            if (dataIns) linhas.push(`Inserido ${escapeHtml(dataIns)}`);
+            if (calibre) linhas.push(`Calibre ${escapeHtml(calibre)}`);
+            const sub = linhas.join(" · ");
+            return `<div class="ec-item"><div class="ec-nome">${escapeHtml(tipo)}${local ? " — " + escapeHtml(local) : ""}</div>${sub ? `<div class="ec-info">${sub}</div>` : ""}</div>`;
+          })
+          .join(""),
+      );
     }
 
     if (partes.length === 0) {
@@ -292,32 +415,37 @@ async function carregarOcorrencias(processId) {
   const container = document.querySelector(".ocorrencias");
   if (!container) return;
   try {
-    const res = await fetch(`/api/processes/${processId}/incidents`);
+    const res = await fetch(
+      `http://localhost:8080/api/processes/${processId}/incidents`,
+      { headers: _authHeaders() },
+    );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     const incidentes = json.data ?? [];
 
-    const hoje = new Date().toISOString().slice(0, 10);
-    const ocorrenciasHoje = incidentes.filter((i) => {
-      const d = String(i.data ?? "").substring(0, 10);
-      // formato backend "dd/MM/yyyy"
-      const m = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(d);
-      if (m) return `${m[3]}-${m[2]}-${m[1]}` === hoje;
-      return false;
-    });
-
-    if (ocorrenciasHoje.length === 0) {
-      container.innerHTML = `<p class="m-0 italic text-primary/55">Sem ocorrências registadas hoje.</p>`;
+    if (incidentes.length === 0) {
+      container.innerHTML = `<p class="m-0 italic text-primary/55">Sem ocorrências registadas.</p>`;
       return;
     }
 
-    container.innerHTML = ocorrenciasHoje.slice(0, 5).map((i) => {
-      const hora = String(i.data ?? "").split(":").slice(1, 3).join(":") || "—";
-      const enf = i.enfermeiro?.dados?.nome ?? i.funcionario?.dados?.nome ?? "—";
-      const tipo = i.tipo ?? "Incidente";
-      const desc = i.descricao ?? "—";
-      return `<div class="oc-item"><div class="oc-head">${escapeHtml(hora)} · ${escapeHtml(enf)}</div><div class="oc-info">${escapeHtml(tipo)} — ${escapeHtml(desc)}</div></div>`;
-    }).join("");
+    container.innerHTML = incidentes
+      .slice(0, 5)
+      .map((i) => {
+        const hora =
+          String(i.data ?? "")
+            .split(":")
+            .slice(1, 3)
+            .join(":") || "—";
+        const enf =
+          i.enfermeiro?.dados?.nome ?? i.funcionario?.dados?.nome ?? "—";
+        const tipo = i.tipo ?? "Incidente";
+        const desc = i.descricao ?? "—";
+        return `<div class="oc-item">
+        <div class="oc-head">${escapeHtml(hora)} · ${escapeHtml(enf)}</div>
+        <div class="oc-info">${escapeHtml(tipo)} — ${escapeHtml(desc)}</div>
+      </div>`;
+      })
+      .join("");
   } catch (err) {
     console.error("[Ocorrências]", err);
     container.innerHTML = `<p class="m-0 italic text-primary/55">Erro ao carregar ocorrências.</p>`;
@@ -327,8 +455,11 @@ async function carregarOcorrencias(processId) {
 function escapeHtml(s) {
   if (s == null) return "";
   return String(s)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 // ── Sinais Vitais ────────────────────────────────────────────────────────────
@@ -347,12 +478,17 @@ function atualizarSinaisVitaisUI(sv) {
     });
     return;
   }
-  if (tensao) tensao.innerHTML = `${sv.tensaoArteriaSistolica}/${sv.tensaoArteriaDistolica}<br><small style="font-size:11px">mmHg</small>`;
-  if (freq) freq.innerHTML = `${sv.frequenciaCardiaca}<br><small style="font-size:11px">bpm</small>`;
-  if (temp) temp.innerHTML = `${sv.temperatura}<br><small style="font-size:11px">°C</small>`;
-  if (spo2) spo2.innerHTML = `${sv.spo2}<br><small style="font-size:11px">%</small>`;
+  if (tensao)
+    tensao.innerHTML = `${sv.tensaoArteriaSistolica}/${sv.tensaoArteriaDistolica}<br><small style="font-size:11px">mmHg</small>`;
+  if (freq)
+    freq.innerHTML = `${sv.frequenciaCardiaca}<br><small style="font-size:11px">bpm</small>`;
+  if (temp)
+    temp.innerHTML = `${sv.temperatura}<br><small style="font-size:11px">°C</small>`;
+  if (spo2)
+    spo2.innerHTML = `${sv.spo2}<br><small style="font-size:11px">%</small>`;
   if (dor) dor.textContent = sv.dor;
-  if (gli) gli.innerHTML = `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
+  if (gli)
+    gli.innerHTML = `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
 }
 
 // ── Plano de Cuidados Hoje ───────────────────────────────────────────────────
@@ -362,20 +498,41 @@ async function carregarPlanoDeHoje(processId) {
   if (!body) return;
 
   const frequenciaLabel = {
-    CONTINUA: "Contínua", CONTINUO: "Contínua", DIARIA: "Diária",
-    BD: "2x/dia", TID: "3x/dia", QID: "4x/dia", SOS: "SOS", SEMANAL: "Semanal",
-    UMA_VEZ: "Uma vez", DUAS_VEZES: "Duas vezes", TRES_VEZES: "Três vezes",
-    DIA_1: "1x/dia", DIA_2: "2x/dia", DIA_3: "3x/dia", DIA_4: "4x/dia", DIA_5: "5x/dia", DIA_6: "6x/dia",
-    H_2: "De 2 em 2 horas", H_4: "De 4 em 4 horas",
-    "1_DIA": "1x/dia", "2_DIA": "2x/dia", "3_DIA": "3x/dia", "4_DIA": "4x/dia", "6_DIA": "6x/dia",
-    "2H": "De 2 em 2 horas", "4H": "De 4 em 4 horas",
+    CONTINUA: "Contínua",
+    CONTINUO: "Contínua",
+    DIARIA: "Diária",
+    BD: "2x/dia",
+    TID: "3x/dia",
+    QID: "4x/dia",
+    SOS: "SOS",
+    SEMANAL: "Semanal",
+    UMA_VEZ: "Uma vez",
+    DUAS_VEZES: "Duas vezes",
+    TRES_VEZES: "Três vezes",
+    DIA_1: "1x/dia",
+    DIA_2: "2x/dia",
+    DIA_3: "3x/dia",
+    DIA_4: "4x/dia",
+    DIA_5: "5x/dia",
+    DIA_6: "6x/dia",
+    H_2: "De 2 em 2 horas",
+    H_4: "De 4 em 4 horas",
+    "1_DIA": "1x/dia",
+    "2_DIA": "2x/dia",
+    "3_DIA": "3x/dia",
+    "4_DIA": "4x/dia",
+    "6_DIA": "6x/dia",
+    "2H": "De 2 em 2 horas",
+    "4H": "De 4 em 4 horas",
   };
   const intervencaoLabel = {
-    VIGILANCIA_CONTINUA: "Vigilância contínua", VIGILANCIA_1_1: "Vigilância 1:1",
+    VIGILANCIA_CONTINUA: "Vigilância contínua",
+    VIGILANCIA_1_1: "Vigilância 1:1",
     ADMINISTRACAO_MEDICACAO: "Administração de Medicação",
     AVALIACAO_SINAIS_VITAIS: "Avaliação de Sinais Vitais",
     CUIDADOS_HIGIENE: "Cuidados de Higiene",
-    CONTENCAO_VERBAL: "Contenção verbal", APOIO_EMOCIONAL: "Apoio emocional",
+    CONTENCAO_VERBAL: "Contenção verbal",
+    APOIO_EMOCIONAL: "Apoio emocional",
     RELACAO_TERAPEUTICA: "Estabelecer relação terapêutica",
     ATIVIDADES_ESTRUTURADAS: "Promover atividades estruturadas",
     EDUCAR_MEDICACAO: "Educar sobre medicação",
@@ -398,7 +555,10 @@ async function carregarPlanoDeHoje(processId) {
   };
 
   try {
-    const resp = await fetch(`/api/processes/${processId}/plan`);
+    const resp = await fetch(
+      `http://localhost:8080/api/processes/${processId}/plan`,
+      { headers: _authHeaders() },
+    );
     if (!resp.ok) {
       body.innerHTML = `<p class="m-0 italic text-primary/55 text-[13px]">Sem plano de cuidados ativo.</p>`;
       return;
@@ -410,13 +570,18 @@ async function carregarPlanoDeHoje(processId) {
       return;
     }
 
-    body.innerHTML = intervencoes.map((inv) => {
-      const feita = inv.funcionarioExecutou != null;
-      const prio = prioridadeConfig[inv.prioridade] ?? { cor: "#666", texto: inv.prioridade ?? "—" };
-      const freq = frequenciaLabel[inv.frequencia] ?? inv.frequencia ?? "—";
-      const nome = intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
-      const textoRiscado = feita ? "line-through opacity-55" : "";
-      return `
+    body.innerHTML = intervencoes
+      .map((inv) => {
+        const feita = inv.funcionarioExecutou != null;
+        const prio = prioridadeConfig[inv.prioridade] ?? {
+          cor: "#666",
+          texto: inv.prioridade ?? "—",
+        };
+        const freq = frequenciaLabel[inv.frequencia] ?? inv.frequencia ?? "—";
+        const nome =
+          intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
+        const textoRiscado = feita ? "line-through opacity-55" : "";
+        return `
         <div class="flex items-start justify-between gap-3 px-2.5 py-2 border-b border-primary/15 last:border-0 text-[13px]">
           <div class="flex-1 min-w-0">
             <div class="font-semibold text-primary ${textoRiscado}">
@@ -429,7 +594,8 @@ async function carregarPlanoDeHoje(processId) {
           </div>
           <input type="checkbox" disabled ${feita ? "checked" : ""} title="Apenas leitura" class="mt-1 w-4 h-4 shrink-0 cursor-not-allowed accent-primary" />
         </div>`;
-    }).join("");
+      })
+      .join("");
   } catch (err) {
     console.error("[Plano de Cuidados]", err);
     body.innerHTML = `<p class="m-0 italic text-primary/55 text-[13px]">Erro ao carregar plano de cuidados.</p>`;
@@ -442,7 +608,9 @@ async function carregarPlanoDeHoje(processId) {
  */
 function _calcularDiasInternado(dataEntrada) {
   if (!dataEntrada) return null;
-  const m = String(dataEntrada).match(/^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/);
+  const m = String(dataEntrada).match(
+    /^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/,
+  );
   let d;
   if (m) {
     d = new Date(
