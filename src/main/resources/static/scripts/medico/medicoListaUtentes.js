@@ -66,18 +66,32 @@ function renderizarTabela() {
     if (!u.processo) return;
 
     const estado = u.processo.alta ? "Alta" : "Internado";
-    const cama = u.processo.cama?.id ?? "Nenhuma";
+    const cama = u.processo.cama?.id ?? "—";
+    const dataEntrada = (u.processo.dataEntrada ?? "").substring(0, 10) || "—";
+
+    const alertasBadges = [];
+    const FLAG_LABELS = {
+      RISCO_FUGA: "Risco Fuga",
+      RISCO_AGRESSIVIDADE: "Risco Agressividade",
+      RISCO_QUEDA: "Risco Queda",
+      RISCO_AUTOMUTILACAO: "Risco Automutilação",
+    };
+    (u.flags ?? []).forEach(f => {
+      if (FLAG_LABELS[f]) alertasBadges.push(FLAG_LABELS[f]);
+    });
+    if ((u.alergias ?? []).length > 0) alertasBadges.push("Alergias");
+    const alertas = alertasBadges.join(" · ") || "—";
 
     tbody.innerHTML += `
     <tr>
-      <td>${u.id}</td>
+      <td>${u.processo.id ?? u.id}</td>
       <td>${u.nome}</td>
       <td>${cama}</td>
-      <td>${u.processo.diagnosticoPrincipal}</td>
-      <td>${u.processo.medicoResponsavel.dados.nome}</td>
-      <td>${u.processo.dataEntrada}</td>
+      <td>${u.processo.diagnosticoPrincipal ?? "—"}</td>
+      <td>${u.processo.medicoResponsavel?.dados?.nome ?? "—"}</td>
+      <td>${dataEntrada}</td>
       <td>${estado}</td>
-      <td>${u.processo.temAlergias}</td>
+      <td>${alertas}</td>
       <td>
         <button class="ver-mais"
             onclick="location.href = '/medicoKardexUtente?id=${u.id}'">
@@ -147,6 +161,12 @@ function atualizarContador() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarUtilizadores();
+
+  const notif = sessionStorage.getItem("notificacao_pendente");
+  if (notif) {
+    sessionStorage.removeItem("notificacao_pendente");
+    try { mostrarNotificacao(JSON.parse(notif)); } catch (_) {}
+  }
 
   const inputPesquisa = document.querySelector(".search-input-wrap input");
   inputPesquisa?.addEventListener("input", (e) =>
