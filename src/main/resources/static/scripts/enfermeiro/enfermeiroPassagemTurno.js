@@ -284,7 +284,7 @@ function renderEstadoUtentes(utentes) {
 }
 
 function mostrarSemTurno() {
-  const mainContent = document.querySelector(".main-content");
+  const mainContent = document.querySelector("main") || document.querySelector(".main-content");
   if (!mainContent) return;
 
   mainContent.innerHTML = `
