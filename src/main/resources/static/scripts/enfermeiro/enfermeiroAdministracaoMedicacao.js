@@ -1,6 +1,7 @@
 const API_BASE = "http://localhost:8080/api";
 const utenteId = new URLSearchParams(window.location.search).get("id");
 let processoId = null;
+let nomeUtente = "";
 
 document.addEventListener("DOMContentLoaded", async () => {
     if (!utenteId) {
@@ -49,6 +50,7 @@ async function carregarUtente() {
         const utente = json.data?.dados ?? json.data;
         const proc = utente?.processo;
         processoId = proc?.id;
+        nomeUtente = utente?.nome ?? "";
 
         preencherHeader(utente, proc);
         preencherAlergias(utente?.alergias ?? []);
@@ -143,7 +145,7 @@ async function renderPrescricoes() {
             <div class="flex items-center justify-between gap-2 px-3 py-2 border-b border-[#e5edf3] last:border-0">
                 <div class="flex-1 min-w-0">
                     <div class="text-bg-dark font-bold text-[13.5px]">${esc(nome)} ${esc(dose)}${badgeSOS}${badgeRisco}</div>
-                    <div class="text-muted text-[12px] mt-0.5">Via ${esc(via)} · ${esc(freq)}${medico !== "—" ? " · " + esc(medico) : ""}</div>
+                    <div class="text-bg-dark/65 text-[12px] mt-0.5">Via ${esc(via)} · ${esc(freq)}${medico !== "—" ? " · " + esc(medico) : ""}</div>
                 </div>
                 <button class="bg-primary text-white border-2 border-primary text-[12px] font-bold tracking-wide px-3 py-1.5 cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors whitespace-nowrap"
                     onclick='abrirAdministrar(${p.id}, ${JSON.stringify(nome)}, ${JSON.stringify(dose)}, ${JSON.stringify(via)}, ${altoRisco}, ${JSON.stringify(horariosPrev)})'>
@@ -193,7 +195,7 @@ function renderHistorico(prescricoes) {
     });
 
     if (linhas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="!text-center !p-4 italic text-muted">Sem administrações registadas hoje.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="!text-center !p-4 italic text-bg-dark/65">Sem administrações registadas hoje.</td></tr>`;
         return;
     }
     tbody.innerHTML = linhas.join("");
@@ -208,19 +210,102 @@ function irParaPlano() {
     window.location.href = `enfermeiroPlanoCuidados?id=${utenteId}`;
 }
 
-// Abrir o popup já existente (usa a função partilhada se ela existir).
+let prescricaoSelecionadaId = null;
+let _popupAltoRisco = false;
+
 function abrirAdministrar(prescricaoId, nomeMed, dose, via, altoRisco, horariosPrev) {
-    if (typeof abrirPopUpAdministrarMedicacao === "function") {
-        abrirPopUpAdministrarMedicacao(prescricaoId, nomeMed, dose, via, altoRisco, horariosPrev);
-        return;
-    }
-    // Fallback simples — apenas mostrar o overlay com a info
     const overlay = document.querySelector(".pop-up-administrar-medicacao");
     if (!overlay) {
         notificar("Erro", "Popup de administração não disponível.", "erro");
         return;
     }
+
+    prescricaoSelecionadaId = prescricaoId ?? null;
+    _popupAltoRisco = !!altoRisco;
+
+    // Preencher os 5 certos
+    const setText = (id, valor) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = valor != null && valor !== "" ? String(valor) : "—";
+    };
+    setText("nome-utenet", _primeiroNome(nomeUtente));
+    setText("medicamento", nomeMed);
+    setText("dose", dose);
+    setText("via", via);
+
+    const now = new Date();
+    setText("hora-de-toma", now.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" }));
+
+    const dataHora = document.getElementById("data-hora");
+    if (dataHora) dataHora.value = _agoraISOLocal();
+    const obs = document.getElementById("observacoes");
+    if (obs) obs.value = "";
+
+    const cbRecusa = document.getElementById("recusa-medicacao");
+    if (cbRecusa) cbRecusa.checked = false;
+
+    // Atraso (se houver horários previstos)
+    const warningBox = document.getElementById("warning-box");
+    const warningText = document.getElementById("warning-text");
+    const atrasoMin = _calcularAtrasoMinutos(horariosPrev ?? []);
+    if (warningBox && warningText) {
+        if (atrasoMin > 0) {
+            warningText.textContent = `Atraso de ${atrasoMin} min relativamente ao horário previsto.`;
+            warningBox.style.display = "flex";
+        } else {
+            warningBox.style.display = "none";
+        }
+    }
+
+    // Bloco de Alto Risco
+    const secaoAltoRisco = document.getElementById("alto-risco-verificacao");
+    const cbConfirmar = document.getElementById("confirmar-alto-risco");
+    if (secaoAltoRisco) secaoAltoRisco.style.display = altoRisco ? "" : "none";
+    if (cbConfirmar) cbConfirmar.checked = false;
+
+    if (typeof atualizarBotaoRegistar === "function") atualizarBotaoRegistar();
+
     overlay.style.display = "flex";
+}
+
+function _primeiroNome(nomeCompleto) {
+    if (!nomeCompleto) return "";
+    return String(nomeCompleto).trim().split(/\s+/)[0];
+}
+
+function _agoraISOLocal() {
+    const d = new Date();
+    const off = d.getTimezoneOffset();
+    const local = new Date(d.getTime() - off * 60000);
+    return local.toISOString().slice(0, 16);
+}
+
+function _calcularAtrasoMinutos(horariosPrevistos) {
+    if (!horariosPrevistos?.length) return 0;
+    const now = new Date();
+    const agoraMin = now.getHours() * 60 + now.getMinutes();
+    return horariosPrevistos.reduce((max, h) => {
+        const [hh, mm] = String(h).split(":").map(Number);
+        if (Number.isNaN(hh)) return max;
+        const prevMin = hh * 60 + (mm || 0);
+        const diff = prevMin <= agoraMin ? agoraMin - prevMin : 0;
+        return Math.max(max, diff);
+    }, 0);
+}
+
+function atualizarBotaoRegistar() {
+    const btn = document.getElementById("btn-registar");
+    if (!btn) return;
+    if (_popupAltoRisco) {
+        const cb = document.getElementById("confirmar-alto-risco");
+        btn.disabled = !cb?.checked;
+        btn.style.opacity = btn.disabled ? "0.55" : "";
+        btn.style.cursor = btn.disabled ? "not-allowed" : "pointer";
+    } else {
+        btn.disabled = false;
+        btn.style.opacity = "";
+        btn.style.cursor = "pointer";
+    }
 }
 
 function abrirPopUpAdministrarSOS() {
