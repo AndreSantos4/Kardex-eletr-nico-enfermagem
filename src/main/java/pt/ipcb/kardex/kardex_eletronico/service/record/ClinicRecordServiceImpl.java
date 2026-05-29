@@ -61,4 +61,10 @@ public class ClinicRecordServiceImpl implements ClinicRecordService{
         var records = repository.findAll();
         return mapper.toCLinicDTOList(records);
     }
+
+    @Override
+    public List<RegistoClinicoDTO> getAllRecords(Long processId) {
+        var records = repository.findAllByProcessoId(processId);
+        return mapper.toCLinicDTOList(records);
+    }
 }
