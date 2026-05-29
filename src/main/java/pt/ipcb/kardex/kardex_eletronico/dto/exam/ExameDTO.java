@@ -13,7 +13,7 @@ public record ExameDTO(
         @JsonProperty("tipo") TipoExame tipo,
         @JsonProperty("urgencia") Urgencia urgencia,
         @JsonProperty("dataPedido") String dataPedido,
-        @JsonProperty("dataPretendida") String dataPrentendida,
+        @JsonProperty("dataPretendida") String dataPretendida,
         @JsonProperty("indicacaoClinica") String indicacaoClinica,
         @JsonProperty("observacoesLaboratorio") String observacoesLaboratorio,
         @JsonProperty("estado") EstadoExame estado,
