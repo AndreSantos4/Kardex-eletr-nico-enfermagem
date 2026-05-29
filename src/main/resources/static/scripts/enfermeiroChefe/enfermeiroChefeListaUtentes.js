@@ -67,6 +67,7 @@ function renderizarTabela() {
 
     const estado = u.processo.alta ? "Alta" : "Internado";
     const cama = u.processo.cama?.id ?? "Nenhuma";
+    const alertas = renderAlertas(u);
 
     tbody.innerHTML += `
     <tr>
@@ -75,9 +76,9 @@ function renderizarTabela() {
       <td>${cama}</td>
       <td>${u.processo.diagnosticoPrincipal}</td>
       <td>${u.processo.medicoResponsavel.dados.nome}</td>
-      <td>${u.processo.dataEntrada}</td>
+      <td>${(u.processo.dataEntrada ?? "").split(":")[0]}</td>
       <td>${estado}</td>
-      <td>${u.processo.temAlergias}</td>
+      <td>${alertas}</td>
       <td>
         <button class="ver-mais bg-transparent border-[1.5px] border-primary text-primary text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors whitespace-nowrap"
             onclick="location.href = '/enfermeiroChefeKardexUtente?id=${u.id}'">
@@ -86,6 +87,22 @@ function renderizarTabela() {
       </td>
     </tr>`;
   });
+}
+
+function renderAlertas(u) {
+  const labels = [];
+  const flags = u.flags ?? [];
+  flags.forEach((f) => {
+    const texto = String(f).replace(/^RISCO_/, "").toLowerCase();
+    labels.push(texto.charAt(0).toUpperCase() + texto.slice(1));
+  });
+  const alergias = u.alergias ?? [];
+  if (alergias.length > 0) {
+    labels.push("Alergias");
+  }
+  return labels.length === 0
+    ? `<span class="text-primary/50 text-xs">—</span>`
+    : `<span class="text-alertas text-xs font-semibold">${labels.join(", ")}</span>`;
 }
 
 function renderizarPaginacao() {
