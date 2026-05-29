@@ -266,7 +266,8 @@ async function carregarCamasEdicao() {
     const livres = dataLivres.success ? dataLivres.data : [];
     const ocupadas = dataOcupadas.success ? dataOcupadas.data : [];
 
-    const camaActualId = caseData.cama !== "Não atribuído" ? String(caseData.cama) : null;
+    const camaActualId =
+      caseData.cama !== "Não atribuído" ? String(caseData.cama) : null;
     const camaActual = camaActualId
       ? ocupadas.find((c) => String(c.id) === camaActualId)
       : null;
@@ -604,7 +605,9 @@ function atualizarSinaisVitaisUI(sv) {
  *   - DIARIO/frequencia X: máximo X administrações por dia
  */
 function _verificarLimitesAdministracao(p) {
-  const lista = (p.administracoes ?? []).filter((a) => a.administrado !== false);
+  const lista = (p.administracoes ?? []).filter(
+    (a) => a.administrado !== false,
+  );
   if (lista.length === 0) return { permitido: true, motivo: "" };
 
   const ordenadas = lista
@@ -626,9 +629,7 @@ function _verificarLimitesAdministracao(p) {
       const horas = Math.floor(minutosFalta / 60);
       const mins = minutosFalta % 60;
       const tempo =
-        horas > 0
-          ? `${horas}h${mins > 0 ? ` ${mins}min` : ""}`
-          : `${mins}min`;
+        horas > 0 ? `${horas}h${mins > 0 ? ` ${mins}min` : ""}` : `${mins}min`;
       return {
         permitido: false,
         motivo: `Próxima administração em ${tempo} (intervalo mín. ${intervaloMin}h)`,
@@ -1127,14 +1128,20 @@ function atualizarDosagemContencao() {
 
 function esconderAvisoContencao() {
   const aviso = document.getElementById("aviso-dose-contencao");
-  if (aviso) { aviso.classList.add("hidden"); aviso.classList.remove("flex"); }
+  if (aviso) {
+    aviso.classList.add("hidden");
+    aviso.classList.remove("flex");
+  }
 }
 
 function mostrarAvisoContencao(texto) {
   const aviso = document.getElementById("aviso-dose-contencao");
   const txt = document.getElementById("aviso-dose-contencao-texto");
   if (txt) txt.textContent = texto;
-  if (aviso) { aviso.classList.remove("hidden"); aviso.classList.add("flex"); }
+  if (aviso) {
+    aviso.classList.remove("hidden");
+    aviso.classList.add("flex");
+  }
 }
 
 // Devolve true se a dose for válida, false se for excessiva (já mostra o aviso).
@@ -1145,13 +1152,22 @@ function validarDoseContencao() {
 
   const idMed = parseInt(selectMed.value);
   const idDose = parseInt(selectDose.value);
-  if (!idMed || !idDose) { esconderAvisoContencao(); return true; }
+  if (!idMed || !idDose) {
+    esconderAvisoContencao();
+    return true;
+  }
 
   const med = _medicamentosContencao.find((m) => m.id === idMed);
-  if (!med?.dosagemMaxDiaria) { esconderAvisoContencao(); return true; }
+  if (!med?.dosagemMaxDiaria) {
+    esconderAvisoContencao();
+    return true;
+  }
 
   const dose = med.dosagens?.find((d) => d.id === idDose);
-  if (!dose) { esconderAvisoContencao(); return true; }
+  if (!dose) {
+    esconderAvisoContencao();
+    return true;
+  }
 
   const maxDose = med.dosagemMaxDiaria.dose;
   const maxUnidade = med.dosagemMaxDiaria.unidadeMedida;
@@ -1194,7 +1210,8 @@ async function submeterRegistarContencao(event) {
   if (!validarDoseContencao()) {
     mostrarNotificacao({
       titulo: "Dose excessiva",
-      mensagem: "A dose selecionada excede a dose máxima diária. Não é possível registar.",
+      mensagem:
+        "A dose selecionada excede a dose máxima diária. Não é possível registar.",
       tipo: "erro",
     });
     return;
@@ -1664,7 +1681,8 @@ async function carregarPlanoDeHoje() {
         ? "Clica para desmarcar"
         : "Marcar como realizado deve ser feito no plano de cuidados";
 
-      const nomeIntervencao = intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
+      const nomeIntervencao =
+        intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
 
       row.innerHTML = `
         <div style="flex:1;min-width:0;">
@@ -1760,7 +1778,80 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
   }
 }
 
-carregarUtente(id).then(() => carregarPlanoDeHoje());
+const TIPO_LABEL_REGISTO = {
+  EXAME: "Exame",
+  MEDICACAO: "Medicação",
+  SINAL_VITAL: "Sinais Vitais",
+  INCIDENTE: "Incidente",
+  CATETER: "Cateter",
+  NOTA: "Nota",
+  CONTENCAO: "Contenção",
+  PRESCRICAO: "Prescrição",
+  ALTA: "Alta",
+  INTERNAMENTO: "Internamento",
+  PLANO_CUIDADOS: "Plano de Cuidados",
+  INTERVENCAO: "Intervenção",
+};
+
+function _formatarTimestamp(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return ts;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+async function carregarRegistosClinicosTabela() {
+  const tbody = document.getElementById("registos-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="3" style="padding:8px;color:var(--surface);font-size:13px;font-style:italic">A carregar…</td></tr>`;
+
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/records/clinic/${processoId}`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const registos = json.data ?? [];
+
+    if (registos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="padding:8px;color:var(--surface);font-size:13px;font-style:italic">Sem registos clínicos.</td></tr>`;
+      return;
+    }
+
+    const ordenados = registos
+      .slice()
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    tbody.innerHTML = ordenados
+      .slice(0, 10)
+      .map((r) => {
+        const tipo = TIPO_LABEL_REGISTO[r.tipo] ?? r.tipo ?? "—";
+        const valor = r.detalhes ?? "—";
+        const hora = _formatarTimestamp(r.timestamp);
+        const esc = (s) =>
+          String(s ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        return `<tr>
+        <td>${esc(tipo)}</td>
+        <td>${esc(valor)}</td>
+        <td>${esc(hora)}</td>
+      </tr>`;
+      })
+      .join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="3" style="padding:8px;color:var(--surface);font-size:13px;font-style:italic">Erro ao carregar registos.</td></tr>`;
+    console.error("Erro em carregarRegistosClinicosTabela:", err);
+  }
+}
+
+carregarUtente(id).then(() => {
+  carregarPlanoDeHoje();
+  carregarRegistosClinicosTabela();
+});
 
 async function abrirPopUpNotasClinicas() {
   await carregarPopUp("../../pages/enfermeiro/popups/popupNotasClinicas.html");
@@ -1940,7 +2031,9 @@ function atualizarPrescricaoSOS() {
 
   if (!presc) {
     if (elNome) elNome.textContent = "Selecionar prescrição SOS";
-    if (elDet) elDet.textContent = "Dose máx. e intervalo mínimo definidos pela prescrição.";
+    if (elDet)
+      elDet.textContent =
+        "Dose máx. e intervalo mínimo definidos pela prescrição.";
   } else {
     const nome = presc.medicamento?.nome ?? "Medicação";
     const max = presc.medicamento?.dosagemMaxDiaria;
@@ -1973,7 +2066,9 @@ const LIMITES_DOSE_SOS = {
 };
 
 function _parseDoseSOS(texto) {
-  const m = /^(\d+(?:[.,]\d+)?)\s*(mg|mcg|g|ml|ui)?$/i.exec((texto ?? "").trim());
+  const m = /^(\d+(?:[.,]\d+)?)\s*(mg|mcg|g|ml|ui)?$/i.exec(
+    (texto ?? "").trim(),
+  );
   if (!m) return null;
   return {
     valor: parseFloat(m[1].replace(",", ".")),
@@ -1983,14 +2078,20 @@ function _parseDoseSOS(texto) {
 
 function esconderAvisoSOS() {
   const aviso = document.getElementById("aviso-dose-sos");
-  if (aviso) { aviso.classList.add("hidden"); aviso.classList.remove("flex"); }
+  if (aviso) {
+    aviso.classList.add("hidden");
+    aviso.classList.remove("flex");
+  }
 }
 
 function mostrarAvisoSOS(texto) {
   const aviso = document.getElementById("aviso-dose-sos");
   const txt = document.getElementById("aviso-dose-sos-texto");
   if (txt) txt.textContent = texto;
-  if (aviso) { aviso.classList.remove("hidden"); aviso.classList.add("flex"); }
+  if (aviso) {
+    aviso.classList.remove("hidden");
+    aviso.classList.add("flex");
+  }
 }
 
 // Converte um valor para a unidade abreviada (mg/g/mcg/ml/ui) numa escala comum em mg
@@ -2006,11 +2107,16 @@ function _doseEmMg(valor, unidadeAbrev) {
 // Devolve true se a dose for válida, false se for inválida ou excessiva (mostra o aviso).
 function validarDoseSOS() {
   const valor = document.getElementById("dose-sos")?.value.trim();
-  if (!valor) { esconderAvisoSOS(); return true; }
+  if (!valor) {
+    esconderAvisoSOS();
+    return true;
+  }
 
   const parsed = _parseDoseSOS(valor);
   if (!parsed) {
-    mostrarAvisoSOS("Formato inválido — use por exemplo \"5mg\", \"0.5g\", \"100mcg\".");
+    mostrarAvisoSOS(
+      'Formato inválido — use por exemplo "5mg", "0.5g", "100mcg".',
+    );
     return false;
   }
 
@@ -2021,10 +2127,14 @@ function validarDoseSOS() {
   // 1) Limite máximo diário do medicamento (se existir): converte tudo para mg.
   if (max?.dose != null) {
     const maxAbrev = formatarUnidade(max.unidadeMedida).toLowerCase();
-    const ehMassa = ["mg", "g", "mcg"].includes(parsed.unidade) && ["mg", "g", "mcg"].includes(maxAbrev);
+    const ehMassa =
+      ["mg", "g", "mcg"].includes(parsed.unidade) &&
+      ["mg", "g", "mcg"].includes(maxAbrev);
     const mesmaUnidade = parsed.unidade === maxAbrev;
     if (ehMassa || mesmaUnidade) {
-      const parsedMg = ehMassa ? _doseEmMg(parsed.valor, parsed.unidade) : parsed.valor;
+      const parsedMg = ehMassa
+        ? _doseEmMg(parsed.valor, parsed.unidade)
+        : parsed.valor;
       const maxMg = ehMassa ? _doseEmMg(max.dose, maxAbrev) : max.dose;
       if (parsedMg > maxMg) {
         mostrarAvisoSOS(
@@ -2038,11 +2148,17 @@ function validarDoseSOS() {
   // 2) Sem máximo configurado mas prescrição tem dose por administração: usar essa como referência.
   if (max?.dose == null && dosePresc?.dose != null) {
     const doseAbrev = formatarUnidade(dosePresc.unidadeMedida).toLowerCase();
-    const ehMassa = ["mg", "g", "mcg"].includes(parsed.unidade) && ["mg", "g", "mcg"].includes(doseAbrev);
+    const ehMassa =
+      ["mg", "g", "mcg"].includes(parsed.unidade) &&
+      ["mg", "g", "mcg"].includes(doseAbrev);
     const mesmaUnidade = parsed.unidade === doseAbrev;
     if (ehMassa || mesmaUnidade) {
-      const parsedMg = ehMassa ? _doseEmMg(parsed.valor, parsed.unidade) : parsed.valor;
-      const doseMg = ehMassa ? _doseEmMg(dosePresc.dose, doseAbrev) : dosePresc.dose;
+      const parsedMg = ehMassa
+        ? _doseEmMg(parsed.valor, parsed.unidade)
+        : parsed.valor;
+      const doseMg = ehMassa
+        ? _doseEmMg(dosePresc.dose, doseAbrev)
+        : dosePresc.dose;
       if (parsedMg > doseMg) {
         mostrarAvisoSOS(
           `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose prescrita por administração (${dosePresc.dose} ${formatarUnidade(dosePresc.unidadeMedida)}).`,
@@ -2088,7 +2204,8 @@ function submeterAdministrarSOS(event) {
   if (!validarDoseSOS()) {
     mostrarNotificacao({
       titulo: "Dose excessiva",
-      mensagem: "A dose introduzida excede o limite seguro. Não é possível registar.",
+      mensagem:
+        "A dose introduzida excede o limite seguro. Não é possível registar.",
       tipo: "erro",
     });
     return;
@@ -2109,7 +2226,9 @@ function submeterAdministrarSOS(event) {
 
 async function abrirPopupHistInternamentos() {
   if (!id) return;
-  await carregarPopUp("../../pages/enfermeiro/popups/popupHistoricoInternamentos.html");
+  await carregarPopUp(
+    "../../pages/enfermeiro/popups/popupHistoricoInternamentos.html",
+  );
 
   const overlay = document.querySelector(".popup-hist-internamentos-overlay");
   if (!overlay) return;
@@ -2124,9 +2243,12 @@ async function abrirPopupHistInternamentos() {
   overlay.style.display = "flex";
 
   try {
-    const res = await fetch(`http://localhost:8080/api/patients/${id}/history`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    const res = await fetch(
+      `http://localhost:8080/api/patients/${id}/history`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     if (!json.success) {
@@ -2151,11 +2273,13 @@ function _renderHistInternamentos(lista) {
   if (!container) return;
 
   if (lista === null) {
-    container.innerHTML = '<div class="text-center py-7 px-4 text-white/70 italic">A carregar internamentos…</div>';
+    container.innerHTML =
+      '<div class="text-center py-7 px-4 text-white/70 italic">A carregar internamentos…</div>';
     return;
   }
   if (!lista || lista.length === 0) {
-    container.innerHTML = '<div class="text-center py-7 px-4 text-white/70 italic">Sem internamentos registados.</div>';
+    container.innerHTML =
+      '<div class="text-center py-7 px-4 text-white/70 italic">Sem internamentos registados.</div>';
     return;
   }
 
@@ -2170,28 +2294,29 @@ function _renderHistInternamentos(lista) {
     return (da ?? 0) - (db ?? 0); // menos dias = mais recente
   });
 
-  container.innerHTML = ordenados.map((i) => {
-    const ativo = !i.dataAlta && i.alta !== true;
-    const estado = ativo ? "Ativo" : "Alta";
-    const corEstado = ativo ? "text-green-300" : "text-white/65";
+  container.innerHTML = ordenados
+    .map((i) => {
+      const ativo = !i.dataAlta && i.alta !== true;
+      const estado = ativo ? "Ativo" : "Alta";
+      const corEstado = ativo ? "text-green-300" : "text-white/65";
 
-    const procId = i.id ?? "—";
-    const entrada = (i.dataEntrada ?? "").substring(0, 10) || "—";
-    const saida = i.dataAlta ? i.dataAlta.substring(0, 10) : null;
-    const diasInternado = _calcularDiasInternado(i.dataEntrada);
-    const periodo = ativo
-      ? `${entrada} → presente`
-      : `${entrada} → ${saida ?? "—"}${diasInternado != null ? ` (${diasInternado} dias)` : ""}`;
+      const procId = i.id ?? "—";
+      const entrada = (i.dataEntrada ?? "").substring(0, 10) || "—";
+      const saida = i.dataAlta ? i.dataAlta.substring(0, 10) : null;
+      const diasInternado = _calcularDiasInternado(i.dataEntrada);
+      const periodo = ativo
+        ? `${entrada} → presente`
+        : `${entrada} → ${saida ?? "—"}${diasInternado != null ? ` (${diasInternado} dias)` : ""}`;
 
-    const motivo = i.motivoInternamento ?? i.diagnosticoPrincipal ?? "—";
-    const medico = i.medicoResponsavel?.dados?.nome ?? "—";
-    const tipoAlta = i.tipoAlta ? ` · ${_humanizar(i.tipoAlta)}` : "";
+      const motivo = i.motivoInternamento ?? i.diagnosticoPrincipal ?? "—";
+      const medico = i.medicoResponsavel?.dados?.nome ?? "—";
+      const tipoAlta = i.tipoAlta ? ` · ${_humanizar(i.tipoAlta)}` : "";
 
-    const titulo = ativo
-      ? `Internamento atual - ${procId}`
-      : `Internamento anterior · ${procId}`;
+      const titulo = ativo
+        ? `Internamento atual - ${procId}`
+        : `Internamento anterior · ${procId}`;
 
-    return `
+      return `
       <div class="bg-white rounded-full px-6 py-3 flex items-center justify-between gap-4 shadow-sm">
         <div class="min-w-0 flex-1">
           <div class="text-bg-dark text-[13.5px] font-bold leading-tight truncate">${_escHist(titulo)}</div>
@@ -2200,7 +2325,8 @@ function _renderHistInternamentos(lista) {
         <span class="${corEstado} text-[13px] font-bold whitespace-nowrap">${estado}</span>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 function _humanizar(s) {
@@ -2211,7 +2337,12 @@ function _humanizar(s) {
 
 function _escHist(s) {
   if (s == null) return "";
-  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /**
@@ -2220,7 +2351,9 @@ function _escHist(s) {
  */
 function _calcularDiasInternado(dataEntrada) {
   if (!dataEntrada) return null;
-  const m = String(dataEntrada).match(/^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/);
+  const m = String(dataEntrada).match(
+    /^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/,
+  );
   let d;
   if (m) {
     d = new Date(
