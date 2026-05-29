@@ -15,6 +15,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Periodo;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoPendencia;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegistoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.AdministracaoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.MedicamentoMapper;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.PrescricaoMapper;
@@ -23,6 +24,7 @@ import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.shift.issues.IssuesService;
+import pt.ipcb.kardex.kardex_eletronico.service.record.ClinicRecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
@@ -44,6 +46,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final ProcessService processService;
     private final WorkerService workerService;
     private final StockService stockService;
+    private final ClinicRecordService clinicRecordService;
 
     private final PrescricaoMapper mapper;
     private final PrescricaoRepository repository;
@@ -70,6 +73,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         prescription.setHoraAdministracaoPrevista(calculatePredictedAdministrationTime(prescription));
 
         repository.save(prescription);
+        clinicRecordService.createClinicRecord(process, TipoRegistoClinico.PRESCRICAO, "Prescricao registada com sucesso");
     }
 
     private Dosagem getDose(CreatePrescriptionDTO data, Medicamento medication) {
@@ -104,6 +108,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         prescription.setSuspensao(suspensao);
         repository.save(prescription);
+        clinicRecordService.createClinicRecord(prescription.getProcesso(), TipoRegistoClinico.PRESCRICAO, "Prescricao suspensa com sucesso");
     }
 
     @Override
@@ -157,6 +162,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         }
 
         var newAdministration = administracaoRepository.save(administration);
+        clinicRecordService.createClinicRecord(
+                prescription.getProcesso(),
+                TipoRegistoClinico.ADMINISTRACAO,
+                "Administracao registada com sucesso",
+                prescription.getDose().getDose().floatValue());
+
 
         if(surpassedMax){
             recordService.recordMaxDoseSurpassed(newAdministration, data.validacaoMedico());

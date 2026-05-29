@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.*;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegistoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ParametrosMapper;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
+import pt.ipcb.kardex.kardex_eletronico.service.record.ClinicRecordService;
+import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
@@ -19,6 +22,7 @@ public class ParametersServiceImpl implements ParametersService {
     private final ProcessService processService;
     private final WorkerService workerService;
     private final StockService stockService;
+    private final ClinicRecordService clinicRecordService;
 
     private final ParametrosMapper mapper;
 
@@ -33,6 +37,7 @@ public class ParametersServiceImpl implements ParametersService {
         cateter.setProcessoClinico(process);
 
         process.cateteres.add(cateter);
+        clinicRecordService.createClinicRecord(process, TipoRegistoClinico.CATETER, "Cateter registado com sucesso");
     }
 
     @Override
@@ -57,6 +62,7 @@ public class ParametersServiceImpl implements ParametersService {
         incident.setTurno(shift);
 
         process.getIncidentes().add(incident);
+        clinicRecordService.createClinicRecord(process, TipoRegistoClinico.INCIDENTE, "Incidente registado com sucesso");
     }
 
     @Override
@@ -86,6 +92,7 @@ public class ParametersServiceImpl implements ParametersService {
         containment.setMedicamento(medication);
 
         process.getContencoes().add(containment);
+        clinicRecordService.createClinicRecord(process, TipoRegistoClinico.CONTENCAO, "Contencao registada com sucesso");
     }
 
     @Override

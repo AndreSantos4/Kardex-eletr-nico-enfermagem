@@ -9,9 +9,11 @@ import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ResultadoExame;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoExame;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoPendencia;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegistoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ExameMapper;
 import pt.ipcb.kardex.kardex_eletronico.repository.ExameRepository;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
+import pt.ipcb.kardex.kardex_eletronico.service.record.ClinicRecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.shift.ShiftService;
 import pt.ipcb.kardex.kardex_eletronico.service.shift.issues.IssuesService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
@@ -34,6 +36,7 @@ public class ExamServiceImpl implements ExamService {
     private final WorkerService workerService;
     private final ShiftService shiftService;
     private final IssuesService issuesService;
+    private final ClinicRecordService clinicRecordService;
 
     @Transactional
     @Override
@@ -47,6 +50,7 @@ public class ExamServiceImpl implements ExamService {
         process.exames.add(exam);
 
         repository.save(exam);
+        clinicRecordService.createClinicRecord(process, TipoRegistoClinico.EXAME, "Exame registado com sucesso");
     }
 
     @Transactional
@@ -62,6 +66,7 @@ public class ExamServiceImpl implements ExamService {
         exam.setDataPretendida(data.dataPretendida());
         exam.setIndicacaoClinica(data.indicacaoClinica());
         exam.setUrgencia(data.urgencia());
+        clinicRecordService.createClinicRecord(exam.getProcessoClinico(), TipoRegistoClinico.EXAME, "Exame editado com sucesso");
     }
 
     @Transactional
@@ -75,6 +80,7 @@ public class ExamServiceImpl implements ExamService {
         }
 
         repository.deleteById(examId);
+        clinicRecordService.createClinicRecord(exam.getProcessoClinico(), TipoRegistoClinico.EXAME, "Exame eliminado com sucesso");
     }
 
     @Transactional(readOnly = true)
@@ -109,6 +115,7 @@ public class ExamServiceImpl implements ExamService {
 
         exam.setResultado(result);
         exam.setEstado(EstadoExame.CONCLUIDO);
+        clinicRecordService.createClinicRecord(exam.getProcessoClinico(), TipoRegistoClinico.EXAME, "Exame eliminado com sucesso");
     }
 
     @Transactional(readOnly = true)
@@ -131,6 +138,7 @@ public class ExamServiceImpl implements ExamService {
 
         exam.setEstado(EstadoExame.AGENDADO);
         exam.setDataPretendida(data.dataPretendida());
+        clinicRecordService.createClinicRecord(exam.getProcessoClinico(), TipoRegistoClinico.EXAME, "Exame agendado com sucesso");
     }
 
     @Transactional
@@ -142,5 +150,6 @@ public class ExamServiceImpl implements ExamService {
 
         exam.setEstado(EstadoExame.AGUARDANDO_RESULTADO);
         issuesService.executeDefinedIssue(examId, TipoPendencia.EXAME, shift.id());
+        clinicRecordService.createClinicRecord(exam.getProcessoClinico(), TipoRegistoClinico.EXAME, "Exame executado com sucesso");
     }
 }
