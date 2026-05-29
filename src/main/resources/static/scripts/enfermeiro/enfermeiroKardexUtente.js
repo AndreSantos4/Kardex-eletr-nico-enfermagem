@@ -266,7 +266,7 @@ async function carregarCamasEdicao() {
     const livres = dataLivres.success ? dataLivres.data : [];
     const ocupadas = dataOcupadas.success ? dataOcupadas.data : [];
 
-    const camaActualId = caseData.cama !== "—" ? String(caseData.cama) : null;
+    const camaActualId = caseData.cama !== "Não atribuído" ? String(caseData.cama) : null;
     const camaActual = camaActualId
       ? ocupadas.find((c) => String(c.id) === camaActualId)
       : null;
@@ -280,7 +280,7 @@ async function carregarCamasEdicao() {
     document.getElementById("edit-cama")?.parentElement?._popularItens?.(items);
   } catch (err) {
     console.error("Erro ao carregar camas para edição:", err);
-    if (caseData.cama !== "—") {
+    if (caseData.cama !== "Não atribuído") {
       document
         .getElementById("edit-cama")
         ?.parentElement?._popularItens?.([
@@ -334,7 +334,7 @@ async function carregarUtente(id) {
       nome: processo.medicoResponsavel?.dados?.nome ?? "Sem médico",
     };
 
-    caseData = { cama: processo.cama?.id ?? "—" };
+    caseData = { cama: processo.cama?.id ?? "Não atribuído" };
 
     // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vem colado à hora.
     const dias = _calcularDiasInternado(processo.dataEntrada) ?? 0;
@@ -410,8 +410,8 @@ async function abrirPopUpEditarFichaUtente() {
   await carregarCamasEdicao();
   definirValorSearchableSelect(
     "edit-cama",
-    caseData.cama !== "—" ? String(caseData.cama) : "",
-    caseData.cama !== "—" ? `Cama ${caseData.cama}` : "Sem cama",
+    caseData.cama !== "Não atribuído" ? String(caseData.cama) : "",
+    caseData.cama !== "Não atribuído" ? `Cama ${caseData.cama}` : "Sem cama",
   );
 
   document.querySelectorAll("input[name='edit-flags']").forEach((cb) => {

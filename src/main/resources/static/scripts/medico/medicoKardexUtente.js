@@ -61,7 +61,7 @@ async function carregarUtente(id) {
     // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vinha colado à hora (NaN).
     const diasInternado = _calcularDiasInternado(processo.dataEntrada) ?? 0;
     document.getElementById("page-subtitle").textContent =
-      `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "—"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
+      `Proc. ${processo.id} · Cama ${processo.cama?.id ?? "Não atribuído"} · ${processo.diagnosticoPrincipal ?? "—"} · ${diasInternado} dia(s) internado`;
 
     // Info bar
     document.getElementById("nome-utente").innerHTML = dados.nome;
@@ -76,7 +76,7 @@ async function carregarUtente(id) {
     document.getElementById("processo").innerHTML = processo.id;
     document.getElementById("data-nascimento").innerHTML = dados.dataNascimento;
     document.getElementById("cama").innerHTML =
-      processo.cama == null ? "Sem cama" : processo.cama.id;
+      processo.cama == null ? "Não atribuído" : processo.cama.id;
     document.getElementById("estado").innerHTML = "Internado";
     document.getElementById("dias-internado").innerHTML = diasInternado;
 

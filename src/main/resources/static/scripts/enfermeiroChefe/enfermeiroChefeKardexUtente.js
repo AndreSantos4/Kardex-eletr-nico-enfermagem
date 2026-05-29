@@ -68,11 +68,11 @@ function _calcularDiasInternado(dataEntrada) {
 // ─── Navegação ───────────────────────────────────────────────────────────────
 
 function abrirPaginaPlano() {
-    window.location.href = `enfermeiroPlanoCuidados?id=${id}`;
+    window.location.href = `enfermeiroChefePlanoCuidados?id=${id}`;
 }
 
 function irParaHistoricoPrescricoes() {
-    window.location.href = `enfermeiroHistoricoPrescricoes?id=${id}`;
+    window.location.href = `enfermeiroChefeHistoricoPrescricoes?id=${id}`;
 }
 
 // ─── Popups (lazy-load) ──────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ async function carregarUtente(id) {
             id: processo.medicoResponsavel?.id ?? null,
             nome: processo.medicoResponsavel?.dados?.nome ?? "Sem médico",
         };
-        caseData = { cama: processo.cama?.id ?? "—" };
+        caseData = { cama: processo.cama?.id ?? "Não atribuído" };
 
         const dias = _calcularDiasInternado(processo.dataEntrada) ?? 0;
 
