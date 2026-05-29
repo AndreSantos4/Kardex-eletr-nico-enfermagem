@@ -33,8 +33,10 @@ function updatePanelDatetime() {
 }
 
 function renderTopbar() {
-    document.getElementById("nome-chefe").textContent = sessionStorage.getItem("nomeEnfermeiro") ?? "—";
-    document.getElementById("turno-chefe").textContent = sessionStorage.getItem("turno") ?? "—";
+    const nomeEl = document.getElementById("nome-chefe");
+    if (nomeEl) nomeEl.textContent = sessionStorage.getItem("nomeEnfermeiro") ?? "—";
+    const turnoEl = document.getElementById("turno-chefe");
+    if (turnoEl) turnoEl.textContent = sessionStorage.getItem("turno") ?? "—";
 }
 
 function badge(text, cls) {
@@ -101,37 +103,35 @@ function renderUltimasAtividades(atividades) {
         </div>`).join("");
 }
 
-async function fetchPatientsStats() {
-    const res = await fetch(`${API_BASE}/api/patients?f=HOSPITALIZED`);
+async function fetchCounts() {
+    const res = await fetch(`${API_BASE}/api/stats/counts`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     if (!json.success) throw new Error(json.message);
-    const internados = (json.data ?? []).filter(u => u.processo !== null);
+    const c = json.data ?? {};
 
-    document.getElementById("stat-utentes-internados").textContent = internados.length;
+    const setStat = (id, valor) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = valor == null ? "—" : String(valor);
+    };
 
-    const hoje = new Date().toLocaleDateString("pt-PT").replace(/\//g, "/");
-    const admissoes = internados.filter(u => {
-        const d = u.processo?.dataEntrada ?? "";
-        return d.startsWith(hoje.split("/").reverse().join("/")) ||
-            d === hoje;
-    }).length;
-    document.getElementById("stat-admissoes-hoje").textContent = admissoes || "—";
-
-    const altas = internados.filter(u => u.processo?.alta === true).length;
-    document.getElementById("stat-altas-hoje").textContent = altas || "—";
+    setStat("stat-utentes-internados", c.hospitalizedPatients);
+    setStat("stat-enfermeiros-servico", c.activeNurses);
+    setStat("stat-admissoes-hoje", c.acceptedPatientsToday);
+    setStat("stat-altas-hoje", c.dischargedPatientsToday);
 }
 
 async function loadDashboard() {
     try {
-        await fetchPatientsStats();
+        await fetchCounts();
     } catch (err) {
-        console.error("[ChefeDashboard] patients:", err);
-        ["stat-utentes-internados", "stat-admissoes-hoje", "stat-altas-hoje"]
-            .forEach(id => { document.getElementById(id).textContent = "Err"; });
+        console.error("[ChefeDashboard] counts:", err);
+        ["stat-utentes-internados", "stat-enfermeiros-servico", "stat-admissoes-hoje", "stat-altas-hoje"]
+            .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "Err"; });
     }
-
-    document.getElementById("stat-enfermeiros-servico").textContent = "—";
 
     renderTurnosHoje([]);
     renderPassagensValidacao([]);
