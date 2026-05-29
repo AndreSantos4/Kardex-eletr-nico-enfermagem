@@ -22,4 +22,6 @@ public interface MedicamentoMapper {
     List<MedicamentoDTO> toDTOList(List<Medicamento> medicamentos);
 
     LoteMedicamentoDTO toDTO(LoteMedicamento lote);
+
+    List<LoteMedicamentoDTO> toBatchDTOList(List<LoteMedicamento> lotes);
 }
