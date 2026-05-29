@@ -42,84 +42,84 @@
 		</nav>
 
 		<div class="flex-1 flex flex-col gap-[14px] py-[14px] pr-[14px] pl-4 min-w-0">
-			<div class="bg-primary rounded px-5 py-3 border border-white/10 flex justify-between items-center">
-				<div class="flex flex-col gap-1">
-					<h3 class="text-[13px] font-bold tracking-wider text-white uppercase m-0">Painel de Gestão</h3>
+			<div class="bg-primary rounded-[5px] px-5 py-3 flex justify-between items-center">
+				<div class="flex flex-col gap-0.5">
+					<h3 class="text-[15px] font-bold tracking-wider text-white m-0">Painel de Gestão</h3>
 					<span class="text-xs text-secondary font-mono" id="panel-datetime">—</span>
 				</div>
-				<button class="bg-transparent border-[1.5px] border-white text-white text-[11px] font-bold tracking-wider px-4 py-1.5 cursor-pointer rounded hover:bg-white hover:text-primary transition-colors" onclick="location.href='enfermeiroChefeGerirTurnos'">Turnos</button>
+				<button class="bg-transparent border-2 border-white text-white text-[11px] font-bold tracking-[0.08em] px-4 py-1.5 cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors whitespace-nowrap" onclick="location.href='enfermeiroChefeGerirTurnos'">TURNOS</button>
 			</div>
 
-			<div class="grid grid-cols-6 gap-5 pt-2.5">
-				<div class="bg-primary rounded px-[18px] pt-[18px] pb-[14px] flex items-center gap-3 border border-white/10 justify-center">
-					<span class="font-mono text-[38px] font-semibold text-white leading-none" id="stat-utentes-internados">—</span>
-					<span class="text-xs text-secondary leading-[1.4] max-w-[70px]">Utentes internados</span>
+			<div class="grid grid-cols-6 gap-3 [&_.stat-card]:bg-white [&_.stat-card]:rounded-[5px] [&_.stat-card]:border [&_.stat-card]:border-primary/25 [&_.stat-card]:px-3 [&_.stat-card]:py-3 [&_.stat-card]:flex [&_.stat-card]:flex-col [&_.stat-card]:items-start [&_.stat-card]:gap-1 [&_.stat-card]:transition-all [&_.stat-card]:relative [&_.stat-card]:overflow-hidden [&_.stat-card:hover]:border-primary [&_.stat-card:hover]:shadow-md [&_.stat-card:hover]:-translate-y-px [&_.stat-card]:before:content-[''] [&_.stat-card]:before:absolute [&_.stat-card]:before:top-0 [&_.stat-card]:before:left-0 [&_.stat-card]:before:w-full [&_.stat-card]:before:h-[3px] [&_.stat-card]:before:bg-primary [&_.stat-value]:font-mono [&_.stat-value]:text-[32px] [&_.stat-value]:font-bold [&_.stat-value]:text-primary [&_.stat-value]:leading-none [&_.stat-value]:mt-1.5 [&_.stat-label]:text-[11px] [&_.stat-label]:text-primary/70 [&_.stat-label]:leading-tight [&_.stat-label]:font-semibold [&_.stat-label]:tracking-wide [&_.stat-label]:uppercase">
+				<div class="stat-card">
+					<span class="stat-value" id="stat-utentes-internados">—</span>
+					<span class="stat-label">Utentes internados</span>
 				</div>
-				<div class="bg-primary rounded px-[18px] pt-[18px] pb-[14px] flex items-center gap-3 border border-white/10 justify-center">
-					<span class="font-mono text-[38px] font-semibold text-white leading-none" id="stat-enfermeiros-servico">—</span>
-					<span class="text-xs text-secondary leading-[1.4] max-w-[70px]">Enfermeiros em serviço</span>
+				<div class="stat-card">
+					<span class="stat-value" id="stat-enfermeiros-servico">—</span>
+					<span class="stat-label">Enf. em serviço</span>
 				</div>
-				<div class="bg-primary rounded px-[18px] pt-[18px] pb-[14px] flex items-center gap-3 border border-white/10 justify-center">
-					<span class="font-mono text-[38px] font-semibold text-white leading-none" id="stat-stock-critico">—</span>
-					<span class="text-xs text-secondary leading-[1.4] max-w-[70px]">Stock Crítico</span>
+				<div class="stat-card">
+					<span class="stat-value" id="stat-stock-critico">—</span>
+					<span class="stat-label">Stock crítico</span>
 				</div>
-				<div class="bg-primary rounded px-[18px] pt-[18px] pb-[14px] flex items-center gap-3 border border-white/10 justify-center">
-					<span class="font-mono text-[38px] font-semibold text-white leading-none" id="stat-turno-validacao">—</span>
-					<span class="text-xs text-secondary leading-[1.4] max-w-[70px]">Turno aguarda validação</span>
+				<div class="stat-card">
+					<span class="stat-value" id="stat-turno-validacao">—</span>
+					<span class="stat-label">Aguarda validação</span>
 				</div>
-				<div class="bg-primary rounded px-[18px] pt-[18px] pb-[14px] flex items-center gap-3 border border-white/10 justify-center">
-					<span class="font-mono text-[38px] font-semibold text-white leading-none" id="stat-admissoes-hoje">—</span>
-					<span class="text-xs text-secondary leading-[1.4] max-w-[70px]">Admissões hoje</span>
+				<div class="stat-card">
+					<span class="stat-value" id="stat-admissoes-hoje">—</span>
+					<span class="stat-label">Admissões hoje</span>
 				</div>
-				<div class="bg-primary rounded px-[18px] pt-[18px] pb-[14px] flex items-center gap-3 border border-white/10 justify-center">
-					<span class="font-mono text-[38px] font-semibold text-white leading-none" id="stat-altas-hoje">—</span>
-					<span class="text-xs text-secondary leading-[1.4] max-w-[70px]">Altas hoje</span>
+				<div class="stat-card">
+					<span class="stat-value" id="stat-altas-hoje">—</span>
+					<span class="stat-label">Altas hoje</span>
 				</div>
 			</div>
 
-			<div class="grid grid-cols-[1.4fr_0.95fr] gap-[18px] mt-[18px] items-start [&_.info-panel]:bg-primary [&_.info-panel]:rounded [&_.info-panel]:px-5 [&_.info-panel]:py-[18px] [&_.info-panel]:border [&_.info-panel]:border-white/10 [&_.info-panel]:min-h-[125px] [&_.info-panel_h2]:text-[13px] [&_.info-panel_h2]:font-bold [&_.info-panel_h2]:tracking-wider [&_.info-panel_h2]:text-white [&_.info-panel_h2]:mb-3.5 [&_.info-panel_h2]:uppercase [&_.info-panel_h2]:m-0 [&_.compact-table-row]:grid [&_.compact-table-row]:grid-cols-[140px_110px_1fr_110px] [&_.compact-table-row]:px-4 [&_.compact-table-row]:py-3 [&_.compact-table-row]:items-center [&_.compact-table-row]:border-b-2 [&_.compact-table-row]:border-white/10 [&_.compact-table-row]:bg-white [&_.compact-table-row:last-child]:border-0 [&_.activity-item]:flex [&_.activity-item]:gap-2.5 [&_.activity-item]:text-[13px] [&_.activity-item]:text-text [&_.activity-item]:leading-[1.4] [&_.activity-item]:py-1 [&_.activity-item]:border-b [&_.activity-item]:border-[#eee] [&_.activity-time]:min-w-[52px] [&_.activity-time]:font-bold [&_.activity-time]:text-white [&_.flag-badge]:inline-block [&_.flag-badge]:text-[11px] [&_.flag-badge]:font-bold [&_.flag-badge]:px-1.5 [&_.flag-badge]:py-0.5 [&_.flag-badge]:rounded [&_.flag-badge]:m-px [&_.status-critico]:bg-[#fde8e8] [&_.status-critico]:!text-[#b91c1c] [&_.status-critico]:border [&_.status-critico]:border-[#fca5a5] [&_.status-baixo]:bg-[#fff7e6] [&_.status-baixo]:!text-[#b45309] [&_.status-baixo]:border [&_.status-baixo]:border-[#fcd34d] [&_.status-ok]:bg-[#f0fdf4] [&_.status-ok]:!text-[#166534] [&_.status-ok]:border [&_.status-ok]:border-[#86efac] [&_.status-em-curso]:bg-[#eff6ff] [&_.status-em-curso]:!text-[#1d4ed8] [&_.status-em-curso]:border [&_.status-em-curso]:border-[#93c5fd] [&_.status-validado]:bg-[#f0fdf4] [&_.status-validado]:!text-[#166534] [&_.status-validado]:border [&_.status-validado]:border-[#86efac] [&_.status-agendado]:bg-[#fdf4ff] [&_.status-agendado]:!text-[#7e22ce] [&_.status-agendado]:border [&_.status-agendado]:border-[#d8b4fe] [&_.status-pendente]:bg-[#fff7e6] [&_.status-pendente]:!text-[#b45309] [&_.status-pendente]:border [&_.status-pendente]:border-[#fcd34d] [&_.scrollable-panel]:max-h-[240px] [&_.scrollable-panel]:overflow-y-auto [&_.scrollable-panel]:overflow-x-hidden [&_.scrollable-panel::-webkit-scrollbar]:w-1.5 [&_.scrollable-panel::-webkit-scrollbar-track]:bg-[#f0f4f8] [&_.scrollable-panel::-webkit-scrollbar-thumb]:bg-primary [&_.scrollable-panel::-webkit-scrollbar-thumb]:rounded-[3px]">
-				<div class="flex flex-col gap-7 min-w-0">
+			<div class="grid grid-cols-[1.4fr_0.95fr] gap-3 items-start [&_.info-panel]:bg-white [&_.info-panel]:rounded-[5px] [&_.info-panel]:border [&_.info-panel]:border-primary [&_.info-panel]:overflow-hidden [&_.info-panel]:flex [&_.info-panel]:flex-col [&_.info-panel_.info-header]:bg-primary [&_.info-panel_.info-header]:px-4 [&_.info-panel_.info-header]:py-2.5 [&_.info-panel_.info-header]:text-text [&_.info-panel_.info-header]:text-sm [&_.info-panel_.info-header]:font-semibold [&_.info-panel_.info-header]:tracking-wider [&_.info-panel_.info-header]:flex [&_.info-panel_.info-header]:items-center [&_.info-panel_.info-header]:justify-between [&_.info-panel_.info-body]:p-3 [&_.compact-table-row]:grid [&_.compact-table-row]:grid-cols-[140px_110px_1fr_110px] [&_.compact-table-row]:px-3 [&_.compact-table-row]:py-2.5 [&_.compact-table-row]:items-center [&_.compact-table-row]:border-b [&_.compact-table-row]:border-primary/10 [&_.compact-table-row]:bg-white [&_.compact-table-row:nth-child(even)]:bg-primary/[0.025] [&_.compact-table-row:hover]:bg-primary/[0.06] [&_.compact-table-row:last-child]:border-0 [&_.compact-table-row_.row-shift]:text-[13px] [&_.compact-table-row_.row-shift]:font-semibold [&_.compact-table-row_.row-shift]:text-primary [&_.compact-table-row_.row-time]:text-[12.5px] [&_.compact-table-row_.row-time]:text-primary/80 [&_.compact-table-row_.row-time]:font-mono [&_.compact-table-row_.row-user-name]:text-[12.5px] [&_.compact-table-row_.row-user-name]:text-primary [&_.compact-table-row_.row-role]:text-right [&_.compact-table-row_.row-desc]:text-right [&_.activity-item]:flex [&_.activity-item]:gap-2.5 [&_.activity-item]:text-[12.5px] [&_.activity-item]:text-primary [&_.activity-item]:leading-snug [&_.activity-item]:py-2 [&_.activity-item]:px-3 [&_.activity-item]:border-b [&_.activity-item]:border-primary/10 [&_.activity-item:last-child]:border-0 [&_.activity-item:hover]:bg-primary/[0.04] [&_.activity-time]:min-w-[44px] [&_.activity-time]:font-bold [&_.activity-time]:text-primary [&_.activity-time]:font-mono [&_.activity-time]:text-[11px] [&_.activity-time]:shrink-0 [&_.infomation-row]:px-3 [&_.infomation-row]:py-2 [&_.infomation-row]:border-b [&_.infomation-row]:border-primary/10 [&_.infomation-row]:text-[12.5px] [&_.infomation-row]:text-primary [&_.infomation-row]:leading-snug [&_.infomation-row:last-child]:border-0 [&_.infomation-row:hover]:bg-primary/[0.04] [&_.flag-badge]:inline-block [&_.flag-badge]:text-[10.5px] [&_.flag-badge]:font-bold [&_.flag-badge]:tracking-wide [&_.flag-badge]:px-2.5 [&_.flag-badge]:py-0.5 [&_.flag-badge]:rounded-full [&_.flag-badge]:whitespace-nowrap [&_.status-critico]:bg-alertas/15 [&_.status-critico]:!text-alertas [&_.status-baixo]:bg-amber-100 [&_.status-baixo]:!text-amber-700 [&_.status-ok]:bg-ok/15 [&_.status-ok]:!text-ok [&_.status-em-curso]:bg-blue-100 [&_.status-em-curso]:!text-blue-700 [&_.status-validado]:bg-ok/15 [&_.status-validado]:!text-ok [&_.status-agendado]:bg-purple-100 [&_.status-agendado]:!text-purple-700 [&_.status-pendente]:bg-amber-100 [&_.status-pendente]:!text-amber-700 [&_.scrollable-panel]:max-h-[260px] [&_.scrollable-panel]:overflow-y-auto [&_.scrollable-panel]:overflow-x-hidden [&_.scrollable-panel::-webkit-scrollbar]:w-1.5 [&_.scrollable-panel::-webkit-scrollbar-track]:bg-primary/5 [&_.scrollable-panel::-webkit-scrollbar-thumb]:bg-primary/40 [&_.scrollable-panel::-webkit-scrollbar-thumb]:rounded-full [&_.empty-state]:text-center [&_.empty-state]:py-6 [&_.empty-state]:italic [&_.empty-state]:text-primary/55 [&_.empty-state]:text-[13px]">
+				<div class="flex flex-col gap-3 min-w-0">
 					<div class="info-panel">
-						<div class="flex justify-between items-center mb-3.5">
-							<h2 class="!mb-0">Turnos de hoje</h2>
+						<div class="info-header">
+							<span>Turnos de hoje</span>
 						</div>
-						<div class="bg-primary rounded border-2 border-white/10 overflow-hidden">
-							<div class="grid grid-cols-[140px_110px_1fr_110px] px-4 py-2.5 border-b-2 border-white/10 bg-primary [&>span]:text-[11px] [&>span]:font-bold [&>span]:tracking-wider [&>span]:text-secondary [&>span]:uppercase">
-								<span>Turno</span><span>Horário</span><span>Equipa</span><span>Estado</span>
-							</div>
+						<div class="grid grid-cols-[140px_110px_1fr_110px] px-3 py-2 bg-primary/5 border-b border-primary/15 [&>span]:text-[10.5px] [&>span]:font-bold [&>span]:tracking-[0.08em] [&>span]:text-primary/65 [&>span]:uppercase [&>span:last-child]:text-right">
+							<span>Turno</span><span>Horário</span><span>Equipa</span><span>Estado</span>
 						</div>
 						<div id="turnos-hoje-body" class="scrollable-panel">
-							<div class="compact-table-row"><span colspan="4" style="padding:12px;color:#888;">A carregar...</span></div>
+							<p class="empty-state">A carregar...</p>
 						</div>
 					</div>
 
 					<div class="info-panel">
-						<h2>Passagem Aguarda Validações</h2>
-						<div id="passagens-validacao-body" class="scrollable-panel text-[13px]">
-							<span style="color:#888;">A carregar...</span>
+						<div class="info-header">
+							<span>Passagens aguardam validação</span>
+						</div>
+						<div id="passagens-validacao-body" class="scrollable-panel">
+							<p class="empty-state">A carregar...</p>
 						</div>
 					</div>
 				</div>
 
-				<div class="flex flex-col gap-7 min-w-0">
+				<div class="flex flex-col gap-3 min-w-0">
 					<div class="info-panel">
-						<div class="flex justify-between items-center mb-3.5">
-							<h2 class="!mb-0">Stock Crítico</h2>
+						<div class="info-header">
+							<span>Stock crítico</span>
 						</div>
-						<div class="bg-primary rounded border-2 border-white/10 overflow-hidden">
-							<div class="grid grid-cols-[140px_110px_1fr_110px] px-4 py-2.5 border-b-2 border-white/10 bg-primary [&>span]:text-[11px] [&>span]:font-bold [&>span]:tracking-wider [&>span]:text-secondary [&>span]:uppercase">
-								<span>Medicamento</span><span>Stock</span><span>Min</span><span>Estado</span>
-							</div>
+						<div class="grid grid-cols-[140px_110px_1fr_110px] px-3 py-2 bg-primary/5 border-b border-primary/15 [&>span]:text-[10.5px] [&>span]:font-bold [&>span]:tracking-[0.08em] [&>span]:text-primary/65 [&>span]:uppercase [&>span:last-child]:text-right">
+							<span>Medicamento</span><span>Stock</span><span>Min</span><span>Estado</span>
 						</div>
 						<div id="stock-critico-body" class="scrollable-panel">
-							<div class="compact-table-row"><span colspan="4" style="padding:12px;color:#888;">A carregar...</span></div>
+							<p class="empty-state">A carregar...</p>
 						</div>
 					</div>
 
 					<div class="info-panel">
-						<h2>Últimas Atividades</h2>
-						<div id="ultimas-atividades-body" class="scrollable-panel text-[13px]">
-							<span style="color:#888;">A carregar...</span>
+						<div class="info-header">
+							<span>Últimas atividades</span>
+						</div>
+						<div id="ultimas-atividades-body" class="scrollable-panel">
+							<p class="empty-state">A carregar...</p>
 						</div>
 					</div>
 				</div>
