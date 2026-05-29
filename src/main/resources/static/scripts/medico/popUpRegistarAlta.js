@@ -33,9 +33,13 @@ async function submeterAlta(event) {
     if (!resp.ok) throw new Error("Erro ao registar alta");
 
     fecharPopUp();
-    alert("Alta registada com sucesso!");
+    sessionStorage.setItem("notificacao_pendente", JSON.stringify({
+      titulo: "Alta registada",
+      mensagem: "Alta clínica registada com sucesso.",
+      tipo: "sucesso"
+    }));
     window.location.href = "medicoListaUtentes";
   } catch (_) {
-    alert("Erro ao registar alta. Tenta novamente.");
+    mostrarNotificacao({ titulo: "Erro", mensagem: "Erro ao registar alta. Tenta novamente.", tipo: "erro" });
   }
 }
