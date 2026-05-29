@@ -15,6 +15,13 @@
 
 			<form id="form-administrar-sos" onsubmit="submeterAdministrarSOS(event)" class="flex flex-col gap-[14px] [&_.popup-sos-field]:flex [&_.popup-sos-field]:flex-col [&_.popup-sos-field]:gap-1.5 [&_.popup-sos-label]:text-[11px] [&_.popup-sos-label]:font-extrabold [&_.popup-sos-label]:tracking-[0.07em] [&_.popup-sos-label]:text-white [&_.popup-sos-label]:uppercase [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-secondary/40 [&_select]:rounded-md [&_select]:text-bg-dark [&_select]:text-[13px] [&_select]:font-semibold [&_select]:px-3.5 [&_select]:py-2.5 [&_select]:w-full [&_select]:cursor-pointer [&_select:focus]:outline-none [&_select:focus]:border-secondary [&_input]:bg-white [&_input]:border-[1.5px] [&_input]:border-secondary/40 [&_input]:rounded-md [&_input]:text-bg-dark [&_input]:text-[13px] [&_input]:font-semibold [&_input]:px-3.5 [&_input]:py-2.5 [&_input]:w-full [&_input]:cursor-pointer [&_input:focus]:outline-none [&_input:focus]:border-secondary [&_textarea]:bg-white [&_textarea]:border-[1.5px] [&_textarea]:border-secondary/40 [&_textarea]:rounded-md [&_textarea]:text-bg-dark [&_textarea]:text-[13px] [&_textarea]:px-3.5 [&_textarea]:py-2.5 [&_textarea]:w-full [&_textarea]:min-h-[90px] [&_textarea]:resize-y [&_textarea]:leading-[1.5] [&_textarea:focus]:outline-none [&_textarea:focus]:border-secondary">
 				<div class="popup-sos-field">
+					<label class="popup-sos-label">PRESCRIÇÃO SOS *</label>
+					<select id="prescricao-sos" onchange="atualizarPrescricaoSOS()" required>
+						<option value="" disabled selected>Selecione a prescrição</option>
+					</select>
+				</div>
+
+				<div class="popup-sos-field">
 					<label class="popup-sos-label">CONDIÇÃO CLÍNICA QUE JUSTIFICA A ADMINISTRAÇÃO *</label>
 					<select id="condicao-sos" class="popup-sos-select" required>
 						<option value="AGITACAO_PSICOMOTORA">Agitação psicomotora</option>
@@ -38,8 +45,13 @@
 					</div>
 					<div class="popup-sos-field">
 						<label class="popup-sos-label">DOSE ADMINISTRADA *</label>
-						<input type="text" id="dose-sos" class="popup-sos-input" placeholder="Ex: 5mg" required />
+						<input type="text" id="dose-sos" class="popup-sos-input" placeholder="Ex: 5mg" required oninput="validarDoseSOS()" />
 					</div>
+				</div>
+
+				<div id="aviso-dose-sos" class="hidden bg-alertas/20 border border-alertas text-alertas text-[12px] font-bold px-3 py-2 rounded-md items-start gap-2">
+					<span class="leading-none text-base">⚠</span>
+					<span id="aviso-dose-sos-texto">Dose excessiva — verifique a prescrição.</span>
 				</div>
 
 				<div class="popup-sos-info-note bg-secondary/20 border border-secondary/35 rounded-md px-3.5 py-2.5 flex items-center gap-3 text-white text-xs leading-[1.4]">
