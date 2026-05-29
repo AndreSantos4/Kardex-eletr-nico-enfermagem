@@ -22,6 +22,13 @@ public interface ProcessoClinicoRepository extends JpaRepository<ProcessoClinico
     List<ProcessoClinico> findAllActive();
 
     @Query("SELECT p FROM ProcessoClinico p " +
+            "LEFT JOIN FETCH p.sinaisVitais " +
+            "LEFT JOIN FETCH p.prescricoes " +
+            "LEFT JOIN FETCH p.utente " +
+            "WHERE p.id = :id AND p.alta = false")
+    Optional<ProcessoClinico> findByIdDetailed(@Param("id") Long id);
+
+    @Query("SELECT p FROM ProcessoClinico p " +
        "JOIN FETCH p.utente u " +
        "LEFT JOIN FETCH p.sinaisVitais " +
        "LEFT JOIN FETCH p.prescricoes pr " +
