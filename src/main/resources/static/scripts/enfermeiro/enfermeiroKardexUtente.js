@@ -1479,12 +1479,8 @@ async function carregarPlanoDeHoje() {
 
     intervencoes.forEach((inv) => {
       const feita = inv.funcionarioExecutou != null;
-      const realizadaPorId = String(
-        inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "",
-      );
-      const podeDesmarcar =
-        feita && String(realizadaPorId) === String(enfermeiroAtualId);
-      const checkboxBloqueada = !feita || (feita && !podeDesmarcar);
+      const podeDesmarcar = feita;
+      const checkboxBloqueada = !feita;
 
       const prio = prioridadeConfig[inv.prioridade] ?? {
         cor: "#666",
@@ -1508,11 +1504,9 @@ async function carregarPlanoDeHoje() {
       const textoRiscado = feita
         ? "text-decoration:line-through;opacity:0.55;"
         : "";
-      const tituloCb = apenasLeitura(feita, podeDesmarcar)
-        ? "Registado por outro enfermeiro"
-        : feita
-          ? "Clica para desmarcar"
-          : "Marcar como realizado deve ser feito no plano de cuidados";
+      const tituloCb = feita
+        ? "Clica para desmarcar"
+        : "Marcar como realizado deve ser feito no plano de cuidados";
 
       const nomeIntervencao = intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
 

@@ -75,7 +75,7 @@ function renderizarTabela() {
       <td>${cama}</td>
       <td>${u.processo.diagnosticoPrincipal}</td>
       <td>${u.processo.medicoResponsavel.dados.nome}</td>
-      <td>${u.processo.dataEntrada}</td>
+      <td>${(u.processo.dataEntrada ?? "").split(":")[0]}</td>
       <td>${estado}</td>
       <td>${u.processo.temAlergias}</td>
       <td>
