@@ -5,7 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ipcb.kardex.kardex_eletronico.controller.config.ApiResponse;
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.MaxDoseAlertDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.administration.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreatePrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.prescription.SuspendPrescriptionDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
@@ -27,9 +28,9 @@ public class PrescriptionController {
     }
 
     @PostMapping("/prescriptions/{prescriptionId}/administrations")
-    public ResponseEntity<ApiResponse<?>> administrateMedication(@PathVariable Long prescriptionId, @RequestBody CreateAdministrationDTO data){
-        service.administrateMedication(prescriptionId, data);
-        return ResponseEntity.ok(ApiResponse.ok("Administracao efetuada com sucesso", null));
+    public ResponseEntity<ApiResponse<MaxDoseAlertDTO>> administrateMedication(@PathVariable Long prescriptionId, @RequestBody CreateAdministrationDTO data){
+        var alert = service.administrateMedication(prescriptionId, data);
+        return ResponseEntity.ok(ApiResponse.ok("Administracao efetuada com sucesso", alert));
     }
 
     @GetMapping("/{processId}/prescriptions")

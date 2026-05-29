@@ -209,12 +209,9 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
    	public ProcessoClinico getValidProcess(Long processId) {
-		var process = repository.findById(processId)
+		var process = repository.findByIdDetailed(processId)
                .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
-   
-        if(process.getAlta()){
-               throw new InactiveResourceException("Processo Clinico");
-        }
+
 		return process;
 	}
 
@@ -225,7 +222,7 @@ public class ProcessServiceImpl implements ProcessService{
         return mapper.toDTO(process);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public void buildPendingIssues(Turno shift, List<AtribuicaoUtente> assignments) {
         List<Pendencia> pendencias = assignments.stream()

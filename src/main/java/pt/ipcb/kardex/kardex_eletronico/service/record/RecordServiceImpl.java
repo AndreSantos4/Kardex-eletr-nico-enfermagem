@@ -12,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import pt.ipcb.kardex.kardex_eletronico.controller.filter.RecordFilter;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.administration.MedicValidationDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.record.RegistoDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.util.Pagination;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Registo;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utilizador;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.NivelRegisto;
@@ -157,6 +159,30 @@ public class RecordServiceImpl implements RecordService {
             details,
             request.getRemoteAddr(),
             LocalDateTime.now()
+        );
+
+        repository.save(record);
+    }
+
+
+    @Transactional
+    @Override
+    public void recordMaxDoseSurpassed(AdministracaoMedicacao administration, MedicValidationDTO validator){
+        var user = (Utilizador) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        var details = validator == null ? null : "Validada pelo medico de id " + validator.idMedico();
+
+        var record = new Registo(
+                null,
+                user,
+                NivelRegisto.ALERTA,
+                TipoRegisto.ADMINISTRATION,
+                "administracao_medicacao",
+                String.format("Administracao de id %d ultrapassou a dosagem maxima diaria", administration.getId()),
+                details,
+                request.getRemoteAddr(),
+                LocalDateTime.now()
         );
 
         repository.save(record);

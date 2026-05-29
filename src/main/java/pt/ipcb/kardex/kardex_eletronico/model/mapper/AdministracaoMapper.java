@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.AdministracaoDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.CreateAdministrationDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.administration.AdministracaoDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.prescription.administration.CreateAdministrationDTO;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.AdministracaoMedicacao;
 
 @Mapper(componentModel = "spring")
