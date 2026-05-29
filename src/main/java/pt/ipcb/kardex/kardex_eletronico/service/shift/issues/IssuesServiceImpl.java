@@ -120,16 +120,16 @@ public class IssuesServiceImpl implements IssuesService {
 
     @Transactional
     @Override
-    public void executeDefinedIssue(Long objectId, TipoPendencia tipo) {
-        var pendencia = repository.findByIdObjetoAndTipo(objectId, tipo)
+    public void executeDefinedIssue(Long objectId, TipoPendencia tipo, Long shiftId) {
+        var pendencia = repository.findByIdObjetoAndTipoAndTurnoId(objectId, tipo, shiftId)
                 .orElseThrow(() -> new KardexException("Pendencia inexistente"));
         resolveIssue(pendencia);
     }
 
     @Transactional
     @Override
-    public void executeUndefinedIssue(Long patientId, TipoPendencia tipo) {
-        var pendencia = repository.findByUtenteIdAndTipo(patientId, tipo)
+    public void executeUndefinedIssue(Long patientId, TipoPendencia tipo, Long shiftId) {
+        var pendencia = repository.findByUtenteIdAndTipoAndTurnoId(patientId, tipo, shiftId)
                 .orElseThrow(() -> new KardexException("Pendencia inexistente"));
         resolveIssue(pendencia);
     }

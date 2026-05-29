@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface PendenciaRepository extends JpaRepository<Pendencia, Long> {
 
 
-    Optional<Pendencia> findByIdObjetoAndTipo(Long objectId, TipoPendencia tipo);
+    Optional<Pendencia> findByIdObjetoAndTipoAndTurnoId(Long objectId, TipoPendencia tipo, Long shiftId);
 
-    Optional<Pendencia> findByUtenteIdAndTipo(Long patientId, TipoPendencia tipo);
+    Optional<Pendencia> findByUtenteIdAndTipoAndTurnoId(Long patientId, TipoPendencia tipo, Long shiftId);
 }
