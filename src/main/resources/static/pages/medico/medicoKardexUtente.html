@@ -121,9 +121,9 @@
             </div>
 
             <div class="m-[14px] rounded-[5px] border-t border-b border-primary flex items-stretch gap-3">
-                <div class="flex-1 border-l border-r border-primary rounded-[5px] flex flex-col">
+                <div class="sinais-vitais-bar flex-1 border-l border-r border-primary rounded-[5px] flex flex-col">
                     <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm h-7 flex items-center">Sinais Vitais</div>
-                    <div class="grid grid-cols-3 gap-2 m-2.5 [&>div]:bg-primary [&>div]:rounded-[3px] [&>div]:text-text [&>div]:flex [&>div]:items-center [&>div]:justify-center [&>div]:flex-col [&>div]:p-[5px] [&>div]:h-[70px] [&>div_p]:m-0.5 [&>div_p]:text-xs [&>div_p]:text-center">
+                    <div class="sinais-vitais grid grid-cols-3 gap-2 m-2.5 [&>div]:bg-primary [&>div]:rounded-[3px] [&>div]:text-text [&>div]:flex [&>div]:items-center [&>div]:justify-center [&>div]:flex-col [&>div]:p-[5px] [&>div]:h-[70px] [&>div_p]:m-0.5 [&>div_p]:text-xs [&>div_p]:text-center">
                         <div><p id="tensao-art"></p><p>mmHg</p><p>Tensão Art.</p></div>
                         <div><p id="freq-card"></p><p>bpm</p><p>Freq. Card.</p></div>
                         <div><p id="temperatura"></p><p>ºC</p><p>Temperatura</p></div>
@@ -136,12 +136,11 @@
                     <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm flex items-center">
                         <div class="w-1/2">Plano de Cuidados Hoje</div>
                         <div class="w-1/2 flex justify-end">
-                            <button class="bg-transparent border-2 border-white text-white text-xs font-bold tracking-[0.01em] p-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="">VER COMPLETO</button>
+                            <button class="bg-transparent border-2 border-white text-white text-xs font-bold tracking-[0.01em] p-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="mostrarPlano()">VER COMPLETO</button>
                         </div>
                     </div>
-                    <div class="flex items-start justify-center gap-[15px] m-[5px] flex-1 text-primary [&_p]:m-0">
-                        <div class="w-1/2"><p id="atividade"></p></div>
-                        <div class="w-1/2 flex justify-end"><p id="hora-atividade"></p></div>
+                    <div class="flex items-center justify-center p-4 text-primary text-xs">
+                        <p class="m-0 opacity-60">Clique em "Ver Completo" para consultar o plano de cuidados.</p>
                     </div>
                 </div>
             </div>
