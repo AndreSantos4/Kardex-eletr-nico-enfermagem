@@ -291,6 +291,8 @@ async function carregarPopups() {
   const popups = [
     "../../pages/enfermeiro/popups/popupAdicionarIntervencaoPlano.html",
     "../../pages/enfermeiro/popups/popupRegistarIntervencao.html",
+    "../../pages/enfermeiro/popups/popuRegistarAdminstracaoSOS.html",
+    "../../pages/enfermeiro/popups/popupRegistarContencaoQuimica.html",
   ];
 
   const container = document.getElementById("popup-container");
@@ -340,3 +342,177 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Erro ao inicializar página:", err);
   }
 });
+
+/* ============================================================
+ *  Popups - Administração SOS / Contenção Química
+ *  Placeholder: endpoints ainda não existem no backend.
+ * ============================================================ */
+
+let _medicamentosContencao = [];
+
+function _agoraSos() {
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - off * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+/* ---------- Administração SOS ---------- */
+
+function abrirPopUpAdministrarSOS() {
+  const popup = document.querySelector(".popup-sos-overlay");
+  if (!popup) {
+    mostrarNotificacao({ titulo: "Popup indisponível", mensagem: "O popup ainda não foi carregado.", tipo: "erro" });
+    return;
+  }
+  const inputDataHora = document.getElementById("data-hora-sos");
+  if (inputDataHora) inputDataHora.value = _agoraSos();
+  popup.style.display = "flex";
+}
+
+function fecharPopupAdministrarSOS() {
+  const popup = document.querySelector(".popup-sos-overlay");
+  if (!popup) return;
+  popup.style.display = "none";
+  popup.querySelector("form")?.reset();
+}
+
+function submeterAdministrarSOS(event) {
+  if (event) event.preventDefault();
+  const condicao = document.getElementById("condicao-sos")?.value;
+  const descricao = document.getElementById("descricao-sos")?.value.trim();
+  const dataHora = document.getElementById("data-hora-sos")?.value;
+  const dose = document.getElementById("dose-sos")?.value.trim();
+
+  if (!condicao || !descricao || !dataHora || !dose) {
+    mostrarNotificacao({ titulo: "Formulário incompleto", mensagem: "Preenche todos os campos obrigatórios.", tipo: "aviso" });
+    return;
+  }
+
+  console.log("[SOS] Registar administração:", { condicao, descricao, dataHora, dose });
+  mostrarNotificacao({ titulo: "Funcionalidade em desenvolvimento", mensagem: "Endpoint do backend ainda não disponível.", tipo: "aviso" });
+  fecharPopupAdministrarSOS();
+
+  /*
+   * TODO: POST /api/processes/{_processoId}/sos-administrations
+   */
+}
+
+/* ---------- Contenção Química ---------- */
+
+async function abrirPopUpContencaoQuimica() {
+  const popup = document.querySelector(".popup-contencao-overlay");
+  if (!popup) {
+    mostrarNotificacao({ titulo: "Popup indisponível", mensagem: "O popup ainda não foi carregado.", tipo: "erro" });
+    return;
+  }
+  const inputDataHora = document.getElementById("data-hora-contencao");
+  if (inputDataHora) inputDataHora.value = _agoraSos();
+  await carregarMedicamentosContencao();
+  popup.style.display = "flex";
+}
+
+function fecharPopupRegistarContencao() {
+  const popup = document.querySelector(".popup-contencao-overlay");
+  if (!popup) return;
+  popup.style.display = "none";
+  popup.querySelector("form")?.reset();
+}
+
+async function carregarMedicamentosContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+  if (!selectMed || !selectDose) return;
+
+  selectMed.innerHTML = '<option value="" disabled selected>A carregar...</option>';
+  selectDose.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+
+  try {
+    const res = await fetch("http://localhost:8080/api/stock/medications", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message ?? "Erro ao carregar medicamentos");
+
+    _medicamentosContencao = data.data ?? [];
+
+    selectMed.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+    _medicamentosContencao.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.nome;
+      selectMed.appendChild(opt);
+    });
+  } catch (err) {
+    selectMed.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
+    console.error("Erro ao carregar medicamentos:", err);
+  }
+}
+
+function atualizarDosagemContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+  const selectVia = document.getElementById("via-contencao");
+  if (!selectMed || !selectDose) return;
+
+  const idSelecionado = parseInt(selectMed.value);
+  const med = _medicamentosContencao.find((m) => m.id === idSelecionado);
+
+  if (selectVia && med?.viaAdministracao) {
+    const optionExiste = Array.from(selectVia.options).some((o) => o.value === med.viaAdministracao);
+    if (optionExiste) selectVia.value = med.viaAdministracao;
+  }
+
+  selectDose.innerHTML = '<option value="" disabled selected>Selecione a dosagem</option>';
+  if (med?.dosagens?.length) {
+    med.dosagens.forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d.id;
+      const doseStr = d.dose % 1 === 0 ? d.dose : d.dose.toFixed(3).replace(/\.?0+$/, "");
+      opt.textContent = `${doseStr} ${d.unidadeMedida ?? ""}`.trim();
+      selectDose.appendChild(opt);
+    });
+  }
+}
+
+async function submeterRegistarContencao(event) {
+  if (event) event.preventDefault();
+
+  const idMedicamento = document.getElementById("medicamento-contencao")?.value;
+  const idDose = document.getElementById("dosagem-contencao")?.value;
+  const duracao = document.getElementById("duracao-contencao")?.value.trim();
+  const dataHoraRaw = document.getElementById("data-hora-contencao")?.value;
+  const justificacao = document.getElementById("justificacao-contencao")?.value.trim();
+
+  if (!idMedicamento || !idDose || !duracao || !dataHoraRaw || !justificacao) {
+    mostrarNotificacao({ titulo: "Formulário incompleto", mensagem: "Preenche todos os campos obrigatórios.", tipo: "aviso" });
+    return;
+  }
+
+  const body = {
+    idMedicamento: parseInt(idMedicamento),
+    idDose: parseInt(idDose),
+    duracao,
+    data: formatarDataHoraParaAPIComSegundos(dataHoraRaw),
+    justificacao,
+  };
+
+  try {
+    const resp = await fetch(`http://localhost:8080/api/processes/${_processoId}/containments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.success) throw new Error(data.message ?? "Erro ao registar contenção");
+
+    mostrarNotificacao({ titulo: "Contenção registada", mensagem: "Registo guardado com sucesso.", tipo: "sucesso" });
+    fecharPopupRegistarContencao();
+  } catch (err) {
+    console.error("Erro ao registar contenção:", err);
+    mostrarNotificacao({ titulo: "Erro", mensagem: err.message ?? "Não foi possível registar a contenção.", tipo: "erro" });
+  }
+}

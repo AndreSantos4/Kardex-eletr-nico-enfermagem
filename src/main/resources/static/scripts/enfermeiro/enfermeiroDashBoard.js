@@ -2,10 +2,23 @@ const API_BASE = "http://localhost:8080/api/";
 const tipoMap = {
     SINAL_VITAL: "Sinal Vital",
     MEDICACAO: "Medicação",
+    CATETER: "Cateter",
+    EXAME: "Exame",
     ADMINISTRACAO_ATRASADA: "Administração Atrasada",
     PROCEDIMENTO: "Procedimento",
     OBSERVACAO: "Observação",
     AVALIACAO: "Avaliação",
+};
+
+const prioridadePorTipo = {
+    MEDICACAO: { texto: "Alta", cor: "hsl(0,98%,36%)" },
+    EXAME: { texto: "Alta", cor: "hsl(0,98%,36%)" },
+    CATETER: { texto: "Média", cor: "#ca8a04" },
+    SINAL_VITAL: { texto: "Média", cor: "#ca8a04" },
+    PROCEDIMENTO: { texto: "Média", cor: "#ca8a04" },
+    OBSERVACAO: { texto: "Baixa", cor: "#2e7d32" },
+    AVALIACAO: { texto: "Baixa", cor: "#2e7d32" },
+    ADMINISTRACAO_ATRASADA: { texto: "Alta", cor: "hsl(0,98%,36%)" },
 };
 
 function updateClock() {
@@ -45,7 +58,7 @@ function lastSVHour(sinaisVitais) {
     return timePart || "—";
 }
 
-function renderTabelaUtentes(utentes) {
+function renderTabelaUtentes(utentes, pendencias = []) {
     const tbody = document.getElementById("lista-utentes-tbody");
     if (!tbody) return;
 
@@ -59,6 +72,16 @@ function renderTabelaUtentes(utentes) {
 
     document.getElementById("utentes-atribuidos").textContent = utentes.length;
 
+    // Mapa utenteId → lista de pendências MEDICACAO não executadas
+    const medicacaoPorUtente = new Map();
+    (pendencias ?? []).forEach(p => {
+        if (p.tipo !== "MEDICACAO" || p.executada) return;
+        const uid = p.utente?.id;
+        if (uid == null) return;
+        if (!medicacaoPorUtente.has(uid)) medicacaoPorUtente.set(uid, []);
+        medicacaoPorUtente.get(uid).push(p);
+    });
+
     tbody.innerHTML = utentes.map(u => {
         const p = u.processo;
         const numeroProcesso = p?.id ?? "—";
@@ -67,7 +90,7 @@ function renderTabelaUtentes(utentes) {
         const diagnostico = p?.diagnosticoPrincipal ?? "—";
         const svHora = lastSVHour(p?.sinaisVitais);
 
-        const proxMedicacao = "—"; // TODO: endpoint de medicações
+        const proxMedicacao = renderProxMedicacao(medicacaoPorUtente.get(u.id));
 
         const flagsHtml = renderFlags(u.flags);
         const temAlergias = u.alergias && u.alergias.length > 0;
@@ -88,6 +111,26 @@ function renderTabelaUtentes(utentes) {
             <td><button class="ver-mais" onclick="verUtente(${u.id})">VER MAIS</button></td>
         </tr>`;
     }).join("");
+}
+
+/**
+ * Recebe uma lista de pendências MEDICACAO (ou undefined) e devolve o HTML da coluna
+ * "Próx. Medicação". O backend cria a pendência exactamente quando a hora prevista de
+ * administração já passou (ver IssuesServiceImpl.buildMedicationsIssues), portanto se
+ * existir pendência → está atrasada. A descrição é "Administracao de <medicamento> pendente".
+ */
+function renderProxMedicacao(pendsMedicacao) {
+    const lista = Array.isArray(pendsMedicacao) ? pendsMedicacao : (pendsMedicacao ? [pendsMedicacao] : []);
+    if (lista.length === 0) return "—";
+    return lista.slice(0, 3).map(p => {
+        const desc = p.descricao ?? "";
+        const m = /Administracao de (.+?) pendente/i.exec(desc);
+        const nomeMed = m ? m[1] : desc || "Medicação";
+        return `<div style="line-height:1.2;margin:2px 0;">
+            <div style="color:hsl(0,98%,36%);font-weight:700;font-size:0.8rem;">Atrasado</div>
+            <div style="font-size:0.8rem;">${nomeMed}</div>
+        </div>`;
+    }).join('<div style="height:4px;"></div>');
 }
 
 function renderAlertas(utentes) {
@@ -129,21 +172,26 @@ function renderStatusBar(utentes, pendencias = []) {
 
     pendencias.forEach(p => {
         const tipo = p.tipo ?? "DESCONHECIDO";
-
         counts[tipo] = (counts[tipo] || 0) + 1;
     });
+
+    // O backend cria pendências de tipo MEDICACAO precisamente quando a hora prevista
+    // de administração já passou (ver IssuesServiceImpl.buildMedicationsIssues).
+    // Portanto MEDICACAO pendentes == administrações atrasadas.
+    const medicacoes = counts["MEDICACAO"] || 0;
+    const naoExecutadas = pendencias.filter(p => !p.executada).length;
 
     document.getElementById("sinais-vitais-registar").textContent =
         counts["SINAL_VITAL"] || 0;
 
     document.getElementById("medicacoes-pendentes").textContent =
-        counts["MEDICACAO"] || 0;
+        medicacoes;
 
     document.getElementById("administracao-atrasada").textContent =
-        counts["ADMINISTRACAO_ATRASADA"] || 0;
+        medicacoes;
 
     document.getElementById("pendencias-turno-anterior").textContent =
-        pendencias.length;
+        naoExecutadas;
 
     console.log("Pendências agrupadas:", counts);
 }
@@ -185,22 +233,19 @@ async function loadDashboard() {
             u => u.processo !== null
         );
 
-        const turnoRes = await fetch(
-            `${API_BASE}workers/me/shift`,
-            { headers }
-        );
-
-        if (!turnoRes.ok) {
-            throw new Error(`HTTP ${turnoRes.status}`);
+        // Sem turno ativo: backend devolve 400. Tratamos como "sem turno" em vez de falhar
+        let turno = null;
+        try {
+            const turnoRes = await fetch(`${API_BASE}workers/me/shift`, { headers });
+            if (turnoRes.ok) {
+                const turnoJson = await turnoRes.json();
+                if (turnoJson.success) turno = turnoJson.data;
+            } else {
+                console.warn(`[Dashboard] Sem turno ativo (HTTP ${turnoRes.status})`);
+            }
+        } catch (errTurno) {
+            console.warn("[Dashboard] Erro ao obter turno:", errTurno);
         }
-
-        const turnoJson = await turnoRes.json();
-
-        if (!turnoJson.success) {
-            throw new Error(turnoJson.message);
-        }
-        console.log(turnoJson);
-        const turno = turnoJson.data;
 
         let pendencias = [];
 
@@ -223,7 +268,7 @@ async function loadDashboard() {
             }
         }
 
-        renderTabelaUtentes(internados);
+        renderTabelaUtentes(internados, pendencias);
 
         renderStatusBar(internados, pendencias);
 
@@ -285,16 +330,15 @@ function renderPendencias(pendencias) {
 
     tbody.innerHTML = pendencias.map(p => {
         const utente = p.utente?.nome ?? "—";
-        console.log(p);
-        const prioridade = p.tipo;
-
+        const prio = prioridadePorTipo[p.tipo] ?? { texto: "Média", cor: "#e65100" };
+        const prioBadge = `<span style="display:inline-block;background:${prio.cor};color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">${prio.texto}</span>`;
 
         return `
             <tr>
                 <td>${utente}</td>
                 <td>${tipoMap[p.tipo] ?? p.tipo}</td>
                 <td>${p.descricao ?? "—"}</td>
-                <td>${prioridade}</td>
+                <td>${prioBadge}</td>
             </tr>
         `;
     }).join("");

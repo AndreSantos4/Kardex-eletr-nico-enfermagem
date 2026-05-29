@@ -1,42 +1,55 @@
-const contentContainer = document.querySelector(".content-container");
-const popUpContainer = document.querySelector(".pop-up-container");
 let popUpCriarUtentes;
 const hoje = new Date().toISOString().split("T")[0];
 
+function _popupContainer() {
+  return document.getElementById("popUpContainer");
+}
+
 async function abrirpopup() {
-  const container = document.getElementById("popUpContainer");
+  const container = _popupContainer();
+  if (!container) {
+    console.error("[Criar Utente] #popUpContainer não existe na página.");
+    return;
+  }
 
   if (document.querySelector(".pop-up-criar-utente")) {
     abrirCriarUtente();
     return;
   }
 
-  const resp = await fetch(`pages/enfermeiro/popups/popupCriarUtente.html`);
-  const html = await resp.text();
-  container.insertAdjacentHTML("beforeend", html);
+  try {
+    const resp = await fetch(`/pages/enfermeiro/popups/popupCriarUtente.html`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const html = await resp.text();
+    container.insertAdjacentHTML("beforeend", html);
 
-  popUpCriarUtentes = document.querySelector(".pop-up-criar-utente");
+    popUpCriarUtentes = document.querySelector(".pop-up-criar-utente");
 
-  inicializarFormCriarUtente();
+    inicializarFormCriarUtente();
 
-  criarSearchableSelect("medico-responsavel", [], "Pesquisar médico...");
-  criarSearchableSelect("cama", [], "Pesquisar cama...");
+    criarSearchableSelect("medico-responsavel", [], "Pesquisar médico...");
+    criarSearchableSelect("cama", [], "Pesquisar cama...");
 
-  await carregarMedicos();
-  await carregarCamas();
+    await carregarMedicos();
+    await carregarCamas();
 
-  abrirCriarUtente();
+    abrirCriarUtente();
+  } catch (err) {
+    console.error("[Criar Utente] Erro ao carregar popup:", err);
+  }
 }
 
 function abrirCriarUtente() {
-  popUpContainer.style.display = "flex";
-  contentContainer.style.opacity = "0.4";
-  document.getElementById("data-nascimento").setAttribute("max", hoje);
+  const container = _popupContainer();
+  if (!container) return;
+  container.style.display = "flex";
+  const dn = document.getElementById("data-nascimento");
+  if (dn) dn.setAttribute("max", hoje);
 }
 
 function fecharPopUp() {
-  popUpContainer.style.display = "none";
-  contentContainer.style.opacity = "1";
+  const container = _popupContainer();
+  if (container) container.style.display = "none";
 }
 
 function abreviarNome(nomeCompleto) {

@@ -68,7 +68,4 @@ public class Utente {
     @CollectionTable(name = "utente_flags", joinColumns = @JoinColumn(name = "id_utente"))
     @Column(name = "flag_risco")
     public Set<FlagRisco> flagsRisco = new HashSet<>();
-    
-    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
-    public List<RegistoClinico> historico = new ArrayList<>();
 }

@@ -1,130 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../../styles/enfermeiro/enfermeiroListaUtentes.css" />
-  <link rel="stylesheet" href="../../styles/enfermeiro/popups/popupCriarUtente.css" />
-  <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Utentes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+        fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+      }},
+    };
+  </script>
 </head>
 
-<body>
-  <div class="content">
-    <div class="content-container">
-      <!--Top Bar-->
-      <div class="topbar">
-        <span class="topbar-page">Lista de Utentes</span>
-        <div class="topbar-right">
-          <span class="topbar-user">
-            <span id="nome-enf"></span> | Turno: <span id="turno"></span></span>
-          <button class="btn-sair" onclick="logout()">SAIR</button>
-        </div>
-      </div>
-
-      <!--Side Bar-->
-      <div class="main-container">
-        <aside class="sidebar">
-          <nav>
-            <div class="sidebar-section-label">Principal</div>
-            <ul>
-              <li class="sidebar-item">
-                <a href="enfermeiroDashboard">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z" />
-                  </svg>
-                  Home
-                </a>
-              </li>
-              <li class="sidebar-item active">
-                <a href="enfermeiroListaUtentes">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                    <path
-                      d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
-                  </svg>
-                  Lista de Utentes
-                </a>
-              </li>
-            </ul>
-            <div class="sidebar-section-label">Turno</div>
-            <ul>
-              <li class="sidebar-item">
-                <a href="enfermeiroPassagemTurno">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="M470.6 118.6c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S352 19.1 352 32l0 32-160 0C86 64 0 150 0 256 0 273.7 14.3 288 32 288s32-14.3 32-32c0-70.7 57.3-128 128-128l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64zM41.4 393.4c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9S160 492.9 160 480l0-32 160 0c106 0 192-86 192-192 0-17.7-14.3-32-32-32s-32 14.3-32 32c0 70.7-57.3 128-128 128l-160 0 0-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64z" />
-                  </svg>
-                  Passagem de Turno
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-
-        <main class="main-content">
-          <!--Page Header-->
-          <div class="page-header">
-            <div class="page-header-left">
-              <h4>Lista de Utentes - Serviço Internamento</h4>
-              <p id="current-datetime"></p>
-            </div>
-            <div class="page-header-right">
-              <button class="btn-novo-utente" onclick="abrirpopup()">
-                Novo Utente
-              </button>
-
-              <div class="search-bar">
-                <div class="search-input-wrap">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
-                  </svg>
-                  <input type="text" placeholder="Nome ou Processo" />
-                </div>
-              </div>
-
-              <select name="estados" id="estados">
-                <option value="todos">Todos</option>
-                <option value="internado">Internado</option>
-                <option value="alta">Alta</option>
-              </select>
-            </div>
-          </div>
-
-          <!--Lista Utentes Bar-->
-          <div class="lista-utentes-bar">
-            <div class="lista-utentes-table">
-              <table class="lista-utentes">
-                <thead>
-                  <tr>
-                    <th>Nº Processo</th>
-                    <th>Nome</th>
-                    <th>Cama</th>
-                    <th>Diagnóstico</th>
-                    <th>Médico</th>
-                    <th>Admissão</th>
-                    <th>Estado</th>
-                    <th>Alertas</th>
-                    <th>Ação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </main>
+<body class="font-sans text-text m-0 flex flex-col min-h-screen">
+  <div class="flex flex-col flex-1 min-h-screen">
+    <div class="h-[52px] bg-primary flex items-center justify-between px-6 border-b border-white/10">
+      <span class="text-[13px] text-text tracking-wider">Lista de Utentes</span>
+      <div class="flex items-center gap-4">
+        <span class="bg-transparent text-white text-[13px] font-bold tracking-[0.04em]">Enf. <span id="nome-enf"></span><span id="turno-wrapper"> | Turno: <span id="turno"></span></span></span>
+        <button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
       </div>
     </div>
-    <div class="pop-up-container" style="display: none" id="popUpContainer"></div>
+
+    <div class="flex flex-grow items-stretch">
+      <aside class="w-[210px] bg-primary py-3 border-t border-white [&_ul]:list-none [&_ul]:p-0 [&_ul]:m-0 [&_.sidebar-item_a]:flex [&_.sidebar-item_a]:items-center [&_.sidebar-item_a]:gap-3 [&_.sidebar-item_a]:px-[18px] [&_.sidebar-item_a]:py-3 [&_.sidebar-item_a]:no-underline [&_.sidebar-item_a]:text-text [&_.sidebar-item_a]:text-sm [&_.sidebar-item_a]:transition-colors [&_.sidebar-item_a:hover]:bg-white/15 [&_.sidebar-item_a:hover]:text-white [&_.sidebar-item.active_a]:bg-white [&_.sidebar-item.active_a]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
+        <nav>
+          <div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Principal</div>
+          <ul>
+            <li class="sidebar-item"><a href="enfermeiroDashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"/></svg>Home</a></li>
+            <li class="sidebar-item active"><a href="enfermeiroListaUtentes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/></svg>Lista de Utentes</a></li>
+          </ul>
+          <div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Turno</div>
+          <ul>
+            <li class="sidebar-item"><a href="enfermeiroPassagemTurno"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 118.6c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S352 19.1 352 32l0 32-160 0C86 64 0 150 0 256 0 273.7 14.3 288 32 288s32-14.3 32-32c0-70.7 57.3-128 128-128l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64z"/></svg>Passagem de Turno</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="flex-1">
+        <div class="bg-primary rounded m-[14px] px-5 py-[14px] flex items-center">
+          <div class="page-header-left w-1/2">
+            <h4 class="m-0">Lista de Utentes - Serviço Internamento</h4>
+            <p id="current-datetime" class="m-0"></p>
+          </div>
+          <div class="w-1/2 flex items-center justify-end gap-[30px]">
+            <button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="abrirpopup()">Novo Utente</button>
+
+            <div class="flex items-center gap-2">
+              <div class="search-input-wrap flex items-center bg-white border border-black rounded px-2.5 py-[5px] gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fill-black w-3.5 h-3.5 shrink-0"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+                <input type="text" placeholder="Nome ou Processo" class="bg-transparent border-0 outline-none text-black font-sans text-[13px] w-[180px] placeholder:text-primary" />
+              </div>
+            </div>
+
+            <select name="estados" id="estados" class="bg-white border-2 border-white text-primary font-sans text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-secondary transition-colors [&_option]:bg-white [&_option]:text-primary [&_option]:font-normal">
+              <option value="todos">Todos</option>
+              <option value="internado">Internado</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="m-[14px] rounded-[5px] border border-primary [&_.paginacao]:flex [&_.paginacao]:items-center [&_.paginacao]:justify-between [&_.paginacao]:gap-2 [&_.paginacao]:p-3 [&_.paginacao]:pb-2 [&_.paginacao-tamanho]:flex [&_.paginacao-tamanho]:items-center [&_.paginacao-tamanho]:gap-2 [&_.paginacao-tamanho]:text-primary [&_.paginacao-tamanho]:font-sans [&_.paginacao-tamanho]:text-xs [&_.paginacao-tamanho]:font-semibold [&_.paginacao-tamanho_select]:bg-white [&_.paginacao-tamanho_select]:border-[1.5px] [&_.paginacao-tamanho_select]:border-primary [&_.paginacao-tamanho_select]:text-primary [&_.paginacao-tamanho_select]:font-bold [&_.paginacao-tamanho_select]:px-2 [&_.paginacao-tamanho_select]:py-1 [&_.paginacao-tamanho_select]:rounded [&_.paginacao-tamanho_select]:cursor-pointer [&_.paginacao-tamanho_select:hover]:bg-secondary [&_.paginacao-paginas]:flex [&_.paginacao-paginas]:items-center [&_.paginacao-paginas]:gap-1 [&_.paginacao-paginas]:ml-auto [&_.btn-pagina]:min-w-[32px] [&_.btn-pagina]:h-8 [&_.btn-pagina]:px-2.5 [&_.btn-pagina]:bg-transparent [&_.btn-pagina]:border-[1.5px] [&_.btn-pagina]:border-primary [&_.btn-pagina]:rounded [&_.btn-pagina]:text-primary [&_.btn-pagina]:text-xs [&_.btn-pagina]:font-bold [&_.btn-pagina]:tracking-wider [&_.btn-pagina]:cursor-pointer [&_.btn-pagina]:transition-colors [&_.btn-pagina:hover]:bg-secondary [&_.btn-pagina.ativo]:bg-primary [&_.btn-pagina.ativo]:text-white">
+          <div class="lista-utentes-table w-full overflow-x-auto">
+            <table class="lista-utentes w-full border-collapse font-sans text-sm table-fixed [&_th:nth-child(1)]:w-[9%] [&_td:nth-child(1)]:w-[9%] [&_th:nth-child(2)]:w-[13%] [&_td:nth-child(2)]:w-[13%] [&_th:nth-child(3)]:w-[7%] [&_td:nth-child(3)]:w-[7%] [&_th:nth-child(4)]:w-[22%] [&_td:nth-child(4)]:w-[22%] [&_th:nth-child(5)]:w-[22%] [&_td:nth-child(5)]:w-[22%] [&_th:nth-child(6)]:w-[7%] [&_td:nth-child(6)]:w-[7%] [&_th:nth-child(7)]:w-[7%] [&_td:nth-child(7)]:w-[7%] [&_th:nth-child(8)]:w-[7%] [&_td:nth-child(8)]:w-[7%] [&_th:nth-child(9)]:w-[10%] [&_td:nth-child(9)]:w-[10%]">
+              <thead class="[&_tr]:bg-primary [&_tr]:text-white [&_tr]:text-center [&_tr]:border-b [&_tr]:border-white [&_th]:px-4 [&_th]:py-3 [&_th]:font-semibold [&_th]:text-[0.8rem] [&_th]:normal-case [&_th]:whitespace-nowrap">
+                <tr>
+                  <th>Nº Processo</th>
+                  <th>Nome</th>
+                  <th>Cama</th>
+                  <th>Diagnóstico</th>
+                  <th>Médico</th>
+                  <th>Admissão</th>
+                  <th>Estado</th>
+                  <th>Alertas</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody class="[&_tr]:bg-white [&_tr]:text-primary [&_tr]:border-b [&_tr]:border-[#2a5a8c] [&_tr]:transition-colors [&_tr:hover]:bg-text [&_td]:px-4 [&_td]:py-3.5 [&_td]:align-middle [&_td]:text-center [&_.ver-mais]:bg-primary [&_.ver-mais]:border-2 [&_.ver-mais]:border-white [&_.ver-mais]:text-white [&_.ver-mais]:text-[13px] [&_.ver-mais]:font-bold [&_.ver-mais]:tracking-[0.01em] [&_.ver-mais]:px-[18px] [&_.ver-mais]:py-[5px] [&_.ver-mais]:cursor-pointer [&_.ver-mais]:rounded-[10px] [&_.ver-mais:hover]:bg-white [&_.ver-mais:hover]:text-primary [&_.ver-mais:hover]:border-primary [&_.ver-mais]:transition-colors">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div style="display: none" id="popUpContainer"></div>
   </div>
   <div id="notificacoes-container"></div>
   <script src="../../scripts/notificacao.js"></script>
+  <script src="../../scripts/logout.js"></script>
+	<script src="../../scripts/topBar.js"></script>
+	<script src="../../scripts/popups/popupCriarUtente.js"></script>
+  <script src="../../scripts/enfermeiro/enfermeiroListaUtentes.js"></script>
 </body>
-<script src="../../scripts/logout.js"></script>
-<script src="../../scripts/popups/popupCriarUtente.js"></script>
-<script src="../../scripts/enfermeiro/enfermeiroListaUtentes.js"></script>
 
 </html>

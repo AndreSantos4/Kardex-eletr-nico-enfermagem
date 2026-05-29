@@ -1,17 +1,17 @@
 package pt.ipcb.kardex.kardex_eletronico.dto.shift;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pt.ipcb.kardex.kardex_eletronico.dto.parametros_clinicos.IncidenteDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtenteDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.patient.UtentePassagemTurnoDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.prescription.AdministracoesDTO;
-import pt.ipcb.kardex.kardex_eletronico.dto.process.SinalVitalDTO;
+import pt.ipcb.kardex.kardex_eletronico.dto.worker.LimitedFuncionarioDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record PassagemTurnoDTO(
-        @JsonProperty("turno") LimitedTurnoDTO turno,
+        @JsonProperty("id") Long id,
+        @JsonProperty("turno") TurnoDTO turno,
         @JsonProperty("proximoTurno") LimitedTurnoDTO proximoTurno,
-        @JsonProperty("dadosTurnoUtentes") List<UtentePassagemTurnoDTO> dadosTurnoUtente
+        @JsonProperty("dadosTurnoUtentes") List<PendenciaDTO> dadosTurnoUtente,
+        @JsonProperty("validador") LimitedFuncionarioDTO validador,
+        @JsonProperty("dataValidacao") LocalDateTime dataValidacao
 ) {
 }

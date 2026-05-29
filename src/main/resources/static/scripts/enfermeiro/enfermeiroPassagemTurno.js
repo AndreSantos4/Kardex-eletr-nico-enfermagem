@@ -284,7 +284,7 @@ function renderEstadoUtentes(utentes) {
 }
 
 function mostrarSemTurno() {
-  const mainContent = document.querySelector(".main-content");
+  const mainContent = document.querySelector("main") || document.querySelector(".main-content");
   if (!mainContent) return;
 
   mainContent.innerHTML = `
@@ -317,23 +317,38 @@ function mostrarSemTurno() {
   `;
 }
 
-function obterAtribuicoesEnfermeiroLogado(turnoAtual) {
-  const idLogado = Number(sessionStorage.getItem("enfermeiroId"));
-  const enfermeiros = turnoAtual.IdEnfermeiros ?? [];
+function obterAtribuicoesEnfermeiroLogado(turnoAtual, utilizadorIdLogado) {
+  const atribuicoes = turnoAtual.atribuicoes ?? [];
+  const enfermeiros = turnoAtual.enfermeiros ?? [];
 
-  let enf = null;
-
-  if (idLogado) {
-    enf = enfermeiros.find(
-      (e) => Number(e.dados?.id) === idLogado || Number(e.id) === idLogado
-    );
+  // 1. Filtra atribuições onde o enfermeiro corresponda ao utilizador logado.
+  if (utilizadorIdLogado != null) {
+    const minhas = atribuicoes.filter((a) => {
+      const enfUtilizadorId = a.enfermeiro?.dados?.id;
+      const enfFuncionarioId = a.enfermeiro?.id;
+      return (
+        Number(enfUtilizadorId) === Number(utilizadorIdLogado) ||
+        Number(enfFuncionarioId) === Number(utilizadorIdLogado)
+      );
+    });
+    if (minhas.length > 0) return minhas;
   }
 
-  if (!enf && enfermeiros.length === 1) {
-    enf = enfermeiros[0];
-  }
+  // 2. Fallback: se o turno só tem 1 enfermeiro, devolve todas as atribuições.
+  if (enfermeiros.length === 1) return atribuicoes;
 
-  return enf?.atribuicoes ?? [];
+  // 3. Sem filtragem possível — devolve tudo (vista global do turno).
+  return atribuicoes;
+}
+
+async function fetchUtilizadorIdLogado() {
+  try {
+    const json = await fetchJson(`${API_BASE}users/me`);
+    return json?.data?.id ?? null;
+  } catch (err) {
+    console.warn("[Passagem Turno] Não foi possível obter utilizador logado:", err);
+    return null;
+  }
 }
 
 async function fetchJson(url) {
@@ -346,12 +361,19 @@ async function fetchJson(url) {
 
 async function loadPassagemTurno() {
   try {
-    // 1. Turno atual do enfermeiro
-    const jsonMyShift = await fetchJson(`${API_BASE}workers/me/shift`);
-    if (!jsonMyShift.success)
-      throw new Error(jsonMyShift.message ?? "Erro ao obter turno do enfermeiro");
+    // 1. Turno atual do enfermeiro.
+    //    O backend devolve 400 quando o enfermeiro não está em turno activo —
+    //    tratamos esse caso como "sem turno" em vez de erro crítico.
+    let jsonMyShift = null;
+    try {
+      jsonMyShift = await fetchJson(`${API_BASE}workers/me/shift`);
+    } catch (errShift) {
+      console.warn("[Passagem Turno] Sem turno activo:", errShift);
+      mostrarSemTurno();
+      return;
+    }
 
-    if (!jsonMyShift.data) {
+    if (!jsonMyShift?.success || !jsonMyShift.data) {
       mostrarSemTurno();
       return;
     }
@@ -359,7 +381,8 @@ async function loadPassagemTurno() {
     const turnoAtual = jsonMyShift.data;
 
     // 2. Utentes atribuídos ao enfermeiro logado
-    const atribuicoes = obterAtribuicoesEnfermeiroLogado(turnoAtual);
+    const utilizadorIdLogado = await fetchUtilizadorIdLogado();
+    const atribuicoes = obterAtribuicoesEnfermeiroLogado(turnoAtual, utilizadorIdLogado);
     const idsUtentes = atribuicoes
       .map((a) => a.utente?.id)
       .filter((id) => id != null);

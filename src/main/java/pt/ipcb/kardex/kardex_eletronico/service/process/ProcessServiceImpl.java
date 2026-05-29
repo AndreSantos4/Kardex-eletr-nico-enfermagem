@@ -17,7 +17,6 @@ import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
-import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
 import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
@@ -26,7 +25,9 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.*;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.*;
 import pt.ipcb.kardex.kardex_eletronico.repository.CamaRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.ProcessoClinicoRepository;
+import pt.ipcb.kardex.kardex_eletronico.service.record.ClinicRecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
+import pt.ipcb.kardex.kardex_eletronico.service.shift.issues.IssuesService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 @Service
@@ -40,6 +41,8 @@ public class ProcessServiceImpl implements ProcessService{
     private final WorkerService workerService;
     private final CamaRepository camaRepository;
     private final RecordService recordService;
+    private final ClinicRecordService clinicRecordService;
+    private final IssuesService issuesService;
 
     @Override
     @Transactional
@@ -179,13 +182,17 @@ public class ProcessServiceImpl implements ProcessService{
     @Transactional
     public void registerVitalSigns(Long processId, RegisterVitalSignsDTO vitalSigns) {
         var process = getValidProcess(processId);
+        var shift = workerService.getCurrentShift(workerService.getAutenticatedWorker().getId());
 
         var vitalSign = mapper.fromVitalSignRegister(vitalSigns);
         vitalSign.setProcessoClinico(process);
         vitalSign.setFuncionario(workerService.getAutenticatedWorker());
         process.getSinaisVitais().add(vitalSign);
 
+        issuesService.executeUndefinedIssue(process.getUtente().getId(), TipoPendencia.SINAL_VITAL, shift.getId());
+
         repository.save(process);
+        clinicRecordService.createClinicRecord(process, TipoRegistoClinico.SINAL_VITAL, "Sinal Vital registado com sucesso");
     }
 
     @Override
@@ -205,12 +212,9 @@ public class ProcessServiceImpl implements ProcessService{
 
     @Override
    	public ProcessoClinico getValidProcess(Long processId) {
-		var process = repository.findById(processId)
+		var process = repository.findByIdDetailed(processId)
                .orElseThrow(() -> EntityNotFoundException.forId(processId, "Processo"));
-   
-        if(process.getAlta()){
-               throw new InactiveResourceException("Processo Clinico");
-        }
+
 		return process;
 	}
 
@@ -221,11 +225,21 @@ public class ProcessServiceImpl implements ProcessService{
         return mapper.toDTO(process);
     }
 
+    @Transactional
+    @Override
+    public void buildPendingIssues(Turno shift, List<AtribuicaoUtente> assignments) {
+        List<Pendencia> pendencias = assignments.stream()
+                .flatMap(a -> buildPatientIssues(a, shift).stream())
+                .toList();
+
+        shift.getPendencias().addAll(pendencias);
+    }
+
     @Transactional(readOnly = true)
     @Override
-    public boolean  vitalSignsInShift(Turno shift, ProcessoClinico process) {
-        return process.getSinaisVitais()
-                .stream()
-                .anyMatch(v -> v.getData().isBefore(LocalDateTime.now(clock)));
+    public List<Pendencia> buildPatientIssues(AtribuicaoUtente assignment, Turno shift) {
+        var process = getActiveProcess(assignment.getUtente());
+
+        return issuesService.buildIssues(process, shift, assignment);
     }
 }

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enfermeiro Chefe - Kardex Utente</title>
+    <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+                fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+            }},
+        };
+    </script>
+    <style>
+        :root { --surface: #1a3f5e; --border: #d0d9e5; --muted: #5b738a; }
+    </style>
+</head>
+
+<body class="font-sans bg-white text-text min-h-screen flex flex-col m-0 p-0 box-border">
+    <div class="bg-primary px-6 h-[52px] flex items-center justify-between border-b border-white/10">
+        <span class="text-[13px] text-text tracking-wider">Enfermeiro Chefe - Kardex Utente</span>
+        <div class="flex items-center gap-4">
+            <span class="text-white text-[11px] font-bold px-2 py-0.5 rounded-sm tracking-wider">
+                <span id="nome-chefe">—</span>
+            </span>
+            <button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-widest px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
+        </div>
+    </div>
+
+    <div class="flex flex-1">
+        <nav class="w-[210px] shrink-0 bg-primary self-stretch py-3 [&_a]:no-underline [&_.sidebar-item]:flex [&_.sidebar-item]:items-center [&_.sidebar-item]:gap-2.5 [&_.sidebar-item]:px-[18px] [&_.sidebar-item]:py-2 [&_.sidebar-item]:text-[13.5px] [&_.sidebar-item]:text-secondary [&_.sidebar-item]:cursor-pointer [&_.sidebar-item:hover]:bg-white [&_.sidebar-item:hover]:text-primary [&_.sidebar-item.active]:bg-white [&_.sidebar-item.active]:text-primary [&_.sidebar-item_svg]:w-[22px] [&_.sidebar-item_svg]:h-[22px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
+            <div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-1.5 pb-1.5 uppercase">Principal</div>
+            <a href="enfermeiroChefeDashboard"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"/></svg>Home</div></a>
+            <a href="enfermeiroChefeListaUtentes"><div class="sidebar-item active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/></svg>Lista de Utentes</div></a>
+            <a href="enfermeiroChefeControloStock"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M416 224C398.3 224 384 209.7 384 192C384 174.3 398.3 160 416 160L576 160C593.7 160 608 174.3 608 192L608 352C608 369.7 593.7 384 576 384C558.3 384 544 369.7 544 352L544 269.3L374.6 438.7C362.1 451.2 341.8 451.2 329.3 438.7L224 333.3L86.6 470.6C74.1 483.1 53.8 483.1 41.3 470.6C28.8 458.1 28.8 437.8 41.3 425.3L201.3 265.3C213.8 252.8 234.1 252.8 246.6 265.3L352 370.7L498.7 224L416 224z"/></svg>Stock</div></a>
+            <div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">Supervisão</div>
+            <a href="enfermeiroChefeValidarPassagemTurno"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M448 96L439.4 96C428.4 76.9 407.7 64 384 64L256 64C232.3 64 211.6 76.9 200.6 96L192 96C156.7 96 128 124.7 128 160L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 160C512 124.7 483.3 96 448 96z"/></svg>Validar Turno</div></a>
+            <div class="text-[11px] font-bold tracking-[0.12em] text-white px-[18px] pt-3.5 pb-1.5 uppercase">Cuidados</div>
+            <a href="enfermeiroChefeRelatoriosIndicadores"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128z"/></svg>Relatórios</div></a>
+            <a href="enfermeiroChefeGerirTurnos"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M534.6 182.6C547.1 170.1 547.1 149.8 534.6 137.3L470.6 73.3C461.4 64.1 447.7 61.4 435.7 66.4C423.7 71.4 416 83.1 416 96L416 128L256 128C150 128 64 214 64 320C64 337.7 78.3 352 96 352C113.7 352 128 337.7 128 320C128 249.3 185.3 192 256 192L416 192L416 224C416 236.9 423.8 248.6 435.8 253.6C447.8 258.6 461.5 255.8 470.7 246.7L534.7 182.7z"/></svg>Gestão de Turnos</div></a>
+            <a href="enfermeiroChefeHistoricoTurnos"><div class="sidebar-item"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M384 512L96 512c-53 0-96-43-96-96L0 96C0 43 43 0 96 0L400 0c26.5 0 48 21.5 48 48l0 288c0 20.9-13.4 38.7-32 45.3l0 66.7c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0z"/></svg>Histórico de Turnos</div></a>
+        </nav>
+
+        <main class="flex-1 overflow-x-hidden">
+            <div class="p-[14px] flex flex-col gap-2.5">
+                <div class="bg-primary rounded p-[10px_16px]">
+                    <div class="text-[15px] font-bold text-white mb-0.5" id="header-title"></div>
+                    <div class="text-xs text-secondary mb-2.5" id="header-sub"></div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button class="bg-transparent border-[1.5px] border-white text-white text-[11px] font-bold tracking-[0.04em] px-3 py-[5px] cursor-pointer rounded-md transition-colors hover:bg-white hover:text-primary whitespace-nowrap" onclick="abrirPopUpNotasClinicas()">NOTAS CLÍNICAS</button>
+                        <button class="bg-transparent border-[1.5px] border-white text-white text-[11px] font-bold tracking-[0.04em] px-3 py-[5px] cursor-pointer rounded-md transition-colors hover:bg-white hover:text-primary whitespace-nowrap" onclick="abrirPopupHistInternamentos()">HIST. INTERNAMENTOS</button>
+                        <button class="bg-transparent border-[1.5px] border-white text-white text-[11px] font-bold tracking-[0.04em] px-3 py-[5px] cursor-pointer rounded-md transition-colors hover:bg-white hover:text-primary whitespace-nowrap" onclick="abrirPaginaPlano()">PLANO</button>
+                        <button class="bg-transparent border-[1.5px] border-white text-white text-[11px] font-bold tracking-[0.04em] px-3 py-[5px] cursor-pointer rounded-md transition-colors hover:bg-white hover:text-primary whitespace-nowrap" onclick="location.href='enfermeiroChefeListaUtentes'">LISTA</button>
+                        <button class="bg-transparent border-[1.5px] border-white text-white text-[11px] font-bold tracking-[0.04em] px-3 py-[5px] cursor-pointer rounded-md transition-colors hover:bg-white hover:text-primary whitespace-nowrap" onclick="irParaHistoricoPrescricoes()">HISTÓRICO PRESCRIÇÕES</button>
+                    </div>
+                </div>
+                <div class="bg-primary rounded p-[12px_16px]">
+                    <div class="grid grid-cols-3 gap-x-6 gap-y-2 text-[12.5px] [&_.info-field]:text-secondary [&_.info-field_span]:text-white [&_.info-field_span]:font-semibold">
+                        <div class="col-span-3 text-base font-bold text-white mb-1" id="utente-nome"></div>
+                        <div class="info-field">Sexo/Idade: <span id="sexo-idade"></span></div>
+                        <div class="info-field">Admissão: <span id="admissao"></span></div>
+                        <div class="info-field">Médico: <span id="medico"></span></div>
+                        <div class="info-field">Proc: <span id="proc-nasc"></span></div>
+                        <div class="info-field">Cama: <span id="cama"></span></div>
+                        <div class="info-field">Estado: <span id="estado"></span></div>
+                        <div class="info-field">Diagnóstico: <span id="diagnostico"></span></div>
+                        <div class="col-span-3 !text-alertas text-xs font-bold mt-1" id="riscos"></div>
+                    </div>
+                </div>
+                <div class="bg-primary border-[1.5px] border-secondary rounded p-[10px_14px]">
+                    <div class="text-[13px] font-bold text-secondary mb-1">Alergias — Atenção antes de qualquer medicação</div>
+                    <div class="text-xs text-text flex flex-col gap-0.5" id="alergias-list"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 items-start [&_.panel]:rounded-[5px] [&_.panel]:border [&_.panel]:border-primary [&_.panel]:flex [&_.panel]:flex-col [&_.panel]:overflow-hidden [&_.panel]:self-start [&_.panel-header]:bg-primary [&_.panel-header]:flex [&_.panel-header]:items-center [&_.panel-header]:justify-between [&_.panel-header]:gap-2 [&_.panel-header]:px-3 [&_.panel-header]:py-2 [&_.panel-title]:text-sm [&_.panel-title]:font-semibold [&_.panel-title]:text-text [&_.panel-body]:p-3 [&_.panel-body]:text-primary [&_.panel-body]:text-[13px] [&_.btn-panel]:bg-transparent [&_.btn-panel]:border-2 [&_.btn-panel]:border-white [&_.btn-panel]:text-white [&_.btn-panel]:text-[11px] [&_.btn-panel]:font-bold [&_.btn-panel]:tracking-[0.04em] [&_.btn-panel]:px-2.5 [&_.btn-panel]:py-[3px] [&_.btn-panel]:cursor-pointer [&_.btn-panel]:rounded-md [&_.btn-panel:hover]:bg-white [&_.btn-panel:hover]:text-primary [&_.btn-panel]:whitespace-nowrap [&_.sv-grid]:flex [&_.sv-grid]:flex-nowrap [&_.sv-grid]:justify-between [&_.sv-grid]:gap-1 [&_.sv-item]:bg-primary [&_.sv-item]:rounded [&_.sv-item]:px-1 [&_.sv-item]:py-1.5 [&_.sv-item]:text-center [&_.sv-item]:flex-1 [&_.sv-item]:min-w-0 [&_.sv-value]:text-[15px] [&_.sv-value]:font-bold [&_.sv-value]:text-secondary [&_.sv-value]:leading-[1.15] [&_.sv-value_small]:!text-[10px] [&_.sv-label]:text-[10px] [&_.sv-label]:text-secondary [&_.sv-label]:mt-0.5 [&_.plano-item]:flex [&_.plano-item]:justify-between [&_.plano-item]:items-center [&_.plano-item]:py-1.5 [&_.plano-item]:border-b [&_.plano-item]:border-primary/15 [&_.plano-item:last-child]:border-0 [&_.plano-item]:text-[13px] [&_.plano-item]:text-primary [&_.plano-hora]:font-bold [&_.plano-hora]:text-primary [&_.plano-hora]:text-[13px] [&_.med-item]:flex [&_.med-item]:justify-between [&_.med-item]:items-start [&_.med-item]:py-1.5 [&_.med-item]:border-b [&_.med-item]:border-primary/15 [&_.med-item:last-child]:border-0 [&_.med-item]:text-[12.5px] [&_.med-item]:gap-2 [&_.med-info-nome]:font-bold [&_.med-info-nome]:text-primary [&_.med-info-detalhe]:text-[11px] [&_.med-info-detalhe]:text-primary/70 [&_.med-info-detalhe]:mt-px [&_.med-badge]:text-[11px] [&_.med-badge]:font-bold [&_.med-badge]:px-2 [&_.med-badge]:py-0.5 [&_.med-badge]:rounded-[10px] [&_.med-badge]:whitespace-nowrap [&_.med-badge]:shrink-0 [&_.sos-badge]:!text-primary [&_.ok-badge]:!text-primary [&_.badge-atrasado]:bg-alertas [&_.badge-atrasado]:!text-white [&_.badge-hora]:!text-primary [&_.badge-hora]:text-xs [&_.exame-item]:py-1.5 [&_.exame-item]:border-b [&_.exame-item]:border-primary/15 [&_.exame-item:last-child]:border-0 [&_.exame-item]:text-[12.5px] [&_.exame-nome]:font-bold [&_.exame-nome]:text-primary [&_.exame-detalhe]:text-[11px] [&_.exame-detalhe]:text-primary/70 [&_.exame-detalhe]:mt-0.5 [&_.exame-status]:text-[11px] [&_.exame-status]:!text-alertas [&_.exame-status]:font-semibold [&_.ocorrencia-item]:grid [&_.ocorrencia-item]:grid-cols-[48px_80px_1fr] [&_.ocorrencia-item]:gap-1.5 [&_.ocorrencia-item]:py-1.5 [&_.ocorrencia-item]:border-b [&_.ocorrencia-item]:border-primary/15 [&_.ocorrencia-item:last-child]:border-0 [&_.ocorrencia-item]:text-xs [&_.ocorrencia-item]:items-start [&_.ocorrencia-hora]:font-bold [&_.ocorrencia-hora]:!text-primary [&_.ocorrencia-enf]:!text-primary [&_.ocorrencia-desc]:!text-primary">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Sinais Vitais</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="sv-grid">
+                                <div class="sv-item"><div class="sv-value" id="sv-tensao"></div><div class="sv-label">Tensão Art.</div></div>
+                                <div class="sv-item"><div class="sv-value" id="sv-freq-card"></div><div class="sv-label">Freq. Card.</div></div>
+                                <div class="sv-item"><div class="sv-value" id="sv-temperatura"></div><div class="sv-label">Temperatura</div></div>
+                                <div class="sv-item"><div class="sv-value" id="sv-spo2"></div><div class="sv-label">SpO2</div></div>
+                                <div class="sv-item"><div class="sv-value" id="sv-dor"></div><div class="sv-label">Dor</div></div>
+                                <div class="sv-item"><div class="sv-value" id="sv-glicemia"></div><div class="sv-label">Glicémia</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Plano de Cuidados Hoje</span>
+                            <button class="btn-panel" onclick="abrirPaginaPlano()">VER COMPLETO</button>
+                        </div>
+                        <div class="panel-body" id="plano-cuidados-body"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Medicação Ativa</span>
+                        </div>
+                        <div class="panel-body" id="medicacao-body"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Exames e Cateteres</span>
+                        </div>
+                        <div class="panel-body" id="exames-body"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Ocorrências de Hoje</span>
+                        </div>
+                        <div class="panel-body" id="ocorrencias-body"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Últimos Registos Clínicos</span>
+                        </div>
+                        <div class="panel-body">
+                            <table class="w-full border-collapse text-[12.5px] [&_th]:text-left [&_th]:p-1 [&_th]:px-2 [&_th]:text-[11px] [&_th]:font-bold [&_th]:text-primary [&_th]:uppercase [&_th]:tracking-wider [&_th]:border-b [&_th]:border-white/15 [&_td]:py-1.5 [&_td]:px-2 [&_td]:text-primary [&_td]:border-b [&_td]:border-white/[0.06] [&_tr:last-child_td]:border-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Valor</th>
+                                        <th>Hora</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="registos-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="popup-container"></div>
+    <script src="../../scripts/logout.js"></script>
+    <script src="../../scripts/topBar.js"></script>
+    <script src="../../scripts/enfermeiroChefe/enfermeiroChefeKardexUtente.js"></script>
+    <div id="notificacoes-container"></div>
+    <script src="../../scripts/notificacao.js"></script>
+</body>
+
+</html>

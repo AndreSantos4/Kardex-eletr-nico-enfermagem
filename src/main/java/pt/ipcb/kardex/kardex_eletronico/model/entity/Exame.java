@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.EstadoExame;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoExame;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.Urgencia;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -26,33 +28,34 @@ public class Exame {
     public ProcessoClinico processoClinico;
     
     @JoinColumn(name = "id_medico", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public Funcionario medico;
     
-    @Column(name = "tipo_exame", nullable = false)
+    @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
-    public TipoExame tipoExame;
+    public TipoExame tipo;
     
     @Column(name = "urgencia", nullable = false)
     @Enumerated(EnumType.STRING)
     public Urgencia urgencia;
-    
-    @Column(name = "medidas_tomadas")
-    public String medidasTomadas;
+
+    @Column(name = "data_pedido", nullable = false)
+    public LocalDateTime dataPedido = LocalDateTime.now();
     
     @Column(name = "data_pretendida", nullable = false)
-    public LocalDateTime dataPretendida;
-    
-    @Column(name = "indicacao_clinica")
+    public LocalDate dataPretendida;
+
+    @Column(name = "indicacao_clinica", nullable = false)
     public String indicacaoClinica;
-    
-    @Column(name = "realizado", nullable = false)
-    public Boolean realizado;
-    
-    @Column(name = "obervacoes")
-    public String obervacoes;
-    
-    @JoinColumn(name = "id_resultado_exame", nullable = false)
-    @OneToOne(fetch = FetchType.EAGER)
+
+    @Column(name = "observacoes_laboratorio")
+    public String observacoesLaboratorio;
+
+    @Column(name = "estado", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public EstadoExame estado = EstadoExame.PEDIDO_PENDENTE;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_resultado")
     public ResultadoExame resultado;
 }

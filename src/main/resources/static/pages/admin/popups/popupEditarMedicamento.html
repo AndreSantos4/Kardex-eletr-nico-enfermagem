@@ -1,0 +1,97 @@
+<div class="pop-up-editar-medicamento fixed inset-0 z-10 flex items-center justify-center min-h-screen w-full h-full bg-black/55" style="display:none">
+    <div class="pop-up bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[540px] max-w-[95vw] overflow-hidden">
+        <div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10">
+            <div class="title"><h3 class="text-text text-[1.05rem] font-semibold m-0">Editar Medicamento</h3></div>
+            <div class="icon">
+                <a href="" class="cross flex items-center justify-center bg-white rounded-full w-7 h-7 hover:bg-[#bababa]" onclick="fecharPopUp('.pop-up-editar-medicamento'); return false;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="pop-up-main px-[18px] py-[14px] flex flex-col gap-2 [&_label]:block [&_label]:text-[#e0f0f8] [&_label]:text-[0.68rem] [&_label]:font-bold [&_label]:tracking-[0.8px] [&_label]:uppercase [&_label]:mb-1 [&_input[type=text]]:w-full [&_input[type=text]]:bg-white [&_input[type=text]]:border-[1.5px] [&_input[type=text]]:border-white/35 [&_input[type=text]]:rounded-md [&_input[type=text]]:px-[10px] [&_input[type=text]]:py-2 [&_input[type=text]]:text-[0.87rem] [&_input[type=text]]:text-[#1a3a4a] [&_input[type=text]]:outline-none [&_input[type=text]]:mb-[6px] [&_select]:w-full [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-white/35 [&_select]:rounded-md [&_select]:px-[10px] [&_select]:py-2 [&_select]:text-[0.87rem] [&_select]:text-[#1a3a4a] [&_select]:outline-none [&_select]:mb-[6px]">
+            <form id="form-editar-medicamento" data-medicamento-id="">
+                <div class="form-row flex gap-3">
+                    <div class="form-group flex-1">
+                        <label for="ed-med-nome">NOME COMERCIAL *</label>
+                        <input type="text" name="nome" id="ed-med-nome" placeholder="Nome Comercial" required />
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="ed-med-principio">PRINCÍPIO ATIVO *</label>
+                        <input type="text" name="principio-ativo" id="ed-med-principio" placeholder="Principio Ativo" required />
+                    </div>
+                </div>
+
+                <div class="form-row flex gap-3">
+                    <div class="form-group flex-1">
+                        <label for="ed-med-classe">CLASSE FARMACOLÓGICA *</label>
+                        <select name="classe-farmacologica" id="ed-med-classe" required>
+                            <option value="ANTIBIOTICO">Antibiótico</option>
+                            <option value="SISTEMA_NERVOSO_CENTRAL">Sistema Nervoso Central</option>
+                            <option value="APARELHO_CARDIOVASCULAR">Aparelho Cardiovascular</option>
+                            <option value="SISTEMA_RESPIRATORIO">Sistema Respiratório</option>
+                            <option value="SISTEMA_ENDOCRINO">Sistema Endócrino</option>
+                            <option value="ANALGESICO">Analgésico</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="ed-med-dosagens">DOSAGENS DISPONÍVEIS *</label>
+                        <input type="text" name="dosagens" id="ed-med-dosagens" placeholder="1mg, 2mg, 4mg" required />
+                    </div>
+                </div>
+
+                <div class="form-row flex gap-3">
+                    <div class="form-group flex-1">
+                        <label for="ed-med-via">VIA *</label>
+                        <select name="via" id="ed-med-via" required>
+                            <option value="ORAL">Oral</option>
+                            <option value="NASAL">Nasal</option>
+                            <option value="OCULAR">Ocular</option>
+                            <option value="AURICULAR">Auricular</option>
+                            <option value="RETAL">Retal</option>
+                            <option value="SUBLINGUAL">Sublingual</option>
+                            <option value="CUTANEA">Cutânea</option>
+                            <option value="SUBCUTANEA">Subcutânea</option>
+                            <option value="INTRAVENOSA">Intravenosa</option>
+                            <option value="INTRAMUSCULAR">Intramuscular</option>
+                            <option value="INTRADERMICA">Intradérmica</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="ed-med-dose-max">DOSAGEM MÁX. DIÁRIA *</label>
+                        <input type="text" name="dose-maxima" id="ed-med-dose-max" placeholder="16mg/dia" required />
+                    </div>
+                </div>
+
+                <div class="form-row flex gap-3">
+                    <div class="form-group form-group-full flex-1">
+                        <label for="ed-med-forma">FORMA *</label>
+                        <select name="forma" id="ed-med-forma" required>
+                            <option value="SOLIDA">Comprimido</option>
+                            <option value="SEMI_SOLIDA">Semi-sólida</option>
+                            <option value="LIQUIDA">Líquida</option>
+                            <option value="GASOSA">Gasosa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="checkbox-row flex items-center gap-2 !text-text !text-sm !normal-case !tracking-normal !font-normal !mb-2">
+                    <input type="checkbox" name="alto-risco" id="ed-med-alto-risco" class="!w-auto !mb-0 !p-0" />
+                    <span>Alto risco - requer dupla confirmação</span>
+                </label>
+
+                <div class="info-box flex items-start gap-2 bg-white/10 rounded-md px-3 py-2 mb-2">
+                    <span class="info-icon inline-flex items-center justify-center w-5 h-5 rounded-full bg-white text-[#1a5f7a] text-xs font-bold shrink-0">i</span>
+                    <p class="m-0 text-text text-xs">Alterações aplicam-se a novas prescrições. Prescrições ativas não são afetadas.</p>
+                </div>
+
+                <div class="buttons flex py-[2%] gap-[10px]">
+                    <input type="button" value="Cancelar" class="btn-cancelar flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" onclick="fecharPopUp('.pop-up-editar-medicamento')" />
+                    <input type="submit" value="Guardar" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

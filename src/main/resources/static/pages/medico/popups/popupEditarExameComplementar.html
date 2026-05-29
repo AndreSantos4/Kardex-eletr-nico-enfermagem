@@ -1,0 +1,41 @@
+<div class="pop-up-registar fixed inset-0 z-[1000] flex items-center justify-center bg-black/55 font-sans" id="popup-editar-exame" style="display:none">
+    <div class="pop-up bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[560px] max-w-[95vw] overflow-hidden">
+        <div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10">
+            <div class="title"><h3 class="text-text text-[1.05rem] font-semibold m-0">Editar Exame Complementar</h3></div>
+            <div class="icon">
+                <a href="" class="cross flex items-center justify-center bg-white rounded-full w-7 h-7 hover:bg-[#bababa]" onclick="fecharPopupEditar(); return false;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="pop-up-main px-[18px] py-[14px] flex flex-col gap-2 [&_label]:block [&_label]:text-[#e0f0f8] [&_label]:text-[0.68rem] [&_label]:font-bold [&_label]:tracking-[0.8px] [&_label]:uppercase [&_label]:mb-1 [&_input:not([type=button])]:w-full [&_input:not([type=button])]:bg-white [&_input:not([type=button])]:border-[1.5px] [&_input:not([type=button])]:border-white/35 [&_input:not([type=button])]:rounded-md [&_input:not([type=button])]:px-[10px] [&_input:not([type=button])]:py-2 [&_input:not([type=button])]:text-[0.87rem] [&_input:not([type=button])]:text-[#1a3a4a] [&_input:not([type=button])]:outline-none [&_input:not([type=button])]:mb-[6px] [&_select]:w-full [&_select]:bg-white [&_select]:border-[1.5px] [&_select]:border-white/35 [&_select]:rounded-md [&_select]:px-[10px] [&_select]:py-2 [&_select]:text-[0.87rem] [&_select]:text-[#1a3a4a] [&_select]:outline-none [&_select]:mb-[6px] [&_textarea]:w-full [&_textarea]:bg-white [&_textarea]:border-[1.5px] [&_textarea]:border-white/35 [&_textarea]:rounded-md [&_textarea]:px-[10px] [&_textarea]:py-2 [&_textarea]:text-[0.87rem] [&_textarea]:text-[#1a3a4a] [&_textarea]:outline-none [&_textarea]:min-h-[80px] [&_textarea]:resize-y [&_textarea]:mb-[6px]">
+            <div class="form-choice flex gap-3">
+                <div class="select-1 flex-1">
+                    <label for="edit-data-pretendida">DATA PRETENDIDA *</label>
+                    <input type="date" id="edit-data-pretendida" required />
+                </div>
+                <div class="select-2 flex-1">
+                    <label for="edit-urgencia">URGÊNCIA *</label>
+                    <select id="edit-urgencia">
+                        <option value="BAIXA">Baixa</option>
+                        <option value="MODERADA">Moderada</option>
+                        <option value="NORMAL">Normal</option>
+                        <option value="ALTA">Alta</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row flex gap-3">
+                <div class="form-group flex-1">
+                    <label for="edit-indicacao">Indicação Clínica *</label>
+                    <textarea id="edit-indicacao" placeholder="Motivo da requisição do exame" required></textarea>
+                </div>
+            </div>
+            <div class="buttons-bottom flex py-[2%] gap-[10px]">
+                <input type="button" value="Cancelar" class="btn-cancelar flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" onclick="fecharPopupEditar()" />
+                <input type="button" value="Guardar Alterações" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" onclick="submeterEdicao()" />
+            </div>
+        </div>
+    </div>
+</div>

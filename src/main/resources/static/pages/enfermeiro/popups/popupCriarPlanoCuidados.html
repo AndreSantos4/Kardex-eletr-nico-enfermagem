@@ -1,34 +1,28 @@
-<link rel="stylesheet" href="../../../styles/enfermeiro/popups/popupCriarPlanoCuidados.css" />
-
-<div class="pop-up-criar-plano-cuidados" style="display: none">
-    <div class="pop-up">
-        <div class="pop-up-header">
-            <div class="title">
-                <h3>Criar Plano de Cuidados</h3>
-            </div>
+<div class="pop-up-criar-plano-cuidados fixed inset-0 z-[1000] flex items-start justify-center px-4 py-6 overflow-y-auto bg-black/50 backdrop-blur-[4px] [&_.searchable-select-wrapper]:relative [&_.searchable-select-wrapper]:w-full [&_.searchable-select-input]:w-full [&_.searchable-select-input]:box-border [&_.searchable-select-input]:bg-no-repeat [&_.searchable-select-input]:bg-[position:10px_center] [&_.searchable-select-input]:!pl-[30px] [&_.searchable-select-input]:bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20fill%3D%22%23888%22%20d%3D%22M12.9%2014.32a8%208%200%201%201%201.41-1.41l5.35%205.33-1.42%201.42-5.33-5.34zM8%2014A6%206%200%201%200%208%202a6%206%200%200%200%200%2012z%22%2F%3E%3C%2Fsvg%3E')] [&_.searchable-select-dropdown]:absolute [&_.searchable-select-dropdown]:top-[calc(100%+4px)] [&_.searchable-select-dropdown]:left-0 [&_.searchable-select-dropdown]:right-0 [&_.searchable-select-dropdown]:bg-white [&_.searchable-select-dropdown]:border [&_.searchable-select-dropdown]:border-[#ddd] [&_.searchable-select-dropdown]:rounded-md [&_.searchable-select-dropdown]:shadow-[0_4px_12px_rgba(0,0,0,0.12)] [&_.searchable-select-dropdown]:max-h-[200px] [&_.searchable-select-dropdown]:overflow-y-auto [&_.searchable-select-dropdown]:z-[9999] [&_.searchable-select-dropdown]:list-none [&_.searchable-select-dropdown]:m-0 [&_.searchable-select-dropdown]:py-1 [&_.searchable-select-dropdown_li]:px-3 [&_.searchable-select-dropdown_li]:py-2 [&_.searchable-select-dropdown_li]:cursor-pointer [&_.searchable-select-dropdown_li]:text-sm [&_.searchable-select-dropdown_li]:text-[#333] [&_.searchable-select-dropdown_li]:transition-colors [&_.searchable-select-dropdown_li:hover]:bg-[#f0f4ff]" style="display: none">
+    <div class="pop-up bg-[#1a5f7a] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.45)] w-[950px] max-w-[95vw] overflow-visible font-sans">
+        <div class="pop-up-header bg-[#154e66] flex items-center justify-between px-[18px] py-[14px] border-b border-white/10">
+            <div class="title"><h3 class="text-white text-[1.05rem] font-semibold m-0">Criar Plano de Cuidados</h3></div>
             <div class="icon">
-                <a href="" class="cross" onclick="fecharPopUp('.pop-up-criar-plano-cuidados'); return false;">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15" viewBox="0 0 384 512">
-                        <path fill="rgb(220, 49, 26)"
-                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
+                <a href="" class="cross flex items-center justify-center bg-white rounded-full w-7 h-7 hover:bg-[#bababa]" onclick="fecharPopUp('.pop-up-criar-plano-cuidados'); return false;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="13" width="13" viewBox="0 0 384 512">
+                        <path fill="rgb(220, 49, 26)" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z" />
                     </svg>
                 </a>
             </div>
         </div>
-        <div class="pop-up-main">
+        <div class="pop-up-main overflow-visible px-[18px] py-[14px] flex flex-col gap-2">
             <form method="post" autocomplete="off" onsubmit="criarPlanoCuidados(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>DIAGNÓSTICOS DE ENFERMAGEM *</label>
-                        <div class="alergias-box" id="diagnosticos-box"></div>
-                        <button type="button" class="btn-adicionar-alergia" id="btn-adicionar-diagnostico">+</button>
+                <div class="form-row flex gap-3">
+                    <div class="form-group flex-1">
+                        <label class="block text-[#e0f0f8] text-[0.68rem] font-bold tracking-wider uppercase mb-1">DIAGNÓSTICOS DE ENFERMAGEM *</label>
+                        <div class="alergias-box max-h-[200px] overflow-y-auto bg-white/5 rounded-md border-[1.5px] border-white/20 px-2.5 py-2 flex flex-col gap-2 mb-2 [&_.alergia-item]:flex [&_.alergia-item]:items-center [&_.alergia-item]:gap-2 [&_.alergia-item]:w-full [&_.alergia-item_input[type='text']]:flex-1 [&_.alergia-item_input[type='text']]:min-w-0 [&_.alergia-item_input[type='text']]:bg-white [&_.alergia-item_input[type='text']]:border-[1.5px] [&_.alergia-item_input[type='text']]:border-white/35 [&_.alergia-item_input[type='text']]:rounded-md [&_.alergia-item_input[type='text']]:text-bg-dark [&_.alergia-item_input[type='text']]:text-[13px] [&_.alergia-item_input[type='text']]:font-medium [&_.alergia-item_input[type='text']]:px-3 [&_.alergia-item_input[type='text']]:py-1.5 [&_.alergia-item_input[type='text']]:outline-none [&_.alergia-item_input[type='text']]:placeholder:text-bg-dark/45 [&_.alergia-item_input[type='text']:focus]:border-secondary [&_.alergia-item_select]:w-[120px] [&_.alergia-item_select]:shrink-0 [&_.alergia-item_select]:bg-white [&_.alergia-item_select]:border-[1.5px] [&_.alergia-item_select]:border-white/35 [&_.alergia-item_select]:rounded-md [&_.alergia-item_select]:text-bg-dark [&_.alergia-item_select]:text-[13px] [&_.alergia-item_select]:font-semibold [&_.alergia-item_select]:px-2 [&_.alergia-item_select]:py-1.5 [&_.alergia-item_select]:cursor-pointer [&_.alergia-item_select]:outline-none [&_.alergia-item_select:focus]:border-secondary [&_.alergia-item_.btn-remover-alergia]:w-7 [&_.alergia-item_.btn-remover-alergia]:h-7 [&_.alergia-item_.btn-remover-alergia]:shrink-0 [&_.alergia-item_.btn-remover-alergia]:bg-transparent [&_.alergia-item_.btn-remover-alergia]:border-[1.5px] [&_.alergia-item_.btn-remover-alergia]:border-white/50 [&_.alergia-item_.btn-remover-alergia]:text-white [&_.alergia-item_.btn-remover-alergia]:text-base [&_.alergia-item_.btn-remover-alergia]:font-bold [&_.alergia-item_.btn-remover-alergia]:rounded-full [&_.alergia-item_.btn-remover-alergia]:cursor-pointer [&_.alergia-item_.btn-remover-alergia]:leading-none [&_.alergia-item_.btn-remover-alergia]:flex [&_.alergia-item_.btn-remover-alergia]:items-center [&_.alergia-item_.btn-remover-alergia]:justify-center [&_.alergia-item_.btn-remover-alergia:hover]:bg-alertas [&_.alergia-item_.btn-remover-alergia:hover]:border-alertas [&_.alergia-item_.btn-remover-alergia:hover]:text-white" id="diagnosticos-box"></div>
+                        <button type="button" class="btn-adicionar-alergia bg-white text-primary text-[13px] font-bold px-2 py-1 cursor-pointer rounded-[10px] border-2 border-white/50 hover:bg-primary hover:text-white hover:border-[#154e66] transition-colors" id="btn-adicionar-diagnostico">+</button>
                     </div>
                 </div>
 
-                <div class="buttons-bottom">
-                    <input type="button" value="Cancelar" class="btn-cancelar"
-                        onclick="fecharPopUp('.pop-up-criar-plano-cuidados')" />
-                    <input type="submit" value="Criar Plano" />
+                <div class="buttons-bottom flex py-[2%] gap-[10px] mt-4">
+                    <input type="button" value="Cancelar" class="btn-cancelar flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" onclick="fecharPopUp('.pop-up-criar-plano-cuidados')" />
+                    <input type="submit" value="Criar Plano" class="flex-1 p-[10px] bg-[#2a7fa0] text-white border-2 border-white/30 rounded-md text-[0.8rem] font-bold tracking-wider uppercase cursor-pointer hover:bg-[#236d8c] active:scale-95 transition-all" />
                 </div>
             </form>
         </div>

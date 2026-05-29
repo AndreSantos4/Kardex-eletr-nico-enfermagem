@@ -123,6 +123,7 @@ public class StockServiceImpl implements StockService{
         medicamentoRepository.save(medication);
 	}
 
+    @Transactional
 	@Override
 	public void activateMedication(Long medicationId) {
 	    var medication = getMedication(medicationId);
@@ -132,6 +133,7 @@ public class StockServiceImpl implements StockService{
         medicamentoRepository.save(medication);
 	}
 
+    @Transactional(readOnly = true)
 	@Override
 	public Medicamento getMedication(Long medicationId) {
 		return medicamentoRepository.findById(medicationId)
@@ -158,6 +160,7 @@ public class StockServiceImpl implements StockService{
         medication.getLotes().add(batch);
     }
 
+    @Transactional
     @Override
     public void subtractFromStock(Medicamento medication, BigDecimal quantidade) {
         for (LoteMedicamento lote : medication.getLotes()) {

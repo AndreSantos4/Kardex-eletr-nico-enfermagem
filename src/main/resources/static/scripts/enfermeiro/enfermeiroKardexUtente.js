@@ -35,7 +35,7 @@ function formatarUnidade(u) {
 function formatarDataHora(raw) {
   const [dataParte, horaParte] = raw.split("T");
   const [ano, mes, dia] = dataParte.split("-");
-  return `${dia}/${mes}/${ano}:${horaParte}`;
+  return `${dia}/${mes}/${ano}:${horaParte}:00`;
 }
 
 function formatarDataHora2(raw) {
@@ -83,6 +83,10 @@ function calcularAtrasoMinutos(horariosPrevistos) {
 
 function abrirPaginaPlano() {
   window.location.href = `enfermeiroPlanoCuidados?id=${id}`;
+}
+
+function abrirPaginaAdministracao() {
+  window.location.href = `enfermeiroAdministracaoMedicacao?id=${id}`;
 }
 
 function irParaHistoricoPrescricoes() {
@@ -262,7 +266,8 @@ async function carregarCamasEdicao() {
     const livres = dataLivres.success ? dataLivres.data : [];
     const ocupadas = dataOcupadas.success ? dataOcupadas.data : [];
 
-    const camaActualId = caseData.cama !== "—" ? String(caseData.cama) : null;
+    const camaActualId =
+      caseData.cama !== "Não atribuído" ? String(caseData.cama) : null;
     const camaActual = camaActualId
       ? ocupadas.find((c) => String(c.id) === camaActualId)
       : null;
@@ -276,7 +281,7 @@ async function carregarCamasEdicao() {
     document.getElementById("edit-cama")?.parentElement?._popularItens?.(items);
   } catch (err) {
     console.error("Erro ao carregar camas para edição:", err);
-    if (caseData.cama !== "—") {
+    if (caseData.cama !== "Não atribuído") {
       document
         .getElementById("edit-cama")
         ?.parentElement?._popularItens?.([
@@ -330,12 +335,10 @@ async function carregarUtente(id) {
       nome: processo.medicoResponsavel?.dados?.nome ?? "Sem médico",
     };
 
-    caseData = { cama: processo.cama?.id ?? "—" };
+    caseData = { cama: processo.cama?.id ?? "Não atribuído" };
 
-    const [dia, mes, ano] = processo.dataEntrada.split("/");
-    const dias = Math.floor(
-      (new Date() - new Date(ano, mes - 1, dia)) / 86400000,
-    );
+    // Backend devolve "dd/MM/yyyy:HH:mm:ss" — o ano vem colado à hora.
+    const dias = _calcularDiasInternado(processo.dataEntrada) ?? 0;
 
     document.getElementById("header-title").textContent =
       `Kardex - ${utenteData.nome}`;
@@ -408,8 +411,8 @@ async function abrirPopUpEditarFichaUtente() {
   await carregarCamasEdicao();
   definirValorSearchableSelect(
     "edit-cama",
-    caseData.cama !== "—" ? String(caseData.cama) : "",
-    caseData.cama !== "—" ? `Cama ${caseData.cama}` : "Sem cama",
+    caseData.cama !== "Não atribuído" ? String(caseData.cama) : "",
+    caseData.cama !== "Não atribuído" ? `Cama ${caseData.cama}` : "Sem cama",
   );
 
   document.querySelectorAll("input[name='edit-flags']").forEach((cb) => {
@@ -595,6 +598,76 @@ function atualizarSinaisVitaisUI(sv) {
     `${sv.glicemia}<br><small style="font-size:11px">mg/dL</small>`;
 }
 
+/**
+ * Verifica se ainda é permitido administrar esta prescrição agora.
+ * Regras:
+ *   - intervaloMinHoras: tem de passar X horas desde a última administração
+ *   - DIARIO/frequencia X: máximo X administrações por dia
+ */
+function _verificarLimitesAdministracao(p) {
+  const lista = (p.administracoes ?? []).filter(
+    (a) => a.administrado !== false,
+  );
+  if (lista.length === 0) return { permitido: true, motivo: "" };
+
+  const ordenadas = lista
+    .map((a) => ({ ...a, _data: _parseDataAdmin(a.data) }))
+    .filter((a) => a._data)
+    .sort((a, b) => b._data - a._data);
+  if (ordenadas.length === 0) return { permitido: true, motivo: "" };
+
+  const ultima = ordenadas[0];
+  const agora = new Date();
+
+  const intervaloMin = p.frequencia?.intervaloMinHoras ?? 0;
+  if (intervaloMin > 0) {
+    const proximaPermitida = new Date(
+      ultima._data.getTime() + intervaloMin * 3_600_000,
+    );
+    if (agora < proximaPermitida) {
+      const minutosFalta = Math.ceil((proximaPermitida - agora) / 60000);
+      const horas = Math.floor(minutosFalta / 60);
+      const mins = minutosFalta % 60;
+      const tempo =
+        horas > 0 ? `${horas}h${mins > 0 ? ` ${mins}min` : ""}` : `${mins}min`;
+      return {
+        permitido: false,
+        motivo: `Próxima administração em ${tempo} (intervalo mín. ${intervaloMin}h)`,
+      };
+    }
+  }
+
+  const periodo = String(p.frequencia?.periodo ?? "").toUpperCase();
+  const maxPorPeriodo = p.frequencia?.frequencia ?? 0;
+  if ((periodo === "DIARIO" || periodo === "DIARIA") && maxPorPeriodo > 0) {
+    const hojeAno = agora.getFullYear();
+    const hojeMes = agora.getMonth();
+    const hojeDia = agora.getDate();
+    const hoje = ordenadas.filter(
+      (a) =>
+        a._data.getFullYear() === hojeAno &&
+        a._data.getMonth() === hojeMes &&
+        a._data.getDate() === hojeDia,
+    );
+    if (hoje.length >= maxPorPeriodo) {
+      return {
+        permitido: false,
+        motivo: `Limite diário atingido (${hoje.length}/${maxPorPeriodo} hoje)`,
+      };
+    }
+  }
+
+  return { permitido: true, motivo: "" };
+}
+
+function _parseDataAdmin(raw) {
+  if (!raw) return null;
+  const m = /^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})$/.exec(raw);
+  if (m) return new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:${m[6]}`);
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
   const body = document.getElementById("medicacao-body");
   body.innerHTML = "";
@@ -629,12 +702,24 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
       ? `${p.frequencia.frequencia}x/${p.frequencia.periodo.toLowerCase()}`
       : "—";
     const fim = p.fim ?? "—";
-    const altoRisco = (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
+    const altoRisco =
+      (p.medicamento?.altoRisco ?? false) || (p.altoRisco ?? false);
     const horariosPrevistos = p.horariosPrevistos ?? [];
+
+    const limite = _verificarLimitesAdministracao(p);
+    const podeAdministrar = limite.permitido;
+    const motivoBloqueio = limite.motivo;
 
     const badgeAltoRisco = altoRisco
       ? `<span style="display:inline-block;margin-left:6px;background:rgb(220,49,26);color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px;padding:1px 5px;border-radius:3px;vertical-align:middle;">ALTO RISCO</span>`
       : "";
+    const linhaLimite = motivoBloqueio
+      ? `<div style="color:hsl(0,98%,36%);font-size:11px;font-weight:600;margin-top:2px">${motivoBloqueio}</div>`
+      : "";
+
+    const btnAttr = podeAdministrar
+      ? `onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})"`
+      : `disabled style="opacity:0.55;cursor:not-allowed" title="${motivoBloqueio.replace(/"/g, "&quot;")}"`;
 
     const row = document.createElement("div");
     row.className = "med-row";
@@ -645,9 +730,9 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
         <div style="font-weight:600;color:var(--surface)">${nomeMed}${badgeAltoRisco}</div>
         <div style="color:var(--surface);margin-top:2px">${doseVal} · ${freq} · Via: ${via}</div>
         <div style="color:var(--surface);font-size:11px">Até ${fim}</div>
+        ${linhaLimite}
       </div>
-      <button class="btn-administrar"
-        onclick="abrirPopUpAdministrarMedicacao(${p.id},'${nomeMed}','${doseVal}','${via}',${altoRisco},${JSON.stringify(horariosPrevistos)})">
+      <button class="btn-administrar" ${btnAttr}>
         ADMINISTRAR
       </button>
     `;
@@ -656,7 +741,7 @@ async function renderizarMedicacaoAtivaComContencoes(prescricoes) {
 
   contencoes.forEach((c) => {
     const nomeMed = c.medicamento?.nome ?? "Contenção Química";
-    const via = c.medicamento?.viaAdministracao ?? "—";
+    const via = c.via ?? c.medicamento?.viaAdministracao ?? "—";
 
     const dose = c.dose;
     const doseNum = parseFloat(dose?.dose ?? 0);
@@ -785,6 +870,27 @@ async function registarMedicacao() {
 
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar administração");
+
+    const json = await resp.json().catch(() => ({}));
+
+    // Quando a dose ia ultrapassar o máximo diário, o backend devolve
+    // um MaxDoseAlertDTO em vez de gravar a administração.
+    if (
+      json.success &&
+      json.data &&
+      json.data.maxDose != null &&
+      json.data.dose != null
+    ) {
+      const med = json.data.medicamento?.nome ?? "medicação";
+      const unidade = json.data.medicamento?.unidadeMedida ?? "";
+      mostrarNotificacao({
+        titulo: "Administração bloqueada — dose máxima",
+        mensagem: `${med}: a soma de doses nas últimas 24h excede o máximo diário (${json.data.maxDose} ${unidade}). Requer validação clínica.`,
+        tipo: "aviso",
+      });
+      return;
+    }
+
     fecharPopUp(".pop-up-administrar-medicacao");
     mostrarNotificacao({
       titulo: "Administração",
@@ -793,11 +899,15 @@ async function registarMedicacao() {
         : "Medicação administrada com sucesso.",
       tipo: "sucesso",
     });
+    // Recarregar dados para refletir o histórico e bloquear nova administração
+    if (typeof carregarUtente === "function" && typeof id !== "undefined") {
+      await carregarUtente(id);
+    }
   } catch (err) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar administração.",
@@ -936,7 +1046,7 @@ async function criarPlanoCuidados(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao criar plano de cuidados.",
@@ -958,19 +1068,23 @@ async function carregarMedicamentosContencao() {
   const selectMed = document.getElementById("medicamento-contencao");
   const selectDose = document.getElementById("dosagem-contencao");
 
-  selectMed.innerHTML = '<option value="" disabled selected>A carregar...</option>';
-  selectDose.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+  selectMed.innerHTML =
+    '<option value="" disabled selected>A carregar...</option>';
+  selectDose.innerHTML =
+    '<option value="" disabled selected>Selecione o medicamento</option>';
 
   try {
     const res = await fetch("http://localhost:8080/api/stock/medications", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const data = await res.json();
-    if (!data.success) throw new Error(data.message ?? "Erro ao carregar medicamentos");
+    if (!data.success)
+      throw new Error(data.message ?? "Erro ao carregar medicamentos");
 
     _medicamentosContencao = data.data ?? [];
 
-    selectMed.innerHTML = '<option value="" disabled selected>Selecione o medicamento</option>';
+    selectMed.innerHTML =
+      '<option value="" disabled selected>Selecione o medicamento</option>';
     _medicamentosContencao.forEach((m) => {
       const opt = document.createElement("option");
       opt.value = m.id;
@@ -978,7 +1092,8 @@ async function carregarMedicamentosContencao() {
       selectMed.appendChild(opt);
     });
   } catch (err) {
-    selectMed.innerHTML = '<option value="" disabled selected>Erro ao carregar</option>';
+    selectMed.innerHTML =
+      '<option value="" disabled selected>Erro ao carregar</option>';
     console.error("Erro ao carregar medicamentos:", err);
   }
 }
@@ -998,7 +1113,8 @@ function atualizarDosagemContencao() {
     if (optionExiste) selectVia.value = med.viaAdministracao;
   }
 
-  selectDose.innerHTML = '<option value="" disabled selected>Selecione a dosagem</option>';
+  selectDose.innerHTML =
+    '<option value="" disabled selected>Selecione a dosagem</option>';
   if (med?.dosagens?.length) {
     med.dosagens.forEach((d) => {
       const opt = document.createElement("option");
@@ -1007,6 +1123,62 @@ function atualizarDosagemContencao() {
       selectDose.appendChild(opt);
     });
   }
+  esconderAvisoContencao();
+}
+
+function esconderAvisoContencao() {
+  const aviso = document.getElementById("aviso-dose-contencao");
+  if (aviso) {
+    aviso.classList.add("hidden");
+    aviso.classList.remove("flex");
+  }
+}
+
+function mostrarAvisoContencao(texto) {
+  const aviso = document.getElementById("aviso-dose-contencao");
+  const txt = document.getElementById("aviso-dose-contencao-texto");
+  if (txt) txt.textContent = texto;
+  if (aviso) {
+    aviso.classList.remove("hidden");
+    aviso.classList.add("flex");
+  }
+}
+
+// Devolve true se a dose for válida, false se for excessiva (já mostra o aviso).
+function validarDoseContencao() {
+  const selectMed = document.getElementById("medicamento-contencao");
+  const selectDose = document.getElementById("dosagem-contencao");
+  if (!selectMed || !selectDose) return true;
+
+  const idMed = parseInt(selectMed.value);
+  const idDose = parseInt(selectDose.value);
+  if (!idMed || !idDose) {
+    esconderAvisoContencao();
+    return true;
+  }
+
+  const med = _medicamentosContencao.find((m) => m.id === idMed);
+  if (!med?.dosagemMaxDiaria) {
+    esconderAvisoContencao();
+    return true;
+  }
+
+  const dose = med.dosagens?.find((d) => d.id === idDose);
+  if (!dose) {
+    esconderAvisoContencao();
+    return true;
+  }
+
+  const maxDose = med.dosagemMaxDiaria.dose;
+  const maxUnidade = med.dosagemMaxDiaria.unidadeMedida;
+  if (dose.unidadeMedida === maxUnidade && dose.dose > maxDose) {
+    mostrarAvisoContencao(
+      `Dose excessiva — ${dose.dose} ${formatarUnidade(dose.unidadeMedida)} excede a dose máxima diária (${maxDose} ${formatarUnidade(maxUnidade)}).`,
+    );
+    return false;
+  }
+  esconderAvisoContencao();
+  return true;
 }
 
 function fecharPopupRegistarContencao() {
@@ -1022,13 +1194,25 @@ async function submeterRegistarContencao(event) {
   const idDose = document.getElementById("dosagem-contencao").value;
   const duracao = document.getElementById("duracao-contencao").value.trim();
   const dataHoraRaw = document.getElementById("data-hora-contencao").value;
-  const justificacao = document.getElementById("justificacao-contencao").value.trim();
+  const justificacao = document
+    .getElementById("justificacao-contencao")
+    .value.trim();
 
   if (!idMedicamento || !idDose || !duracao || !dataHoraRaw || !justificacao) {
     mostrarNotificacao({
       titulo: "Formulário incompleto",
       mensagem: "Preenche todos os campos obrigatórios.",
       tipo: "aviso",
+    });
+    return;
+  }
+
+  if (!validarDoseContencao()) {
+    mostrarNotificacao({
+      titulo: "Dose excessiva",
+      mensagem:
+        "A dose selecionada excede a dose máxima diária. Não é possível registar.",
+      tipo: "erro",
     });
     return;
   }
@@ -1055,7 +1239,9 @@ async function submeterRegistarContencao(event) {
     );
 
     if (!resp.ok)
-      throw new Error((await resp.text()) || "Erro ao registar contenção química");
+      throw new Error(
+        (await resp.text()) || "Erro ao registar contenção química",
+      );
 
     fecharPopupRegistarContencao();
     mostrarNotificacao({
@@ -1066,7 +1252,9 @@ async function submeterRegistarContencao(event) {
     await renderizarMedicacaoAtivaComContencoes(processoData.prescricoes);
   } catch (err) {
     let mensagem = err.message;
-    try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) { }
+    try {
+      mensagem = JSON.parse(err.message).error ?? mensagem;
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar contenção química.",
@@ -1129,8 +1317,6 @@ async function submeterRegistarIncidente(event) {
     if (!resp.ok)
       throw new Error((await resp.text()) || "Erro ao registar incidente");
 
-    console.log(resp);
-
     fecharPopupRegistarIncidente();
     mostrarNotificacao({
       titulo: "Incidente registado",
@@ -1142,7 +1328,7 @@ async function submeterRegistarIncidente(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar incidente.",
@@ -1290,7 +1476,7 @@ async function submeterRegistarCateter(event) {
     let mensagem = err.message;
     try {
       mensagem = JSON.parse(err.message).error ?? mensagem;
-    } catch (_) { }
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao registar cateter.",
@@ -1374,7 +1560,7 @@ async function obterEnfermeiroAtualId() {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const json = await resp.json();
-    return String(json.data.id ?? "");  // ← forçar string
+    return String(json.data.id ?? "");
   } catch (err) {
     console.error("Erro ao obter enfermeiro atual:", err);
     return null;
@@ -1386,25 +1572,70 @@ async function carregarPlanoDeHoje() {
   body.innerHTML = "";
 
   const frequenciaLabel = {
-    CONTINUA: "Contínua", DIARIA: "Diária", BD: "2x/dia",
-    TID: "3x/dia", QID: "4x/dia", SOS: "SOS", SEMANAL: "Semanal",
+    CONTINUA: "Contínua",
+    CONTINUO: "Contínua",
+    DIARIA: "Diária",
+    BD: "2x/dia",
+    TID: "3x/dia",
+    QID: "4x/dia",
+    SOS: "SOS",
+    SEMANAL: "Semanal",
+    DIA_1: "1x/dia",
+    DIA_2: "2x/dia",
+    DIA_3: "3x/dia",
+    DIA_4: "4x/dia",
+    DIA_5: "5x/dia",
+    DIA_6: "6x/dia",
+    H_2: "De 2 em 2 horas",
+    H_4: "De 4 em 4 horas",
+    "1_DIA": "1x/dia",
+    "2_DIA": "2x/dia",
+    "3_DIA": "3x/dia",
+    "4_DIA": "4x/dia",
+    "6_DIA": "6x/dia",
+    "2H": "De 2 em 2 horas",
+    "4H": "De 4 em 4 horas",
+  };
+
+  // Mapa de nomes de intervenções de enfermagem (corresponde aos enums do backend)
+  const intervencaoLabel = {
+    VIGILANCIA_CONTINUA: "Vigilância contínua",
+    VIGILANCIA_1_1: "Vigilância 1:1",
+    CONTENCAO_VERBAL: "Contenção verbal",
+    APOIO_EMOCIONAL: "Apoio emocional",
+    RELACAO_TERAPEUTICA: "Estabelecer relação terapêutica",
+    ATIVIDADES_ESTRUTURADAS: "Promover atividades estruturadas",
+    EDUCAR_MEDICACAO: "Educar sobre medicação",
+    MONITORIZAR_VITAIS: "Monitorizar sinais vitais",
+    AVALIAR_HUMOR_RISCO: "Avaliar humor / risco",
+    MONITORIZAR_ALIMENTACAO: "Monitorizar ingestão alimentar",
+    HIGIENE_SONO: "Promover higiene do sono",
+    OUTRO: "Outro",
   };
 
   const prioridadeConfig = {
-    CRITICA: { cor: "#c62828", texto: "CRÍTICA" },
-    ALTA: { cor: "rgb(220,49,26)", texto: "ALTA" },
-    MEDIA: { cor: "#e65100", texto: "MÉDIA" },
-    BAIXA: { cor: "#2e7d32", texto: "BAIXA" },
+    CRITICA: { cor: "#c62828", texto: "Crítica" },
+    ALTA: { cor: "rgb(220,49,26)", texto: "Alta" },
+    MEDIA: { cor: "#e65100", texto: "Média" },
+    BAIXA: { cor: "#2e7d32", texto: "Baixa" },
+  };
+
+  // Fallback: SNAKE_CASE → "Title case" (Monitorizar Alimentacao)
+  const humanize = (s) => {
+    if (!s) return "—";
+    const lower = String(s).toLowerCase().replace(/_/g, " ");
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
   };
 
   try {
     const resp = await fetch(
       `http://localhost:8080/api/processes/${processoId}/plan`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
     );
 
     if (!resp.ok) {
-      body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Sem plano de cuidados ativo.</p>";
+      body.innerHTML =
+        "<p style='color:var(--surface);font-size:13px'>Sem plano de cuidados ativo.</p>";
       return;
     }
 
@@ -1412,7 +1643,8 @@ async function carregarPlanoDeHoje() {
     const intervencoes = json.data?.intervencoes ?? [];
 
     if (intervencoes.length === 0) {
-      body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Sem intervenções para hoje.</p>";
+      body.innerHTML =
+        "<p style='color:var(--surface);font-size:13px'>Sem intervenções para hoje.</p>";
       return;
     }
 
@@ -1420,17 +1652,13 @@ async function carregarPlanoDeHoje() {
 
     intervencoes.forEach((inv) => {
       const feita = inv.funcionarioExecutou != null;
-      console.log(String(inv.funcionarioExecutou?.dados?.id ?? ""));
-      const realizadaPorId = String(inv.funcionarioExecutou?.dados?.id ?? inv.funcionarioExecutou?.id ?? "");
+      const podeDesmarcar = feita;
+      const checkboxBloqueada = !feita;
 
-      console.log("Enfermeiro atual:", enfermeiroAtualId);
-      console.log("Executou:", inv.funcionarioExecutou);
-      console.log("realizadaPorId:", realizadaPorId);
-
-      const podeDesmarcar = feita && String(realizadaPorId) === String(enfermeiroAtualId);
-      const checkboxBloqueada = !feita || (feita && !podeDesmarcar);
-
-      const prio = prioridadeConfig[inv.prioridade] ?? { cor: "#666", texto: inv.prioridade ?? "—" };
+      const prio = prioridadeConfig[inv.prioridade] ?? {
+        cor: "#666",
+        texto: inv.prioridade ?? "—",
+      };
       const freq = frequenciaLabel[inv.frequencia] ?? inv.frequencia ?? "—";
 
       const row = document.createElement("div");
@@ -1446,17 +1674,20 @@ async function carregarPlanoDeHoje() {
       ].join(";");
 
       const checkboxId = `inv-check-${inv.id}`;
-      const textoRiscado = feita ? "text-decoration:line-through;opacity:0.55;" : "";
-      const tituloCb = apenasLeitura(feita, podeDesmarcar)
-        ? "Registado por outro enfermeiro"
-        : feita
-          ? "Clica para desmarcar"
-          : "Marcar como realizado deve ser feito no plano de cuidados";
+      const textoRiscado = feita
+        ? "text-decoration:line-through;opacity:0.55;"
+        : "";
+      const tituloCb = feita
+        ? "Clica para desmarcar"
+        : "Marcar como realizado deve ser feito no plano de cuidados";
+
+      const nomeIntervencao =
+        intervencaoLabel[inv.intervencao] ?? humanize(inv.intervencao);
 
       row.innerHTML = `
         <div style="flex:1;min-width:0;">
           <div style="font-weight:600;color:var(--surface);${textoRiscado}">
-            ${inv.intervencao ?? "—"}
+            ${nomeIntervencao}
             <span style="display:inline-block;margin-left:6px;background:${prio.cor};color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;vertical-align:middle;">${prio.texto}</span>
           </div>
           <div style="color:var(--surface);margin-top:3px;font-size:12px;">
@@ -1492,13 +1723,11 @@ async function carregarPlanoDeHoje() {
         });
       }
 
-      console.log("feita:", feita, "podeDesmarcar:", podeDesmarcar, "bloqueada:", checkboxBloqueada);
-      console.log("tipos:", typeof enfermeiroAtualId, typeof realizadaPorId, enfermeiroAtualId === realizadaPorId);
-
       body.appendChild(row);
     });
   } catch (err) {
-    body.innerHTML = "<p style='color:var(--surface);font-size:13px'>Erro ao carregar plano de cuidados.</p>";
+    body.innerHTML =
+      "<p style='color:var(--surface);font-size:13px'>Erro ao carregar plano de cuidados.</p>";
     console.error("Erro em carregarPlanoDeHoje:", err);
   }
 }
@@ -1520,10 +1749,11 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      },
     );
 
-    if (!resp.ok) throw new Error((await resp.text()) || "Erro ao desmarcar intervenção");
+    if (!resp.ok)
+      throw new Error((await resp.text()) || "Erro ao desmarcar intervenção");
 
     mostrarNotificacao({
       titulo: "Intervenção desmarcada",
@@ -1534,7 +1764,9 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
     await carregarPlanoDeHoje();
   } catch (err) {
     let mensagem = err.message;
-    try { mensagem = JSON.parse(err.message).error ?? mensagem; } catch (_) { }
+    try {
+      mensagem = JSON.parse(err.message).error ?? mensagem;
+    } catch (_) {}
     mostrarNotificacao({
       titulo: "Erro",
       mensagem: mensagem || "Erro ao desmarcar intervenção.",
@@ -1546,4 +1778,594 @@ async function desmarcarIntervencao(intervencaoId, rowEl, cbEl) {
   }
 }
 
-carregarUtente(id).then(() => carregarPlanoDeHoje());
+const TIPO_LABEL_REGISTO = {
+  EXAME: "Exame",
+  MEDICACAO: "Medicação",
+  SINAL_VITAL: "Sinais Vitais",
+  INCIDENTE: "Incidente",
+  CATETER: "Cateter",
+  NOTA: "Nota",
+  CONTENCAO: "Contenção",
+  PRESCRICAO: "Prescrição",
+  ALTA: "Alta",
+  INTERNAMENTO: "Internamento",
+  PLANO_CUIDADOS: "Plano de Cuidados",
+  INTERVENCAO: "Intervenção",
+};
+
+function _formatarTimestamp(ts) {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return ts;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+async function carregarRegistosClinicosTabela() {
+  const tbody = document.getElementById("registos-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="3" style="padding:8px;color:var(--surface);font-size:13px;font-style:italic">A carregar…</td></tr>`;
+
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/records/clinic/${processoId}`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const registos = json.data ?? [];
+
+    if (registos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="padding:8px;color:var(--surface);font-size:13px;font-style:italic">Sem registos clínicos.</td></tr>`;
+      return;
+    }
+
+    const ordenados = registos
+      .slice()
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    tbody.innerHTML = ordenados
+      .slice(0, 10)
+      .map((r) => {
+        const tipo = TIPO_LABEL_REGISTO[r.tipo] ?? r.tipo ?? "—";
+        const valor = r.detalhes ?? "—";
+        const hora = _formatarTimestamp(r.timestamp);
+        const esc = (s) =>
+          String(s ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        return `<tr>
+        <td>${esc(tipo)}</td>
+        <td>${esc(valor)}</td>
+        <td>${esc(hora)}</td>
+      </tr>`;
+      })
+      .join("");
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="3" style="padding:8px;color:var(--surface);font-size:13px;font-style:italic">Erro ao carregar registos.</td></tr>`;
+    console.error("Erro em carregarRegistosClinicosTabela:", err);
+  }
+}
+
+carregarUtente(id).then(() => {
+  carregarPlanoDeHoje();
+  carregarRegistosClinicosTabela();
+});
+
+async function abrirPopUpNotasClinicas() {
+  await carregarPopUp("../../pages/enfermeiro/popups/popupNotasClinicas.html");
+
+  const popupUtente = document.getElementById("popup-notas-utente");
+  if (popupUtente) popupUtente.textContent = utenteData?.nome || "—";
+
+  const container = document.getElementById("popup-notas-lista");
+  if (container)
+    container.innerHTML =
+      '<div class="popup-nota-empty">A carregar notas…</div>';
+
+  abrirPopUp(".popup-notas-overlay");
+
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/processes/${processoId}/notes`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
+
+    if (!res.ok) {
+      mostrarNotificacao({
+        titulo: "Erro",
+        mensagem: "Erro ao carregar notas de evolução.",
+        tipo: "erro",
+      });
+      renderizarNotasClinicas([]);
+      return;
+    }
+
+    const json = await res.json();
+    if (!json.success) {
+      mostrarNotificacao({
+        titulo: "Erro",
+        mensagem: json.message || "Erro ao obter notas.",
+        tipo: "erro",
+      });
+      renderizarNotasClinicas([]);
+      return;
+    }
+
+    renderizarNotasClinicas(json.data || []);
+  } catch (err) {
+    console.error("[Notas Clínicas] Erro ao carregar notas:", err);
+    mostrarNotificacao({
+      titulo: "Erro de ligação",
+      mensagem: "Não foi possível comunicar com o servidor.",
+      tipo: "erro",
+    });
+    renderizarNotasClinicas([]);
+  }
+}
+
+function fecharPopupNotasClinicas() {
+  const popup = document.querySelector(".popup-notas-overlay");
+  if (popup) popup.style.display = "none";
+}
+
+function renderizarNotasClinicas(lista) {
+  const container = document.getElementById("popup-notas-lista");
+  if (!container) return;
+
+  if (!lista || lista.length === 0) {
+    container.innerHTML =
+      '<div class="popup-nota-empty">Sem notas de evolução registadas.</div>';
+    return;
+  }
+
+  const ordenadas = lista.slice().sort(function (a, b) {
+    return _parseDateBackendNota(b.data) - _parseDateBackendNota(a.data);
+  });
+
+  container.innerHTML = ordenadas
+    .map(function (n) {
+      const nomeMedico = n.medico && n.medico.dados ? n.medico.dados.nome : "—";
+      const dataHora = _formatarDataHoraNota(n.data);
+      return (
+        '<div class="popup-nota-item">' +
+        '<div class="popup-nota-header">' +
+        escapeHtmlNota(nomeMedico) +
+        ' <span class="popup-nota-meta">- ' +
+        escapeHtmlNota(dataHora) +
+        "</span>" +
+        "</div>" +
+        '<div class="popup-nota-texto">' +
+        escapeHtmlNota(n.justificacaoClinica || "") +
+        "</div>" +
+        "</div>"
+      );
+    })
+    .join("");
+}
+
+function _parseDateBackendNota(str) {
+  if (!str) return 0;
+  const m = str.match(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2})/);
+  if (!m) return 0;
+  return new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]).getTime();
+}
+
+function _formatarDataHoraNota(str) {
+  if (!str) return "—";
+  const m = str.match(/^(\d{2})\/(\d{2})\/(\d{4}):(\d{2}):(\d{2})/);
+  if (!m) return str;
+  return `${m[1]}/${m[2]}/${m[3]} - ${m[4]}:${m[5]}`;
+}
+
+function escapeHtmlNota(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+async function abrirPopUpAdministrarSOS() {
+  await carregarPopUp(
+    "../../pages/enfermeiro/popups/popuRegistarAdminstracaoSOS.html",
+  );
+  const inputDataHora = document.getElementById("data-hora-sos");
+  if (inputDataHora) inputDataHora.value = agora();
+  popularPrescricoesSOS();
+  abrirPopUp(".popup-sos-overlay");
+}
+
+function popularPrescricoesSOS() {
+  const select = document.getElementById("prescricao-sos");
+  if (!select) return;
+
+  const prescricoesSOS = (processoData?.prescricoes ?? []).filter(
+    (p) => p.sos === true && p.estado === "ATIVA",
+  );
+
+  select.innerHTML = "";
+  if (prescricoesSOS.length === 0) {
+    select.innerHTML =
+      '<option value="" disabled selected>Sem prescrições SOS ativas</option>';
+    atualizarPrescricaoSOS();
+    return;
+  }
+
+  const optHeader = document.createElement("option");
+  optHeader.value = "";
+  optHeader.disabled = true;
+  optHeader.selected = true;
+  optHeader.textContent = "Selecione a prescrição";
+  select.appendChild(optHeader);
+
+  prescricoesSOS.forEach((p) => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    const nome = p.medicamento?.nome ?? "Medicação";
+    const dose = p.dose
+      ? `${p.dose.dose} ${formatarUnidade(p.dose.unidadeMedida)}`
+      : "";
+    opt.textContent = `${nome}${dose ? " — " + dose : ""}`;
+    select.appendChild(opt);
+  });
+
+  atualizarPrescricaoSOS();
+}
+
+function _getPrescricaoSOSSelecionada() {
+  const id = parseInt(document.getElementById("prescricao-sos")?.value);
+  if (!id) return null;
+  return (processoData?.prescricoes ?? []).find((p) => p.id === id) ?? null;
+}
+
+function atualizarPrescricaoSOS() {
+  const presc = _getPrescricaoSOSSelecionada();
+  const elNome = document.getElementById("sos-prescricao-medicamento");
+  const elDet = document.getElementById("sos-prescricao-detalhe");
+
+  if (!presc) {
+    if (elNome) elNome.textContent = "Selecionar prescrição SOS";
+    if (elDet)
+      elDet.textContent =
+        "Dose máx. e intervalo mínimo definidos pela prescrição.";
+  } else {
+    const nome = presc.medicamento?.nome ?? "Medicação";
+    const max = presc.medicamento?.dosagemMaxDiaria;
+    if (elNome) elNome.textContent = nome;
+    if (elDet) {
+      elDet.textContent = max
+        ? `Dose máx. diária: ${max.dose} ${formatarUnidade(max.unidadeMedida)}`
+        : "Sem dose máxima registada.";
+    }
+  }
+  esconderAvisoSOS();
+  validarDoseSOS();
+}
+
+function fecharPopupAdministrarSOS() {
+  const popup = document.querySelector(".popup-sos-overlay");
+  if (!popup) return;
+  popup.style.display = "none";
+  popup.querySelector("form")?.reset();
+}
+
+// Limites máximos razoáveis por unidade para uma administração SOS (one-shot).
+// Quando a seleção de prescrição SOS estiver wired-up, comparar contra a prescrição.
+const LIMITES_DOSE_SOS = {
+  mg: 1000,
+  g: 5,
+  mcg: 1000,
+  ml: 50,
+  ui: 100000,
+};
+
+function _parseDoseSOS(texto) {
+  const m = /^(\d+(?:[.,]\d+)?)\s*(mg|mcg|g|ml|ui)?$/i.exec(
+    (texto ?? "").trim(),
+  );
+  if (!m) return null;
+  return {
+    valor: parseFloat(m[1].replace(",", ".")),
+    unidade: (m[2] ?? "mg").toLowerCase(),
+  };
+}
+
+function esconderAvisoSOS() {
+  const aviso = document.getElementById("aviso-dose-sos");
+  if (aviso) {
+    aviso.classList.add("hidden");
+    aviso.classList.remove("flex");
+  }
+}
+
+function mostrarAvisoSOS(texto) {
+  const aviso = document.getElementById("aviso-dose-sos");
+  const txt = document.getElementById("aviso-dose-sos-texto");
+  if (txt) txt.textContent = texto;
+  if (aviso) {
+    aviso.classList.remove("hidden");
+    aviso.classList.add("flex");
+  }
+}
+
+// Converte um valor para a unidade abreviada (mg/g/mcg/ml/ui) numa escala comum em mg
+// para podermos comparar mg vs g vs mcg de forma robusta.
+function _doseEmMg(valor, unidadeAbrev) {
+  const u = String(unidadeAbrev || "").toLowerCase();
+  if (u === "g") return valor * 1000;
+  if (u === "mg") return valor;
+  if (u === "mcg") return valor / 1000;
+  return valor; // ml/ui não convertíveis — só comparáveis em si mesmas
+}
+
+// Devolve true se a dose for válida, false se for inválida ou excessiva (mostra o aviso).
+function validarDoseSOS() {
+  const valor = document.getElementById("dose-sos")?.value.trim();
+  if (!valor) {
+    esconderAvisoSOS();
+    return true;
+  }
+
+  const parsed = _parseDoseSOS(valor);
+  if (!parsed) {
+    mostrarAvisoSOS(
+      'Formato inválido — use por exemplo "5mg", "0.5g", "100mcg".',
+    );
+    return false;
+  }
+
+  const presc = _getPrescricaoSOSSelecionada();
+  const max = presc?.medicamento?.dosagemMaxDiaria;
+  const dosePresc = presc?.dose;
+
+  // 1) Limite máximo diário do medicamento (se existir): converte tudo para mg.
+  if (max?.dose != null) {
+    const maxAbrev = formatarUnidade(max.unidadeMedida).toLowerCase();
+    const ehMassa =
+      ["mg", "g", "mcg"].includes(parsed.unidade) &&
+      ["mg", "g", "mcg"].includes(maxAbrev);
+    const mesmaUnidade = parsed.unidade === maxAbrev;
+    if (ehMassa || mesmaUnidade) {
+      const parsedMg = ehMassa
+        ? _doseEmMg(parsed.valor, parsed.unidade)
+        : parsed.valor;
+      const maxMg = ehMassa ? _doseEmMg(max.dose, maxAbrev) : max.dose;
+      if (parsedMg > maxMg) {
+        mostrarAvisoSOS(
+          `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose máxima diária da prescrição (${max.dose} ${formatarUnidade(max.unidadeMedida)}).`,
+        );
+        return false;
+      }
+    }
+  }
+
+  // 2) Sem máximo configurado mas prescrição tem dose por administração: usar essa como referência.
+  if (max?.dose == null && dosePresc?.dose != null) {
+    const doseAbrev = formatarUnidade(dosePresc.unidadeMedida).toLowerCase();
+    const ehMassa =
+      ["mg", "g", "mcg"].includes(parsed.unidade) &&
+      ["mg", "g", "mcg"].includes(doseAbrev);
+    const mesmaUnidade = parsed.unidade === doseAbrev;
+    if (ehMassa || mesmaUnidade) {
+      const parsedMg = ehMassa
+        ? _doseEmMg(parsed.valor, parsed.unidade)
+        : parsed.valor;
+      const doseMg = ehMassa
+        ? _doseEmMg(dosePresc.dose, doseAbrev)
+        : dosePresc.dose;
+      if (parsedMg > doseMg) {
+        mostrarAvisoSOS(
+          `Dose excessiva — ${parsed.valor}${parsed.unidade} excede a dose prescrita por administração (${dosePresc.dose} ${formatarUnidade(dosePresc.unidadeMedida)}).`,
+        );
+        return false;
+      }
+    }
+  }
+
+  // 3) Sem prescrição ou sem dados: limite heurístico por unidade.
+  if (!presc) {
+    const limite = LIMITES_DOSE_SOS[parsed.unidade];
+    if (limite && parsed.valor > limite) {
+      mostrarAvisoSOS(
+        `Dose excessiva — ${parsed.valor}${parsed.unidade} excede o máximo seguro (${limite}${parsed.unidade}). Verifique a prescrição.`,
+      );
+      return false;
+    }
+  }
+
+  esconderAvisoSOS();
+  return true;
+}
+
+function submeterAdministrarSOS(event) {
+  if (event) event.preventDefault();
+
+  const prescricaoId = document.getElementById("prescricao-sos")?.value;
+  const condicao = document.getElementById("condicao-sos")?.value;
+  const descricao = document.getElementById("descricao-sos")?.value.trim();
+  const dataHora = document.getElementById("data-hora-sos")?.value;
+  const dose = document.getElementById("dose-sos")?.value.trim();
+
+  if (!prescricaoId || !condicao || !descricao || !dataHora || !dose) {
+    mostrarNotificacao({
+      titulo: "Formulário incompleto",
+      mensagem: "Preenche todos os campos obrigatórios.",
+      tipo: "aviso",
+    });
+    return;
+  }
+
+  if (!validarDoseSOS()) {
+    mostrarNotificacao({
+      titulo: "Dose excessiva",
+      mensagem:
+        "A dose introduzida excede o limite seguro. Não é possível registar.",
+      tipo: "erro",
+    });
+    return;
+  }
+
+  mostrarNotificacao({
+    titulo: "Funcionalidade em desenvolvimento",
+    mensagem: "Endpoint do backend ainda não disponível.",
+    tipo: "aviso",
+  });
+  fecharPopupAdministrarSOS();
+
+  // TODO: POST /api/processes/{processoId}/sos-administrations
+}
+
+// ─── Popup Histórico de Internamentos ────────────────────────────────────────
+//   Endpoint: GET /api/patients/{id}/history (devolve lista de ProcessoClinico)
+
+async function abrirPopupHistInternamentos() {
+  if (!id) return;
+  await carregarPopUp(
+    "../../pages/enfermeiro/popups/popupHistoricoInternamentos.html",
+  );
+
+  const overlay = document.querySelector(".popup-hist-internamentos-overlay");
+  if (!overlay) return;
+
+  // nome do utente para o cabeçalho
+  const nomeEl = document.getElementById("utente-nome");
+  const nome = nomeEl ? nomeEl.textContent.trim() : "—";
+  const tituloEl = document.getElementById("popup-hist-utente");
+  if (tituloEl) tituloEl.textContent = nome || "—";
+
+  _renderHistInternamentos(null); // estado de carregamento
+  overlay.style.display = "flex";
+
+  try {
+    const res = await fetch(
+      `http://localhost:8080/api/patients/${id}/history`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      },
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json.success) {
+      console.warn("[Hist. Internamentos]", json.message);
+      _renderHistInternamentos([]);
+      return;
+    }
+    _renderHistInternamentos(json.data ?? []);
+  } catch (err) {
+    console.error("[Hist. Internamentos] Erro:", err);
+    _renderHistInternamentos([]);
+  }
+}
+
+function fecharPopupHistInternamentos() {
+  const overlay = document.querySelector(".popup-hist-internamentos-overlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function _renderHistInternamentos(lista) {
+  const container = document.getElementById("popup-hist-lista");
+  if (!container) return;
+
+  if (lista === null) {
+    container.innerHTML =
+      '<div class="text-center py-7 px-4 text-white/70 italic">A carregar internamentos…</div>';
+    return;
+  }
+  if (!lista || lista.length === 0) {
+    container.innerHTML =
+      '<div class="text-center py-7 px-4 text-white/70 italic">Sem internamentos registados.</div>';
+    return;
+  }
+
+  // Ordenar: activos primeiro, depois por dataEntrada descendente
+  const ordenados = lista.slice().sort((a, b) => {
+    const ativoA = !a.dataAlta && !a.alta;
+    const ativoB = !b.dataAlta && !b.alta;
+    if (ativoA && !ativoB) return -1;
+    if (ativoB && !ativoA) return 1;
+    const da = _calcularDiasInternado(a.dataEntrada);
+    const db = _calcularDiasInternado(b.dataEntrada);
+    return (da ?? 0) - (db ?? 0); // menos dias = mais recente
+  });
+
+  container.innerHTML = ordenados
+    .map((i) => {
+      const ativo = !i.dataAlta && i.alta !== true;
+      const estado = ativo ? "Ativo" : "Alta";
+      const corEstado = ativo ? "text-green-300" : "text-white/65";
+
+      const procId = i.id ?? "—";
+      const entrada = (i.dataEntrada ?? "").substring(0, 10) || "—";
+      const saida = i.dataAlta ? i.dataAlta.substring(0, 10) : null;
+      const diasInternado = _calcularDiasInternado(i.dataEntrada);
+      const periodo = ativo
+        ? `${entrada} → presente`
+        : `${entrada} → ${saida ?? "—"}${diasInternado != null ? ` (${diasInternado} dias)` : ""}`;
+
+      const motivo = i.motivoInternamento ?? i.diagnosticoPrincipal ?? "—";
+      const medico = i.medicoResponsavel?.dados?.nome ?? "—";
+      const tipoAlta = i.tipoAlta ? ` · ${_humanizar(i.tipoAlta)}` : "";
+
+      const titulo = ativo
+        ? `Internamento atual - ${procId}`
+        : `Internamento anterior · ${procId}`;
+
+      return `
+      <div class="bg-white rounded-full px-6 py-3 flex items-center justify-between gap-4 shadow-sm">
+        <div class="min-w-0 flex-1">
+          <div class="text-bg-dark text-[13.5px] font-bold leading-tight truncate">${_escHist(titulo)}</div>
+          <div class="text-bg-dark/75 text-[12px] mt-0.5 truncate">${_escHist(periodo)} · Motivo: ${_escHist(motivo)}${medico !== "—" ? " · " + _escHist(medico) : ""}${tipoAlta}</div>
+        </div>
+        <span class="${corEstado} text-[13px] font-bold whitespace-nowrap">${estado}</span>
+      </div>
+    `;
+    })
+    .join("");
+}
+
+function _humanizar(s) {
+  if (!s) return "";
+  const t = String(s).toLowerCase().replace(/_/g, " ");
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function _escHist(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Aceita "dd/MM/yyyy:HH:mm:ss" (formato do backend) ou ISO. Devolve nº de dias
+ * desde a data de entrada até hoje, ou null se a string não for parseável.
+ */
+function _calcularDiasInternado(dataEntrada) {
+  if (!dataEntrada) return null;
+  const m = String(dataEntrada).match(
+    /^(\d{2})\/(\d{2})\/(\d{4})(?::(\d{2}):(\d{2}):(\d{2}))?/,
+  );
+  let d;
+  if (m) {
+    d = new Date(
+      parseInt(m[3], 10),
+      parseInt(m[2], 10) - 1,
+      parseInt(m[1], 10),
+      parseInt(m[4] ?? "0", 10),
+      parseInt(m[5] ?? "0", 10),
+    );
+  } else {
+    d = new Date(dataEntrada);
+  }
+  if (isNaN(d.getTime())) return null;
+  return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
+}

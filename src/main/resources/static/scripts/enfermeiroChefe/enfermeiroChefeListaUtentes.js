@@ -67,6 +67,7 @@ function renderizarTabela() {
 
     const estado = u.processo.alta ? "Alta" : "Internado";
     const cama = u.processo.cama?.id ?? "Nenhuma";
+    const alertas = renderAlertas(u);
 
     tbody.innerHTML += `
     <tr>
@@ -75,17 +76,33 @@ function renderizarTabela() {
       <td>${cama}</td>
       <td>${u.processo.diagnosticoPrincipal}</td>
       <td>${u.processo.medicoResponsavel.dados.nome}</td>
-      <td>${u.processo.dataEntrada}</td>
+      <td>${(u.processo.dataEntrada ?? "").split(":")[0]}</td>
       <td>${estado}</td>
-      <td>${u.processo.temAlergias}</td>
+      <td>${alertas}</td>
       <td>
-        <button class="ver-mais"
-            onclick="location.href = '/enfermeiroKardexUtente?id=${u.id}'">
+        <button class="ver-mais bg-transparent border-[1.5px] border-primary text-primary text-[11px] font-bold tracking-wider px-3 py-1.5 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors whitespace-nowrap"
+            onclick="location.href = '/enfermeiroChefeKardexUtente?id=${u.id}'">
             VER MAIS
         </button>
       </td>
     </tr>`;
   });
+}
+
+function renderAlertas(u) {
+  const labels = [];
+  const flags = u.flags ?? [];
+  flags.forEach((f) => {
+    const texto = String(f).replace(/^RISCO_/, "").toLowerCase();
+    labels.push(texto.charAt(0).toUpperCase() + texto.slice(1));
+  });
+  const alergias = u.alergias ?? [];
+  if (alergias.length > 0) {
+    labels.push("Alergias");
+  }
+  return labels.length === 0
+    ? `<span class="text-primary/50 text-xs">—</span>`
+    : `<span class="text-alertas text-xs font-semibold">${labels.join(", ")}</span>`;
 }
 
 function renderizarPaginacao() {
@@ -96,15 +113,16 @@ function renderizarPaginacao() {
   );
 
   const div = document.createElement("div");
-  div.className = "paginacao";
+  div.className = "paginacao flex items-center justify-between gap-3 px-4 py-2.5 border-t border-primary/30 bg-white";
 
   const seletor = document.createElement("div");
-  seletor.className = "paginacao-tamanho";
+  seletor.className = "paginacao-tamanho flex items-center gap-2 text-primary text-xs font-semibold";
   const label = document.createElement("label");
   label.htmlFor = "items-por-pagina";
   label.textContent = "Utentes por página:";
   const select = document.createElement("select");
   select.id = "items-por-pagina";
+  select.className = "bg-white border border-primary rounded text-primary text-xs font-semibold px-2 py-1 cursor-pointer outline-none";
   OPCOES_ITEMS_POR_PAGINA.forEach((n) => {
     const opt = document.createElement("option");
     opt.value = String(n);
@@ -123,7 +141,7 @@ function renderizarPaginacao() {
   div.appendChild(seletor);
 
   const paginas = document.createElement("div");
-  paginas.className = "paginacao-paginas";
+  paginas.className = "paginacao-paginas flex items-center gap-1.5";
   for (let i = 0; i < totalPaginas; i++) {
     const btn = document.createElement("button");
     btn.textContent = i + 1;

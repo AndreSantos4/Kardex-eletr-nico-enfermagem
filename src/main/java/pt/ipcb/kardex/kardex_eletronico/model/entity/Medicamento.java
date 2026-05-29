@@ -48,7 +48,7 @@ public class Medicamento {
     @JoinColumn(name = "id_dosagem_max")
     public Dosagem dosagemMaxDiaria;
 
-    @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<LoteMedicamento> lotes = new ArrayList<>();
     
     @Column(name = "unidadeMedida", nullable = false)

@@ -67,17 +67,18 @@ function renderizarTabela() {
 
     const estado = u.processo.alta ? "Alta" : "Internado";
     const cama = u.processo.cama?.id ?? "Nenhuma";
+    const alertas = renderAlertas(u);
 
     tbody.innerHTML += `
     <tr>
-      <td>${u.id}</td>
+      <td>${u.processo.id ?? u.id}</td>
       <td>${u.nome}</td>
       <td>${cama}</td>
-      <td>${u.processo.diagnosticoPrincipal}</td>
-      <td>${u.processo.medicoResponsavel.dados.nome}</td>
-      <td>${u.processo.dataEntrada}</td>
+      <td>${u.processo.diagnosticoPrincipal ?? "—"}</td>
+      <td>${u.processo.medicoResponsavel?.dados?.nome ?? "—"}</td>
+      <td>${(u.processo.dataEntrada ?? "").split(":")[0]}</td>
       <td>${estado}</td>
-      <td>${u.processo.temAlergias}</td>
+      <td>${alertas}</td>
       <td>
         <button class="ver-mais"
             onclick="location.href = '/medicoKardexUtente?id=${u.id}'">
@@ -86,6 +87,22 @@ function renderizarTabela() {
       </td>
     </tr>`;
   });
+}
+
+function renderAlertas(u) {
+  const labels = [];
+  const flags = u.flags ?? [];
+  flags.forEach((f) => {
+    const texto = String(f).replace(/^RISCO_/, "").toLowerCase();
+    labels.push(texto.charAt(0).toUpperCase() + texto.slice(1));
+  });
+  const alergias = u.alergias ?? [];
+  if (alergias.length > 0) {
+    labels.push("Alergias");
+  }
+  return labels.length === 0
+    ? `<span class="text-primary/50 text-xs">—</span>`
+    : `<span class="text-alertas text-xs font-semibold">${labels.join(", ")}</span>`;
 }
 
 function renderizarPaginacao() {
@@ -147,6 +164,12 @@ function atualizarContador() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarUtilizadores();
+
+  const notif = sessionStorage.getItem("notificacao_pendente");
+  if (notif) {
+    sessionStorage.removeItem("notificacao_pendente");
+    try { mostrarNotificacao(JSON.parse(notif)); } catch (_) {}
+  }
 
   const inputPesquisa = document.querySelector(".search-input-wrap input");
   inputPesquisa?.addEventListener("input", (e) =>

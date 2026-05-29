@@ -1,5 +1,6 @@
 package pt.ipcb.kardex.kardex_eletronico.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,4 +49,43 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
     long countByDadosRoleAndDadosAtivo(Role enfermeiro, boolean ativo);
 
     List<Funcionario> findAllByDadosAtivo(boolean ativo);
+
+    @Query("""
+        SELECT a.funcionario.id, COUNT(a)
+        FROM AdministracaoMedicacao a
+        WHERE a.administrado = true
+        AND a.data >= :de
+        AND a.data <= :ate
+        GROUP BY a.funcionario.id
+    """)
+    List<Object[]> countAdministracoesByFuncionario(
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
+    );
+
+    @Query("""
+        SELECT i.funcionarioExecutou.id, COUNT(i)
+        FROM Intervencao i
+        WHERE i.funcionarioExecutou IS NOT NULL
+        AND i.dataExecucao >= :de
+        AND i.dataExecucao <= :ate
+        GROUP BY i.funcionarioExecutou.id
+    """)
+    List<Object[]> countIntervencoesByFuncionario(
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
+    );
+
+    @Query("""
+        SELECT f.id, COUNT(t)
+        FROM Funcionario f
+        JOIN f.turnos t
+        WHERE t.inicio >= :de
+        AND t.inicio <= :ate
+        GROUP BY f.id
+    """)
+    List<Object[]> countTurnosByFuncionario(
+            @Param("de") LocalDateTime de,
+            @Param("ate") LocalDateTime ate
+    );
 }

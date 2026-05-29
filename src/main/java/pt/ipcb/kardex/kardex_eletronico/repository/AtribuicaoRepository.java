@@ -12,18 +12,5 @@ import java.util.List;
 
 @Repository
 public interface AtribuicaoRepository extends JpaRepository<AtribuicaoUtente, Long> {
-    @Query("""
-    SELECT a FROM AtribuicaoUtente a
-    JOIN FETCH a.enfermeiro f
-    JOIN FETCH f.dados
-    JOIN FETCH a.utente
-    WHERE f.dados.role = :role
-      AND f.dados.ativo = :ativo
-      AND a.turno = :turno
-    """)
-    List<AtribuicaoUtente> findByEnfermeiroRoleAndAtivoAndTurno(
-            @Param("role") Role role,
-            @Param("ativo") boolean ativo,
-            @Param("turno") Turno turno
-    );
+
 }

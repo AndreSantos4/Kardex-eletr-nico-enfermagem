@@ -25,16 +25,16 @@ public class NotaEvolucaoClinica {
     public ProcessoClinico processoClinico;
     
     @JoinColumn(name = "id_medico", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public Funcionario medico;
     
-    @Column(name = "tipo_nota", nullable = false)
+    @Column(name = "tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     public TipoNotaEvolucaoClinica tipo;
     
-    @Column(name = "descricao")
-    public String descricao;
+    @Column(name = "justificacao_clinica")
+    public String justificacaoClinica;
     
-    @Column(name = "data_emitida", nullable = false)
-    public LocalDateTime dataEmitida;
+    @Column(name = "data", nullable = false)
+    public LocalDateTime data;
 }

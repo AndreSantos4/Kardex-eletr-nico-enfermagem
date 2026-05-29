@@ -9,9 +9,7 @@ import pt.ipcb.kardex.kardex_eletronico.dto.process.CamaDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.CreateProcessDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.DischargePatientDTO;
 import pt.ipcb.kardex.kardex_eletronico.dto.process.ProcessoClinicoDTO;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.ProcessoClinico;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Turno;
-import pt.ipcb.kardex.kardex_eletronico.model.entity.Utente;
+import pt.ipcb.kardex.kardex_eletronico.model.entity.*;
 
 public interface ProcessService {
 
@@ -34,6 +32,7 @@ public interface ProcessService {
 
     ProcessoClinico getValidProcess(Long processId);
 
-    @Transactional(readOnly = true)
-    boolean  vitalSignsInShift(Turno shift, ProcessoClinico process);
+    void buildPendingIssues(Turno shift, List<AtribuicaoUtente> assignments);
+
+    List<Pendencia> buildPatientIssues(AtribuicaoUtente assignment, Turno shift);
 }

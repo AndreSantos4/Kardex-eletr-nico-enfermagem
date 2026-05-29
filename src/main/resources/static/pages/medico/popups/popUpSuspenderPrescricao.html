@@ -1,21 +1,18 @@
-<link rel="stylesheet" href="../../../styles/medico/popups/popupSuspenderPrescricao.css">
-
-<!-- Popup Suspender Prescrição -->
-<div class="popup-overlay" id="popup-suspender" style="display: none;">
-	<div class="popup-box-suspender">
-		<div class="popup-header-suspender">
+<div class="popup-overlay fixed inset-0 bg-black/55 flex items-center justify-center z-[1000]" id="popup-suspender" style="display: none;">
+	<div class="popup-box-suspender bg-primary rounded-[10px] w-full max-w-[640px] shadow-[0_8px_32px_rgba(0,0,0,0.4)] overflow-hidden">
+		<div class="popup-header-suspender bg-bg-dark px-5 py-[14px] flex items-center justify-between text-base font-bold text-white">
 			<span>Suspender Prescrição</span>
-			<button class="popup-close-suspender" onclick="fecharPopupSuspender()">&#10005;</button>
+			<button class="popup-close-suspender bg-[#c0392b] border-0 text-white text-sm font-bold w-7 h-7 rounded-full cursor-pointer flex items-center justify-center hover:bg-[#e74c3c] transition-colors" onclick="fecharPopupSuspender()">&#10005;</button>
 		</div>
-		<div class="popup-content-suspender">
-			<div class="popup-prescricao-card" id="popup-prescricao-card">
-				<div class="prescricao-nome">
-					<span class="prescricao-medicamento">Risperidona 2mg</span> - Oral - 2x/dia - Dr. Ana Rodrigues
+		<div class="popup-content-suspender px-6 pt-[22px] pb-6 flex flex-col gap-[18px]">
+			<div class="popup-prescricao-card bg-white border border-white/20 rounded-md px-4 py-3.5 text-[13px] text-bg-dark leading-[1.5]" id="popup-prescricao-card">
+				<div class="prescricao-nome font-semibold text-bg-dark mb-0.5">
+					<span class="prescricao-medicamento font-bold text-[#8a2a3a]">Risperidona 2mg</span> - Oral - 2x/dia - Dr. Ana Rodrigues
 				</div>
-				<div class="prescricao-detalhe">Prescrita 05/03/2026 - Ativa há 2 dias</div>
+				<div class="prescricao-detalhe text-bg-dark text-xs">Prescrita 05/03/2026 - Ativa há 2 dias</div>
 			</div>
-			<form id="form-suspender" onsubmit="submeterSuspensao(event)">
-				<div class="popup-row-2cols">
+			<form id="form-suspender" onsubmit="submeterSuspensao(event)" class="flex flex-col gap-[18px] [&_.popup-field-suspender]:flex [&_.popup-field-suspender]:flex-col [&_.popup-field-suspender]:gap-2 [&_.popup-label]:text-[11px] [&_.popup-label]:font-extrabold [&_.popup-label]:tracking-[0.07em] [&_.popup-label]:text-white [&_.popup-label]:uppercase [&_.popup-select]:bg-[#1e4d6b] [&_.popup-select]:border-[1.5px] [&_.popup-select]:border-secondary/40 [&_.popup-select]:rounded [&_.popup-select]:text-white [&_.popup-select]:text-[13px] [&_.popup-select]:font-semibold [&_.popup-select]:px-3.5 [&_.popup-select]:py-[11px] [&_.popup-select]:w-full [&_.popup-select]:cursor-pointer [&_.popup-select:focus]:outline-none [&_.popup-select:focus]:border-secondary [&_.popup-input]:bg-white [&_.popup-input]:border-[1.5px] [&_.popup-input]:border-secondary/40 [&_.popup-input]:rounded [&_.popup-input]:text-bg-dark [&_.popup-input]:text-[13px] [&_.popup-input]:font-semibold [&_.popup-input]:px-3.5 [&_.popup-input]:py-[11px] [&_.popup-input]:w-full [&_.popup-input]:cursor-pointer [&_.popup-input:focus]:outline-none [&_.popup-input:focus]:border-secondary [&_.popup-textarea]:bg-white [&_.popup-textarea]:border-[1.5px] [&_.popup-textarea]:border-secondary/40 [&_.popup-textarea]:rounded [&_.popup-textarea]:text-bg-dark [&_.popup-textarea]:text-[13px] [&_.popup-textarea]:px-3.5 [&_.popup-textarea]:py-3 [&_.popup-textarea]:w-full [&_.popup-textarea]:min-h-[90px] [&_.popup-textarea]:resize-y [&_.popup-textarea:focus]:outline-none [&_.popup-textarea:focus]:border-secondary">
+				<div class="popup-row-2cols grid grid-cols-2 gap-[14px]">
 					<div class="popup-field-suspender">
 						<label class="popup-label">TIPO DE SUSPENSÃO *</label>
 						<select id="tipo-suspensao" class="popup-select" onchange="toggleDataRetoma(this.value)">
@@ -42,13 +39,13 @@
 					<label class="popup-label">OBSERVAÇÕES *</label>
 					<textarea id="observacoes-suspensao" class="popup-textarea" placeholder="Justificação clínica detalhada..." rows="4"></textarea>
 				</div>
-				<div class="popup-info-note">
-					<div class="info-icon">i</div>
+				<div class="popup-info-note bg-secondary/20 border border-secondary/35 rounded-md px-3.5 py-2.5 flex items-center gap-3 text-xs text-white">
+					<div class="info-icon w-8 h-8 rounded-full bg-bg-dark text-white font-bold text-lg italic flex items-center justify-center shrink-0" style="font-family:serif;">i</div>
 					<span>Suspensão registada como imutável. Enfermeiro notificado. Stock reservado libertado.</span>
 				</div>
-				<div class="popup-actions-suspender">
-					<button type="button" class="btn-cancelar-suspender" onclick="fecharPopupSuspender()">CANCELAR</button>
-					<button type="submit" class="btn-confirmar-suspender">Suspender prescrição</button>
+				<div class="popup-actions-suspender flex gap-2.5 justify-stretch">
+					<button type="button" class="btn-cancelar-suspender flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.05em] py-[11px] rounded-md cursor-pointer hover:bg-white hover:text-primary transition-colors" onclick="fecharPopupSuspender()">CANCELAR</button>
+					<button type="submit" class="btn-confirmar-suspender flex-1 bg-transparent border-2 border-white text-white text-[13px] font-bold py-[11px] rounded-md cursor-pointer hover:bg-white hover:text-primary transition-colors">Suspender prescrição</button>
 				</div>
 			</form>
 		</div>

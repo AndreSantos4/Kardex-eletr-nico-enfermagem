@@ -7,6 +7,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoPendencia;
 public record PendenciaDTO(
         @JsonProperty("utente") LimitedUtenteDTO utente,
         @JsonProperty("tipo") TipoPendencia tipo,
-        @JsonProperty("descricao") String desscricao
+        @JsonProperty("descricao") String descricao,
+        @JsonProperty("executada") boolean executada
 ) {
 }

@@ -4,66 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../styles/medico/popupRegistarAlta.css">
-    <link rel="stylesheet" href="../../styles/medico/medicoKardexUtente.css">
-    <link rel="stylesheet" href="../../styles/popups/notificacao.css" />
-    <title>Home</title>
+    <title>Medico Kardex Utente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: { primary: "#2a6f97", secondary: "#a8d4e6", "bg-dark": "#1a3f5e", text: "#e8f4f8", "input-bg": "#1e4d6b", ok: "#2e9e6e", alertas: "hsl(0, 98%, 36%)" },
+                fontFamily: { sans: ['"Inter"', "sans-serif"], mono: ['"IBM Plex Mono"', "monospace"] },
+            }},
+        };
+    </script>
 </head>
 
-<body>
-    <!--Top Bar-->
-    <div class="topbar">
-        <span class="topbar-page">Kardex Utente</span>
-        <div class="topbar-right">
-            <span class="topbar-user"> <span id="nome-medico"></span> | Turno: <span id="turno"></span></span>
-            <button class="btn-sair" onclick="logout()">SAIR</button>
+<body class="font-sans text-text m-0 flex flex-col min-h-screen">
+    <div class="h-[52px] bg-primary flex items-center justify-between px-6 border-b border-white/10">
+        <span class="text-[13px] text-text tracking-wider">Kardex Utente</span>
+        <div class="flex items-center gap-4">
+            <span class="text-text text-[13px] font-bold px-2 py-0.5 rounded-sm tracking-wider"> <span id="nome-medico"></span></span>
+            <button class="bg-transparent border-2 border-white text-white text-[13px] font-bold tracking-[0.01em] px-[18px] py-[5px] cursor-pointer rounded-[10px] hover:bg-white hover:text-primary transition-colors" onclick="logout()">SAIR</button>
         </div>
     </div>
 
-    <!--Side Bar-->
-    <div class="main-container">
-
-        <aside class="sidebar">
+    <div class="flex flex-grow items-stretch">
+        <aside class="w-[210px] bg-primary py-3 border-t border-white [&_ul]:list-none [&_ul]:p-0 [&_ul]:m-0 [&_.sidebar-item_a]:flex [&_.sidebar-item_a]:items-center [&_.sidebar-item_a]:gap-3 [&_.sidebar-item_a]:px-[18px] [&_.sidebar-item_a]:py-3 [&_.sidebar-item_a]:no-underline [&_.sidebar-item_a]:text-text [&_.sidebar-item_a]:text-sm [&_.sidebar-item_a]:transition-colors [&_.sidebar-item_a:hover]:bg-white/15 [&_.sidebar-item_a:hover]:text-white [&_.sidebar-item.active_a]:bg-white [&_.sidebar-item.active_a]:text-primary [&_.sidebar-item_svg]:w-[18px] [&_.sidebar-item_svg]:h-[18px] [&_.sidebar-item_svg]:shrink-0 [&_.sidebar-item_svg]:fill-current">
             <nav>
-                <div class="sidebar-section-label">Principal</div>
+                <div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Principal</div>
                 <ul>
-                    <li class="sidebar-item">
-                        <a href="medicoDashboard">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                <path
-                                    d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z" />
-                            </svg>
-                            Home
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="medicoListaUtentes">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                                <path
-                                    d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z" />
-                            </svg>
-                            Lista de Utentes
-                        </a>
-                    </li>
+                    <li class="sidebar-item"><a href="medicoDashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M240 6.1c9.1-8.2 22.9-8.2 32 0l232 208c9.9 8.8 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-8-7.2 0 205.3c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-205.3-8 7.2c-9.9 8.8-25 8-33.9-1.8s-8-25 1.8-33.9L240 6.1zm16 50.1L96 199.7 96 448c0 8.8 7.2 16 16 16l48 0 0-104c0-39.8 32.2-72 72-72l48 0c39.8 0 72 32.2 72 72l0 104 48 0c8.8 0 16-7.2 16-16l0-248.3-160-143.4zM208 464l96 0 0-104c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24l0 104z"/></svg>Home</a></li>
+                    <li class="sidebar-item"><a href="medicoListaUtentes"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/></svg>Lista de Utentes</a></li>
+                    <li class="sidebar-item"><a href="#" onclick="sidebarNavegar(event,'medicoPrescreverMedicamento')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L368 46.1 465.9 144 490.3 119.6c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L432 177.9 334.1 80 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/></svg>Prescrever</a></li>
+                </ul>
+
+                <div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Clínico</div>
+                <ul>
+                    <li class="sidebar-item"><a href="#" onclick="sidebarNavegar(event,'medicoExames')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M184.6 411.5c-3.1 7.3-5.4 14.9-6.8 22.6-14.5 8.8-31.5 13.9-49.8 13.9-53 0-96-43-96-96L32 64C14.3 64 0 49.7 0 32S14.3 0 32 0L224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 255.6-39.4 91.9zM96 64l0 128 64 0 0-128-64 0zM352 0L512 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 153.4 91.3 213c2.3 5.4 3.8 11.1 4.4 17l.3 .6-.3 0c.2 1.8 .3 3.6 .3 5.4 0 32.3-26.2 58.6-58.6 58.6l-266.9 0c-32.3 0-58.6-26.2-58.6-58.6 0-1.8 .1-3.6 .3-5.4l-.3 0 .3-.6c.6-5.8 2.1-11.6 4.4-17L320 217.4 320 64c-17.7 0-32-14.3-32-32S302.3 0 320 0l32 0z"/></svg>Exames</a></li>
+                    <li class="sidebar-item"><a href="#" onclick="sidebarNavegar(event,'medicoNotasClinicas')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M311.4 32l8.6 0c35.3 0 64 28.7 64 64l0 352c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l8.6 0C83.6 12.9 104.3 0 128 0L256 0c23.7 0 44.4 12.9 55.4 32z"/></svg>Notas de evolução</a></li>
+                </ul>
+
+                <div class="text-[11px] font-extrabold tracking-[0.1em] text-white/90 px-[18px] pt-5 pb-2 uppercase">Cuidados</div>
+                <ul>
+                    <li class="sidebar-item"><a href="#" onclick="sidebarNavegar(event,'medicoPlanoCuidados')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM256 64c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c17.7 0 32 14.3 32 32z"/></svg>Planos de Cuidados</a></li>
                 </ul>
             </nav>
         </aside>
 
-        <main class="main-content">
-            <!--Page Header-->
-            <div class="page-header">
-                <div class="page-header-left">
-                    <h4 id="page-title">Kardex</h4>
-                    <p id="page-subtitle" class="page-header-subtitle"></p>
+        <main class="flex-1">
+            <div class="bg-primary rounded m-[14px] px-5 py-[14px] flex items-center">
+                <div class="w-1/2">
+                    <h4 class="m-0" id="page-title">Kardex</h4>
+                    <p id="page-subtitle" class="mt-0.5 m-0 text-xs text-secondary font-normal"></p>
                 </div>
-                <div class="page-header-right">
+                <div class="w-1/2 flex items-center justify-end gap-5 [&_.page-header-button]:bg-transparent [&_.page-header-button]:border-2 [&_.page-header-button]:border-white [&_.page-header-button]:text-white [&_.page-header-button]:text-[13px] [&_.page-header-button]:font-bold [&_.page-header-button]:tracking-[0.01em] [&_.page-header-button]:px-[18px] [&_.page-header-button]:py-[5px] [&_.page-header-button]:cursor-pointer [&_.page-header-button]:rounded-[10px] [&_.page-header-button]:whitespace-nowrap [&_.page-header-button:hover]:bg-white [&_.page-header-button:hover]:text-primary">
                     <button class="page-header-button" onclick="daralta()">DAR ALTA</button>
                     <button class="page-header-button" onclick="mostrarNotas()">NOTAS</button>
                     <button class="page-header-button" onclick="mostrarPlano()">PLANO</button>
                     <button class="page-header-button" onclick="mostrarLista()">LISTA</button>
-                    <div class="dropdown-historico">
+                    <div class="relative">
                         <button class="page-header-button" id="btn-historico" onclick="toggleHistoricoMenu(event)">HISTÓRICO &#9662;</button>
-                        <div class="historico-menu" id="historico-menu">
+                        <div class="hidden absolute top-[calc(100%+6px)] right-0 bg-primary border border-white/25 rounded-md min-w-[220px] z-[100] shadow-[0_8px_24px_rgba(0,0,0,0.35)] overflow-hidden [&.open]:block [&_button]:block [&_button]:w-full [&_button]:bg-transparent [&_button]:border-0 [&_button]:border-b [&_button]:border-white/10 [&_button]:text-text [&_button]:font-sans [&_button]:text-[13px] [&_button]:font-semibold [&_button]:px-4 [&_button]:py-2.5 [&_button]:text-left [&_button]:cursor-pointer [&_button:last-child]:border-0 [&_button:hover]:bg-white/15 [&_button:hover]:text-white" id="historico-menu">
                             <button onclick="irParaHistoricoClinico()">Histórico Clínico</button>
                             <button onclick="irParaHistoricoIntervencoes()">Histórico de Intervenções</button>
                             <button onclick="irParaHistoricoPrescricoes()">Histórico de Prescrições</button>
@@ -73,35 +72,28 @@
                 </div>
             </div>
 
-            <!--Info do Utente-->
-            <div class="info-utente-bar">
-                <div class="info-utente-1">
+            <div class="m-[14px] rounded-[5px] bg-primary p-[10px_5px] text-text font-sans text-sm">
+                <div class="flex items-center [&_.nome-utente]:flex [&_.nome-utente]:items-center [&_.sexo-idade]:flex [&_.sexo-idade]:items-center [&_.sexo-idade]:m-[5px] [&_.admissao]:flex [&_.admissao]:items-center [&_.admissao]:m-[5px] [&_.medico]:flex [&_.medico]:items-center [&_.medico]:m-[5px] [&_p]:m-0">
                     <div class="nome-utente">
                         <p id="nome-utente" style="color: white; font-size: 16px; font-weight: bolder;"></p>
                     </div>
                     <div class="sexo-idade">
                         <p style="color: white; font-weight: bolder;">Sexo/Idade: &nbsp;</p>
-                        <p id="sexo"></p>
-                        <p> &nbsp;-&nbsp;</p>
-                        <p id="idade"></p>
-                        <p>&nbsp;Anos</p>
+                        <p id="sexo"></p><p>&nbsp;-&nbsp;</p><p id="idade"></p><p>&nbsp;Anos</p>
                     </div>
                     <div class="admissao">
                         <p style="color: white; font-weight: bolder;">Admissão: &nbsp;</p>
-                        <p id="data"></p>
-                        <p>&nbsp;</p>
-                        <p id="hora"></p>
+                        <p id="data"></p><p>&nbsp;</p><p id="hora"></p>
                     </div>
                     <div class="medico">
                         <p style="color: white; font-weight: bolder;">Médico: &nbsp;</p>
                         <p id="medico"></p>
                     </div>
                 </div>
-                <div class="info-utente-2">
+                <div class="flex items-center [&_.processo]:flex [&_.processo]:items-center [&_.cama]:flex [&_.cama]:items-center [&_.cama]:m-[5px] [&_.estado]:flex [&_.estado]:items-center [&_.estado]:m-[5px] [&_p]:m-0">
                     <div class="processo">
                         <p style="color: white; font-weight: bolder;">Proc: &nbsp;</p>
-                        <p id="processo"></p>
-                        <p>&nbsp;-&nbsp;</p>
+                        <p id="processo"></p><p>&nbsp;-&nbsp;</p>
                         <p style="color: white; font-weight: bolder;">Nasc:&nbsp;</p>
                         <p id="data-nascimento"></p>
                     </div>
@@ -111,201 +103,83 @@
                     </div>
                     <div class="estado">
                         <p style="color: white; font-weight: bolder;">Estado:&nbsp;</p>
-                        <p id="estado"></p>
-                        <p>&nbsp;-&nbsp;</p>
+                        <p id="estado"></p><p>&nbsp;-&nbsp;</p>
                         <p id="dias-internado-label">Dia&nbsp;</p>
                         <p id="dias-internado"></p>
                     </div>
                 </div>
-                <div class="info-utente-3">
+                <div class="flex items-center my-[5px] [&_.riscos]:flex [&_.riscos]:items-center [&_p]:m-0">
                     <div class="riscos">
                         <p style="color: white; font-weight: bolder;">Riscos:&nbsp;</p>
                     </div>
                 </div>
             </div>
 
-            <!--Alertas-->
-            <div class="alertas-bar">
-                <div class="alertas-label">
-                    Alergias - Atenção antes de qualquer medicação
-                </div>
-                <div class="alertas" id="alertas">
-                </div>
+            <div class="m-[14px] rounded-[5px] border border-primary text-sm">
+                <div class="bg-primary rounded-t-[3px] text-text font-sans p-[5px] text-sm">Alergias - Atenção antes de qualquer medicação</div>
+                <div class="[&_.alerta]:!text-alertas [&_.alerta]:m-0 [&_.alerta]:p-[5px] [&_.alerta]:flex [&_.alerta_p]:p-0 [&_.alerta_p]:m-0" id="alertas"></div>
             </div>
 
-            <div class="sv-plano-cuidados-bar">
-                <div class="sinais-vitais-bar">
-                    <div class="sinais-vitais-label">
-                        Sinais Vitais
-                    </div>
-                    <div class="sinais-vitais">
-                        <div class="tensao-art">
-                            <p id="tensao-art"></p>
-                            <p>mmHg</p>
-                            <p>Tensão Art.</p>
-                        </div>
-                        <div class="freq-card">
-                            <p id="freq-card"></p>
-                            <p>bpm</p>
-                            <p>Freq. Card.</p>
-                        </div>
-                        <div class="temperatura">
-                            <p id="temperatura"></p>
-                            <p>ºC</p>
-                            <p>Temperatura</p>
-                        </div>
-                        <div class="spo2">
-                            <p id="spo2"></p>
-                            <p>%</p>
-                            <p>SpO2</p>
-                        </div>
-                        <div class="dor">
-                            <p id="dor"></p>
-                            <p>Dor</p>
-                        </div>
-                        <div class="glicemia">
-                            <p id="glicemia"></p>
-                            <p>mg/dL</p>
-                            <p>Glicémia</p>
+            <div class="mx-[14px] mb-[14px] grid grid-cols-2 gap-3 items-start [&_.panel]:rounded-[5px] [&_.panel]:border [&_.panel]:border-primary [&_.panel]:flex [&_.panel]:flex-col [&_.panel]:overflow-hidden [&_.panel]:self-start [&_.panel-header]:bg-primary [&_.panel-header]:text-text [&_.panel-header]:px-3 [&_.panel-header]:py-2 [&_.panel-header]:text-sm [&_.panel-header]:font-semibold [&_.panel-header]:flex [&_.panel-header]:items-center [&_.panel-header]:justify-between [&_.panel-header]:gap-2 [&_.panel-body]:p-3 [&_.panel-body]:text-primary [&_.panel-body]:text-[13px] [&_.sv-grid]:flex [&_.sv-grid]:flex-nowrap [&_.sv-grid]:justify-between [&_.sv-grid]:gap-1 [&_.sv-item]:bg-primary [&_.sv-item]:rounded [&_.sv-item]:px-1 [&_.sv-item]:py-1.5 [&_.sv-item]:text-center [&_.sv-item]:flex-1 [&_.sv-item]:min-w-0 [&_.sv-value]:text-[15px] [&_.sv-value]:font-bold [&_.sv-value]:text-secondary [&_.sv-value]:leading-[1.15] [&_.sv-value_small]:!text-[10px] [&_.sv-label]:text-[10px] [&_.sv-label]:text-secondary [&_.sv-label]:mt-0.5 [&_.plano-item]:flex [&_.plano-item]:items-start [&_.plano-item]:justify-between [&_.plano-item]:gap-3 [&_.plano-item]:py-2 [&_.plano-item]:border-b [&_.plano-item]:border-primary/15 [&_.plano-item:last-child]:border-0 [&_.plano-item_.plano-nome]:font-semibold [&_.plano-item_.plano-info]:text-[12px] [&_.plano-item_.plano-info]:text-primary/70 [&_.plano-item_.plano-info]:mt-0.5 [&_.med-item]:py-2 [&_.med-item]:border-b [&_.med-item]:border-primary/15 [&_.med-item:last-child]:border-0 [&_.med-item_.med-nome]:font-semibold [&_.med-item_.med-info]:text-[12px] [&_.med-item_.med-info]:text-primary/70 [&_.med-item_.med-info]:mt-0.5 [&_.ec-section-title]:text-[11px] [&_.ec-section-title]:font-bold [&_.ec-section-title]:uppercase [&_.ec-section-title]:tracking-wider [&_.ec-section-title]:text-primary/70 [&_.ec-section-title]:mb-1 [&_.ec-item]:py-1.5 [&_.ec-item]:border-b [&_.ec-item]:border-primary/15 [&_.ec-item:last-child]:border-0 [&_.ec-item_.ec-nome]:font-semibold [&_.ec-item_.ec-info]:text-[12px] [&_.ec-item_.ec-info]:text-primary/70 [&_.ec-item_.ec-info]:mt-0.5 [&_.oc-item]:py-1.5 [&_.oc-item]:border-b [&_.oc-item]:border-primary/15 [&_.oc-item:last-child]:border-0 [&_.oc-item_.oc-head]:font-semibold [&_.oc-item_.oc-info]:text-[12px] [&_.oc-item_.oc-info]:text-primary/70 [&_.oc-item_.oc-info]:mt-0.5">
+                <div class="panel">
+                    <div class="panel-header">Sinais Vitais</div>
+                    <div class="panel-body">
+                        <div class="sv-grid">
+                            <div class="sv-item"><div class="sv-value" id="sv-tensao">—</div><div class="sv-label">Tensão Art.</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-freq-card">—</div><div class="sv-label">Freq. Card.</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-temperatura">—</div><div class="sv-label">Temperatura</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-spo2">—</div><div class="sv-label">SpO2</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-dor">—</div><div class="sv-label">Dor</div></div>
+                            <div class="sv-item"><div class="sv-value" id="sv-glicemia">—</div><div class="sv-label">Glicémia</div></div>
                         </div>
                     </div>
                 </div>
-                <div class="plano-cuidados-bar">
-                    <div class="plano-cuidados-label">
-                        <div class="plano-cuidados-label-left">
-                            Plano de Cuidados Hoje
-                        </div>
-                        <div class="plano-cuidados-label-right">
-                            <button class="btn-plano-cuidados-label" onclick="">VER COMPLETO</button>
-                        </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <span>Plano de Cuidados Hoje</span>
+                        <button class="bg-transparent border-2 border-white text-white text-[11px] font-bold tracking-[0.04em] px-2.5 py-[3px] cursor-pointer rounded-md hover:bg-white hover:text-primary transition-colors whitespace-nowrap" onclick="mostrarPlano()">VER COMPLETO</button>
                     </div>
-                    <div class="plano-cuidados">
-                        <div class="plano-cuidados-left">
-                            <p id="atividade"></p>
-                        </div>
-                        <div class="plano-cuidados-right">
-                            <p id="hora-atividade"></p>
-                        </div>
+                    <div class="panel-body" id="plano-cuidados-body">
+                        <p class="m-0 italic text-primary/55">A carregar plano...</p>
                     </div>
                 </div>
-            </div>
-            <div class="medicacao-exames-bar">
-                <div class="medicacao-bar">
-                    <div class="medicacao-label">
-                        Medicação Ativa
-                    </div>
-                    <div class="medicacao">
-                        <div class="medicacao-left">
-                            <div class="medicacao-left-cima">
-                                <p id="medicamento"></p>
-                                <p id="dosagem"></p>
-                                <p>mg&nbsp;</p>
-                                <p>Atraso&nbsp;</p>
-                                <p id="atraso"></p>
-                                <p>min</p>
-                            </div>
-                            <div class="medicacao-left-baixo">
-                                <p id="via"></p>
-                                <p>&nbsp;-&nbsp;</p>
-                                <!--TODO: André este campo pode mudar consoante o que foi administrado-->
-                                <p></p>
-                                <p>x/dia -&nbsp;</p>
-                                <p id="Médico"></p>
-                                <p>&nbsp;-&nbsp;</p>
-                                <p id="data-medicacao"></p>
-                            </div>
-                        </div>
-                        <div class="medicacao-right">
-                            <!--TODO-->
-                            <p id="hora-medicacao"></p>
-                        </div>
+
+                <div class="panel">
+                    <div class="panel-header">Medicação Ativa</div>
+                    <div class="panel-body medicacao">
+                        <p class="m-0 italic text-primary/55">A carregar medicação...</p>
                     </div>
                 </div>
-                <div class="exames-cateteres-bar">
-                    <div class="exames-cateteres-label">
-                        Exames e Cateteres
-                    </div>
-                    <div class="exames-cateteres">
-                        <!--TODO: André depois quando meteres o JavaScript quando aparecer mais do que um exames-cateteres-cima o segundo mete uma margin no topo de 5px-->
-                        <div class="exames-cateteres-info">
-                            <div class="exames-cateteres-cima">
-                                <p id="exame"></p>
-                                <p>&nbsp;</p>
-                                <!--TODO: colocar a prioridade-->
-                                <p id="prioridade"></p>
-                                <!--TODO: se o exame já tem resultado ou não-->
-                                <p>&nbsp;</p>
-                                <p id="resultado-exame"></p>
-                            </div>
-                            <div class="exames-cateteres-baixo">
-                                <p>Pedido a&nbsp;</p>
-                                <!--TODO-->
-                                <p id="pedido-exame"></p>
-                                <p>&nbsp;-&nbsp;</p>
-                                <!--TODO-->
-                                <p id="medico-exame"></p>
-                            </div>
-                        </div>
-                        <div class="exames-cateteres-info">
-                            <div class="exames-cateteres-cima">
-                                <p id="cateter"></p>
-                                <p>&nbsp;-&nbsp;</p>
-                                <p id="local-insercao-cateter"></p>
-                                <p>&nbsp;</p>
-                                <p id="tempo-checkar"></p>
-                                <p>&nbsp;- verificar</p>
-                            </div>
-                            <div class="exames-cateteres-baixo">
-                                <p>Inserido&nbsp;</p>
-                                <!--TODO-->
-                                <p id="data-insercao-cateter"></p>
-                                <p>&nbsp;- Calibre</p>
-                                <!--TODO-->
-                                <p id="calibre-cateter"></p>
-                            </div>
-                        </div>
+
+                <div class="panel">
+                    <div class="panel-header">Exames e Cateteres</div>
+                    <div class="panel-body exames-cateteres">
+                        <p class="m-0 italic text-primary/55">A carregar...</p>
                     </div>
                 </div>
-            </div>
-            <div class="ocorrencias-registos-bar">
-                <div class="ocorrencias-bar">
-                    <div class="ocorrencias-label">
-                        Ocorrências de Hoje
-                    </div>
-                    <!--TODO: as ocorrências right podem mais formatos-->
-                    <div class="ocorrencias">
-                        <div class="ocorrencias-left">
-                            <p id="hora-ocorrencia"></p>
-                        </div>
-                        <div class="ocorrencias-middle">
-                            <p id="nome-enf"></p>
-                        </div>
-                        <div class="ocorrencias-right">
-                            <p id="medicamento-ocorrencia"></p>
-                            <p id="dosagem-ocorrencia"></p>
-                            <p>mg&nbsp;</p>
-                            <p id="tipo-medicacao"></p>
-                            <p>&nbsp;-&nbsp;</p>
-                            <p id="motivo"></p>
-                            <p id="resolucao"></p>
-                        </div>
+
+                <div class="panel">
+                    <div class="panel-header">Ocorrências de Hoje</div>
+                    <div class="panel-body ocorrencias">
+                        <p class="m-0 italic text-primary/55">Sem ocorrências registadas hoje.</p>
                     </div>
                 </div>
-                <div class="registos-bar">
-                    <div class="registos-label">
-                        Últimos Registos Clínicos
-                    </div>
-                    <div class="registos">
-                        <div class="registos-table">
-                            <table class="lista-registos">
-                                <thead>
+
+                <div class="panel">
+                    <div class="panel-header">Últimos Registos Clínicos</div>
+                    <div class="panel-body !p-0">
+                        <div class="w-full overflow-x-auto">
+                            <table class="w-full border-collapse font-sans text-sm">
+                                <thead class="[&_tr]:bg-primary/10 [&_th]:text-primary [&_th]:text-left [&_th]:px-3 [&_th]:py-1.5 [&_th]:font-semibold [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wider [&_th]:whitespace-nowrap">
                                     <tr>
                                         <th>Tipo</th>
                                         <th>Valor</th>
                                         <th>Hora</th>
                                     </tr>
                                 </thead>
-                                <tbody id="registos-tbody">
+                                <tbody id="registos-tbody" class="[&_tr]:border-b [&_tr]:border-primary/15 [&_tr:last-child]:border-0 [&_td]:px-3 [&_td]:py-1.5 [&_td]:text-[13px]">
+                                    <tr><td colspan="3" class="italic text-primary/55">Sem registos.</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -316,11 +190,12 @@
     </div>
     <div id="popup-container"></div>
     <script src="../../scripts/logout.js"></script>
+	<script src="../../scripts/topBar.js"></script>
     <script src="../../scripts/notificacao.js"></script>
     <script src="../../scripts/medico/popUpRegistarAlta.js"></script>
+    <script src="../../scripts/medico/medicoSidebarNav.js"></script>
     <script src="../../scripts/medico/medicoKardexUtente.js"></script>
     <div id="notificacoes-container"></div>
-
 </body>
 
 </html>
