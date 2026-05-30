@@ -19,6 +19,8 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrescriptionState;
 
 @Repository
 public interface PrescricaoRepository extends JpaRepository<Prescricao, Long>{
+    boolean existsByDose_Id(Long doseId);
+
     @Query("SELECT a FROM AdministracaoMedicacao a " +
        "WHERE a.prescricao.id = :prescricaoId " +
        "ORDER BY a.data DESC " +
