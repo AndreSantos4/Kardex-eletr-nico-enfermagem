@@ -271,6 +271,10 @@ function _criarLinhaTabela(m) {
         ? '<button class="btn-desativar" onclick="abrirPopupDesativar(' + m.id + ')">Desativar</button>'
         : '<button class="btn-ativar" onclick="ativarMedicamento(' + m.id + ')">Ativar</button>';
 
+    var btnEditar = m.active
+        ? '<button onclick="editarMedicamento(' + m.id + ')">Editar</button> '
+        : '';
+
     return '<tr data-id="' + m.id + '">' +
         '<td>' + _esc(m.nome) + '</td>' +
         '<td>' + _esc(m.principioAtivo) + '</td>' +
@@ -280,7 +284,7 @@ function _criarLinhaTabela(m) {
         '<td>' + dosagens + '</td>' +
         '<td>' + altoRisco + '</td>' +
         '<td><span class="badge ' + estadoCls + '">' + estado + '</span></td>' +
-        '<td><button onclick="editarMedicamento(' + m.id + ')">Editar</button> ' + btnToggle + '</td>' +
+        '<td>' + btnEditar + btnToggle + '</td>' +
         '</tr>';
 }
 
