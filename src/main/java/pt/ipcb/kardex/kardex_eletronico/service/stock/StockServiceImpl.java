@@ -16,12 +16,21 @@ import pt.ipcb.kardex.kardex_eletronico.exception.KardexException;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Dosagem;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.LoteMedicamento;
 import pt.ipcb.kardex.kardex_eletronico.model.entity.Medicamento;
+import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.MedicamentoMapper;
+import pt.ipcb.kardex.kardex_eletronico.repository.ContencaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.repository.MedicamentoRepository;
+import pt.ipcb.kardex.kardex_eletronico.repository.PrescricaoRepository;
 import pt.ipcb.kardex.kardex_eletronico.dto.stock.MedicamentoDTO;
 import pt.ipcb.kardex.kardex_eletronico.exception.ConflictEntitiesException;
 import pt.ipcb.kardex.kardex_eletronico.exception.EntityNotFoundException;
 import pt.ipcb.kardex.kardex_eletronico.exception.InactiveResourceException;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +38,8 @@ public class StockServiceImpl implements StockService{
     private final Clock clock;
 
     private final MedicamentoRepository medicamentoRepository;
+    private final PrescricaoRepository prescricaoRepository;
+    private final ContencaoRepository contencaoRepository;
     private final MedicamentoMapper medicamentoMapper;
 
     @Override
@@ -86,13 +97,13 @@ public class StockServiceImpl implements StockService{
 	@Transactional
 	public void editMedication(Long medicationId, CreateMedicationDTO data) {
     	var medication = getMedication(medicationId);
-            
+
         if(!medication.isActive()){
             throw new InactiveResourceException("Medicamento");
         }
-        
+
         var updatedMed = medicamentoMapper.fromCreate(data);
-    
+
         medication.setNome(data.nome());
         medication.setPrincipioAtivo(data.principioAtivo());
         medication.setFormaFarmaceutica(data.formaFarmaceutica());
@@ -100,18 +111,55 @@ public class StockServiceImpl implements StockService{
         medication.setViaAdministracao(data.viaAdministracao());
         medication.setUnidadeMedida(data.unidadeMedida());
         medication.setAltoRisco(data.altoRisco());
-    
-        medication.getDosagens().clear();
-        List<Dosagem> novasDosagens = updatedMed.getDosagens();
-        Dosagem maxDosagem = updatedMed.getDosagemMaxDiaria();
-        
-        novasDosagens.forEach(d -> {
-            d.setMedicamento(medication);
-            medication.getDosagens().add(d);
-        });
-        
-        medication.setDosagemMaxDiaria(maxDosagem);
+
+        reconciliarDosagens(medication, updatedMed.getDosagens(), updatedMed.getDosagemMaxDiaria());
 	}
+
+    private void reconciliarDosagens(Medicamento medication, List<Dosagem> novasDosagens, Dosagem novaMaxDosagem) {
+        Map<String, Dosagem> existentesPorChave = new HashMap<>();
+        for (Dosagem d : medication.getDosagens()) {
+            existentesPorChave.put(chaveDosagem(d.getDose(), d.getUnidadeMedida()), d);
+        }
+
+        Set<Dosagem> aManter = new HashSet<>();
+        for (Dosagem nova : novasDosagens) {
+            String chave = chaveDosagem(nova.getDose(), nova.getUnidadeMedida());
+            Dosagem existente = existentesPorChave.get(chave);
+            if (existente != null) {
+                aManter.add(existente);
+            } else {
+                nova.setMedicamento(medication);
+                medication.getDosagens().add(nova);
+                aManter.add(nova);
+            }
+        }
+
+        Iterator<Dosagem> it = medication.getDosagens().iterator();
+        while (it.hasNext()) {
+            Dosagem d = it.next();
+            if (aManter.contains(d)) continue;
+
+            if (d.getId() != null && estaReferenciada(d.getId())) {
+                continue;
+            }
+            it.remove();
+        }
+
+        Dosagem maxReusada = novaMaxDosagem == null
+            ? null
+            : existentesPorChave.get(chaveDosagem(novaMaxDosagem.getDose(), novaMaxDosagem.getUnidadeMedida()));
+        medication.setDosagemMaxDiaria(maxReusada != null ? maxReusada : novaMaxDosagem);
+    }
+
+    private boolean estaReferenciada(Long doseId) {
+        return prescricaoRepository.existsByDose_Id(doseId)
+            || contencaoRepository.existsByDose_Id(doseId);
+    }
+
+    private static String chaveDosagem(java.math.BigDecimal dose, UnidadeMedida unidade) {
+        String doseKey = dose == null ? "null" : dose.stripTrailingZeros().toPlainString();
+        return doseKey + "|" + (unidade == null ? "null" : unidade.name());
+    }
 
 	@Override
 	@Transactional
