@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.GravidadeIncidente;
-import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoCateter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoIncidente;
 
 import java.time.LocalDateTime;

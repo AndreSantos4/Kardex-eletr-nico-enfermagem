@@ -20,7 +20,6 @@ import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

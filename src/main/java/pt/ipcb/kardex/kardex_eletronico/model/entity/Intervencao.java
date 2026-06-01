@@ -10,9 +10,7 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.IntervencaoDiagnostico;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.PrioridadeIntervencao;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoIntervencao;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @AllArgsConstructor
 @NoArgsConstructor

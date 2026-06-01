@@ -10,7 +10,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.FormaFarmaceutica;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.UnidadeMedida;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.ViaAdministracao;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

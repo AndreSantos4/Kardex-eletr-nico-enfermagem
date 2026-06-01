@@ -9,7 +9,6 @@ import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegistoClinico;
 import pt.ipcb.kardex.kardex_eletronico.model.mapper.ParametrosMapper;
 import pt.ipcb.kardex.kardex_eletronico.service.process.ProcessService;
 import pt.ipcb.kardex.kardex_eletronico.service.record.ClinicRecordService;
-import pt.ipcb.kardex.kardex_eletronico.service.record.RecordService;
 import pt.ipcb.kardex.kardex_eletronico.service.stock.StockService;
 import pt.ipcb.kardex.kardex_eletronico.service.worker.WorkerService;
 

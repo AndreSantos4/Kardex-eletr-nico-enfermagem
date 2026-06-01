@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pt.ipcb.kardex.kardex_eletronico.model.enumerated.TipoRegistoClinico;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
