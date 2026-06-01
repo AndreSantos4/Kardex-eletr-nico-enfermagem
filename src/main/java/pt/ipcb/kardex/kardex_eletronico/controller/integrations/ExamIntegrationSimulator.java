@@ -35,8 +35,12 @@ public class ExamIntegrationSimulator {
                 }
                 case AGENDADO -> {
                     var today = LocalDate.now(clock);
-                    if(e.dataPretendida().equals(today) || e.dataPretendida().isAfter(today)){
-                        examController.markAsDone(e.id());
+                    if(e.dataPretendida().equals(today) || e.dataPretendida().isBefore(today)){
+                        try{
+                            examController.markAsDone(e.id());
+                        } catch(Exception ex){
+                            log.warn("Nenhum turno a decorrer, logo o exame de id {} agendado para {}, nao foi realizado", e.id(), e.dataPretendida());
+                        }
                     }
                     log.info("Exame {} marcado como realizado", e.id());
                 }
