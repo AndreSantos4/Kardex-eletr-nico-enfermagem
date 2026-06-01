@@ -31,8 +31,8 @@ public class ShiftChangeJob {
         shifts.forEach(shift -> {
             try {
                 shiftService.getShiftChange(shift.getId());
-            } catch (Exception e) {
-                log.error("Erro ao processar passagem de turno para turno {}: {}", shift.getId(), e.getMessage());
+            } catch (Exception ex) {
+                log.warn("Nao foi possivel processar passagem de turno para turno {}: {}", shift.getId(), ex.getMessage());
             }
         });
 
